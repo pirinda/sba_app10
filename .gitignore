@@ -1,0 +1,33 @@
+# Git Ignore Settings
+# Author: Sergio Abraham Flores Gutiérrez
+# Date: 2015-09-01
+
+# Java BiteCode files:
+*.class
+!*_Stub.class
+
+# Mobile Tools for Java (J2ME) directories:
+.mtj.tmp/
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Virtual machine crash log files (see http://www.java.com/en/download/help/error_hotspot.xml):
+hs_err_pid*
+
+# CVS, NetBeans and SIIE directories and files:
+**/CVS/
+.cvsignore
+build/
+dist/
+nbproject/
+test/
+reps/cfd/
+build.xml
+manifest.mf
+Thumbs.db
+*.swa
+sa*.xml
+*.jrxml
