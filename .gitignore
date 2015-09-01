@@ -1,5 +1,5 @@
 # Git Ignore Settings
-# Author: Sergio Abraham Flores Gutiérrez
+# Author: Sergio Abraham Flores Gutiï¿½rrez
 # Date: 2015-09-01
 
 # Java BiteCode files:
@@ -29,5 +29,5 @@ build.xml
 manifest.mf
 Thumbs.db
 *.swa
-sa*.xml
+sba*.xml
 *.jrxml

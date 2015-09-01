@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<!-- Copyright 2010-2012 Sergio Abraham Flores Gutiérrez. All rights reserved. -->
-<Params xmlns="http://www.mysba.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" db_host="localhost" db_port="3306" db_name="sba" usr_name="root" usr_pswd="msroot" terminal="1" time_zone="GMT-06:00">
-</Params>
