@@ -98,10 +98,10 @@ public abstract class DTrnEmissionUtils {
         DDbSysXmlSignatureProvider xsp = null;
 
         if (!configCompany.isEdsApplying()) {
-            throw new Exception("No se ha configurado la emisión de documentos electrónicos.");
+            throw new Exception("No se ha definido emisión de documentos electrónicos en la configuración de " + DUtilConsts.TXT_COMPANY.toLowerCase() + ".");
         }
         else if (configBranch.getFkXmlSignatureProviderId() == DModSysConsts.CS_XSP_NA) {
-            throw new Exception("No se ha configurado el " + DTrnEmissionConsts.PAC + ".");
+            throw new Exception("No se ha definido " + DTrnEmissionConsts.PAC + " en la configuración de " + DUtilConsts.TXT_BRANCH.toLowerCase() + ".");
         }
         else {
             params.SignatureProviderId = configBranch.getFkXmlSignatureProviderId();
@@ -138,7 +138,7 @@ public abstract class DTrnEmissionUtils {
             }
             
             if (!params.RequestAllowed) {
-                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.");
+                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nQuizás será necesario realizar la acción de forma manual.");
             }
             else {
                 // Check stamps available with DPS's company branch ones:
