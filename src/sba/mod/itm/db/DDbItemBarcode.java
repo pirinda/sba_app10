@@ -75,7 +75,16 @@ public class DDbItemBarcode extends DDbRegistry implements DGridRow {
 
     @Override
     public void computePrimaryKey(DGuiSession session) throws SQLException, Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ResultSet resultSet = null;
+
+        mnPkBarcodeId = 0;
+
+        msSql = "SELECT COALESCE(MAX(id_bar), 0) + 1 FROM " + getSqlTable() + " " +
+                "WHERE id_itm = " + mnPkItemId + " ";
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (resultSet.next()) {
+            mnPkBarcodeId = resultSet.getInt(1);
+        }
     }
 
     @Override
@@ -108,10 +117,8 @@ public class DDbItemBarcode extends DDbRegistry implements DGridRow {
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
-            verifyRegistryNew(session);
-        }
-
-        if (mbRegistryNew) {
+            computePrimaryKey(session);
+            
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkItemId + ", " +
                     mnPkBarcodeId + ", " +

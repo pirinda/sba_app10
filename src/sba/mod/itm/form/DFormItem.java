@@ -17,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import sba.gui.DGuiClientSessionCustom;
 import sba.lib.DLibConsts;
@@ -39,6 +40,7 @@ import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.fin.db.DDbTaxGroupConfigRow;
 import sba.mod.itm.db.DDbBrand;
 import sba.mod.itm.db.DDbItem;
+import sba.mod.itm.db.DDbItemBarcode;
 import sba.mod.itm.db.DDbItemGenus;
 import sba.mod.itm.db.DDbItemLine;
 import sba.mod.itm.db.DDbManufacturer;
@@ -197,6 +199,10 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel48 = new javax.swing.JPanel();
         jlUnit = new javax.swing.JLabel();
         moKeyUnit = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel51 = new javax.swing.JPanel();
+        jlBarcode = new javax.swing.JLabel();
+        moTextBarcode1 = new sba.lib.gui.bean.DBeanFieldText();
+        moTextBarcode2 = new sba.lib.gui.bean.DBeanFieldText();
         jPanel27 = new javax.swing.JPanel();
         jPanel29 = new javax.swing.JPanel();
         jPanel30 = new javax.swing.JPanel();
@@ -249,7 +255,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Clasificación:"));
         jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel7.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemGenus.setText("Género ítems:*");
         jlItemGenus.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -265,7 +271,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel5.add(jPanel7);
 
-        jPanel8.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemLine.setText("Línea ítems:*");
         jlItemLine.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -281,7 +287,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel5.add(jPanel8);
 
-        jPanel3.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemCode.setText("Código:*");
         jlItemCode.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -290,7 +296,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel5.add(jPanel3);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemName.setText("Nombre:*");
         jlItemName.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -301,7 +307,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel5.add(jPanel4);
 
-        jPanel10.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemPresentation.setText("Presentación:");
         jlItemPresentation.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -317,7 +323,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración:"));
         jPanel6.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolTaxGroupByUser.setText("Configuración manual de impuestos");
         moBoolTaxGroupByUser.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -325,7 +331,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel6.add(jPanel11);
 
-        jPanel12.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTaxGroup.setText("Grupo impuestos:*");
         jlTaxGroup.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -336,7 +342,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel6.add(jPanel12);
 
-        jPanel13.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolAbpItemByUser.setText("Configuración manual de paquete contable");
         moBoolAbpItemByUser.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -344,7 +350,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel6.add(jPanel13);
 
-        jPanel14.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlAbpItem.setText("Paquete contable:*");
         jlAbpItem.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -355,7 +361,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel6.add(jPanel14);
 
-        jPanel28.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel6.add(jPanel28);
 
         jPanel2.add(jPanel6);
@@ -369,7 +375,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
-        jPanel9.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código ítem:");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -383,7 +389,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel1.add(jPanel9);
 
-        jPanel16.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre ítem:");
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -397,7 +403,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel1.add(jPanel16);
 
-        jPanel50.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlIngredient.setText("Ingrediente:");
         jlIngredient.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -408,7 +414,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel1.add(jPanel50);
 
-        jPanel18.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolBulk.setText("A granel");
         moBoolBulk.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -416,7 +422,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel1.add(jPanel18);
 
-        jPanel19.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolInventoriable.setText("Inventariable");
         moBoolInventoriable.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -432,7 +438,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel1.add(jPanel19);
 
-        jPanel26.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolFreeOfPrice.setText("Sin precios");
         moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -457,7 +463,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
-        jPanel55.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel55.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceSrp.setText("Price SRP:");
         jlPriceSrp.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -466,7 +472,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel55);
 
-        jPanel56.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel56.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPrice1.setText("Price 1:");
         jlPrice1.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -475,7 +481,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel56);
 
-        jPanel57.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel57.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPrice2.setText("Price 2:");
         jlPrice2.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -484,7 +490,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel57);
 
-        jPanel58.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel58.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPrice3.setText("Price 3:");
         jlPrice3.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -493,7 +499,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel58);
 
-        jPanel59.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel59.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPrice4.setText("Price 4:");
         jlPrice4.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -502,7 +508,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel59);
 
-        jPanel60.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel60.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPrice5.setText("Price 5:");
         jlPrice5.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -511,7 +517,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel54.add(jPanel60);
 
-        jPanel68.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel68.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceLastPur.setText("Última compra:");
         jlPriceLastPur.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -529,7 +535,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
-        jPanel62.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel62.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNetSrp.setText("Price SRP:");
         jlPriceNetSrp.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -540,7 +546,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel62);
 
-        jPanel63.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel63.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNet1.setText("Price 1:");
         jlPriceNet1.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -551,7 +557,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel63);
 
-        jPanel64.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel64.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNet2.setText("Price 2:");
         jlPriceNet2.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -562,7 +568,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel64);
 
-        jPanel65.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel65.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNet3.setText("Price 3:");
         jlPriceNet3.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -573,7 +579,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel65);
 
-        jPanel66.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel66.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNet4.setText("Price 4:");
         jlPriceNet4.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -584,7 +590,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel66);
 
-        jPanel67.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel67.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNet5.setText("Price 5:");
         jlPriceNet5.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -595,7 +601,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel67);
 
-        jPanel70.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel70.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPriceNetLastPur.setText("Última compra:");
         jlPriceNetLastPur.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -606,7 +612,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel61.add(jPanel70);
 
-        jPanel69.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel69.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTaxRate.setText("Razón impuestos:");
         jlTaxRate.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -634,7 +640,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder("Propieades del registro:"));
         jPanel17.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
-        jPanel20.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlBrand.setText("Marca:*");
         jlBrand.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -650,7 +656,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel17.add(jPanel20);
 
-        jPanel21.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlManufacturer.setText("Fabricante:*");
         jlManufacturer.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -666,7 +672,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel17.add(jPanel21);
 
-        jPanel22.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlComponent.setText("Componente:*");
         jlComponent.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -677,7 +683,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel17.add(jPanel22);
 
-        jPanel23.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDepartment.setText("Departamento:*");
         jlDepartment.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -688,7 +694,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel17.add(jPanel23);
 
-        jPanel48.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel48.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlUnit.setText("Unidad:*");
         jlUnit.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -699,6 +705,22 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel17.add(jPanel48);
 
+        jPanel51.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlBarcode.setText("Código barras:");
+        jlBarcode.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel51.add(jlBarcode);
+
+        moTextBarcode1.setText("dBeanFieldText1");
+        moTextBarcode1.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel51.add(moTextBarcode1);
+
+        moTextBarcode2.setText("dBeanFieldText1");
+        moTextBarcode2.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel51.add(moTextBarcode2);
+
+        jPanel17.add(jPanel51);
+
         jPanel25.add(jPanel17, java.awt.BorderLayout.NORTH);
 
         jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Dimensiones físicas:"));
@@ -708,7 +730,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel30.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel32.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMeasurementLength.setText("Longitud:*");
         jlMeasurementLength.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -717,7 +739,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel30.add(jPanel32);
 
-        jPanel33.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMeasurementSurface.setText("Superficie:*");
         jlMeasurementSurface.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -726,7 +748,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel30.add(jPanel33);
 
-        jPanel34.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMeasurementVolume.setText("Volumen:*");
         jlMeasurementVolume.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -735,7 +757,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel30.add(jPanel34);
 
-        jPanel35.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel35.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMeasurementMass.setText("Masa:*");
         jlMeasurementMass.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -744,7 +766,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel30.add(jPanel35);
 
-        jPanel36.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMeasurementTime.setText("Tiempo:*");
         jlMeasurementTime.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -757,7 +779,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel31.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel45.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWeigthGross.setText("Peso bruto:*");
         jlWeigthGross.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -766,7 +788,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel31.add(jPanel45);
 
-        jPanel37.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel37.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWeigthDelivery.setText("Peso flete:*");
         jlWeigthDelivery.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -775,13 +797,13 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel31.add(jPanel37);
 
-        jPanel40.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel31.add(jPanel40);
 
-        jPanel41.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel41.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel31.add(jPanel41);
 
-        jPanel43.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel31.add(jPanel43);
 
         jPanel29.add(jPanel31);
@@ -790,7 +812,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel49.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel39.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel39.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlUnitVirtual.setText("Unidad virtual:*");
         jlUnitVirtual.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -806,7 +828,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel49.add(jPanel39);
 
-        jPanel42.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel42.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlUnitContained.setText("Unidad contenida:*");
         jlUnitContained.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -822,7 +844,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel49.add(jPanel42);
 
-        jPanel44.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemPackage.setText("Ítem conversión:");
         jlItemPackage.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -857,16 +879,16 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         lenCode = configCompany.getLengthCodeItem();
 
-        moKeyItemGenus.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemGenus.getText()), true);
-        moKeyItemLine.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemLine.getText()), true);
-        moTextItemCode.setTextSettings(DGuiUtils.getLabelName(jlItemCode.getText()), lenCode == 0 || lenCode > 20 ? 20 : lenCode);
-        moTextItemName.setTextSettings(DGuiUtils.getLabelName(jlItemName.getText()), 100);
-        moTextIngredient.setTextSettings(DGuiUtils.getLabelName(jlIngredient.getText()), 100, 0);
+        moKeyItemGenus.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemGenus), true);
+        moKeyItemLine.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemLine), true);
+        moTextItemCode.setTextSettings(DGuiUtils.getLabelName(jlItemCode), lenCode == 0 || lenCode > 20 ? 20 : lenCode);
+        moTextItemName.setTextSettings(DGuiUtils.getLabelName(jlItemName), 100);
+        moTextIngredient.setTextSettings(DGuiUtils.getLabelName(jlIngredient), 100, 0);
         moBoolTaxGroupByUser.setBooleanSettings(moBoolTaxGroupByUser.getText(), false);
-        moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup.getText()), true);
+        moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup), true);
         moBoolAbpItemByUser.setBooleanSettings(moBoolAbpItemByUser.getText(), false);
-        moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem.getText()), true);
-        moTextItemPresentation.setTextSettings(DGuiUtils.getLabelName(jlItemPresentation.getText()), 50, 0);
+        moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem), true);
+        moTextItemPresentation.setTextSettings(DGuiUtils.getLabelName(jlItemPresentation), 50, 0);
         moBoolBulk.setBooleanSettings(moBoolBulk.getText(), false);
         moBoolInventoriable.setBooleanSettings(moBoolInventoriable.getText(), false);
         moBoolLotApplying.setBooleanSettings(moBoolLotApplying.getText(), false);
@@ -874,38 +896,40 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfPrice.setBooleanSettings(moBoolFreeOfPrice.getText(), false);
         moBoolFreeOfDiscount.setBooleanSettings(moBoolFreeOfDiscount.getText(), false);
         moBoolFreeOfCommission.setBooleanSettings(moBoolFreeOfCommission.getText(), false);
-        moDecPriceSrp.setDecimalSettings(DGuiUtils.getLabelName(jlPriceSrp.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPrice1.setDecimalSettings(DGuiUtils.getLabelName(jlPrice1.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPrice2.setDecimalSettings(DGuiUtils.getLabelName(jlPrice2.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPrice3.setDecimalSettings(DGuiUtils.getLabelName(jlPrice3.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPrice4.setDecimalSettings(DGuiUtils.getLabelName(jlPrice4.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPrice5.setDecimalSettings(DGuiUtils.getLabelName(jlPrice5.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPriceLastPur.setDecimalSettings(DGuiUtils.getLabelName(jlPriceLastPur.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecPriceNetSrp.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNetSrp.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNet1.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet1.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNet2.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet2.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNet3.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet3.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNet4.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet4.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNet5.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet5.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecPriceNetLastPur.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNetLastPur.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moKeyBrand.setKeySettings(miClient, DGuiUtils.getLabelName(jlBrand.getText()), true);
-        moKeyManufacturer.setKeySettings(miClient, DGuiUtils.getLabelName(jlManufacturer.getText()), true);
-        moKeyComponent.setKeySettings(miClient, DGuiUtils.getLabelName(jlComponent.getText()), true);
-        moKeyDepartment.setKeySettings(miClient, DGuiUtils.getLabelName(jlDepartment.getText()), true);
-        moKeyUnit.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnit.getText()), true);
-        moDecMeasurementLength.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementLength.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecMeasurementSurface.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementSurface.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecMeasurementVolume.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementVolume.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecMeasurementMass.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementMass.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecMeasurementTime.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementTime.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecWeigthGross.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthGross.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecWeigthDelivery.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthDelivery.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moKeyUnitVirtual.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitVirtual.getText()), true);
-        moDecUnitsVirtual.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsVirtual.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moKeyUnitContained.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitContained.getText()), true);
-        moDecUnitsContained.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsContained.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moKeyItemPackage.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemPackage.getText()), false);
-        moDecUnitsPackage.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsPackage.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecPriceSrp.setDecimalSettings(DGuiUtils.getLabelName(jlPriceSrp), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPrice1.setDecimalSettings(DGuiUtils.getLabelName(jlPrice1), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPrice2.setDecimalSettings(DGuiUtils.getLabelName(jlPrice2), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPrice3.setDecimalSettings(DGuiUtils.getLabelName(jlPrice3), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPrice4.setDecimalSettings(DGuiUtils.getLabelName(jlPrice4), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPrice5.setDecimalSettings(DGuiUtils.getLabelName(jlPrice5), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPriceLastPur.setDecimalSettings(DGuiUtils.getLabelName(jlPriceLastPur), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecPriceNetSrp.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNetSrp), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNet1.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet1), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNet2.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet2), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNet3.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet3), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNet4.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet4), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNet5.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNet5), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecPriceNetLastPur.setDecimalSettings(DGuiUtils.getLabelName(jlPriceNetLastPur), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moKeyBrand.setKeySettings(miClient, DGuiUtils.getLabelName(jlBrand), true);
+        moKeyManufacturer.setKeySettings(miClient, DGuiUtils.getLabelName(jlManufacturer), true);
+        moKeyComponent.setKeySettings(miClient, DGuiUtils.getLabelName(jlComponent), true);
+        moKeyDepartment.setKeySettings(miClient, DGuiUtils.getLabelName(jlDepartment), true);
+        moKeyUnit.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnit), true);
+        moTextBarcode1.setTextSettings(DGuiUtils.getLabelName(jlBarcode) + " 1", 50, 0);
+        moTextBarcode2.setTextSettings(DGuiUtils.getLabelName(jlBarcode) + " 2", 50, 0);
+        moDecMeasurementLength.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementLength), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecMeasurementSurface.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementSurface), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecMeasurementVolume.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementVolume), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecMeasurementMass.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementMass), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecMeasurementTime.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementTime), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecWeigthGross.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthGross), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moDecWeigthDelivery.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthDelivery), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moKeyUnitVirtual.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitVirtual), true);
+        moDecUnitsVirtual.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsVirtual), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moKeyUnitContained.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitContained), true);
+        moDecUnitsContained.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsContained), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moKeyItemPackage.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemPackage), false);
+        moDecUnitsPackage.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsPackage), DGuiConsts.GUI_TYPE_DEC_QTY, false);
 
         moFields.addField(moKeyItemGenus);
         moFields.addField(moKeyItemLine);
@@ -943,6 +967,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moKeyComponent);
         moFields.addField(moKeyDepartment);
         moFields.addField(moKeyUnit);
+        moFields.addField(moTextBarcode1);
+        moFields.addField(moTextBarcode2);
         moFields.addField(moDecMeasurementLength);
         moFields.addField(moDecMeasurementSurface);
         moFields.addField(moDecMeasurementVolume);
@@ -1718,6 +1744,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JPanel jPanel49;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel50;
+    private javax.swing.JPanel jPanel51;
     private javax.swing.JPanel jPanel54;
     private javax.swing.JPanel jPanel55;
     private javax.swing.JPanel jPanel56;
@@ -1744,6 +1771,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JButton jbNewItemLine;
     private javax.swing.JButton jbNewManufacturer;
     private javax.swing.JLabel jlAbpItem;
+    private javax.swing.JLabel jlBarcode;
     private javax.swing.JLabel jlBrand;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
@@ -1835,6 +1863,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnit;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitContained;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitVirtual;
+    private sba.lib.gui.bean.DBeanFieldText moTextBarcode1;
+    private sba.lib.gui.bean.DBeanFieldText moTextBarcode2;
     private sba.lib.gui.bean.DBeanFieldText moTextIngredient;
     private sba.lib.gui.bean.DBeanFieldText moTextItemCode;
     private sba.lib.gui.bean.DBeanFieldText moTextItemName;
@@ -2008,6 +2038,9 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         moDecPriceLastPur.setEditable(false);
         moDecPriceNetLastPur.setEditable(false);
+        
+        moTextBarcode1.setValue(moRegistry.getChildBarcodes().size() < 1 ? "" : moRegistry.getChildBarcodes().get(0).getBarcode());
+        moTextBarcode2.setValue(moRegistry.getChildBarcodes().size() < 2 ? "" : moRegistry.getChildBarcodes().get(1).getBarcode());
 
         itemStateKeyBrand(false);
         itemStateKeyManufacturer(false);
@@ -2017,13 +2050,14 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         itemStateBoolAbpItemByUser();
 
         computeItemNameCode();
-
+        
         addAllListeners();
     }
 
     @Override
     public DDbItem getRegistry() throws Exception {
         DDbItem registry = moRegistry.clone();
+        ArrayList<String> barcodes = new ArrayList<>();
 
         if (registry.isRegistryNew()) { }
 
@@ -2066,6 +2100,24 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         registry.setFkItemPackageId_n(moKeyItemPackage.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyItemPackage.getValue()[0]);
         registry.setFkTaxGroupId_n(!moBoolTaxGroupByUser.getValue() ? DLibConsts.UNDEFINED : moKeyTaxGroup.getValue()[0]);
         registry.setFkAbpItemId_n(!moBoolAbpItemByUser.getValue() ? DLibConsts.UNDEFINED : moKeyAbpItem.getValue()[0]);
+        
+        if (!moTextBarcode1.getValue().isEmpty()) {
+            barcodes.add(moTextBarcode1.getValue());
+        }
+
+        if (!moTextBarcode2.getValue().isEmpty()) {
+            barcodes.add(moTextBarcode2.getValue());
+        }
+        
+        registry.getChildBarcodes().clear();
+        
+        for (String barcode : barcodes) {
+            DDbItemBarcode itemBarcode = new DDbItemBarcode();
+            //itemBarcode.setPkItemId(...); // set on save
+            //itemBarcode.setPkBarcodeId(...); // set on save
+            itemBarcode.setBarcode(barcode);
+            registry.getChildBarcodes().add(itemBarcode);
+        }
 
         return registry;
     }

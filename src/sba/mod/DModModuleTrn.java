@@ -887,7 +887,6 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
         mjCatItemManufacturer.setEnabled(configCompany.isManufacturerApplying());
         mjCatItemComponent.setEnabled(configCompany.isComponentApplying());
         mjCatItemDepartment.setEnabled(configCompany.isDepartmentApplying());
-        mjCatItemBarcode.setEnabled(false);
 
         mjStk = new JMenu("Almacenes");
         mjStkStock = new JMenuItem("Existencias");

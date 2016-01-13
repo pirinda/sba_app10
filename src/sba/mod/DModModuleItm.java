@@ -42,6 +42,7 @@ import sba.mod.itm.view.DViewBrand;
 import sba.mod.itm.view.DViewComplement;
 import sba.mod.itm.view.DViewDepartment;
 import sba.mod.itm.view.DViewItem;
+import sba.mod.itm.view.DViewItemBarcode;
 import sba.mod.itm.view.DViewItemFamily;
 import sba.mod.itm.view.DViewItemGenus;
 import sba.mod.itm.view.DViewItemLine;
@@ -321,6 +322,7 @@ public class DModModuleItm extends DGuiModule {
                 view = new DViewItem(miClient, "Ítems");
                 break;
             case DModConsts.IU_ITM_BAR:
+                view = new DViewItemBarcode(miClient, "Códigos barras");
                 break;
             case DModConsts.IU_GEN_DEP:
                 break;
