@@ -89,7 +89,7 @@ public class DViewDpsSeries extends DGridPaneView {
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vct.name", "Categoría docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vcl.name", "Clase docto");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vtp.name", DGridConsts.COL_TITLE_TYPE + " + docto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vtp.name", DGridConsts.COL_TITLE_TYPE + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DDbConsts.FIELD_NAME, "Serie docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "v.row_max", "Máx. renglones");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_tax_imp", "Imptos. netos");

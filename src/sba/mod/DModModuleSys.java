@@ -33,7 +33,7 @@ public class DModModuleSys extends DGuiModule {
     }
 
     @Override
-    public DDbRegistry getRegistry(final int type) {
+    public DDbRegistry getRegistry(final int type, final DGuiParams params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

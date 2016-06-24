@@ -144,6 +144,8 @@ public class DDbBookkeepingNumber extends DDbRegistryUser {
             mbDeleted = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = DUtilConsts.USR_NA_ID;
+            
+            DFinUtils.checkNewYear(session, mnPkYearId);
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkYearId + ", " +

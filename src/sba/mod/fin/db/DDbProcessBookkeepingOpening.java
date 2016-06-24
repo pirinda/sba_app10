@@ -200,18 +200,8 @@ public class DDbProcessBookkeepingOpening extends DDbRegistryUser {
 
         // Create year registries if required:
 
-        msSql = "SELECT count(*) FROM " + DModConsts.TablesMap.get(DModConsts.F_YER) + " " +
-                "WHERE id_yer = " + mnPkOpeningYearId + " ";
-        resultSet = session.getStatement().executeQuery(msSql);
-        if (resultSet.next()) {
-            if (resultSet.getInt(1) == 0) {
-                year = new DDbYear();
-                year.setPkYearId(mnPkOpeningYearId);
-                year.createPeriods();
-                year.save(session);
-            }
-        }
-
+        DFinUtils.checkNewYear(session, mnPkOpeningYearId);
+        
         // Save bookkeeping opening moves:
 
         msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " SET b_del = 1 " +

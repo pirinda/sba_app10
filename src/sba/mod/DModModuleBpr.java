@@ -63,7 +63,7 @@ public class DModModuleBpr extends DGuiModule {
     }
 
     @Override
-    public DDbRegistry getRegistry(final int type) {
+    public DDbRegistry getRegistry(final int type, final DGuiParams params) {
         DDbRegistry registry = null;
 
         switch (type) {

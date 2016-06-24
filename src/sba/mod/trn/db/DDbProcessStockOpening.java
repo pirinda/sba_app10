@@ -20,6 +20,7 @@ import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.fin.db.DDbYear;
+import sba.mod.fin.db.DFinUtils;
 
 /**
  *
@@ -179,17 +180,9 @@ public class DDbProcessStockOpening extends DDbRegistryUser {
 
         // Create year registries if required:
 
-        msSql = "SELECT count(*) FROM " + DModConsts.TablesMap.get(DModConsts.F_YER) + " " +
-                "WHERE id_yer = " + mnPkOpeningYearId + " ";
-        resultSet = session.getStatement().executeQuery(msSql);
-        if (resultSet.next()) {
-            if (resultSet.getInt(1) == 0) {
-                year = new DDbYear();
-                year.setPkYearId(mnPkOpeningYearId);
-                year.createPeriods();
-                year.save(session);
-            }
-        }
+        DFinUtils.checkNewYear(session, mnPkOpeningYearId);
+        
+        // Save stock opening moves:
 
         for (DDbIog o : iogs) {
             o.save(session);

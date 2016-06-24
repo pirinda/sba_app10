@@ -128,7 +128,7 @@ public class DModModuleSrv extends DGuiModule implements ActionListener {
     }
 
     @Override
-    public DDbRegistry getRegistry(final int type) {
+    public DDbRegistry getRegistry(final int type, final DGuiParams params) {
         DDbRegistry registry = null;
 
         switch (type) {

@@ -100,7 +100,7 @@ public class DViewDpsSeriesNumber extends DGridPaneView {
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vct.name", "Categoría docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vcl.name", "Clase docto");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vtp.name", DGridConsts.COL_TITLE_TYPE + " + docto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vtp.name", DGridConsts.COL_TITLE_TYPE + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DDbConsts.FIELD_NAME, "Serie docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_RAW, "v.num_sta", "Folio inicial");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_RAW, "v.num_end_n", "Folio final");

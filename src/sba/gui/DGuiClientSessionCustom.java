@@ -89,7 +89,7 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
         Object value = "";
 
         try {
-            value = miClient.getSession().getRegistry(registry).readField(miStatement, key, field);
+            value = miClient.getSession().getRegistry(registry, null).readField(miStatement, key, field);
         }
         catch (SQLException e) {
             DLibUtils.showException(this, e);

@@ -249,6 +249,9 @@ public abstract class DFinUtils {
         return abp;
     }
 
+    /**
+     * Compute subject to collect (STC).
+     */
     public static void computeStc(final DGuiSession session, final int[] bkkNumberKey) {
         String sql = "";
 
@@ -262,6 +265,24 @@ public abstract class DFinUtils {
         }
         catch (Exception e) {
             DLibUtils.showException(DFinUtils.class.getName(), e);
+        }
+    }
+    
+    public static void checkNewYear(final DGuiSession session, final int newYear) throws Exception {
+        String sql = "";
+        ResultSet resultSet = null;
+        DDbYear year = null;
+        
+        sql = "SELECT count(*) FROM " + DModConsts.TablesMap.get(DModConsts.F_YER) + " " +
+                "WHERE id_yer = " + newYear + " ";
+        resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            if (resultSet.getInt(1) == 0) {
+                year = new DDbYear();
+                year.setPkYearId(newYear);
+                year.createPeriods();
+                year.save(session);
+            }
         }
     }
 
