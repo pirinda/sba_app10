@@ -521,13 +521,16 @@ public abstract class DModSysConsts {
     public static final int FS_PAY_TP_CDT = 3;
 
     public static final int FS_MOP_TP_NA = 1;
-    public static final int FS_MOP_TP_CSH = 2;
-    public static final int FS_MOP_TP_DEP = 3;
-    public static final int FS_MOP_TP_TRA = 4;
-    public static final int FS_MOP_TP_CHK = 5;
-    public static final int FS_MOP_TP_DBT = 6;
-    public static final int FS_MOP_TP_CDT = 7;
-    public static final int FS_MOP_TP_CHK_RET = 9;
+    public static final int FS_MOP_TP_CSH = 11;
+    public static final int FS_MOP_TP_CHK = 12;
+    public static final int FS_MOP_TP_TRA = 13;
+    public static final int FS_MOP_TP_DBT = 21;
+    public static final int FS_MOP_TP_CDT = 22;
+    public static final int FS_MOP_TP_SRV = 23;
+    public static final int FS_MOP_TP_EPU = 31;
+    public static final int FS_MOP_TP_EMO = 32;
+    public static final int FS_MOP_TP_FTA = 41;
+    public static final int FS_MOP_TP_OTH = 91;
     public static final int FS_MOP_TP_NON_DEF = 99;
 
     public static final int FS_VAL_TP_NA = 1;

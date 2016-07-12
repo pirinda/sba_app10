@@ -10,6 +10,7 @@ import cfd.DAttributeOptionFormaPago;
 import cfd.DAttributeOptionImpuestoRetencion;
 import cfd.DAttributeOptionImpuestoTraslado;
 import cfd.DAttributeOptionMetodoPago;
+import cfd.DAttributeOptionMetodoPagoClave;
 import cfd.DAttributeOptionMoneda;
 import cfd.DAttributeOptionTipoComprobante;
 import cfd.DCfd;
@@ -19,7 +20,7 @@ import cfd.ext.addenda1.DElementAdicionalConcepto;
 import cfd.ext.addenda1.DElementNota;
 import cfd.ext.addenda1.DElementNotas;
 import cfd.ext.addenda1.DElementPagare;
-import cfd.util.DUtilities;
+import cfd.util.DUtilUtils;
 import cfd.ver3.DTimbreFiscal;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public abstract class DTrnEdsUtils {
         DDbBizPartner bprReceptorName = null;
         DDbBranch braReceptor = null;
         DDbBranchAddress braAddressReceptor = null;
-        DAttributeOptionMetodoPago attOptionMetodoPago = new DAttributeOptionMetodoPago("MetodoPago", false);
+        DAttributeOptionMetodoPagoClave attOptionMetodoPagoClave = new DAttributeOptionMetodoPagoClave("", false);
         String sNombreReceptor = "";
         
         // Check company branch emission configuration:
@@ -196,28 +197,44 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttTipoDeComprobante().setOption(dps.isDpsDocument() ? DAttributeOptionTipoComprobante.CFD_INGRESO : DAttributeOptionTipoComprobante.CFD_EGRESO);
 
         switch (dps.getFkModeOfPaymentTypeId()) {
-            case DModSysConsts.FS_MOP_TP_CSH:
-            case DModSysConsts.FS_MOP_TP_DEP:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_EFECTIVO));
+            case DModSysConsts.FS_MOP_TP_NA:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_APLICA));
                 break;
-            case DModSysConsts.FS_MOP_TP_TRA:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_TRANSFERENCIA));
+            case DModSysConsts.FS_MOP_TP_CSH:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_EFECTIVO));
                 break;
             case DModSysConsts.FS_MOP_TP_CHK:
-            case DModSysConsts.FS_MOP_TP_CHK_RET:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_CHEQUE));
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_CHEQUE_NOMINATIVO));
+                break;
+            case DModSysConsts.FS_MOP_TP_TRA:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TRANSFERENCIA_ELECTRONICA));
                 break;
             case DModSysConsts.FS_MOP_TP_DBT:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_DEBITO));
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_DEBITO));
                 break;
             case DModSysConsts.FS_MOP_TP_CDT:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_CREDITO));
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_CREDITO));
+                break;
+            case DModSysConsts.FS_MOP_TP_SRV:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_SERVICIO));
+                break;
+            case DModSysConsts.FS_MOP_TP_EPU:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_MONEDERO_ELECTRONICO));
+                break;
+            case DModSysConsts.FS_MOP_TP_EMO:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_DINERO_ELECTRONICO));
+                break;
+            case DModSysConsts.FS_MOP_TP_FTA:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_VALES_DESPENSA));
+                break;
+            case DModSysConsts.FS_MOP_TP_OTH:
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_OTROS));
                 break;
             case DModSysConsts.FS_MOP_TP_NON_DEF:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
                 break;
             default:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPago.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
+                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
         }
 
         braAddressEmisor = bprEmisor.getChildBranches().get(0).getChildAddresses().get(0);
@@ -597,7 +614,7 @@ public abstract class DTrnEdsUtils {
         switch (xmlType) {
             case DModSysConsts.TS_XML_TP_CFD:
                 comprobante2 = createCfd(session, dps);
-                textToSign = DUtilities.generateOriginalString(comprobante2);
+                textToSign = DUtilUtils.generateOriginalString(comprobante2);
                 textSigned = session.getEdsSignature(dps.getCompanyBranchKey()).signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
                 cfd.write(comprobante2, textToSign, textSigned, session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber(), session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateBase64());
 
@@ -607,7 +624,7 @@ public abstract class DTrnEdsUtils {
 
             case DModSysConsts.TS_XML_TP_CFDI:
                 comprobante3 = createCfdi(session, dps, timbreFiscal_n);
-                textToSign = DUtilities.generateOriginalString(comprobante3);
+                textToSign = DUtilUtils.generateOriginalString(comprobante3);
                 textSigned = session.getEdsSignature(dps.getCompanyBranchKey()).signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
                 cfd.write(comprobante3, textToSign, textSigned, session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber(), session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateBase64());
 

@@ -3628,6 +3628,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
                 validation.setComponent(moKeyModeOfPaymentType);
             }
+            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_OTH, DModSysConsts.FS_MOP_TP_NON_DEF })) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
+                validation.setComponent(moKeyModeOfPaymentType);
+            }
             else if (moGridDpsRows.getTable().getRowCount() == 0) {
                 validation.setMessage(DUtilConsts.ERR_MSG_DOC_NO_ROWS);
                 validation.setComponent(moTextFind);

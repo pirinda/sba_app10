@@ -6,6 +6,7 @@
 package sba.mod.trn.db;
 
 import cfd.DCfd;
+import cfd.DCfdUtils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -100,7 +101,7 @@ public class DPrtDps {
         hashMap.put("sXmlTipoCambio", DXmlUtils.extractAttributeValue(namedNodeMap, "TipoCambio", true));   // actually "false" in CFDI 3.2 specification
         hashMap.put("sXmlMoneda", sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true));           // actually "false" in CFDI 3.2 specification
         hashMap.put("sXmlTipoDeComprobante", DXmlUtils.extractAttributeValue(namedNodeMap, "tipoDeComprobante", true));
-        hashMap.put("sXmlMetodoDePago", DXmlUtils.extractAttributeValue(namedNodeMap, "metodoDePago", true));
+        hashMap.put("sXmlMetodoDePago", DCfdUtils.composeMetodoPago(DXmlUtils.extractAttributeValue(namedNodeMap, "metodoDePago", true)));
         hashMap.put("sXmlNumCtaPago", DXmlUtils.extractAttributeValue(namedNodeMap, "NumCtaPago", false));
         hashMap.put("sXmlLugarExpedicion", sLugarExpedicion = DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
 

@@ -523,18 +523,21 @@ public class DFormBookkeepingMoveCustom extends DBeanForm implements ActionListe
                     moKeyValueType.setEnabled(false);
                     moKeyValueType.setValue(new int[] { DModSysConsts.FS_VAL_TP_CSH });
                     break;
-                case DModSysConsts.FS_MOP_TP_DEP:
-                case DModSysConsts.FS_MOP_TP_TRA:
-                    moKeyValueType.setEnabled(false);
-                    moKeyValueType.setValue(new int[] { DModSysConsts.FS_VAL_TP_SUP });
-                    break;
                 case DModSysConsts.FS_MOP_TP_CHK:
-                case DModSysConsts.FS_MOP_TP_CHK_RET:
                     moKeyValueType.setEnabled(false);
                     moKeyValueType.setValue(new int[] { DModSysConsts.FS_VAL_TP_CHK });
                     break;
+                case DModSysConsts.FS_MOP_TP_TRA:
+                case DModSysConsts.FS_MOP_TP_OTH:
+                    moKeyValueType.setEnabled(false);
+                    moKeyValueType.setValue(new int[] { DModSysConsts.FS_VAL_TP_SUP });
+                    break;
                 case DModSysConsts.FS_MOP_TP_DBT:
                 case DModSysConsts.FS_MOP_TP_CDT:
+                case DModSysConsts.FS_MOP_TP_SRV:
+                case DModSysConsts.FS_MOP_TP_EPU:
+                case DModSysConsts.FS_MOP_TP_EMO:
+                case DModSysConsts.FS_MOP_TP_FTA:
                     moKeyValueType.setEnabled(false);
                     moKeyValueType.setValue(new int[] { DModSysConsts.FS_VAL_TP_VOU });
                     break;
