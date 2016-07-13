@@ -2111,10 +2111,6 @@ public abstract class DTrnUtils {
         return isDpsClassForSale(dps.getDpsClassKey());
     }
 
-    public static boolean isDpsForEds(final DDbDps dps) {
-        return isDpsClassForEds(dps.getDpsClassKey());
-    }
-
     public static boolean isDpsOrder(final DDbDps dps) {
         return isDpsClassOrder(dps.getDpsClassKey());
     }
@@ -2145,6 +2141,10 @@ public abstract class DTrnUtils {
 
     public static boolean isDpsClassForEds(final int[] dpsClassKey) {
         return isDpsClassForSale(dpsClassKey) && (isDpsClassDocument(dpsClassKey) || isDpsClassAdjustment(dpsClassKey));
+    }
+
+    public static boolean isDpsTypeForEds(final int[] dpsTypeKey) {
+        return DLibUtils.belongsTo(dpsTypeKey, new int[][] { DModSysConsts.TS_DPS_TP_SAL_DOC_INV, DModSysConsts.TS_DPS_TP_SAL_ADJ_INC_DN, DModSysConsts.TS_DPS_TP_SAL_ADJ_DEC_CN });
     }
 
     public static boolean isDpsClassOrder(final int[] dpsClassKey) {

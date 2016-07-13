@@ -64,7 +64,26 @@ import sba.mod.trn.form.DFormDpsTypeChange;
  */
 public abstract class DTrnEmissionUtils {
     
-    private static int[] getCompanyBranchKeyFromDps(final DGuiSession session, final int[] dpsKey) throws Exception {
+    public static int[] getDpsOwnDpsTypeKey(final DGuiSession session, final int[] dpsKey) throws Exception {
+        int[] key = null;
+        String sql = "";
+        ResultSet resultSet = null;
+        
+        sql = "SELECT fk_dps_ct, fk_dps_cl, fk_dps_tp "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " "
+                + "WHERE id_dps = " + dpsKey[0] + " ";
+        resultSet = session.getStatement().executeQuery(sql);
+        if (!resultSet.next()) {
+            throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
+        }
+        else {
+            key = new int[] { resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3) };
+        }
+        
+        return key;
+    }
+    
+    public static int[] getDpsOwnCompanyBranchKey(final DGuiSession session, final int[] dpsKey) throws Exception {
         int[] key = null;
         String sql = "";
         ResultSet resultSet = null;
@@ -88,20 +107,21 @@ public abstract class DTrnEmissionUtils {
      * @param session GUI session.
      * @param requestType Signature request type: sign or cancel; constants defined in DModSysConsts.TX_XMS_REQ_TP_.
      * @param requestSubtype Signature request subtype: stamp request or stamp verification; constants defined in DModSysConsts.TX_XMS_REQ_STP_.
+     * @param dpsKey DPS primary key.
      * @return Emission parameters.
      */
     private static DTrnEmissionParams checkXmlSignatureRequestAllowed(final DGuiSession session, final int requestType, final int requestSubtype, final int[] dpsKey) throws Exception {
-        int[] companyBranchKey = null;
+        int[] companyBranchKey = getDpsOwnCompanyBranchKey(session, dpsKey);
         DTrnEmissionParams params = new DTrnEmissionParams(dpsKey[0]);
         DDbConfigCompany configCompany = (DDbConfigCompany) session.getConfigCompany();
-        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKeyFromDps(session, dpsKey));
+        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, companyBranchKey);
         DDbSysXmlSignatureProvider xsp = null;
 
         if (!configCompany.isEdsApplying()) {
-            throw new Exception("No se ha definido emisión de documentos electrónicos en la configuración de " + DUtilConsts.TXT_COMPANY.toLowerCase() + ".");
+            throw new Exception("No se ha definido la emisión de documentos electrónicos en la configuración de la " + DUtilConsts.TXT_COMPANY.toLowerCase() + ".");
         }
         else if (configBranch.getFkXmlSignatureProviderId() == DModSysConsts.CS_XSP_NA) {
-            throw new Exception("No se ha definido " + DTrnEmissionConsts.PAC + " en la configuración de " + DUtilConsts.TXT_BRANCH.toLowerCase() + ".");
+            throw new Exception("No se ha definido el " + DTrnEmissionConsts.PAC + " en la configuración de la " + DUtilConsts.TXT_BRANCH.toLowerCase() + ".");
         }
         else {
             params.SignatureProviderId = configBranch.getFkXmlSignatureProviderId();
@@ -138,12 +158,11 @@ public abstract class DTrnEmissionUtils {
             }
             
             if (!params.RequestAllowed) {
-                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nQuizás será necesario realizar la acción de forma manual.");
+                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nQuizás será necesario realizar la acción de forma manual por otros medios.");
             }
             else {
                 // Check stamps available with DPS's company branch ones:
                 
-                companyBranchKey = getCompanyBranchKeyFromDps(session, dpsKey);
                 params.StampsAvailable = getStampsAvailable(session, params.SignatureProviderId, companyBranchKey);
                 if (params.StampsAvailable > 0) {
                     params.SignatureCompanyBranchKey = companyBranchKey;
