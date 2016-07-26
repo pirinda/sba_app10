@@ -2925,14 +2925,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     private void itemStateKeyModeOfPaymentType() {
         if (moKeyModeOfPaymentType.getSelectedIndex() <= 0 || !moRegistry.isDpsForSale() || !mbIsDocument || mbIsAdjustment ||
-                DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_CSH })) {
+                DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_CSH, DModSysConsts.FS_MOP_TP_EPU, DModSysConsts.FS_MOP_TP_EMO, DModSysConsts.FS_MOP_TP_FTA, DModSysConsts.FS_MOP_TP_OTH })) {
             moTextPaymentAccount.setEnabled(false);
             jbPaymentAccount.setEnabled(false);
 
             moTextPaymentAccount.setValue("");
         }
         else {
-
             if (moKeyModeOfPaymentType.getValue()[0] == DModSysConsts.FS_MOP_TP_NON_DEF) {
                 moTextPaymentAccount.setEnabled(false);
                 jbPaymentAccount.setEnabled(false);
@@ -2947,7 +2946,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     moTextPaymentAccount.setValue("");
                 }
 
-                if (moTextPaymentAccount.getValue().length() == 0) {
+                if (moTextPaymentAccount.getValue().isEmpty()) {
                     moTextPaymentAccount.setValue(DTrnUtils.getLastPaymentAccount(miClient.getSession(), moRegistry.getDpsTypeKey(), moKeyBizPartner.getValue()));
                 }
             }
