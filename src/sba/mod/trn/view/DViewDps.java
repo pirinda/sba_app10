@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import sba.gui.DGuiClientApp;
 import sba.gui.util.DUtilConsts;
@@ -22,6 +23,7 @@ import sba.lib.grid.DGridFilterDate;
 import sba.lib.grid.DGridFilterDatePeriod;
 import sba.lib.grid.DGridPaneSettings;
 import sba.lib.grid.DGridPaneView;
+import sba.lib.grid.DGridRow;
 import sba.lib.grid.DGridRowView;
 import sba.lib.grid.DGridUtils;
 import sba.lib.gui.DGuiClient;
@@ -34,6 +36,8 @@ import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.trn.db.DDbDps;
+import sba.mod.trn.db.DDbDpsEds;
 import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
@@ -64,11 +68,11 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     private JButton mjButtonTypeChange;
     private JButton mjButtonImport;
     private JButton mjButtonPrint;
-    private JButton mjButtonSign;
-    private JButton mjButtonSignVerify;
-    private JButton mjButtonCancel;
-    private JButton mjButtonCancelVerify;
-    private JButton mjButtonSend;
+    private JButton mjButtonEdsSign;            // only for Electronic Document Supporting
+    private JButton mjButtonEdsSignVerify;      // only for Electronic Document Supporting
+    private JButton mjButtonEdsCancel;          // only for Electronic Document Supporting
+    private JButton mjButtonEdsCancelVerify;    // only for Electronic Document Supporting
+    private JButton mjButtonEdsSend;            // only for Electronic Document Supporting
 
     /**
      * @param client GUI client.
@@ -81,13 +85,15 @@ public class DViewDps extends DGridPaneView implements ActionListener {
 
         DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
         
-        // Set view DPS class or type filters:
+        // Set view filters for DPS class or type:
 
         switch (mnGridType) {
             case DModConsts.TX_MY_DPS_ORD:
             case DModConsts.TX_MY_DPS_DOC:
             case DModConsts.TX_MY_DPS_ADJ_INC:
             case DModConsts.TX_MY_DPS_ADJ_DEC:
+                // "My DPS" views filter documents by DPS class:
+                
                 mbIsMyDps = true;
                 
                 manFilterDpsTypeKey = null;
@@ -106,6 +112,8 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             case DModConsts.TX_DPS_DOC_TIC:
             case DModConsts.TX_DPS_ADJ_INC:
             case DModConsts.TX_DPS_ADJ_DEC:
+                // Standard DPS views filter documents by DPS type:
+                
                 mbIsMyDps = false;
                 
                 manFilterDpsTypeKey = DTrnUtils.getDpsTypeByDpsXType(type, subtype);
@@ -125,9 +133,11 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 mjTextUser = null;
         }
         
-        // Set view date or period filters:
+        // Set view filters for date or period:
 
         if (mbIsMyDps) {
+            // "My DPS" views filter documents by date:
+                
             moFilterDate = new DGridFilterDate(client, this);
             moFilterDate.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_DATE, miClient.getSession().getWorkingDate().getTime()));
             moFilterDatePeriod = null;
@@ -135,6 +145,8 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDate);
         }
         else {
+            // "My DPS" views filter documents by period:
+                
             moFilterDate = null;
             moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
@@ -217,7 +229,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             mbEnableRowCopy = false;
             
             mbCanDisable = miClient.getSession().getUser().hasPrivilege(DModSysConsts.CS_PRV_POS_ADM);
-            mbEnableRowDisable = mbCanDisable && !mbEdsRequired;
+            mbEnableRowDisable = mbCanDisable;
             
             mbCanDelete = configCompany.isDpsDeletable() && miClient.getSession().getUser().hasPrivilege(DModSysConsts.CS_PRV_POS_ADM);
             mbEnableRowDelete = mbCanDelete;
@@ -252,7 +264,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             mbEnableRowCopy = mbEnableRowNew;
             
             mbCanDisable = mbEnableRowNew;
-            mbEnableRowDisable = mbCanDisable && !mbEdsRequired;
+            mbEnableRowDisable = mbCanDisable;
             
             mbCanDelete = configCompany.isDpsDeletable() && mbEnableRowNew;
             mbEnableRowDelete = mbCanDelete;
@@ -272,25 +284,25 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         mjButtonPrint.setEnabled(true);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
 
-        mjButtonSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonSign.setEnabled(mbEdsRequired);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonSign);
+        mjButtonEdsSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonEdsSign.setEnabled(mbEdsRequired);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonEdsSign);
 
-        mjButtonSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonSignVerify.setEnabled(mbEdsRequired);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonSignVerify);
+        mjButtonEdsSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonEdsSignVerify.setEnabled(mbEdsRequired);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonEdsSignVerify);
 
-        mjButtonCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonCancel.setEnabled(mbEdsRequired && mbCanDisable);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonCancel);
+        mjButtonEdsCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonEdsCancel.setEnabled(mbEdsRequired && mbCanDisable);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonEdsCancel);
 
-        mjButtonCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonCancelVerify.setEnabled(mbEdsRequired && mbCanDisable);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonCancelVerify);
+        mjButtonEdsCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonEdsCancelVerify.setEnabled(mbEdsRequired && mbCanDisable);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonEdsCancelVerify);
 
-        mjButtonSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonSend.setEnabled(mbEdsRequired && configCompany.getFkEdsEmsTypeId() != DModSysConsts.CS_EMS_TP_NA);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonSend);
+        mjButtonEdsSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonEdsSend.setEnabled(mbEdsRequired && configCompany.getFkEdsEmsTypeId() != DModSysConsts.CS_EMS_TP_NA);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonEdsSend);
     }
 
     /*
@@ -308,6 +320,30 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
+    private boolean proceedAnnulment(final int[] keyDps) {
+        boolean proceed = false;
+        DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
+        DDbDpsEds eds = dps.getChildEds();
+
+        if (eds == null || eds.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI) {
+            proceed = true; // DPS without EDS or with EDS of type CFD can be annuled anytime!
+        }
+        else if (eds.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI) {
+            switch (eds.getFkXmlStatusId()) {
+                case DModSysConsts.TS_XML_ST_ANN:
+                    miClient.showMsgBoxWarning("El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.");
+                    break;
+                case DModSysConsts.TS_XML_ST_ISS:
+                    proceed = miClient.showMsgBoxConfirm("El registro XML del documento '" + dps.getDpsNumber() + "' permanecerá con estatus 'emitido'.\nSerá necesario cancelarlo posteriormente de forma manual.\n" + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
+                    break;
+                default:
+                    proceed = true; // DPS has EDS of type CFDI not yet signed nor annuled!
+            }
+        }
+        
+        return proceed;
+    }
+
     /*
      * Public methods
      */
@@ -318,7 +354,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         String num = "";
         String orderBy = "";
         Object filter = null;
-        boolean enableButtons = true;
+        boolean isTodayFiltered = true;
 
         moPaneSettings = new DGridPaneSettings(1, 3);
         moPaneSettings.setDeletedApplying(true);
@@ -335,18 +371,18 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         sql += (sql.length() == 0 ? "" : "AND ") + DGridUtils.getSqlFilterDate("v.dt", (DGuiDate) filter);
 
         if (mbIsMyDps) {
-            enableButtons = ((DGuiDate) filter).getGuiType() == DGuiConsts.GUI_DATE_DATE && ((DGuiDate) filter).equals(miClient.getSession().getWorkingDate());
+            isTodayFiltered = ((DGuiDate) filter).getGuiType() == DGuiConsts.GUI_DATE_DATE && ((DGuiDate) filter).equals(miClient.getSession().getWorkingDate());
 
-            jbRowNew.setEnabled(mbEnableRowNew && enableButtons && !mbIsMyDpsDoc);
-            jbRowEdit.setEnabled(mbEnableRowEdit && enableButtons);
-            jbRowCopy.setEnabled(mbEnableRowCopy && enableButtons);
-            jbRowDisable.setEnabled(mbEnableRowDisable && enableButtons);
-            jbRowDelete.setEnabled(mbEnableRowDelete && enableButtons);
+            jbRowNew.setEnabled(mbEnableRowNew && isTodayFiltered && !mbIsMyDpsDoc);
+            jbRowEdit.setEnabled(mbEnableRowEdit && isTodayFiltered);
+            jbRowCopy.setEnabled(mbEnableRowCopy && isTodayFiltered);
+            jbRowDisable.setEnabled(mbEnableRowDisable && isTodayFiltered);
+            jbRowDelete.setEnabled(mbEnableRowDelete && isTodayFiltered);
 
             if (mbIsMyDpsDoc) {
-                mjButtonNewInv.setEnabled(mbEnableRowNew && enableButtons);
-                mjButtonNewNot.setEnabled(mbEnableRowNew && enableButtons);
-                mjButtonNewTic.setEnabled(mbEnableRowNew && enableButtons);
+                mjButtonNewInv.setEnabled(mbEnableRowNew && isTodayFiltered);
+                mjButtonNewNot.setEnabled(mbEnableRowNew && isTodayFiltered);
+                mjButtonNewTic.setEnabled(mbEnableRowNew && isTodayFiltered);
             }
         }
         else {
@@ -571,7 +607,79 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 super.actionRowEdit(true);  // show also system registries
         }
     }
+    
+    @Override
+    public void actionRowDisable() {
+        if (jbRowDisable.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROWS);
+            }
+            else if (miClient.showMsgBoxConfirm(DGridConsts.MSG_CONFIRM_REG_DIS) == JOptionPane.YES_OPTION) {
+                boolean updates = false;
+                DGridRow[] gridRows = getSelectedGridRows();
 
+                for (DGridRow gridRow : gridRows) {
+                    if (((DGridRowView) gridRow).getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else if (((DGridRowView) gridRow).isRowSystem()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                    }
+                    else if (!((DGridRowView) gridRow).isDisableable()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DISABLEABLE);
+                    }
+                    else {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey())) {
+                            if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).disableRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
+                                updates = true;
+                            }
+                        }
+                    }
+                }
+
+                if (updates) {
+                    miClient.getSession().notifySuscriptors(mnGridType);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actionRowDelete() {
+        if (jbRowDelete.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROWS);
+            }
+            else if (miClient.showMsgBoxConfirm(DGridConsts.MSG_CONFIRM_REG_DEL) == JOptionPane.YES_OPTION) {
+                boolean updates = false;
+                DGridRow[] gridRows = getSelectedGridRows();
+
+                for (DGridRow gridRow : gridRows) {
+                    if (((DGridRowView) gridRow).getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else if (((DGridRowView) gridRow).isRowSystem()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                    }
+                    else if (!((DGridRowView) gridRow).isDeletable()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DELETABLE);
+                    }
+                    else {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey())) {
+                            if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).deleteRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
+                                updates = true;
+                            }
+                        }
+                    }
+                }
+
+                if (updates) {
+                    miClient.getSession().notifySuscriptors(mnGridType);
+                }
+            }
+        }
+    }
+    
     public void actionTypeChange() {
         if (mjButtonTypeChange.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
@@ -607,8 +715,8 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    public void actionSign(final int requestType) {
-        if (mjButtonSign.isEnabled()) {
+    public void actionEdsSign(final int requestType) {
+        if (mjButtonEdsSign.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
@@ -628,13 +736,13 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    public void actionCancel(final int requestType) {
-        if (mjButtonCancel.isEnabled()) {
+    public void actionEdsCancel(final int requestType) {
+        if (mjButtonEdsCancel.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                boolean enabled = jbRowDisable.isEnabled();
+                boolean enabled = jbRowDisable.isEnabled(); // preserve button enabled status
                 
                 try {
                     if (DTrnUtils.isDpsTypeForEds(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
@@ -654,14 +762,14 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                     DLibUtils.showException(this, e);
                 }
                 finally {
-                    jbRowDisable.setEnabled(enabled);
+                    jbRowDisable.setEnabled(enabled);   // restore original button enable status
                 }
             }
         }
     }
 
-    public void actionSend() {
-        if (mjButtonSend.isEnabled()) {
+    public void actionEdsSend() {
+        if (mjButtonEdsSend.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
@@ -711,20 +819,20 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             else if (button == mjButtonPrint) {
                 actionPrint();
             }
-            else if (button == mjButtonSign) {
-                actionSign(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            else if (button == mjButtonEdsSign) {
+                actionEdsSign(DModSysConsts.TX_XMS_REQ_STP_REQ);
             }
-            else if (button == mjButtonSignVerify) {
-                actionSign(DModSysConsts.TX_XMS_REQ_STP_VER);
+            else if (button == mjButtonEdsSignVerify) {
+                actionEdsSign(DModSysConsts.TX_XMS_REQ_STP_VER);
             }
-            else if (button == mjButtonCancel) {
-                actionCancel(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            else if (button == mjButtonEdsCancel) {
+                actionEdsCancel(DModSysConsts.TX_XMS_REQ_STP_REQ);
             }
-            else if (button == mjButtonCancelVerify) {
-                actionCancel(DModSysConsts.TX_XMS_REQ_STP_VER);
+            else if (button == mjButtonEdsCancelVerify) {
+                actionEdsCancel(DModSysConsts.TX_XMS_REQ_STP_VER);
             }
-            else if (button == mjButtonSend) {
-                actionSend();
+            else if (button == mjButtonEdsSend) {
+                actionEdsSend();
             }
         }
     }

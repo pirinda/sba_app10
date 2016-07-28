@@ -118,7 +118,7 @@ public abstract class DTrnEmissionUtils {
         DDbSysXmlSignatureProvider xsp = null;
 
         if (!configCompany.isEdsApplying()) {
-            throw new Exception("No se ha definido la emisión de documentos electrónicos en la configuración de la " + DUtilConsts.TXT_COMPANY.toLowerCase() + ".");
+            throw new Exception("No se ha habilitado la emisión de documentos electrónicos en la configuración de la " + DUtilConsts.TXT_COMPANY.toLowerCase() + ".");
         }
         else if (configBranch.getFkXmlSignatureProviderId() == DModSysConsts.CS_XSP_NA) {
             throw new Exception("No se ha definido el " + DTrnEmissionConsts.PAC + " en la configuración de la " + DUtilConsts.TXT_BRANCH.toLowerCase() + ".");
@@ -158,7 +158,7 @@ public abstract class DTrnEmissionUtils {
             }
             
             if (!params.RequestAllowed) {
-                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nQuizás será necesario realizar la acción de forma manual por otros medios.");
+                throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nSerá necesario realizar la acción de forma manual por otros medios.");
             }
             else {
                 // Check stamps available with DPS's company branch ones:
@@ -175,7 +175,7 @@ public abstract class DTrnEmissionUtils {
                         params.SignatureCompanyBranchKey = null;    // value already set, just for consistence
                     }
                     else {
-                        throw new Exception("El " + DTrnEmissionConsts.PAC + " no tiene timbres disponibles.");
+                        throw new Exception("El " + DTrnEmissionConsts.PAC + " no tiene timbres disponibles para completar la solicitud.");
                     }
                 }
             }
@@ -606,7 +606,7 @@ public abstract class DTrnEmissionUtils {
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-                
+            
                 if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                     cancel = client.showMsgBoxConfirm(DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
                 }
