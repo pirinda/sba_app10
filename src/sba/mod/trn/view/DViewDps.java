@@ -47,6 +47,9 @@ import sba.mod.trn.db.DTrnUtils;
  */
 public class DViewDps extends DGridPaneView implements ActionListener {
 
+    private static final int ACTION_DISABLE = 1;
+    private static final int ACTION_DELETE = 2;
+    
     private int[] manFilterDpsTypeKey;
     private int[] manFilterDpsClassKey;
     private boolean mbIsMyDps;
@@ -320,8 +323,9 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    private boolean proceedAnnulment(final int[] keyDps) {
+    private boolean proceedAnnulment(final int[] keyDps, final int action) {
         boolean proceed = false;
+        String msg = "";
         DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
         DDbDpsEds eds = dps.getChildEds();
 
@@ -331,11 +335,40 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         else if (eds.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI) {
             switch (eds.getFkXmlStatusId()) {
                 case DModSysConsts.TS_XML_ST_ANN:
-                    miClient.showMsgBoxWarning("El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.");
+                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.";
+                    miClient.showMsgBoxWarning(msg);
                     break;
+                    
                 case DModSysConsts.TS_XML_ST_ISS:
-                    proceed = miClient.showMsgBoxConfirm("El registro XML del documento '" + dps.getDpsNumber() + "' permanecerá con estatus 'emitido'.\nSerá necesario cancelarlo posteriormente de forma manual.\n" + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
+                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' permanece con estatus 'emitido'.\n";
+                    
+                    switch (action) {
+                        case ACTION_DISABLE:
+                            if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            }
+                            else {
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                            }
+                            break;
+                            
+                        case ACTION_DELETE:
+                            if (!dps.isDeleted()) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            }
+                            else {
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                            }
+                            break;
+                            
+                        default:
+                    }
+                    
+                    msg += DGuiConsts.MSG_CNF_CONT;
+                    
+                    proceed = miClient.showMsgBoxConfirm(msg) == JOptionPane.YES_OPTION;
                     break;
+                    
                 default:
                     proceed = true; // DPS has EDS of type CFDI not yet signed nor annuled!
             }
@@ -629,7 +662,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DISABLEABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey())) {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).disableRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }
@@ -665,7 +698,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DELETABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey())) {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).deleteRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }
