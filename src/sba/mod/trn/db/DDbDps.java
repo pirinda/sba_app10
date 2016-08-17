@@ -1623,9 +1623,13 @@ public class DDbDps extends DDbRegistryUser {
 
         if (can) {
             if (mbDeleted) {
-                can = true;   // Document will still remain as inactive, no more validation is needed.
+                // Document is deleted already, so it will still remain as 'inactive', so no more validation is needed:
+                
+                can = true;
             }
             else {
+                // If document is annuled already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
+                
                 can = canChangeStatus(session, mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ANN);
             }
         }
@@ -1639,9 +1643,13 @@ public class DDbDps extends DDbRegistryUser {
 
         if (can) {
             if (mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ANN) {
-                can = true;   // Document will still remain as inactive, no more validation is needed.
+                // Document is annuled already, so it will still remain as 'inactive', so no more validation is needed:
+                
+                can = true;
             }
             else {
+                // If document is deleted already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
+                
                 can = canChangeStatus(session, mbDeleted);
             }
         }
