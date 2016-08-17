@@ -168,6 +168,7 @@ public abstract class DModConsts {
     public static final int TS_BLK_TP = 610010;
     public static final int TS_XML_TP = 610011;
     public static final int TS_XML_ST = 610012;
+    public static final int TS_XML_ADD_TP = 610021;
     public static final int TS_XSM_CL = 610013;
     public static final int TS_XSM_TP = 610014;
     public static final int TS_DNP_TP = 610015;
@@ -275,6 +276,7 @@ public abstract class DModConsts {
     public static final int TX_TRC_SNR = 640221;
     public static final int TX_PRC_STK_OPE = 640301;
     public static final int TX_PRC_HST = 640302;        // prices history
+    public static final int TX_XML_ADD = 640311;
 
     public static final int TR_DPS = 650001;
     public static final int TR_DPS_CFD = 650002;
@@ -458,6 +460,7 @@ public abstract class DModConsts {
         TablesMap.put(TS_BLK_TP, "ts_blk_tp");
         TablesMap.put(TS_XML_TP, "ts_xml_tp");
         TablesMap.put(TS_XML_ST, "ts_xml_st");
+        TablesMap.put(TS_XML_ADD_TP, "ts_xml_add_tp");
         TablesMap.put(TS_XSM_CL, "ts_xsm_cl");
         TablesMap.put(TS_XSM_TP, "ts_xsm_tp");
         TablesMap.put(TS_DNP_TP, "ts_dnp_tp");

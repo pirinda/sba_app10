@@ -138,6 +138,10 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel23 = new javax.swing.JPanel();
         jlEmissionType = new javax.swing.JLabel();
         moKeyEmissionType = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel36 = new javax.swing.JPanel();
+        jlXmlAddendaType = new javax.swing.JLabel();
+        moKeyXmlAddendaType = new sba.lib.gui.bean.DBeanFieldKey();
+        jbXmlAddendaType = new javax.swing.JButton();
         jpConfig12 = new javax.swing.JPanel();
         jPanel32 = new javax.swing.JPanel();
         jlCurrency = new javax.swing.JLabel();
@@ -165,6 +169,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel31 = new javax.swing.JPanel();
         jlAbpBizPartner = new javax.swing.JLabel();
         moKeyAbpBizPartner = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel37 = new javax.swing.JPanel();
         jpConfig2 = new javax.swing.JPanel();
 
         jpRegistry.setLayout(new java.awt.BorderLayout());
@@ -290,7 +295,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jpConfig1.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
 
         jpConfig11.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipo:"));
-        jpConfig11.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
+        jpConfig11.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -396,10 +401,27 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig11.add(jPanel23);
 
+        jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlXmlAddendaType.setText("Tipo addenda:*");
+        jlXmlAddendaType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel36.add(jlXmlAddendaType);
+
+        moKeyXmlAddendaType.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel36.add(moKeyXmlAddendaType);
+
+        jbXmlAddendaType.setText("<");
+        jbXmlAddendaType.setToolTipText("Modificar tipo addenda");
+        jbXmlAddendaType.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        jbXmlAddendaType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel36.add(jbXmlAddendaType);
+
+        jpConfig11.add(jPanel36);
+
         jpConfig1.add(jpConfig11);
 
         jpConfig12.setBorder(javax.swing.BorderFactory.createTitledBorder("Crédito:"));
-        jpConfig12.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
+        jpConfig12.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
 
         jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -498,6 +520,9 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig12.add(jPanel31);
 
+        jPanel37.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpConfig12.add(jPanel37);
+
         jpConfig1.add(jpConfig12);
 
         jpConfig.add(jpConfig1, java.awt.BorderLayout.PAGE_START);
@@ -538,6 +563,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moTextWeb.setTextSettings(DGuiUtils.getLabelName(jlWeb.getText()), 15, 0);
         moTextWeb.setTextCaseType(DLibConsts.UNDEFINED);
         moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType.getText()), true);
+        moKeyXmlAddendaType.setKeySettings(miClient, DGuiUtils.getLabelName(jlXmlAddendaType.getText()), true);
         moKeyCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlCurrency.getText()), false);
         moBoolCreditByUser.setBooleanSettings(moBoolCreditByUser.getText(), false);
         moKeyCreditType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCreditType.getText()), true);
@@ -570,6 +596,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moFields.addField(moKeyAgentType, 1);
         moFields.addField(moTextWeb, 1);
         moFields.addField(moKeyEmissionType, 1);
+        moFields.addField(moKeyXmlAddendaType, 1);
         moFields.addField(moKeyCurrency, 1);
         moFields.addField(moBoolCreditByUser, 1);
         moFields.addField(moKeyCreditType, 1);
@@ -633,6 +660,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private void actionFiscalId() {
         moTextFiscalId.setValue(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getFiscalIdCountry());
         moTextFiscalId.requestFocus();
+    }
+
+    private void actionXmlAddendaType() {
+        jbXmlAddendaType.setEnabled(false);
+        moKeyXmlAddendaType.setEnabled(true);
+        moKeyXmlAddendaType.requestFocus();
     }
 
     private void actionCurrency() {
@@ -813,6 +846,8 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel33;
     private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel35;
+    private javax.swing.JPanel jPanel36;
+    private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -821,6 +856,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JButton jbCurrency;
     private javax.swing.JButton jbFiscalId;
+    private javax.swing.JButton jbXmlAddendaType;
     private javax.swing.JLabel jlAbpBizPartner;
     private javax.swing.JLabel jlAgentType;
     private javax.swing.JLabel jlBizPartnerType;
@@ -845,6 +881,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JLabel jlNickname;
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlWeb;
+    private javax.swing.JLabel jlXmlAddendaType;
     private javax.swing.JPanel jpConfig;
     private javax.swing.JPanel jpConfig1;
     private javax.swing.JPanel jpConfig11;
@@ -874,6 +911,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private sba.lib.gui.bean.DBeanFieldKey moKeyEmissionType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyIdentityType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyModeOfPaymentType;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXmlAddendaType;
     private sba.mod.bpr.form.DPanelBranch moPanelBranch;
     private sba.mod.bpr.form.DPanelBranchAddress moPanelBranchAddress;
     private sba.lib.gui.bean.DBeanFieldText moTextAlternativeId;
@@ -892,6 +930,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     @Override
     public void addAllListeners() {
         jbFiscalId.addActionListener(this);
+        jbXmlAddendaType.addActionListener(this);
         jbCurrency.addActionListener(this);
         moKeyIdentityType.addItemListener(this);
         moKeyBizPartnerType.addItemListener(this);
@@ -904,6 +943,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     @Override
     public void removeAllListeners() {
         jbFiscalId.removeActionListener(this);
+        jbXmlAddendaType.removeActionListener(this);
         jbCurrency.removeActionListener(this);
         moKeyIdentityType.removeItemListener(this);
         moKeyBizPartnerType.removeItemListener(this);
@@ -919,6 +959,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         miClient.getSession().populateCatalogue(moKeyBizPartnerType, DModConsts.BU_BPR_TP, mnBizPartnerClass, null);
         miClient.getSession().populateCatalogue(moKeyAgentType, DModConsts.MU_AGT_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyEmissionType, DModConsts.TS_EMI_TP, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXmlAddendaType, DModConsts.TS_XML_ADD_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyCurrency, DModConsts.CS_CUR, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyCreditType, DModConsts.BS_CDT_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyModeOfPaymentType, DModConsts.FS_MOP_TP, DLibConsts.UNDEFINED, null);
@@ -986,8 +1027,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                 moRegistry.getChildBranches().add(branch);
             }
 
-            if (moRegistry.getFkEmissionTypeId()== DLibConsts.UNDEFINED) {
+            if (moRegistry.getFkEmissionTypeId() == DLibConsts.UNDEFINED) {
                 moRegistry.setFkEmissionTypeId(DModSysConsts.TS_EMI_TP_BPR);
+            }
+
+            if (moRegistry.getFkXmlAddendaTypeId()== DLibConsts.UNDEFINED) {
+                moRegistry.setFkXmlAddendaTypeId(DModSysConsts.TS_XML_ADD_TP_NA);
             }
         }
         else {
@@ -1010,6 +1055,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moBoolCarrier.setValue(moRegistry.isCarrier());
         moKeyIdentityType.setValue(new int[] { moRegistry.getFkIdentityTypeId() });
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
+        moKeyXmlAddendaType.setValue(new int[] { moRegistry.getFkXmlAddendaTypeId()});
 
         moTextCode.setValue(config.getCode());
         moTextCodeOwn.setValue(config.getCodeOwn());
@@ -1051,10 +1097,31 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         itemStateBoolAbpBizPartnerByUser();
 
         moTextCode.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isCodeBizPartnerApplying());
+        
+        // Prevent undesired modifications to currency:
 
         jbCurrency.setEnabled(true);
         moKeyCurrency.setEnabled(false);
 
+        // Prevent undesired or inappropriate modifications to XML-addenda type:
+
+        moKeyXmlAddendaType.setEnabled(false);
+        
+        switch (mnBizPartnerClass) {
+            case DModSysConsts.BS_BPR_CL_CUS:
+                jlXmlAddendaType.setEnabled(true);
+                jbXmlAddendaType.setEnabled(true);
+                break;
+            case DModSysConsts.BS_BPR_CL_VEN:
+            case DModSysConsts.BS_BPR_CL_CDR:
+            case DModSysConsts.BS_BPR_CL_DBR:
+                jlXmlAddendaType.setEnabled(false);
+                jbXmlAddendaType.setEnabled(false);
+                break;
+            default:
+                miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
         addAllListeners();
     }
 
@@ -1079,6 +1146,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         registry.setCarrier(moBoolCarrier.getValue());
         registry.setFkIdentityTypeId(moKeyIdentityType.getValue()[0]);
         registry.setFkEmissionTypeId(moKeyEmissionType.getValue()[0]);
+        registry.setFkXmlAddendaTypeId(moKeyXmlAddendaType.getValue()[0]);
 
         config = registry.getChildConfig(mnBizPartnerClass);
 
@@ -1188,6 +1256,9 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
             if (button == jbFiscalId) {
                 actionFiscalId();
+            }
+            else if (button == jbXmlAddendaType) {
+                actionXmlAddendaType();
             }
             else if (button == jbCurrency) {
                 actionCurrency();

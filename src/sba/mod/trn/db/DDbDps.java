@@ -504,7 +504,7 @@ public class DDbDps extends DDbRegistryUser {
         boolean save = false;
 
         /*
-         * Members "mbAuxEdsRequired" and "mnAuxXmlTypeId" only set in DFormDps.
+         * Auxiliar members "mbAuxEdsRequired" and "mnAuxXmlTypeId" only set in DFormDps.
          */
 
         if ((mbAuxEdsRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildEds != null)) {
@@ -512,7 +512,7 @@ public class DDbDps extends DDbRegistryUser {
             save = true;
         }
         else if (!mbAuxEdsRequired && mnAuxXmlTypeId == DModSysConsts.TS_XML_TP_NA) {
-            moChildEds = null;  // clear e-document only if it is requested from DFormDps
+            moChildEds = null;  // clear e-document supporting only if it is requested from DFormDps
             save = true;
         }
 
@@ -1777,7 +1777,7 @@ public class DDbDps extends DDbRegistryUser {
     }
 
     /**
-     * Issues Electronic Document Supporting (EDS).
+     * Issues Electronic Document Supporting (EDS) as file of type Portable Document Format (PDF).
      */
     public void issueEds(final DGuiSession session) throws JRException, Exception {
         String fileName = "";
@@ -1790,8 +1790,7 @@ public class DDbDps extends DDbRegistryUser {
 
             switch (moChildEds.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFD:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFD, new DPrtDps(session, this).cratePrintCfdMap(), fileName);
-                    break;
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI:
                     DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI, new DPrtDps(session, this).cratePrintCfdiMap(), fileName);
@@ -1803,6 +1802,9 @@ public class DDbDps extends DDbRegistryUser {
         }
     }
 
+    /**
+     * Creates new entry for document printing log.
+     */
     public DDbDpsPrinting createDpsPrinting() {
         DDbDpsPrinting dpsPrinting = new DDbDpsPrinting();
 
@@ -1825,6 +1827,9 @@ public class DDbDps extends DDbRegistryUser {
         return dpsPrinting;
     }
 
+    /**
+     * Creates new entry for document signing log.
+     */
     public DDbDpsSigning createDpsSigning() {
         DDbDpsSigning dpsSigning = new DDbDpsSigning();
 
@@ -1847,6 +1852,9 @@ public class DDbDps extends DDbRegistryUser {
         return dpsSigning;
     }
 
+    /**
+     * Creates new entry for document sending log.
+     */
     public DDbDpsSending createDpsSending() {
         DDbDpsSending dpsSending = new DDbDpsSending();
 

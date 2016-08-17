@@ -5,6 +5,11 @@
 
 package sba.mod.trn.db;
 
+import cfd.DCfdConsts;
+import cfd.DCfdUtils;
+import cfd.DElement;
+import cfd.DElementExtAddenda;
+import cfd.ext.continental.DElementAddendaContinentalTire;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -14,7 +19,11 @@ import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistry;
 import sba.lib.gui.DGuiSession;
+import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
+import sba.mod.DModSysConsts;
+import sba.mod.cfg.db.DDbConfigBranch;
+import static sba.mod.trn.db.DTrnEdsUtils.digestExtAddenda;
 
 /**
  *
@@ -30,11 +39,13 @@ public class DDbDpsEds extends DDbRegistry {
     protected Date mtDocTs;
     protected String msDocXml;
     protected String msDocXmlRaw;
+    protected String msDocXmlAddenda;
     protected String msDocXmlName;
     protected String msCancelXml;
     protected java.sql.Blob moCancelPdf_n;
     protected int mnFkXmlTypeId;
     protected int mnFkXmlStatusId;
+    protected int mnFkXmlAddendaTypeId;
     protected int mnFkXmlSignatureProviderId;
     protected int mnFkCertificateId;
     protected int mnFkUserIssueId;
@@ -44,6 +55,7 @@ public class DDbDpsEds extends DDbRegistry {
 
     protected boolean mbAuxIssued;
     protected boolean mbAuxAnnulled;
+    protected boolean mbAuxRegenerateXmlOnSave;
     protected int[] manAuxXmlSignatureRequestKey;
 
     public DDbDpsEds() {
@@ -59,11 +71,13 @@ public class DDbDpsEds extends DDbRegistry {
     public void setDocTs(Date t) { mtDocTs = t; }
     public void setDocXml(String s) { msDocXml = s; }
     public void setDocXmlRaw(String s) { msDocXmlRaw = s; }
+    public void setDocXmlAddenda(String s) { msDocXmlAddenda = s; }
     public void setDocXmlName(String s) { msDocXmlName = s; }
     public void setCancelXml(String s) { msCancelXml = s; }
     public void setCancelPdf_n(java.sql.Blob o) { moCancelPdf_n = o; }
     public void setFkXmlTypeId(int n) { mnFkXmlTypeId = n; }
     public void setFkXmlStatusId(int n) { mnFkXmlStatusId = n; }
+    public void setFkXmlAddendaTypeId(int n) { mnFkXmlAddendaTypeId = n; }
     public void setFkXmlSignatureProviderId(int n) { mnFkXmlSignatureProviderId = n; }
     public void setFkCertificateId(int n) { mnFkCertificateId = n; }
     public void setFkUserIssuedId(int n) { mnFkUserIssueId = n; }
@@ -79,11 +93,13 @@ public class DDbDpsEds extends DDbRegistry {
     public Date getDocTs() { return mtDocTs; }
     public String getDocXml() { return msDocXml; }
     public String getDocXmlRaw() { return msDocXmlRaw; }
+    public String getDocXmlAddenda() { return msDocXmlAddenda; }
     public String getDocXmlName() { return msDocXmlName; }
     public String getCancelXml() { return msCancelXml; }
     public java.sql.Blob getCancelPdf_n() { return moCancelPdf_n; }
     public int getFkXmlTypeId() { return mnFkXmlTypeId; }
     public int getFkXmlStatusId() { return mnFkXmlStatusId; }
+    public int getFkXmlAddendaTypeId() { return mnFkXmlAddendaTypeId; }
     public int getFkXmlSignatureProviderId() { return mnFkXmlSignatureProviderId; }
     public int getFkCertificateId() { return mnFkCertificateId; }
     public int getFkUserIssuedId() { return mnFkUserIssueId; }
@@ -93,10 +109,12 @@ public class DDbDpsEds extends DDbRegistry {
 
     public void setAuxIssued(boolean b) { mbAuxIssued = b; }
     public void setAuxAnnulled(boolean b) { mbAuxAnnulled = b; }
+    public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
     public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
 
     public boolean isAuxIssued() { return mbAuxIssued; }
     public boolean isAuxAnnulled() { return mbAuxAnnulled; }
+    public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
     public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
 
     @Override
@@ -121,11 +139,13 @@ public class DDbDpsEds extends DDbRegistry {
         mtDocTs = null;
         msDocXml = "";
         msDocXmlRaw = "";
+        msDocXmlAddenda = "";
         msDocXmlName = "";
         msCancelXml = "";
         moCancelPdf_n = null;
         mnFkXmlTypeId = 0;
         mnFkXmlStatusId = 0;
+        mnFkXmlAddendaTypeId = 0;
         mnFkXmlSignatureProviderId = 0;
         mnFkCertificateId = 0;
         mnFkUserIssueId = 0;
@@ -135,6 +155,7 @@ public class DDbDpsEds extends DDbRegistry {
 
         mbAuxIssued = false;
         mbAuxAnnulled = false;
+        mbAuxRegenerateXmlOnSave = false;
         manAuxXmlSignatureRequestKey = null;
     }
 
@@ -180,11 +201,13 @@ public class DDbDpsEds extends DDbRegistry {
             mtDocTs = resultSet.getTimestamp("doc_ts");
             msDocXml = resultSet.getString("doc_xml");
             msDocXmlRaw = resultSet.getString("doc_xml_raw");
+            msDocXmlAddenda = resultSet.getString("doc_xml_add");
             msDocXmlName = resultSet.getString("doc_xml_name");
             msCancelXml = resultSet.getString("can_xml");
             moCancelPdf_n = resultSet.getBlob("can_pdf_n");
             mnFkXmlTypeId = resultSet.getInt("fk_xml_tp");
             mnFkXmlStatusId = resultSet.getInt("fk_xml_st");
+            mnFkXmlAddendaTypeId = resultSet.getInt("fk_xml_add_tp");
             mnFkXmlSignatureProviderId = resultSet.getInt("fk_xsp");
             mnFkCertificateId = resultSet.getInt("fk_cer");
             mnFkUserIssueId = resultSet.getInt("fk_usr_iss");
@@ -200,6 +223,8 @@ public class DDbDpsEds extends DDbRegistry {
 
     @Override
     public void save(DGuiSession session) throws SQLException, Exception {
+        DDbDps dps = null;
+        
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
@@ -221,6 +246,56 @@ public class DDbDpsEds extends DDbRegistry {
             mnFkUserAnnulId = DUtilConsts.USR_NA_ID;
         }
 
+        if (mbAuxRegenerateXmlOnSave) {
+            // XML must be regenerated, so embed addenda:
+            
+            DElementExtAddenda extAddenda = null;
+            //cfd.ver2.DElementComprobante comprobante2 = null; // not supported yet
+            cfd.ver3.DElementComprobante comprobante3 = null;
+            
+            dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
+            
+            switch (mnFkXmlTypeId) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI:
+                    // Create EDS:
+                    comprobante3 = DCfdUtils.getCfdi(msDocXml);
+
+                    // Append to EDS the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = digestExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver3.DElementAddenda addenda = null;
+                            
+                            if (comprobante3.getEltOpcAddenda() != null) {
+                                addenda = comprobante3.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver3.DElementAddenda();
+                                comprobante3.setEltOpcAddenda(addenda);
+                            }
+                            
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+                            
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+                    
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante3.getElementForXml();
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
+        
         if (mbRegistryNew) {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkDpsId + ", " +
@@ -229,13 +304,15 @@ public class DDbDpsEds extends DDbRegistry {
                     "'" + msSignature + "', " +
                     "'" + msUniqueId + "', " +
                     "'" + DLibUtils.DbmsDateFormatDatetime.format(mtDocTs) + "', " +
-                    "'" + msDocXml + "', " +
-                    "'" + msDocXmlRaw + "', " + 
+                    "'" + msDocXml.replaceAll("'", "''") + "', " +
+                    "'" + msDocXmlRaw.replaceAll("'", "''") + "', " + 
+                    "'" + msDocXmlAddenda.replaceAll("'", "''") + "', " + 
                     "'" + msDocXmlName + "', " +
-                    "'" + msCancelXml + "', " + 
+                    "'" + msCancelXml.replaceAll("'", "''") + "', " + 
                     "NULL, " + 
                     mnFkXmlTypeId + ", " +
                     mnFkXmlStatusId + ", " +
+                    mnFkXmlAddendaTypeId + ", " + 
                     mnFkXmlSignatureProviderId + ", " + 
                     mnFkCertificateId + ", " +
                     mnFkUserIssueId + ", " +
@@ -252,13 +329,15 @@ public class DDbDpsEds extends DDbRegistry {
                     "sig = '" + msSignature + "', " +
                     "uid = '" + msUniqueId + "', " +
                     "doc_ts = '" + DLibUtils.DbmsDateFormatDatetime.format(mtDocTs) + "', " +
-                    "doc_xml = '" + msDocXml + "', " +
-                    "doc_xml_raw = '" + msDocXmlRaw + "', " +
+                    "doc_xml = '" + msDocXml.replaceAll("'", "''") + "', " +
+                    "doc_xml_raw = '" + msDocXmlRaw.replaceAll("'", "''") + "', " +
+                    "doc_xml_add = '" + msDocXmlAddenda.replaceAll("'", "''") + "', " +
                     "doc_xml_name = '" + msDocXmlName + "', " +
-                    "can_xml = '" + msCancelXml + "', " +
+                    "can_xml = '" + msCancelXml.replaceAll("'", "''") + "', " +
                     //"can_pdf_n = " + moCancelPdf_n + ", " +
                     "fk_xml_tp = " + mnFkXmlTypeId + ", " +
                     "fk_xml_st = " + mnFkXmlStatusId + ", " +
+                    "fk_xml_add_tp = " + mnFkXmlAddendaTypeId + ", " +
                     "fk_xsp = " + mnFkXmlSignatureProviderId + ", " +
                     "fk_cer = " + mnFkCertificateId + " " +
                     (!mbAuxIssued ? "" : ", fk_usr_iss = " + mnFkUserIssueId + ", " +
@@ -269,6 +348,15 @@ public class DDbDpsEds extends DDbRegistry {
         }
 
         session.getStatement().execute(msSql);
+        
+        if (mbAuxRegenerateXmlOnSave) {
+            // XML must be regenerated, so save new XML file:
+            
+            DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+            
+            DXmlUtils.writeXml(msDocXml, configBranch.getEdsDirectory() + msDocXmlName);
+        }
+        
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
@@ -285,11 +373,13 @@ public class DDbDpsEds extends DDbRegistry {
         registry.setDocTs(this.getDocTs());
         registry.setDocXml(this.getDocXml());
         registry.setDocXmlRaw(this.getDocXmlRaw());
+        registry.setDocXmlAddenda(this.getDocXmlAddenda());
         registry.setDocXmlName(this.getDocXmlName());
         registry.setCancelXml(this.getCancelXml());
         registry.setCancelPdf_n(this.getCancelPdf_n());
         registry.setFkXmlTypeId(this.getFkXmlTypeId());
         registry.setFkXmlStatusId(this.getFkXmlStatusId());
+        registry.setFkXmlAddendaTypeId(this.getFkXmlAddendaTypeId());
         registry.setFkXmlSignatureProviderId(this.getFkXmlSignatureProviderId());
         registry.setFkCertificateId(this.getFkCertificateId());
         registry.setFkUserIssuedId(this.getFkUserIssuedId());
@@ -299,6 +389,7 @@ public class DDbDpsEds extends DDbRegistry {
 
         registry.setAuxIssued(this.isAuxIssued());
         registry.setAuxAnnulled(this.isAuxAnnulled());
+        registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
         registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
 
         registry.setRegistryNew(this.isRegistryNew());

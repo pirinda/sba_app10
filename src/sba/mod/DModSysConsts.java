@@ -628,6 +628,9 @@ public abstract class DModSysConsts {
     public static final int TS_XML_ST_ISS = 3;
     public static final int TS_XML_ST_ANN = 4;
 
+    public static final int TS_XML_ADD_TP_NA = 1;
+    public static final int TS_XML_ADD_TP_CON = 2;
+    
     public static final int TS_XSM_CL_IN = 1;
     public static final int TS_XSM_CL_OUT = 2;
 

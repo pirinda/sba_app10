@@ -41,7 +41,6 @@ public class DViewDpsSending extends DGridPaneView implements ActionListener {
     /**
      * @param client GUI client.
      * @param mode DPS emission type. Constant defined in DUtilConsts (EMT or EMT_PEND).
-     * @param submode Category of DPS. Constants defined in DModSysConsts (TS_DPS_CT_...).
      * @param title View title.
      */
     public DViewDpsSending(DGuiClient client, int subtype, int mode, String title) {

@@ -59,7 +59,8 @@ import sba.mod.trn.form.DFormDpsSigning;
 import sba.mod.trn.form.DFormDpsTypeChange;
 
 /**
- *
+ * Utilities related to printing, signing, cancelling and sending documents.
+ * 
  * @author Sergio Flores
  */
 public abstract class DTrnEmissionUtils {
@@ -393,13 +394,13 @@ public abstract class DTrnEmissionUtils {
 
                         switch (eds.getFkXmlTypeId()) {
                             case DModSysConsts.TS_XML_TP_CFD:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFD, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintCfdMap());
-                                printed = true;
-                                break;
+                                throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+                                
                             case DModSysConsts.TS_XML_TP_CFDI:
                                 DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintCfdiMap());
                                 printed = true;
                                 break;
+                                
                             default:
                                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
                         }
@@ -760,6 +761,9 @@ public abstract class DTrnEmissionUtils {
                 }
                 else if (eds.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "El estatus del registro XML del documento debe ser '" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                }
+                else if (eds.getFkXmlAddendaTypeId() != DModSysConsts.TS_XML_ADD_TP_NA && eds.getDocXmlAddenda().isEmpty()) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "La addenda del registro XML del documento no ha sido incorporada.");
                 }
                 else {
                     dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());

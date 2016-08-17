@@ -53,6 +53,7 @@ import sba.mod.trn.db.DTrnUtils;
 import sba.mod.trn.form.DDialogTraceSerialNumber;
 import sba.mod.trn.form.DFormDps;
 import sba.mod.trn.form.DFormDpsCancelling;
+import sba.mod.trn.form.DFormDpsEdsAddenda;
 import sba.mod.trn.form.DFormDpsPrinting;
 import sba.mod.trn.form.DFormDpsSeries;
 import sba.mod.trn.form.DFormDpsSeriesNumber;
@@ -67,6 +68,7 @@ import sba.mod.trn.view.DViewDps;
 import sba.mod.trn.view.DViewDpsAccounts;
 import sba.mod.trn.view.DViewDpsAccountsCollected;
 import sba.mod.trn.view.DViewDpsDay;
+import sba.mod.trn.view.DViewDpsEdsAddenda;
 import sba.mod.trn.view.DViewDpsPrinting;
 import sba.mod.trn.view.DViewDpsSending;
 import sba.mod.trn.view.DViewDpsSeries;
@@ -151,6 +153,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private JMenuItem mjDocSigning;
     private JMenuItem mjDocSendingPend;
     private JMenuItem mjDocSending;
+    private JMenuItem mjDocEdsAddendaPend;
+    private JMenuItem mjDocEdsAddenda;
 
     private JMenu mjAcc;
     private JMenuItem mjAccBizPartner;
@@ -255,6 +259,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private DFormDpsSigning moFormDpsSigning;
     private DFormDpsCancelling moFormDpsCancelling;
     private DFormDpsTypeChange moFormDpsTypeChange;
+    private DFormDpsEdsAddenda moFormDpsEdsAddenda;
     private DFormIog moFormIogExternalIn;
     private DFormIog moFormIogExternalOut;
     private DFormSerialNumberFix moFormSerialNumberFix;
@@ -299,8 +304,6 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
 
         switch (mnModuleSubtype) {
             case DModSysConsts.CS_MOD_PUR:
-
-
                 mjCatBizPartner = new JMenuItem("Proveedores");
                 mjCatBizPartnerConfig = new JMenuItem("Configuración de proveedores (Q)");
                 mjCatBranch = new JMenuItem("Sucursales de proveedores (Q)");
@@ -374,11 +377,13 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocTypeChange = new JMenuItem("Cambios de tipo de documento");
                 /*
                 mjDocPrintingPend = new JMenuItem("Documentos por imprimir");
-                mjDocPrinting = new JMenuItem("Documentos imprimidos");
+                mjDocPrinting = new JMenuItem("Documentos impresos");
                 mjDocSigningPend = new JMenuItem("Documentos por timbrar");
                 mjDocSigning = new JMenuItem("Documentos timbrados");
                 mjDocSendingPend = new JMenuItem("Documentos por enviar");
                 mjDocSending = new JMenuItem("Documentos enviados");
+                mjDocEdsAddendaPend= new JMenuItem("Addendas por incorporar");
+                mjDocEdsAddenda = new JMenuItem("Addendas incorporadas");
                 */
 
                 mjDoc.add(mjDocDocInvoice);
@@ -401,6 +406,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDoc.addSeparator();
                 mjDoc.add(mjDocSendingPend);
                 mjDoc.add(mjDocSending);
+                mjDoc.addSeparator();
+                mjDoc.add(mjDocEdsAddendaPend);
+                mjDoc.add(mjDocEdsAddenda);
                 */
 
                 mjDocDocInvoice.addActionListener(this);
@@ -417,6 +425,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning.addActionListener(this);
                 mjDocSendingPend.addActionListener(this);
                 mjDocSending.addActionListener(this);
+                mjDocEdsAddendaPend.addActionListener(this);
+                mjDocEdsAddenda.addActionListener(this);
                 */
 
                 mjAcc = new JMenu("Cuentas pendientes compras");
@@ -645,11 +655,13 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocDay = new JMenuItem("Movimientos del día");
                 mjDocTypeChange = new JMenuItem("Cambios de tipo de documento");
                 mjDocPrintingPend = new JMenuItem("Documentos por imprimir");
-                mjDocPrinting = new JMenuItem("Documentos imprimidos");
+                mjDocPrinting = new JMenuItem("Documentos impresos");
                 mjDocSigningPend = new JMenuItem("Documentos por timbrar");
                 mjDocSigning = new JMenuItem("Documentos timbrados");
                 mjDocSendingPend = new JMenuItem("Documentos por enviar");
                 mjDocSending = new JMenuItem("Documentos enviados");
+                mjDocEdsAddendaPend= new JMenuItem("Addendas por incorporar");
+                mjDocEdsAddenda = new JMenuItem("Addendas incorporadas");
 
                 mjDoc.add(mjDocDocInvoice);
                 mjDoc.add(mjDocDocNote);
@@ -670,6 +682,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDoc.addSeparator();
                 mjDoc.add(mjDocSendingPend);
                 mjDoc.add(mjDocSending);
+                mjDoc.addSeparator();
+                mjDoc.add(mjDocEdsAddendaPend);
+                mjDoc.add(mjDocEdsAddenda);
 
                 mjDocDocInvoice.addActionListener(this);
                 mjDocDocNote.addActionListener(this);
@@ -684,6 +699,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning.addActionListener(this);
                 mjDocSendingPend.addActionListener(this);
                 mjDocSending.addActionListener(this);
+                mjDocEdsAddendaPend.addActionListener(this);
+                mjDocEdsAddenda.addActionListener(this);
 
                 mjAcc = new JMenu("Cuentas pendientes ventas");
                 mjAccBizPartner = new JMenuItem("Saldos clientes");
@@ -1039,6 +1056,12 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                     public String getSqlWhere(int[] pk) { return "WHERE id_xml_st = " + pk[0] + " "; }
                 };
                 break;
+            case DModConsts.TS_XML_ADD_TP:
+                registry = new DDbRegistrySysFly(type) {
+                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
+                    public String getSqlWhere(int[] pk) { return "WHERE id_xml_add_tp = " + pk[0] + " "; }
+                };
+                break;
             case DModConsts.TS_XSM_CL:
                 registry = new DDbRegistrySysFly(type) {
                     public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
@@ -1122,6 +1145,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 registry = new DDbDpsSending();
                 break;
             case DModConsts.T_DPS_EDS:
+            case DModConsts.TX_XML_ADD:
                 registry = new DDbDpsEds();
                 break;
             case DModConsts.T_DPS_NOT:
@@ -1263,6 +1287,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             case DModConsts.TS_XML_ST:
                 settings = new DGuiCatalogueSettings("Status XML", 1);
                 sql = "SELECT id_xml_st AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " " +
+                        "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
+                break;
+            case DModConsts.TS_XML_ADD_TP:
+                settings = new DGuiCatalogueSettings("Tipo addenda XML", 1);
+                sql = "SELECT id_xml_add_tp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case DModConsts.TS_XSM_CL:
@@ -1453,13 +1482,17 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 view = new DViewSchedule(miClient, "Horarios");
                 break;
             case DModConsts.T_DPS_PRT:
-                view = new DViewDpsPrinting(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Doctos " + (params.getType() == DUtilConsts.EMT_PEND ? "x imprimir" : "imprimidos"));
+                view = new DViewDpsPrinting(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Doctos " + (params.getType() == DUtilConsts.EMT_PEND ? "x imprimir" : "impresos"));
                 break;
             case DModConsts.T_DPS_SIG:
                 view = new DViewDpsSigning(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Doctos " + (params.getType() == DUtilConsts.EMT_PEND ? "x timbrar" : "timbrados"));
                 break;
             case DModConsts.T_DPS_SND:
                 view = new DViewDpsSending(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Doctos " + (params.getType() == DUtilConsts.EMT_PEND ? "x enviar" : "enviados"));
+                break;
+            case DModConsts.T_DPS_EDS:
+            case DModConsts.TX_XML_ADD:
+                view = new DViewDpsEdsAddenda(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Addendas " + (params.getType() == DUtilConsts.EMT_PEND ? "x incorporar" : "Addendas incorporadas"));
                 break;
             case DModConsts.T_DPS_CHG:
                 view = new DViewDpsTypeChange(miClient, subtype, DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Cambios tipo docto");
@@ -1686,6 +1719,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 if (moFormDpsTypeChange == null) moFormDpsTypeChange = new DFormDpsTypeChange(miClient, "Cambio tipo de documento");
                 form = moFormDpsTypeChange;
                 break;
+            case DModConsts.T_DPS_EDS:
+            case DModConsts.TX_XML_ADD:
+                if (moFormDpsEdsAddenda == null) moFormDpsEdsAddenda = new DFormDpsEdsAddenda(miClient, "Addenda");
+                form = moFormDpsEdsAddenda;
+                break;
             case DModConsts.TX_DPS_ORD:
             case DModConsts.TX_MY_DPS_ORD:
                 if (moFormDpsOrder == null) {
@@ -1886,6 +1924,12 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             }
             else if (menuItem == mjDocSending) {
                 showView(DModConsts.T_DPS_SND, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT));
+            }
+            else if (menuItem == mjDocEdsAddendaPend) {
+                showView(DModConsts.TX_XML_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT_PEND));
+            }
+            else if (menuItem == mjDocEdsAddenda) {
+                showView(DModConsts.TX_XML_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT));
             }
             else if (menuItem == mjAccBizPartner) {
                 miClient.getSession().showView(DModConsts.FX_BAL_BPR, DTrnUtils.getBizPartnerClassByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.PER_BPR, DUtilConsts.PER_BPR));

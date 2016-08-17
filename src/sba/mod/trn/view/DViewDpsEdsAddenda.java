@@ -5,9 +5,6 @@
 
 package sba.mod.trn.view;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import sba.gui.util.DUtilConsts;
 import sba.lib.db.DDbConsts;
 import sba.lib.grid.DGridColumnView;
@@ -15,38 +12,34 @@ import sba.lib.grid.DGridConsts;
 import sba.lib.grid.DGridFilterDatePeriod;
 import sba.lib.grid.DGridPaneSettings;
 import sba.lib.grid.DGridPaneView;
-import sba.lib.grid.DGridRowView;
 import sba.lib.grid.DGridUtils;
 import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiDate;
 import sba.lib.gui.DGuiParams;
-import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
-import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
 /**
  *
  * @author Sergio Flores
  */
-public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
+public class DViewDpsEdsAddenda extends DGridPaneView {
 
     private DGridFilterDatePeriod moFilterDatePeriod;
-    private JButton mjButtonPrint;
 
     /**
      * @param client GUI client.
      * @param mode DPS emission type. Constant defined in DUtilConsts (EMT or EMT_PEND).
      * @param title View title.
      */
-    public DViewDpsPrinting(DGuiClient client, int subtype, int mode, String title) {
-        super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.T_DPS_PRT, subtype, title, new DGuiParams(mode));
+    public DViewDpsEdsAddenda(DGuiClient client, int subtype, int mode, String title) {
+        super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.TX_XML_ADD, subtype, title, new DGuiParams(mode));
 
         jbRowNew.setEnabled(false);
-        jbRowEdit.setEnabled(false);
+        jbRowEdit.setEnabled(true);
         jbRowCopy.setEnabled(false);
         jbRowDisable.setEnabled(false);
         jbRowDelete.setEnabled(false);
@@ -55,10 +48,6 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
 
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
-
-        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT, this);
-        mjButtonPrint.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
     }
 
     /*
@@ -97,8 +86,10 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
             orderBy = "dt.code, v.fk_dps_ct, v.fk_dps_cl, v.fk_dps_tp, v.ser, " + num + ", v.id_dps ";
         }
 
-        sql += (sql.length() == 0 ? "" : "AND ") + "v.id_dps " + (mnGridMode == DUtilConsts.EMT ? "IN " : "NOT IN ") +
-                "(SELECT dx.id_dps FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_PRT) + " AS dx WHERE dx.b_del = 0 ORDER BY dx.id_dps) ";
+        sql += (sql.length() == 0 ? "" : "AND ") + "v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ISS + " AND " +
+                "eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + " AND " +
+                "eds.fk_xml_add_tp <> " + DModSysConsts.TS_XML_ADD_TP_NA + " AND " +
+                "eds.doc_xml_add " + (mnGridMode == DUtilConsts.EMT ? "<>" : "= ") + " ''";
 
         msSql = "SELECT " +
                 "v.id_dps AS " + DDbConsts.FIELD_ID + "1, " +
@@ -109,7 +100,6 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
                 "v.tot_cy_r, " +
                 "v.exr, " +
                 "v.tot_r, " +
-                "v.pay_acc, " +
                 "dt.code, " +
                 "dt.name, " +
                 "b.id_bpr, " +
@@ -118,17 +108,14 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
                 "bb.name, " +
                 "cb.code, " +
                 "c.code, " +
-                "payt.code, " +
-                "payt.name, " +
-                "mopt.code, " +
-                "mopt.name, " +
                 "emit.code, " +
                 "emit.name, " +
+                "xat.code, " +
+                "xat.name, " +
                 "IF(v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
                 "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
                 "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
                 "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
-                "(SELECT COUNT(*) FROM " +DModConsts.TablesMap.get(DModConsts.T_DPS_PRT) + " AS dx WHERE dx.id_dps = v.id_dps AND dx.b_del = 0) AS f_evt, " +
                 "v.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "v.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
                 "v.fk_dps_tp AS " + DDbConsts.FIELD_TYPE_ID + "3, " +
@@ -156,18 +143,16 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
                 "v.fk_own_bpr = cb.id_bpr AND v.fk_own_bra = cb.id_bra " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CS_CUR) + " AS c ON " +
                 "v.fk_cur = c.id_cur " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.FS_PAY_TP) + " AS payt ON " +
-                "v.fk_pay_tp = payt.id_pay_tp " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.FS_MOP_TP) + " AS mopt ON " +
-                "v.fk_mop_tp = mopt.id_mop_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_EMI_TP) + " AS emit ON " +
                 "v.fk_emi_tp = emit.id_emi_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "v.fk_usr_upd = uu.id_usr " +
-                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
                 "v.id_dps = eds.id_dps " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ADD_TP) + " AS xat ON " +
+                "eds.fk_xml_add_tp = xat.id_xml_add_tp " +
                 (sql.length() == 0 ? "" : "WHERE " + sql) +
                 "ORDER BY " + orderBy;
     }
@@ -175,7 +160,7 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[24];
+        DGridColumnView[] columns = new DGridColumnView[21];
 
         if (mnGridSubtype == DModSysConsts.TS_DPS_CT_PUR) {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnGridSubtype)).toLowerCase());
@@ -204,11 +189,8 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CUR, "c.code", "Moneda");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_EXC_RATE, "v.exr", "T. cambio");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_AMT, "v.tot_r", "Total $ ML");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "payt.code", "Tipo pago");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "mopt.code", "Forma pago");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pay_acc", "Cta pago");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "emit.code", "Tipo impresión");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "f_evt", "Impresiones");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "emit.code", "Tipo timbrado");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xat.name", "Tipo addenda");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_USR, DDbConsts.FIELD_USER_INS_NAME, DGridConsts.COL_TITLE_USER_INS_NAME);
@@ -228,33 +210,6 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.BU_BRA);
         moSuscriptionsSet.add(DModConsts.CU_USR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
-        moSuscriptionsSet.add(DModConsts.T_DPS_SIG);
-    }
-
-    @Override
-    public void actionMouseClicked() {
-        actionPrint();
-    }
-
-    public void actionPrint() {
-        if (mjButtonPrint.isEnabled()) {
-            if (jtTable.getSelectedRowCount() != 1) {
-                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
-            }
-            else {
-                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow());
-            }
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof JButton) {
-            JButton button = (JButton) e.getSource();
-
-            if (button == mjButtonPrint) {
-                actionPrint();
-            }
-        }
+        moSuscriptionsSet.add(DModConsts.T_DPS_EDS);
     }
 }
