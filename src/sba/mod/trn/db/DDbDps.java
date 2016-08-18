@@ -504,7 +504,7 @@ public class DDbDps extends DDbRegistryUser {
         boolean save = false;
 
         /*
-         * Auxiliar members "mbAuxEdsRequired" and "mnAuxXmlTypeId" only set in DFormDps.
+         * Auxiliar members "mbAuxEdsRequired" and "mnAuxXmlTypeId" are only set in DFormDps.
          */
 
         if ((mbAuxEdsRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildEds != null)) {
