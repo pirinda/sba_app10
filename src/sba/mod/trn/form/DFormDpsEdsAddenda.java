@@ -398,13 +398,14 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
             switch (moRegistry.getFkXmlAddendaTypeId()) {
                 case DModSysConsts.TS_XML_ADD_TP_CON:
                     validation = moIntContNumPosicionPo.validateField();
+                    
                     if (!validation.isValid()) {
                         DGuiUtils.computeValidation(miClient, validation);
                     }
                     else {
                         posicion = new DElementPosicion();
-                        posicion.getAttDescripcion().setString(jtfContDescripcion.getText());
                         posicion.getAttNumPosicionPo().setInteger(moIntContNumPosicionPo.getValue());
+                        posicion.getAttDescripcion().setString(jtfContDescripcion.getText());
                         posicion.getAttTasaRetencionIva().setDouble(DLibUtils.parseDouble(jtfContTasaRetencionIva.getText()));
                         posicion.getAttTasaRetencionIsr().setDouble(DLibUtils.parseDouble(jtfContTasaRetencionIsr.getText()));
                         row.setComplement(posicion);
@@ -424,8 +425,8 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
         
         // Clear addenda row fields:
         
-        jtfContDescripcion.setText("");
         moIntContNumPosicionPo.setValue(0);
+        jtfContDescripcion.setText("");
         jtfContTasaRetencionIva.setText("");
         jtfContTasaRetencionIsr.setText("");
 
@@ -444,11 +445,13 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
                     posicion = (DElementPosicion) row.getComplement();
                     done = posicion != null;
                     
+                    moIntContNumPosicionPo.setValue(posicion == null ? 0 : posicion.getAttNumPosicionPo().getInteger());
                     jtfContDescripcion.setText(row.getDpsRow().getName().length() <= DESCRIP_MAX_LEN ? row.getDpsRow().getName() : row.getDpsRow().getName().substring(0, DESCRIP_MAX_LEN));
                     jtfContDescripcion.setCaretPosition(0);
-                    moIntContNumPosicionPo.setValue(posicion == null ? 0 : posicion.getAttNumPosicionPo().getInteger());
                     jtfContTasaRetencionIva.setText(DLibUtils.getDecimalFormatAmount().format(row.getDpsRow().getTaxRetainedRate1()));
+                    jtfContTasaRetencionIva.setCaretPosition(0);
                     jtfContTasaRetencionIsr.setText(DLibUtils.getDecimalFormatAmount().format(row.getDpsRow().getTaxRetainedRate2()));
+                    jtfContTasaRetencionIsr.setCaretPosition(0);
                     
                     if (done) {
                         // Restrict user input:

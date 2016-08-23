@@ -657,8 +657,8 @@ public abstract class DTrnEdsUtils {
                     for (Node child : nodeChildren) {
                         namedNodeMapChild = child.getAttributes();
                         eltPosicion = new DElementPosicion();
-                        eltPosicion.getAttDescripcion().setString(DXmlUtils.extractAttributeValue(namedNodeMapChild, eltPosicion.getAttDescripcion().getName(), true));
                         eltPosicion.getAttNumPosicionPo().setInteger(DLibUtils.parseInt(DXmlUtils.extractAttributeValue(namedNodeMapChild, eltPosicion.getAttNumPosicionPo().getName(), true)));
+                        eltPosicion.getAttDescripcion().setString(DXmlUtils.extractAttributeValue(namedNodeMapChild, eltPosicion.getAttDescripcion().getName(), true));
                         eltPosicion.getAttTasaRetencionIva().setDouble(DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMapChild, eltPosicion.getAttTasaRetencionIva().getName(), false)));
                         eltPosicion.getAttTasaRetencionIsr().setDouble(DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMapChild, eltPosicion.getAttTasaRetencionIsr().getName(), false)));
                         addendaContinentalTire.getEltPosicionesPo().getElements().add(eltPosicion);
