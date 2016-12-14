@@ -3623,11 +3623,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclarationDate.getText()) + "'.");
                 validation.setComponent(moDateImportDeclarationDate);
             }
-            else if (!mbIsAdjustment && moKeyModeOfPaymentType.getValue()[0] == DModSysConsts.FS_MOP_TP_NA) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
-                validation.setComponent(moKeyModeOfPaymentType);
-            }
-            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_OTH, DModSysConsts.FS_MOP_TP_NON_DEF })) {
+            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_OTH, DModSysConsts.FS_MOP_TP_NON_DEF })) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
                 validation.setComponent(moKeyModeOfPaymentType);
             }
