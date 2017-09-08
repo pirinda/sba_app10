@@ -21,6 +21,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
@@ -41,6 +42,7 @@ import sba.lib.grid.DGridPaneForm;
 import sba.lib.grid.DGridPaneFormOwner;
 import sba.lib.grid.DGridRow;
 import sba.lib.grid.DGridUtils;
+import sba.lib.grid.cell.DGridCellRendererNumber;
 import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiItem;
@@ -987,6 +989,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
+        // decimal format for unit price:
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0." + DLibUtils.textRepeat("0", ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getPriceUnitaryDecimals()));
+        
         DGuiUtils.setWindowBounds(this, 1024, 640);
 
         moKeyBizPartner.setKeySettings(miClient, DGuiUtils.getLabelName(jlBizPartner.getText()), true);
@@ -1013,7 +1018,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moTextRowName.setTextSettings(moTextRowName.getToolTipText(), 150, 1);
         moDecRowQuantity.setDecimalSettings(DGuiUtils.getLabelName(jlRowQuantity.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecRowPriceUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlRowPriceUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecRowPriceUnitary.setDecimalFormat(decimalFormat);
         moDecRowDiscountUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecRowDiscountUnitary.setDecimalFormat(decimalFormat);
         moDecRowDiscountRow.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountRow.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecRowSubtotalProv.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotalProv.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecRowDiscountDoc.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountDoc.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
@@ -1231,14 +1238,17 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             public void createGridColumns() {
                 int col = 0;
                 DGridColumnForm[] columns = new DGridColumnForm[15];
+                DecimalFormat decimalFormat = new DecimalFormat("#,##0." + DLibUtils.textRepeat("0", ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getPriceUnitaryDecimals()));
 
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_2B, "#");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_QTY, "Cantidad");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_S, DGridConsts.COL_TITLE_NAME);
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Precio u. $ M");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Descto. u. $ M");
+                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Precio u. $ M");
+                columns[col++].setCellRenderer(new DGridCellRendererNumber(decimalFormat));
+                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Descto. u. $ M");
+                columns[col++].setCellRenderer(new DGridCellRendererNumber(decimalFormat));
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Descto. par. $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Importe $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_BOOL_S, "Descto. doc.");

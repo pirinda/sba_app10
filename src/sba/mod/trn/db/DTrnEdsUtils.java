@@ -26,6 +26,7 @@ import cfd.ext.continental.DElementPosicion;
 import cfd.ext.continental.DElementPosicionesPo;
 import cfd.ext.continental.DElementTipoProv;
 import cfd.util.DUtilUtils;
+import cfd.ver3.DElementConcepto;
 import cfd.ver3.DSelloDigital;
 import cfd.ver3.DTimbreFiscal;
 import java.io.ByteArrayInputStream;
@@ -68,6 +69,14 @@ import sba.mod.cfg.db.DDbConfigCompany;
  * @author Sergio Flores
  */
 public abstract class DTrnEdsUtils {
+    
+    public static void configureCfdi(final DGuiSession session, final cfd.ver3.DElementComprobante comprobante) {
+        int decimals = ((DDbConfigCompany) session.getConfigCompany()).getPriceUnitaryDecimals();
+        
+        for (DElementConcepto concepto : comprobante.getEltConceptos().getEltHijosConcepto()) {
+            concepto.getAttValorUnitario().setDecimals(decimals);
+        }
+    }
     
     public static cfd.ver2.DElementComprobante createCfd(final DGuiSession session, final DDbDps dps) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -326,6 +335,7 @@ public abstract class DTrnEdsUtils {
                 concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
                 concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
                 concepto.getAttDescripcion().setString(dpsRow.getName());
+                concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getPriceUnitaryDecimals());
                 concepto.getAttValorUnitario().setDouble(dpsRow.getPriceUnitaryCy());
                 concepto.getAttImporte().setDouble(dpsRow.getSubtotalProvCy_r());
 

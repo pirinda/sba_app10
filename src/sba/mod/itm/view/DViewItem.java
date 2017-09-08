@@ -55,6 +55,7 @@ public class DViewItem extends DGridPaneView {
                 "cmp.name, " +
                 "dep.name, " +
                 "unt.code, " +
+                "tr.name, " +
                 "bar.bar, " +
                 "v.b_buk, " +
                 "v.b_inv, " +
@@ -88,6 +89,8 @@ public class DViewItem extends DGridPaneView {
                 "v.fk_dep = dep.id_dep " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " AS unt ON " +
                 "v.fk_unt = unt.id_unt " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CS_TAX_REG) + " AS tr ON " +
+                "v.fk_tax_reg = tr.id_tax_reg " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
@@ -103,7 +106,7 @@ public class DViewItem extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[25];
+        DGridColumnView[] columns = new DGridColumnView[26];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
@@ -123,6 +126,7 @@ public class DViewItem extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_fre_dsc", "Sin descuentos");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_fre_cmm", "Sin comisiones");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "bar.bar", "Código barras");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tr.name", "Régimen fiscal");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

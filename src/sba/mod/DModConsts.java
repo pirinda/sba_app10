@@ -40,6 +40,7 @@ public abstract class DModConsts {
     public static final int CS_CUR_DEN = 210012;
     public static final int CS_EMS_TP = 210013;
     public static final int CS_XSP = 210101;
+    public static final int CS_TAX_REG = 210201;
 
     public static final int CU_CFG_CO = 220001;
     public static final int CU_CFG_BRA = 220002;
@@ -358,6 +359,7 @@ public abstract class DModConsts {
         TablesMap.put(CS_CUR_DEN, "cs_cur_den");
         TablesMap.put(CS_EMS_TP, "cs_ems_tp");
         TablesMap.put(CS_XSP, "cs_xsp");
+        TablesMap.put(CS_TAX_REG, "cs_tax_reg");
 
         TablesMap.put(CU_CFG_CO, "cu_cfg_co");
         TablesMap.put(CU_CFG_BRA, "cu_cfg_bra");

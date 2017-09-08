@@ -102,6 +102,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected boolean mbCustomerSpecialPrices;
     protected boolean mbCustomerPromotionalPackages;
     protected double mdDelayInterestRate;
+    protected int mnPriceUnitaryDecimals;
     protected String msEdsEmsSmtpHost;
     protected int mnEdsEmsSmtpPort;
     protected boolean mbEdsEmsSmtpSslEnabled;
@@ -246,6 +247,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setCustomerSpecialPrices(boolean b) { mbCustomerSpecialPrices = b; }
     public void setCustomerPromotionalPackages(boolean b) { mbCustomerPromotionalPackages = b; }
     public void setDelayInterestRate(double d) { mdDelayInterestRate = d; }
+    public void setPriceUnitaryDecimals(int n) { mnPriceUnitaryDecimals = n; }
     public void setEdsEmsSmtpHost(String s) { msEdsEmsSmtpHost = s; }
     public void setEdsEmsSmtpPort(int n) { mnEdsEmsSmtpPort = n; }
     public void setEdsEmsSmtpSslEnabled(boolean b) { mbEdsEmsSmtpSslEnabled = b; }
@@ -381,6 +383,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public boolean isCustomerSpecialPrices() { return mbCustomerSpecialPrices; }
     public boolean isCustomerPromotionalPackages() { return mbCustomerPromotionalPackages; }
     public double getDelayInterestRate() { return mdDelayInterestRate; }
+    public int getPriceUnitaryDecimals() { return mnPriceUnitaryDecimals; }
     public String getEdsEmsSmtpHost() { return msEdsEmsSmtpHost; }
     public int getEdsEmsSmtpPort() { return mnEdsEmsSmtpPort; }
     public boolean isEdsEmsSmtpSslEnabled() { return mbEdsEmsSmtpSslEnabled; }
@@ -530,6 +533,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mbCustomerSpecialPrices = false;
         mbCustomerPromotionalPackages = false;
         mdDelayInterestRate = 0;
+        mnPriceUnitaryDecimals = 0;
         msEdsEmsSmtpHost = "";
         mnEdsEmsSmtpPort = 0;
         mbEdsEmsSmtpSslEnabled = false;
@@ -700,6 +704,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mbCustomerSpecialPrices = resultSet.getBoolean("b_cus_spe");
             mbCustomerPromotionalPackages = resultSet.getBoolean("b_cus_prm");
             mdDelayInterestRate = resultSet.getDouble("int_rat");
+            mnPriceUnitaryDecimals = resultSet.getInt("prc_unt_decs");
             msEdsEmsSmtpHost = resultSet.getString("eds_ems_smtp_host");
             mnEdsEmsSmtpPort = resultSet.getInt("eds_ems_smtp_port");
             mbEdsEmsSmtpSslEnabled = resultSet.getBoolean("eds_ems_smtp_ssl");
@@ -861,6 +866,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     (mbCustomerSpecialPrices ? 1 : 0) + ", " +
                     (mbCustomerPromotionalPackages ? 1 : 0) + ", " +
                     mdDelayInterestRate + ", " +
+                    mnPriceUnitaryDecimals + ", " + 
                     "'" + msEdsEmsSmtpHost + "', " +
                     mnEdsEmsSmtpPort + ", " +
                     (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
@@ -1001,6 +1007,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "b_cus_spe = " + (mbCustomerSpecialPrices ? 1 : 0) + ", " +
                     "b_cus_prm = " + (mbCustomerPromotionalPackages ? 1 : 0) + ", " +
                     "int_rat = " + mdDelayInterestRate + ", " +
+                    "prc_unt_decs = " + mnPriceUnitaryDecimals + ", " +
                     "eds_ems_smtp_host = '" + msEdsEmsSmtpHost + "', " +
                     "eds_ems_smtp_port = " + mnEdsEmsSmtpPort + ", " +
                     "eds_ems_smtp_ssl = " + (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
@@ -1148,6 +1155,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setCustomerSpecialPrices(this.isCustomerSpecialPrices());
         registry.setCustomerPromotionalPackages(this.isCustomerPromotionalPackages());
         registry.setDelayInterestRate(this.getDelayInterestRate());
+        registry.setPriceUnitaryDecimals(this.getPriceUnitaryDecimals());
         registry.setEdsEmsSmtpHost(this.getEdsEmsSmtpHost());
         registry.setEdsEmsSmtpPort(this.getEdsEmsSmtpPort());
         registry.setEdsEmsSmtpSslEnabled(this.isEdsEmsSmtpSslEnabled());

@@ -97,6 +97,10 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jlItemPresentation = new javax.swing.JLabel();
         moTextItemPresentation = new sba.lib.gui.bean.DBeanFieldText();
         jPanel6 = new javax.swing.JPanel();
+        jPanel28 = new javax.swing.JPanel();
+        jlTaxRegime = new javax.swing.JLabel();
+        moKeyTaxRegime = new sba.lib.gui.bean.DBeanFieldKey();
+        jbEditTaxRegime = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         moBoolTaxGroupByUser = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel12 = new javax.swing.JPanel();
@@ -107,7 +111,6 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel14 = new javax.swing.JPanel();
         jlAbpItem = new javax.swing.JLabel();
         moKeyAbpItem = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel28 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jPanel24 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -323,6 +326,22 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración:"));
         jPanel6.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTaxRegime.setText("Régimen fiscal:*");
+        jlTaxRegime.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel28.add(jlTaxRegime);
+
+        moKeyTaxRegime.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel28.add(moKeyTaxRegime);
+
+        jbEditTaxRegime.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbEditTaxRegime.setToolTipText("Modificar régimen fiscal");
+        jbEditTaxRegime.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel28.add(jbEditTaxRegime);
+
+        jPanel6.add(jPanel28);
+
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolTaxGroupByUser.setText("Configuración manual de impuestos");
@@ -360,9 +379,6 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel14.add(moKeyAbpItem);
 
         jPanel6.add(jPanel14);
-
-        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel6.add(jPanel28);
 
         jPanel2.add(jPanel6);
 
@@ -883,12 +899,13 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyItemLine.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemLine), true);
         moTextItemCode.setTextSettings(DGuiUtils.getLabelName(jlItemCode), lenCode == 0 || lenCode > 20 ? 20 : lenCode);
         moTextItemName.setTextSettings(DGuiUtils.getLabelName(jlItemName), 100);
-        moTextIngredient.setTextSettings(DGuiUtils.getLabelName(jlIngredient), 100, 0);
+        moTextItemPresentation.setTextSettings(DGuiUtils.getLabelName(jlItemPresentation), 50, 0);
+        moKeyTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxRegime), true);
         moBoolTaxGroupByUser.setBooleanSettings(moBoolTaxGroupByUser.getText(), false);
         moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup), true);
         moBoolAbpItemByUser.setBooleanSettings(moBoolAbpItemByUser.getText(), false);
         moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem), true);
-        moTextItemPresentation.setTextSettings(DGuiUtils.getLabelName(jlItemPresentation), 50, 0);
+        moTextIngredient.setTextSettings(DGuiUtils.getLabelName(jlIngredient), 100, 0);
         moBoolBulk.setBooleanSettings(moBoolBulk.getText(), false);
         moBoolInventoriable.setBooleanSettings(moBoolInventoriable.getText(), false);
         moBoolLotApplying.setBooleanSettings(moBoolLotApplying.getText(), false);
@@ -936,6 +953,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moTextItemCode);
         moFields.addField(moTextItemName);
         moFields.addField(moTextItemPresentation);
+        moFields.addField(moKeyTaxRegime);
         moFields.addField(moBoolTaxGroupByUser);
         moFields.addField(moKeyTaxGroup);
         moFields.addField(moBoolAbpItemByUser);
@@ -1163,6 +1181,12 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         }
 
         moKeyManufacturer.requestFocus();
+    }
+
+    private void actionEditTaxRegime() {
+        jbEditTaxRegime.setEnabled(false);
+        moKeyTaxRegime.setEnabled(true);
+        moKeyTaxRegime.requestFocus();
     }
 
     private void itemStateKeyItemGenus(boolean computeItemNameCode) {
@@ -1766,6 +1790,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JPanel jPanel70;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JButton jbEditTaxRegime;
     private javax.swing.JButton jbNewBrand;
     private javax.swing.JButton jbNewItemGenus;
     private javax.swing.JButton jbNewItemLine;
@@ -1806,6 +1831,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlPriceSrp;
     private javax.swing.JLabel jlTaxGroup;
     private javax.swing.JLabel jlTaxRate;
+    private javax.swing.JLabel jlTaxRegime;
     private javax.swing.JLabel jlUnit;
     private javax.swing.JLabel jlUnitContained;
     private javax.swing.JLabel jlUnitVirtual;
@@ -1860,6 +1886,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private sba.lib.gui.bean.DBeanFieldKey moKeyItemPackage;
     private sba.lib.gui.bean.DBeanFieldKey moKeyManufacturer;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTaxGroup;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyTaxRegime;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnit;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitContained;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitVirtual;
@@ -1877,6 +1904,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jbNewItemLine.addActionListener(this);
         jbNewBrand.addActionListener(this);
         jbNewManufacturer.addActionListener(this);
+        jbEditTaxRegime.addActionListener(this);
 
         moTextItemCode.addFocusListener(this);
         moTextItemName.addFocusListener(this);
@@ -1911,6 +1939,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jbNewItemLine.removeActionListener(this);
         jbNewBrand.removeActionListener(this);
         jbNewManufacturer.removeActionListener(this);
+        jbEditTaxRegime.removeActionListener(this);
 
         moTextItemCode.removeFocusListener(this);
         moTextItemName.removeFocusListener(this);
@@ -1942,6 +1971,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyItemGenus, DModConsts.IU_GEN, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTaxRegime, DModConsts.CS_TAX_REG, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTaxGroup, DModConsts.FU_TAX_GRP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyAbpItem, DModConsts.F_ABP_ITM, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyBrand, DModConsts.IU_BRD, DLibConsts.UNDEFINED, null);
@@ -2024,6 +2054,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyUnitContained.setValue(new int[] { moRegistry.getFkUnitContainedId() });
         moKeyItemPackage.setValue(new int[] { moRegistry.getFkItemPackageId_n() });
         moKeyTaxGroup.setValue(new int[] { moRegistry.getFkTaxGroupId_n() });
+        moKeyTaxRegime.setValue(new int[] { moRegistry.getFkTaxRegimeId() });
         moKeyAbpItem.setValue(new int[] { moRegistry.getFkAbpItemId_n() });
 
         moBoolTaxGroupByUser.setValue(moRegistry.getFkTaxGroupId_n() != DLibConsts.UNDEFINED);
@@ -2041,6 +2072,9 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         
         moTextBarcode1.setValue(moRegistry.getChildBarcodes().size() < 1 ? "" : moRegistry.getChildBarcodes().get(0).getBarcode());
         moTextBarcode2.setValue(moRegistry.getChildBarcodes().size() < 2 ? "" : moRegistry.getChildBarcodes().get(1).getBarcode());
+        
+        jbEditTaxRegime.setEnabled(true);
+        moKeyTaxRegime.setEnabled(false);
 
         itemStateKeyBrand(false);
         itemStateKeyManufacturer(false);
@@ -2099,6 +2133,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         registry.setFkUnitContainedId(moKeyUnitContained.getValue()[0]);
         registry.setFkItemPackageId_n(moKeyItemPackage.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyItemPackage.getValue()[0]);
         registry.setFkTaxGroupId_n(!moBoolTaxGroupByUser.getValue() ? DLibConsts.UNDEFINED : moKeyTaxGroup.getValue()[0]);
+        registry.setFkTaxRegimeId(moKeyTaxRegime.getValue()[0]);
         registry.setFkAbpItemId_n(!moBoolAbpItemByUser.getValue() ? DLibConsts.UNDEFINED : moKeyAbpItem.getValue()[0]);
         
         if (!moTextBarcode1.getValue().isEmpty()) {
@@ -2154,6 +2189,9 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
             }
             else if (button == jbNewManufacturer) {
                 actionNewManufacturer();
+            }
+            else if (button == jbEditTaxRegime) {
+                actionEditTaxRegime();
             }
         }
     }

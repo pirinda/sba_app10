@@ -75,6 +75,7 @@ public class DDbItem extends DDbRegistryUser {
     protected int mnFkUnitContainedId;
     protected int mnFkItemPackageId_n;
     protected int mnFkTaxGroupId_n;
+    protected int mnFkTaxRegimeId;
     protected int mnFkAbpItemId_n;
     /*
     protected int mnFkUserInsertId;
@@ -227,6 +228,7 @@ public class DDbItem extends DDbRegistryUser {
     public void setFkUnitContainedId(int n) { mnFkUnitContainedId = n; }
     public void setFkItemPackageId_n(int n) { mnFkItemPackageId_n = n; }
     public void setFkTaxGroupId_n(int n) { mnFkTaxGroupId_n = n; }
+    public void setFkTaxRegimeId(int n) { mnFkTaxRegimeId = n; }
     public void setFkAbpItemId_n(int n) { mnFkAbpItemId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -280,6 +282,7 @@ public class DDbItem extends DDbRegistryUser {
     public int getFkUnitContainedId() { return mnFkUnitContainedId; }
     public int getFkItemPackageId_n() { return mnFkItemPackageId_n; }
     public int getFkTaxGroupId_n() { return mnFkTaxGroupId_n; }
+    public int getFkTaxRegimeId() { return mnFkTaxRegimeId; }
     public int getFkAbpItemId_n() { return mnFkAbpItemId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -356,6 +359,7 @@ public class DDbItem extends DDbRegistryUser {
         mnFkUnitContainedId = 0;
         mnFkItemPackageId_n = 0;
         mnFkTaxGroupId_n = 0;
+        mnFkTaxRegimeId = 0;
         mnFkAbpItemId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -462,6 +466,7 @@ public class DDbItem extends DDbRegistryUser {
             mnFkUnitContainedId = resultSet.getInt("fk_unt_con");
             mnFkItemPackageId_n = resultSet.getInt("fk_itm_pac_n");
             mnFkTaxGroupId_n = resultSet.getInt("fk_tax_grp_n");
+            mnFkTaxRegimeId = resultSet.getInt("fk_tax_reg");
             mnFkAbpItemId_n = resultSet.getInt("fk_abp_itm_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -583,6 +588,7 @@ public class DDbItem extends DDbRegistryUser {
                     mnFkUnitContainedId + ", " +
                     (mnFkItemPackageId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPackageId_n) + ", " +
                     (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
+                    mnFkTaxRegimeId + ", " + 
                     (mnFkAbpItemId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAbpItemId_n) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -641,6 +647,7 @@ public class DDbItem extends DDbRegistryUser {
                     "fk_unt_con = " + mnFkUnitContainedId + ", " +
                     "fk_itm_pac_n = " + (mnFkItemPackageId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPackageId_n) + ", " +
                     "fk_tax_grp_n = " + (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
+                    "fk_tax_reg = " + mnFkTaxRegimeId + ", " +
                     "fk_abp_itm_n = " + (mnFkAbpItemId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAbpItemId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -719,6 +726,7 @@ public class DDbItem extends DDbRegistryUser {
         registry.setFkUnitContainedId(this.getFkUnitContainedId());
         registry.setFkItemPackageId_n(this.getFkItemPackageId_n());
         registry.setFkTaxGroupId_n(this.getFkTaxGroupId_n());
+        registry.setFkTaxRegimeId(this.getFkTaxRegimeId());
         registry.setFkAbpItemId_n(this.getFkAbpItemId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

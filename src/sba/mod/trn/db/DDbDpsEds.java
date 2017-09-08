@@ -262,6 +262,7 @@ public class DDbDpsEds extends DDbRegistry {
                 case DModSysConsts.TS_XML_TP_CFDI:
                     // Create EDS:
                     comprobante3 = DCfdUtils.getCfdi(msDocXml);
+                    DTrnEdsUtils.configureCfdi(session, comprobante3);
 
                     // Append to EDS the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {

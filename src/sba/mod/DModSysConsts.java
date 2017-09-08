@@ -176,6 +176,8 @@ public abstract class DModSysConsts {
     public static final int CS_XSP_FCG = 2;     // FORCOGSA
     public static final int CS_XSP_FNK = 3;     // Finkok
 
+    public static final int CS_TAX_REG_NA = 1;
+
     public static final int BS_BPR_CL_VEN = 1;
     public static final int BS_BPR_CL_CUS = 2;
     public static final int BS_BPR_CL_CDR = 3;

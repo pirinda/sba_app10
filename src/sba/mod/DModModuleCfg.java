@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistry;
@@ -20,6 +21,7 @@ import sba.lib.gui.DGuiModule;
 import sba.lib.gui.DGuiOptionPicker;
 import sba.lib.gui.DGuiParams;
 import sba.lib.gui.DGuiReport;
+import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.cfg.db.DDbBranchCash;
 import sba.mod.cfg.db.DDbBranchWarehouse;
 import sba.mod.cfg.db.DDbCertificate;
@@ -28,6 +30,7 @@ import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbSysCountry;
 import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysCurrencyDenomination;
+import sba.mod.cfg.db.DDbSysTaxRegime;
 import sba.mod.cfg.db.DDbSysXmlSignatureProvider;
 import sba.mod.cfg.db.DDbUser;
 import sba.mod.cfg.db.DDbUserBranch;
@@ -226,6 +229,9 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
             case DModConsts.CS_XSP:
                 registry = new DDbSysXmlSignatureProvider();
                 break;
+            case DModConsts.CS_TAX_REG:
+                registry = new DDbSysTaxRegime();
+                break;
             case DModConsts.CU_CFG_CO:
                 registry = new DDbConfigCompany();
                 break;
@@ -356,6 +362,14 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
                 settings.setCodeApplying(true);
                 sql = "SELECT id_xsp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
+                break;
+            case DModConsts.CS_TAX_REG:
+                settings = new DGuiCatalogueSettings("Régimen fiscal", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_tax_reg AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
+                        "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND " +
+                        "(id_tax_reg = " + DModSysConsts.CS_TAX_REG_NA + " OR " + (((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId() == DModSysConsts.BS_IDY_TP_PER ? "b_per" : "b_org") + ") " +
+                        "ORDER BY sort ";
                 break;
             case DModConsts.CU_CFG_CO:
                 break;
