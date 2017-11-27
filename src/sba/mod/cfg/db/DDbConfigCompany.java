@@ -8,9 +8,11 @@ package sba.mod.cfg.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.Date;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiConfigCompany;
@@ -102,7 +104,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected boolean mbCustomerSpecialPrices;
     protected boolean mbCustomerPromotionalPackages;
     protected double mdDelayInterestRate;
-    protected int mnPriceUnitaryDecimals;
+    protected int mnDecimalsQuantity;
+    protected int mnDecimalsPriceUnitary;
     protected String msEdsEmsSmtpHost;
     protected int mnEdsEmsSmtpPort;
     protected boolean mbEdsEmsSmtpSslEnabled;
@@ -124,6 +127,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected int mnFkCountryId;
     protected int mnFkCurrencyId;
     protected int mnFkAddressFormatTypeId;
+    protected int mnFkTaxRegimeId;
     protected int mnFkAccountCashId_n;
     protected int mnFkAccountWarehouseId_n;
     protected int mnFkAccountVendorId_n;
@@ -165,6 +169,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected Date mtTsUserUpdate;
     */
 
+    protected DecimalFormat moDecimalFormatQuantity;
+    protected DecimalFormat moDecimalFormatPriceUnitary;
+            
     public DDbConfigCompany() {
         super(DModConsts.CU_CFG_CO);
         initRegistry();
@@ -247,7 +254,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setCustomerSpecialPrices(boolean b) { mbCustomerSpecialPrices = b; }
     public void setCustomerPromotionalPackages(boolean b) { mbCustomerPromotionalPackages = b; }
     public void setDelayInterestRate(double d) { mdDelayInterestRate = d; }
-    public void setPriceUnitaryDecimals(int n) { mnPriceUnitaryDecimals = n; }
+    public void setDecimalsQuantity(int n) { mnDecimalsQuantity = n; }
+    public void setDecimalsPriceUnitary(int n) { mnDecimalsPriceUnitary = n; }
     public void setEdsEmsSmtpHost(String s) { msEdsEmsSmtpHost = s; }
     public void setEdsEmsSmtpPort(int n) { mnEdsEmsSmtpPort = n; }
     public void setEdsEmsSmtpSslEnabled(boolean b) { mbEdsEmsSmtpSslEnabled = b; }
@@ -267,6 +275,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setFkCountryId(int n) { mnFkCountryId = n; }
     public void setFkCurrencyId(int n) { mnFkCurrencyId = n; }
     public void setFkAddressFormatTypeId(int n) { mnFkAddressFormatTypeId = n; }
+    public void setFkTaxRegimeId(int n) { mnFkTaxRegimeId = n; }
     public void setFkAccountCashId_n(int n) { mnFkAccountCashId_n = n; }
     public void setFkAccountWarehouseId_n(int n) { mnFkAccountWarehouseId_n = n; }
     public void setFkAccountVendorId_n(int n) { mnFkAccountVendorId_n = n; }
@@ -383,7 +392,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public boolean isCustomerSpecialPrices() { return mbCustomerSpecialPrices; }
     public boolean isCustomerPromotionalPackages() { return mbCustomerPromotionalPackages; }
     public double getDelayInterestRate() { return mdDelayInterestRate; }
-    public int getPriceUnitaryDecimals() { return mnPriceUnitaryDecimals; }
+    public int getDecimalsQuantity() { return mnDecimalsQuantity; }
+    public int getDecimalsPriceUnitary() { return mnDecimalsPriceUnitary; }
     public String getEdsEmsSmtpHost() { return msEdsEmsSmtpHost; }
     public int getEdsEmsSmtpPort() { return mnEdsEmsSmtpPort; }
     public boolean isEdsEmsSmtpSslEnabled() { return mbEdsEmsSmtpSslEnabled; }
@@ -403,6 +413,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public int getFkCountryId() { return mnFkCountryId; }
     public int getFkCurrencyId() { return mnFkCurrencyId; }
     public int getFkAddressFormatTypeId() { return mnFkAddressFormatTypeId; }
+    public int getFkTaxRegimeId() { return mnFkTaxRegimeId; }
     public int getFkAccountCashId_n() { return mnFkAccountCashId_n; }
     public int getFkAccountWarehouseId_n() { return mnFkAccountWarehouseId_n; }
     public int getFkAccountVendorId_n() { return mnFkAccountVendorId_n; }
@@ -442,6 +453,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public DecimalFormat getDecimalFormatQuantity() { return moDecimalFormatQuantity; }
+    public DecimalFormat getDecimalFormatPriceUnitary() { return moDecimalFormatPriceUnitary; }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkBizPartnerId = pk[0];
@@ -533,7 +547,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mbCustomerSpecialPrices = false;
         mbCustomerPromotionalPackages = false;
         mdDelayInterestRate = 0;
-        mnPriceUnitaryDecimals = 0;
+        mnDecimalsQuantity = 0;
+        mnDecimalsPriceUnitary = 0;
         msEdsEmsSmtpHost = "";
         mnEdsEmsSmtpPort = 0;
         mbEdsEmsSmtpSslEnabled = false;
@@ -553,6 +568,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnFkCountryId = 0;
         mnFkCurrencyId = 0;
         mnFkAddressFormatTypeId = 0;
+        mnFkTaxRegimeId = 0;
         mnFkAccountCashId_n = 0;
         mnFkAccountWarehouseId_n = 0;
         mnFkAccountVendorId_n = 0;
@@ -591,6 +607,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        moDecimalFormatQuantity = null;
+        moDecimalFormatPriceUnitary = null;
     }
 
     @Override
@@ -704,7 +723,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mbCustomerSpecialPrices = resultSet.getBoolean("b_cus_spe");
             mbCustomerPromotionalPackages = resultSet.getBoolean("b_cus_prm");
             mdDelayInterestRate = resultSet.getDouble("int_rat");
-            mnPriceUnitaryDecimals = resultSet.getInt("prc_unt_decs");
+            mnDecimalsQuantity = resultSet.getInt("decs_qty");
+            mnDecimalsPriceUnitary = resultSet.getInt("decs_prc_unt");
             msEdsEmsSmtpHost = resultSet.getString("eds_ems_smtp_host");
             mnEdsEmsSmtpPort = resultSet.getInt("eds_ems_smtp_port");
             mbEdsEmsSmtpSslEnabled = resultSet.getBoolean("eds_ems_smtp_ssl");
@@ -724,6 +744,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mnFkCountryId = resultSet.getInt("fk_cty");
             mnFkCurrencyId = resultSet.getInt("fk_cur");
             mnFkAddressFormatTypeId = resultSet.getInt("fk_baf_tp");
+            mnFkTaxRegimeId = resultSet.getInt("fk_tax_reg");
             mnFkAccountCashId_n = resultSet.getInt("fk_acc_csh_n");
             mnFkAccountWarehouseId_n = resultSet.getInt("fk_acc_wah_n");
             mnFkAccountVendorId_n = resultSet.getInt("fk_acc_ven_n");
@@ -763,6 +784,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
 
+            moDecimalFormatQuantity = new DecimalFormat("#,##0" + (mnDecimalsQuantity == 0 ? "" : "." + DLibUtils.textRepeat("0", mnDecimalsQuantity)));
+            moDecimalFormatPriceUnitary = new DecimalFormat("#,##0" + (mnDecimalsPriceUnitary == 0 ? "" : "." + DLibUtils.textRepeat("0", mnDecimalsPriceUnitary)));
+            
             mbRegistryNew = false;
         }
 
@@ -866,7 +890,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     (mbCustomerSpecialPrices ? 1 : 0) + ", " +
                     (mbCustomerPromotionalPackages ? 1 : 0) + ", " +
                     mdDelayInterestRate + ", " +
-                    mnPriceUnitaryDecimals + ", " + 
+                    mnDecimalsQuantity + ", " + 
+                    mnDecimalsPriceUnitary + ", " + 
                     "'" + msEdsEmsSmtpHost + "', " +
                     mnEdsEmsSmtpPort + ", " +
                     (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
@@ -886,6 +911,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     mnFkCountryId + ", " +
                     mnFkCurrencyId + ", " +
                     mnFkAddressFormatTypeId + ", " +
+                    mnFkTaxRegimeId + ", " + 
                     (mnFkAccountCashId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountCashId_n) + ", " +
                     (mnFkAccountWarehouseId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountWarehouseId_n) + ", " +
                     (mnFkAccountVendorId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountVendorId_n) + ", " +
@@ -1007,7 +1033,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "b_cus_spe = " + (mbCustomerSpecialPrices ? 1 : 0) + ", " +
                     "b_cus_prm = " + (mbCustomerPromotionalPackages ? 1 : 0) + ", " +
                     "int_rat = " + mdDelayInterestRate + ", " +
-                    "prc_unt_decs = " + mnPriceUnitaryDecimals + ", " +
+                    "decs_qty = " + mnDecimalsQuantity + ", " +
+                    "decs_prc_unt = " + mnDecimalsPriceUnitary + ", " +
                     "eds_ems_smtp_host = '" + msEdsEmsSmtpHost + "', " +
                     "eds_ems_smtp_port = " + mnEdsEmsSmtpPort + ", " +
                     "eds_ems_smtp_ssl = " + (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
@@ -1027,6 +1054,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "fk_cty = " + mnFkCountryId + ", " +
                     "fk_cur = " + mnFkCurrencyId + ", " +
                     "fk_baf_tp = " + mnFkAddressFormatTypeId + ", " +
+                    "fk_tax_reg = " + mnFkTaxRegimeId + ", " +
                     "fk_acc_csh_n = " + (mnFkAccountCashId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountCashId_n) + ", " +
                     "fk_acc_wah_n = " + (mnFkAccountWarehouseId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountWarehouseId_n) + ", " +
                     "fk_acc_ven_n = " + (mnFkAccountVendorId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountVendorId_n) + ", " +
@@ -1155,7 +1183,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setCustomerSpecialPrices(this.isCustomerSpecialPrices());
         registry.setCustomerPromotionalPackages(this.isCustomerPromotionalPackages());
         registry.setDelayInterestRate(this.getDelayInterestRate());
-        registry.setPriceUnitaryDecimals(this.getPriceUnitaryDecimals());
+        registry.setDecimalsQuantity(this.getDecimalsQuantity());
+        registry.setDecimalsPriceUnitary(this.getDecimalsPriceUnitary());
         registry.setEdsEmsSmtpHost(this.getEdsEmsSmtpHost());
         registry.setEdsEmsSmtpPort(this.getEdsEmsSmtpPort());
         registry.setEdsEmsSmtpSslEnabled(this.isEdsEmsSmtpSslEnabled());
@@ -1175,6 +1204,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setFkCountryId(this.getFkCountryId());
         registry.setFkCurrencyId(this.getFkCurrencyId());
         registry.setFkAddressFormatTypeId(this.getFkAddressFormatTypeId());
+        registry.setFkTaxRegimeId(this.getFkTaxRegimeId());
         registry.setFkAccountCashId_n(this.getFkAccountCashId_n());
         registry.setFkAccountWarehouseId_n(this.getFkAccountWarehouseId_n());
         registry.setFkAccountVendorId_n(this.getFkAccountVendorId_n());

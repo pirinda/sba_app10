@@ -7,9 +7,12 @@ package sba.mod.itm.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import sba.gui.util.DUtilConsts;
+import sba.lib.DLibConsts;
 import sba.lib.db.DDbConsts;
+import sba.lib.db.DDbRegistry;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
@@ -19,10 +22,13 @@ import sba.mod.DModConsts;
  * @author Sergio Flores
  */
 public class DDbUnit extends DDbRegistryUser {
+    
+    public static final int FIELD_CFD_UNT_KEY = DDbRegistry.FIELD_BASE + 1;
 
     protected int mnPkUnitId;
     protected String msCode;
     protected String msName;
+    protected String msCfdUnitKey;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -44,6 +50,7 @@ public class DDbUnit extends DDbRegistryUser {
     public void setPkUnitId(int n) { mnPkUnitId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setCfdUnitKey(String s) { msCfdUnitKey = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -58,6 +65,7 @@ public class DDbUnit extends DDbRegistryUser {
     public int getPkUnitId() { return mnPkUnitId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public String getCfdUnitKey() { return msCfdUnitKey; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -86,6 +94,7 @@ public class DDbUnit extends DDbRegistryUser {
         mnPkUnitId = 0;
         msCode = "";
         msName = "";
+        msCfdUnitKey = "";
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -143,6 +152,7 @@ public class DDbUnit extends DDbRegistryUser {
             mnPkUnitId = resultSet.getInt("id_unt");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            msCfdUnitKey = resultSet.getString("cfd_unt_key");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -180,6 +190,7 @@ public class DDbUnit extends DDbRegistryUser {
                     mnPkUnitId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
+                    "'" + msCfdUnitKey + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -199,6 +210,7 @@ public class DDbUnit extends DDbRegistryUser {
                     //"id_unt = " + mnPkUnitId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "cfd_unt_key = '" + msCfdUnitKey + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -224,6 +236,7 @@ public class DDbUnit extends DDbRegistryUser {
         registry.setPkUnitId(this.getPkUnitId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setCfdUnitKey(this.getCfdUnitKey());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -237,5 +250,47 @@ public class DDbUnit extends DDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+    
+    @Override
+    public Object readField(final Statement statement, final int[] pk, final int field) throws SQLException, Exception {
+        if (field < DDbRegistry.FIELD_BASE) {
+            return super.readField(statement, pk, field);
+        }
+        else {
+            Object value = null;
+            ResultSet resultSet = null;
+
+            initQueryMembers();
+            mnQueryResultId = DDbConsts.READ_ERROR;
+
+            msSql = "SELECT ";
+
+            switch (field) {
+                case FIELD_CFD_UNT_KEY:
+                    msSql += "cfd_unt_key ";
+                    break;
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+
+            msSql += getSqlFromWhere(pk);
+
+            resultSet = statement.executeQuery(msSql);
+            if (!resultSet.next()) {
+                throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
+            }
+            else {
+                switch (field) {
+                    case FIELD_CFD_UNT_KEY:
+                        value = resultSet.getString(1);
+                        break;
+                    default:
+                }
+            }
+
+            mnQueryResultId = DDbConsts.READ_OK;
+            return value;
+        }
     }
 }

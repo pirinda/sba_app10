@@ -87,6 +87,8 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jPanel3 = new javax.swing.JPanel();
         jlCode = new javax.swing.JLabel();
         moTextCode = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKey = new javax.swing.JLabel();
+        moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
@@ -206,7 +208,17 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jlCode.setText("Código:*");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel3.add(jlCode);
+
+        moTextCode.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(moTextCode);
+
+        jlCfdItemKey.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlCfdItemKey.setText("Clave ProdServ:");
+        jlCfdItemKey.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel3.add(jlCfdItemKey);
+
+        moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel3.add(moTextCfdItemKey);
 
         jPanel1.add(jPanel3);
 
@@ -357,6 +369,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moBoolAbpItemByUser.setBooleanSettings(moBoolAbpItemByUser.getText(), false);
         moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem.getText()), true);
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), lenCode == 0 || lenCode > 10 ? 10 : lenCode);
+        moTextCfdItemKey.setTextSettings(DGuiUtils.getLabelName(jlCfdItemKey), 8, 0);
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 25);
         moBoolBulk.setBooleanSettings(moBoolBulk.getText(), false);
         moBoolInventoriable.setBooleanSettings(moBoolInventoriable.getText(), false);
@@ -377,6 +390,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moFields.addField(moBoolAbpItemByUser);
         moFields.addField(moKeyAbpItem);
         moFields.addField(moTextCode);
+        moFields.addField(moTextCfdItemKey);
         moFields.addField(moTextName);
         moFields.addField(moBoolBulk);
         moFields.addField(moBoolInventoriable);
@@ -554,6 +568,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private javax.swing.JButton jbNewManufacturer;
     private javax.swing.JLabel jlAbpItem;
     private javax.swing.JLabel jlBrand;
+    private javax.swing.JLabel jlCfdItemKey;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
     private javax.swing.JLabel jlDepartment;
@@ -580,6 +595,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private sba.lib.gui.bean.DBeanFieldKey moKeyManufacturer;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTaxGroup;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnit;
+    private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
@@ -635,8 +651,10 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
 
-            moRegistry.setFkItemGenusId(mnParamItemGenusId);
-            mnParamItemGenusId = DLibConsts.UNDEFINED;
+            if (mnParamItemGenusId != DLibConsts.UNDEFINED) {
+                moRegistry.setFkItemGenusId(mnParamItemGenusId);
+                mnParamItemGenusId = DLibConsts.UNDEFINED;
+            }
 
             jtfRegistryKey.setText("");
         }
@@ -651,6 +669,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         moTextCode.setValue(moRegistry.getCode());
         moTextName.setValue(moRegistry.getName());
+        moTextCfdItemKey.setValue(moRegistry.getCfdItemKey());
         moBoolBulk.setValue(moRegistry.isBulk());
         moBoolInventoriable.setValue(moRegistry.isInventoriable());
         moBoolLotApplying.setValue(moRegistry.isLotApplying());
@@ -709,6 +728,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         registry.setCode(moTextCode.getValue());
         registry.setName(moTextName.getValue());
+        registry.setCfdItemKey(moTextCfdItemKey.getValue());
         registry.setBulk(moBoolBulk.getValue());
         registry.setInventoriable(moBoolInventoriable.getValue());
         registry.setLotApplying(moBoolLotApplying.getValue());

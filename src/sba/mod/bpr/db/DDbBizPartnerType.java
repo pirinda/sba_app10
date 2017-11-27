@@ -29,6 +29,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
     protected double mdCreditLimit;
     protected int mnCreditDays;
     protected int mnCreditDaysGrace;
+    protected String msCfdUsage;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -60,6 +61,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
     public void setCreditLimit(double d) { mdCreditLimit = d; }
     public void setCreditDays(int n) { mnCreditDays = n; }
     public void setCreditDaysGrace(int n) { mnCreditDaysGrace = n; }
+    public void setCfdUsage(String s) { msCfdUsage = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -82,6 +84,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
     public double getCreditLimit() { return mdCreditLimit; }
     public int getCreditDays() { return mnCreditDays; }
     public int getCreditDaysGrace() { return mnCreditDaysGrace; }
+    public String getCfdUsage() { return msCfdUsage; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -119,6 +122,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
         mdCreditLimit = 0;
         mnCreditDays = 0;
         mnCreditDaysGrace = 0;
+        msCfdUsage = "";
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -187,6 +191,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
             mdCreditLimit = resultSet.getDouble("cdt_lim");
             mnCreditDays = resultSet.getInt("cdt_day");
             mnCreditDaysGrace = resultSet.getInt("cdt_day_gra");
+            msCfdUsage = resultSet.getString("cfd_use");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -232,6 +237,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
                     mdCreditLimit + ", " +
                     mnCreditDays + ", " +
                     mnCreditDaysGrace + ", " +
+                    "'" + msCfdUsage + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -261,6 +267,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
                     "cdt_lim = " + mdCreditLimit + ", " +
                     "cdt_day = " + mnCreditDays + ", " +
                     "cdt_day_gra = " + mnCreditDaysGrace + ", " +
+                    "cfd_use = '" + msCfdUsage + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -294,6 +301,7 @@ public class DDbBizPartnerType extends DDbRegistryUser {
         registry.setCreditLimit(this.getCreditLimit());
         registry.setCreditDays(this.getCreditDays());
         registry.setCreditDaysGrace(this.getCreditDaysGrace());
+        registry.setCfdUsage(this.getCfdUsage());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

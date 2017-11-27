@@ -329,10 +329,10 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
         DDbDpsEds eds = dps.getChildEds();
 
-        if (eds == null || eds.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI) {
+        if (eds == null || !DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
             proceed = true; // DPS without EDS or with EDS of type CFD can be annuled anytime!
         }
-        else if (eds.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI) {
+        else {
             switch (eds.getFkXmlStatusId()) {
                 case DModSysConsts.TS_XML_ST_ANN:
                     msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.";

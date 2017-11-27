@@ -37,6 +37,7 @@ public class DDbItemGenus extends DDbRegistryUser {
     protected int mnNameOrderItem;
     protected String msSerialNumberName;
     protected int mnSerialNumberLength;
+    protected String msCfdItemKey;
     protected boolean mbCodeEditable;
     protected boolean mbNameEditable;
     protected boolean mbIngredientApplying;
@@ -100,6 +101,7 @@ public class DDbItemGenus extends DDbRegistryUser {
     public void setNameOrderItem(int n) { mnNameOrderItem = n; }
     public void setSerialNumberName(String s) { msSerialNumberName = s; }
     public void setSerialNumberLength(int n) { mnSerialNumberLength = n; }
+    public void setCfdItemKey(String s) { msCfdItemKey = s; }
     public void setCodeEditable(boolean b) { mbCodeEditable = b; }
     public void setNameEditable(boolean b) { mbNameEditable = b; }
     public void setIngredientApplying(boolean b) { mbIngredientApplying = b; }
@@ -154,6 +156,7 @@ public class DDbItemGenus extends DDbRegistryUser {
     public int getNameOrderItem() { return mnNameOrderItem; }
     public String getSerialNumberName() { return msSerialNumberName; }
     public int getSerialNumberLength() { return mnSerialNumberLength; }
+    public String getCfdItemKey() { return msCfdItemKey; }
     public boolean isCodeEditable() { return mbCodeEditable; }
     public boolean isNameEditable() { return mbNameEditable; }
     public boolean isIngredientApplying() { return mbIngredientApplying; }
@@ -222,6 +225,7 @@ public class DDbItemGenus extends DDbRegistryUser {
         mnNameOrderItem = 0;
         msSerialNumberName = "";
         mnSerialNumberLength = 0;
+        msCfdItemKey = "";
         mbCodeEditable = false;
         mbNameEditable = false;
         mbIngredientApplying = false;
@@ -319,6 +323,7 @@ public class DDbItemGenus extends DDbRegistryUser {
             mnNameOrderItem = resultSet.getInt("name_pos_itm");
             msSerialNumberName = resultSet.getString("snr_name");
             mnSerialNumberLength = resultSet.getInt("snr_len");
+            msCfdItemKey = resultSet.getString("cfd_itm_key");
             mbCodeEditable = resultSet.getBoolean("b_code_edit");
             mbNameEditable = resultSet.getBoolean("b_name_edit");
             mbIngredientApplying = resultSet.getBoolean("b_ing");
@@ -396,6 +401,7 @@ public class DDbItemGenus extends DDbRegistryUser {
                     mnNameOrderItem + ", " +
                     "'" + msSerialNumberName + "', " +
                     mnSerialNumberLength + ", " +
+                    "'" + msCfdItemKey + "', " + 
                     (mbCodeEditable ? 1 : 0) + ", " +
                     (mbNameEditable ? 1 : 0) + ", " +
                     (mbIngredientApplying ? 1 : 0) + ", " +
@@ -455,6 +461,7 @@ public class DDbItemGenus extends DDbRegistryUser {
                     "name_pos_itm = " + mnNameOrderItem + ", " +
                     "snr_name = '" + msSerialNumberName + "', " +
                     "snr_len = " + mnSerialNumberLength + ", " +
+                    "cfd_itm_key = '" + msCfdItemKey + "', " +
                     "b_code_edit = " + (mbCodeEditable ? 1 : 0) + ", " +
                     "b_name_edit = " + (mbNameEditable ? 1 : 0) + ", " +
                     "b_ing = " + (mbIngredientApplying ? 1 : 0) + ", " +
@@ -520,6 +527,7 @@ public class DDbItemGenus extends DDbRegistryUser {
         registry.setNameOrderItem(this.getNameOrderItem());
         registry.setSerialNumberName(this.getSerialNumberName());
         registry.setSerialNumberLength(this.getSerialNumberLength());
+        registry.setCfdItemKey(this.getCfdItemKey());
         registry.setCodeEditable(this.isCodeEditable());
         registry.setNameEditable(this.isNameEditable());
         registry.setIngredientApplying(this.isIngredientApplying());

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="G01" name="Adquisición de mercancias" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="2" code="G02" name="Devoluciones, descuentos o bonificaciones" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="3" code="G03" name="Gastos en general" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="4" code="I01" name="Construcciones" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="5" code="I02" name="Mobilario y equipo de oficina por inversiones" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="6" code="I03" name="Equipo de transporte" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="7" code="I04" name="Equipo de computo y accesorios" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="8" code="I05" name="Dados, troqueles, moldes, matrices y herramental" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="9" code="I06" name="Comunicaciones telefónicas" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="10" code="I07" name="Comunicaciones satelitales" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="11" code="I08" name="Otra maquinaria y equipo" term_start="2017-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="12" code="D01" name="Honorarios médicos, dentales y gastos hospitalarios." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="13" code="D02" name="Gastos médicos por incapacidad o discapacidad" term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="14" code="D03" name="Gastos funerales." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="15" code="D04" name="Donativos." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="16" code="D05" name="Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="17" code="D06" name="Aportaciones voluntarias al SAR." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="18" code="D07" name="Primas por seguros de gastos médicos." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="19" code="D08" name="Gastos de transportación escolar obligatoria." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="20" code="D09" name="Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="21" code="D10" name="Pagos por servicios educativos (colegiaturas)" term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="22" code="P01" name="Por definir" term_start="2017-03-31" term_end="" app_per="1" app_org="1"/>
+</Catalog>

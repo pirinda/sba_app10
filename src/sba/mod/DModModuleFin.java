@@ -475,12 +475,12 @@ public class DModModuleFin extends DGuiModule implements ActionListener {
                 if (params != null) {
                     switch (params.getType()) {
                         case DModConsts.FX_MOP_TP_COL:
-                            where = "AND id_mop_tp NOT IN (" + DModSysConsts.FS_MOP_TP_NON_DEF + ") ";
+                            where = "AND id_mop_tp NOT IN (" + DModSysConsts.FS_MOP_TP_TO_DEF + ") ";
                             break;
                         default:
                     }
                 }
-                sql = "SELECT id_mop_tp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", " +
+                sql = "SELECT id_mop_tp AS " + DDbConsts.FIELD_ID + "1, CONCAT(code, ' - ', name) AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + ", " +
                         "b_avl AS " + DDbConsts.FIELD_COMP + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 " + where + "ORDER BY sort ";
                 break;

@@ -359,6 +359,8 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
+        
+        registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

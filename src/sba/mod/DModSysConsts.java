@@ -522,18 +522,10 @@ public abstract class DModSysConsts {
     public static final int FS_PAY_TP_CSH = 2;
     public static final int FS_PAY_TP_CDT = 3;
 
-    public static final int FS_MOP_TP_NA = 1;
-    public static final int FS_MOP_TP_CSH = 11;
-    public static final int FS_MOP_TP_CHK = 12;
-    public static final int FS_MOP_TP_TRA = 13;
-    public static final int FS_MOP_TP_DBT = 21;
-    public static final int FS_MOP_TP_CDT = 22;
-    public static final int FS_MOP_TP_SRV = 23;
-    public static final int FS_MOP_TP_EPU = 31;
-    public static final int FS_MOP_TP_EMO = 32;
-    public static final int FS_MOP_TP_FTA = 41;
-    public static final int FS_MOP_TP_OTH = 91;
-    public static final int FS_MOP_TP_NON_DEF = 99;
+    public static final int FS_MOP_TP_NA = 1;       // non-applying
+    public static final int FS_MOP_TP_CSH = 101;    // cash
+    public static final int FS_MOP_TP_CHK = 102;    // check
+    public static final int FS_MOP_TP_TO_DEF = 199; // to be defined
 
     public static final int FS_VAL_TP_NA = 1;
     public static final int FS_VAL_TP_CSH = 2;
@@ -623,7 +615,8 @@ public abstract class DModSysConsts {
 
     public static final int TS_XML_TP_NA = 1;
     public static final int TS_XML_TP_CFD = 2;
-    public static final int TS_XML_TP_CFDI = 3;
+    public static final int TS_XML_TP_CFDI_32 = 3;
+    public static final int TS_XML_TP_CFDI_33 = 4;
 
     public static final int TS_XML_ST_NA = 1;
     public static final int TS_XML_ST_PEN = 2;

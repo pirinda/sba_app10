@@ -30,6 +30,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
     protected double mdCreditLimit;
     protected int mnCreditDays;
     protected int mnCreditDaysGrace;
+    protected String msCfdUsage;
     protected Date mtDateStart;
     protected Date mtDateEnd_n;
     protected boolean mbCreditByUser;
@@ -68,6 +69,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
     public void setCreditLimit(double d) { mdCreditLimit = d; }
     public void setCreditDays(int n) { mnCreditDays = n; }
     public void setCreditDaysGrace(int n) { mnCreditDaysGrace = n; }
+    public void setCfdUsage(String s) { msCfdUsage = s; }
     public void setDateStart(Date t) { mtDateStart = t; }
     public void setDateEnd_n(Date t) { mtDateEnd_n = t; }
     public void setCreditByUser(boolean b) { mbCreditByUser = b; }
@@ -95,6 +97,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
     public double getCreditLimit() { return mdCreditLimit; }
     public int getCreditDays() { return mnCreditDays; }
     public int getCreditDaysGrace() { return mnCreditDaysGrace; }
+    public String getCfdUsage() { return msCfdUsage; }
     public Date getDateStart() { return mtDateStart; }
     public Date getDateEnd_n() { return mtDateEnd_n; }
     public boolean isCreditByUser() { return mbCreditByUser; }
@@ -122,6 +125,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
     public double getActualCreditLimit() { return mbCreditByUser ? mdCreditLimit : moRegBizPartnerType.getCreditLimit(); }
     public int getActualCreditDays() { return mbCreditByUser ? mnCreditDays : moRegBizPartnerType.getCreditDays(); }
     public int getActualCreditDaysGrace() { return mbCreditByUser ? mnCreditDaysGrace : moRegBizPartnerType.getCreditDaysGrace(); }
+    public String getActualCfdUsage() { return !msCfdUsage.isEmpty() ? msCfdUsage : moRegBizPartnerType.getCfdUsage(); }
     public int getActualFkCreditTypeId() { return mnFkCreditTypeId_n != DLibConsts.UNDEFINED ? mnFkCreditTypeId_n : moRegBizPartnerType.getFkCreditTypeId(); }
     public int getActualFkModeOfPaymentTypeId() { return mnFkModeOfPaymentTypeId_n != DLibConsts.UNDEFINED ? mnFkModeOfPaymentTypeId_n : moRegBizPartnerType.getFkModeOfPaymentTypeId(); }
     public int getActualFkAbpBizPartnerId() { return mnFkAbpBizPartnerId_n != DLibConsts.UNDEFINED ? mnFkAbpBizPartnerId_n : moRegBizPartnerType.getFkAbpBizPartnerId(); }
@@ -151,6 +155,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
         mdCreditLimit = 0;
         mnCreditDays = 0;
         mnCreditDaysGrace = 0;
+        msCfdUsage = "";
         mtDateStart = null;
         mtDateEnd_n = null;
         mbCreditByUser = false;
@@ -217,6 +222,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
             mdCreditLimit = resultSet.getDouble("cdt_lim");
             mnCreditDays = resultSet.getInt("cdt_day");
             mnCreditDaysGrace = resultSet.getInt("cdt_day_gra");
+            msCfdUsage = resultSet.getString("cfd_use");
             mtDateStart = resultSet.getDate("dt_sta");
             mtDateEnd_n = resultSet.getDate("dt_end_n");
             mbCreditByUser = resultSet.getBoolean("b_cdt_usr");
@@ -275,6 +281,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
                     mdCreditLimit + ", " +
                     mnCreditDays + ", " +
                     mnCreditDaysGrace + ", " +
+                    "'" + msCfdUsage + "', " + 
                     "'" + DLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     (mtDateEnd_n == null ? "NULL" : "'" + DLibUtils.DbmsDateFormatDate.format(mtDateEnd_n) + "'") + ", " +
                     (mbCreditByUser ? 1 : 0) + ", " +
@@ -309,6 +316,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
                     "cdt_lim = " + mdCreditLimit + ", " +
                     "cdt_day = " + mnCreditDays + ", " +
                     "cdt_day_gra = " + mnCreditDaysGrace + ", " +
+                    "cfd_use = '" + msCfdUsage + "', " +
                     "dt_sta = '" + DLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "dt_end_n = " + (mtDateEnd_n == null ? "NULL" : "'" + DLibUtils.DbmsDateFormatDate.format(mtDateEnd_n) + "'") + ", " +
                     "b_cdt_usr = " + (mbCreditByUser ? 1 : 0) + ", " +
@@ -347,6 +355,7 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
         registry.setCreditLimit(this.getCreditLimit());
         registry.setCreditDays(this.getCreditDays());
         registry.setCreditDaysGrace(this.getCreditDaysGrace());
+        registry.setCfdUsage(this.getCfdUsage());
         registry.setDateStart(this.getDateStart());
         registry.setDateEnd_n(this.getDateEnd_n());
         registry.setCreditByUser(this.isCreditByUser());

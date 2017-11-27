@@ -26,6 +26,8 @@ import sba.mod.trn.db.DTrnUtils;
  */
 public class DDbItem extends DDbRegistryUser {
 
+    public static final int FIELD_CFD_ITM_KEY = DDbRegistry.FIELD_BASE + 1;
+
     protected int mnPkItemId;
     protected String msCode;
     protected String msName;
@@ -49,6 +51,7 @@ public class DDbItem extends DDbRegistryUser {
     protected double mdPrice3;
     protected double mdPrice4;
     protected double mdPrice5;
+    protected String msCfdItemKey;
     protected boolean mbBulk;
     protected boolean mbInventoriable;
     protected boolean mbLotApplying;
@@ -204,6 +207,7 @@ public class DDbItem extends DDbRegistryUser {
     public void setPrice3(double d) { mdPrice3 = d; }
     public void setPrice4(double d) { mdPrice4 = d; }
     public void setPrice5(double d) { mdPrice5 = d; }
+    public void setCfdItemKey(String s) { msCfdItemKey = s; }
     public void setBulk(boolean b) { mbBulk = b; }
     public void setInventoriable(boolean b) { mbInventoriable = b; }
     public void setLotApplying(boolean b) { mbLotApplying = b; }
@@ -258,6 +262,7 @@ public class DDbItem extends DDbRegistryUser {
     public double getPrice3() { return mdPrice3; }
     public double getPrice4() { return mdPrice4; }
     public double getPrice5() { return mdPrice5; }
+    public String getCfdItemKey() { return msCfdItemKey; }
     public boolean isBulk() { return mbBulk; }
     public boolean isInventoriable() { return mbInventoriable; }
     public boolean isLotApplying() { return mbLotApplying; }
@@ -297,6 +302,22 @@ public class DDbItem extends DDbRegistryUser {
     public DDbItemGenus getParentGenus() { return moParentGenus; }
 
     public Vector<DDbItemBarcode> getChildBarcodes() { return mvChildBarcodes; }
+    
+    public String getActualCfdItemKey() {
+        String key = "";
+        
+        if (!msCfdItemKey.isEmpty()) {
+            key = msCfdItemKey;
+        }
+        else if (moParentLine != null && !moParentLine.getCfdItemKey().isEmpty()) {
+            key = moParentLine.getCfdItemKey();
+        }
+        else if (moParentGenus != null && !moParentGenus.getCfdItemKey().isEmpty()) {
+            key = moParentGenus.getCfdItemKey();
+        }
+        
+        return key;
+    }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -335,6 +356,7 @@ public class DDbItem extends DDbRegistryUser {
         mdPrice3 = 0;
         mdPrice4 = 0;
         mdPrice5 = 0;
+        msCfdItemKey = "";
         mbBulk = false;
         mbInventoriable = false;
         mbLotApplying = false;
@@ -442,6 +464,7 @@ public class DDbItem extends DDbRegistryUser {
             mdPrice3 = resultSet.getDouble("prc_3");
             mdPrice4 = resultSet.getDouble("prc_4");
             mdPrice5 = resultSet.getDouble("prc_5");
+            msCfdItemKey = resultSet.getString("cfd_itm_key");
             mbBulk = resultSet.getBoolean("b_buk");
             mbInventoriable = resultSet.getBoolean("b_inv");
             mbLotApplying = resultSet.getBoolean("b_lot");
@@ -564,6 +587,7 @@ public class DDbItem extends DDbRegistryUser {
                     mdPrice3 + ", " +
                     mdPrice4 + ", " +
                     mdPrice5 + ", " +
+                    "'" + msCfdItemKey + "', " + 
                     (mbBulk ? 1 : 0) + ", " +
                     (mbInventoriable ? 1 : 0) + ", " +
                     (mbLotApplying ? 1 : 0) + ", " +
@@ -623,6 +647,7 @@ public class DDbItem extends DDbRegistryUser {
                     "prc_3 = " + mdPrice3 + ", " +
                     "prc_4 = " + mdPrice4 + ", " +
                     "prc_5 = " + mdPrice5 + ", " +
+                    "cfd_itm_key = '" + msCfdItemKey + "', " +
                     "b_buk = " + (mbBulk ? 1 : 0) + ", " +
                     "b_inv = " + (mbInventoriable ? 1 : 0) + ", " +
                     "b_lot = " + (mbLotApplying ? 1 : 0) + ", " +
@@ -702,6 +727,7 @@ public class DDbItem extends DDbRegistryUser {
         registry.setPrice3(this.getPrice3());
         registry.setPrice4(this.getPrice4());
         registry.setPrice5(this.getPrice5());
+        registry.setCfdItemKey(this.getCfdItemKey());
         registry.setBulk(this.isBulk());
         registry.setInventoriable(this.isInventoriable());
         registry.setLotApplying(this.isLotApplying());
@@ -821,5 +847,57 @@ public class DDbItem extends DDbRegistryUser {
         }
 
         return can;
+    }
+    
+    @Override
+    public Object readField(final Statement statement, final int[] pk, final int field) throws SQLException, Exception {
+        if (field < DDbRegistry.FIELD_BASE) {
+            return super.readField(statement, pk, field);
+        }
+        else {
+            Object value = null;
+            ResultSet resultSet = null;
+
+            initQueryMembers();
+            mnQueryResultId = DDbConsts.READ_ERROR;
+
+            switch (field) {
+                case FIELD_CFD_ITM_KEY:
+                    msSql += "SELECT i.cfd_itm_key AS _itm_key, COALESCE(il.cfd_itm_key, '') AS _lin_key, ig.cfd_itm_key AS _gen_key "
+                            + "FROM " + DModConsts.TablesMap.get(DModConsts.IU_ITM) + " AS i "
+                            + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_GEN) + " AS ig ON ig.id_gen = i.fk_gen "
+                            + "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_LIN) + " AS il ON il.id_lin = i.fk_lin_n "
+                            + "WHERE i.id_itm = " + pk[0] + " ";
+                    break;
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+
+            msSql += getSqlFromWhere(pk);
+
+            resultSet = statement.executeQuery(msSql);
+            if (!resultSet.next()) {
+                throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
+            }
+            else {
+                switch (field) {
+                    case FIELD_CFD_ITM_KEY:
+                        if (!resultSet.getString("_itm_key").isEmpty()) {
+                            value = resultSet.getString("_itm_key");
+                        }
+                        else if (!resultSet.getString("_lin_key").isEmpty()) {
+                            value = resultSet.getString("_lin_key");
+                        }
+                        else {
+                            value = resultSet.getString("_gen_key");
+                        }
+                        break;
+                    default:
+                }
+            }
+
+            mnQueryResultId = DDbConsts.READ_OK;
+            return value;
+        }
     }
 }

@@ -47,6 +47,7 @@ public class DViewUnit extends DGridPaneView {
                 "v.id_unt AS " + DDbConsts.FIELD_ID + "1, " +
                 "v.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "v.name AS " + DDbConsts.FIELD_NAME + ", " +
+                "v.cfd_unt_key, " +
                 "v.b_can_upd AS " + DDbConsts.FIELD_CAN_UPD + ", " +
                 "v.b_can_dis AS " + DDbConsts.FIELD_CAN_DIS + ", " +
                 "v.b_can_del AS " + DDbConsts.FIELD_CAN_DEL + ", " +
@@ -71,10 +72,11 @@ public class DViewUnit extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[9];
+        DGridColumnView[] columns = new DGridColumnView[10];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "v.cfd_unt_key", "Clave Unidad");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

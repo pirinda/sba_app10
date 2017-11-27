@@ -14,6 +14,8 @@ import sba.mod.DModSysConsts;
 public abstract class DFinConsts {
 
     public static final String TXT_MOP_NON_DEF = "NO IDENTIFICADO";
+    public static final String TXT_PAY_TP_CSH = "CONTADO";
+    public static final String TXT_PAY_TP_CDT = "CRÉDITO";
 
     /**
      * @param sysMoveClass System move class. Constants defined in DModSysConsts (FS_SYS_MOV_CL_M...).

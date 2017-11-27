@@ -11,7 +11,9 @@
 
 package sba.gui;
 
+import cfd.DCfdConsts;
 import cfd.DCfdSignature;
+import cfd.ver33.DCfdi33Catalogs;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
+import sba.gui.cat.DXmlCatalog;
 import sba.gui.util.DUtilConfigXml;
 import sba.gui.util.DUtilConsts;
 import sba.gui.util.DUtilLoginDlg;
@@ -90,8 +93,8 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 018.01";
-    public static final String APP_COPYRIGHT = "Copyright © 2011-2016 Sergio Abraham Flores Gutiérrez";
+    public static final String APP_RELEASE = "SBA 1.0 019.01";
+    public static final String APP_COPYRIGHT = "Copyright © 2011-2018 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
     private int mnTerminal;
@@ -151,6 +154,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private ImageIcon moIconModPos;
     private ImageIcon moIconModSrv;
     */
+    private HashMap<Integer, DXmlCatalog> moXmlCatalogsMap;
 
     /** Creates new form DGuiClientApp */
     public DGuiClientApp() {
@@ -619,6 +623,15 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             DBeanFormProcess.OwnerFrame = this;
             DBeanOptionPicker.OwnerFrame = this;
             DBeanDialogReport.OwnerFrame = this;
+            
+            // Read XML catalogs:
+            moXmlCatalogsMap = new HashMap<>();
+            DXmlCatalog catalogMetodoPago = new DXmlCatalog(DCfdi33Catalogs.XML_MDP, "xml/" + DCfdi33Catalogs.XML_MDP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogTipoRelacion = new DXmlCatalog(DCfdi33Catalogs.XML_REL_TP, "xml/" + DCfdi33Catalogs.XML_REL_TP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogUsoCfdi = new DXmlCatalog(DCfdi33Catalogs.XML_CFDI_USO, "xml/" + DCfdi33Catalogs.XML_CFDI_USO + DXmlCatalog.XmlFileExt, false);
+            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_MDP, catalogMetodoPago);
+            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_REL_TP, catalogTipoRelacion);
+            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_CFDI_USO, catalogUsoCfdi);
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -744,7 +757,9 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                     private final DDbCertificate moCertificate = (DDbCertificate) moSession.readRegistry(DModConsts.CU_CER, new int[] { resultSet.getInt("fk_cer_n") });
                     private final DCfdSignature moCfdSignature = new DCfdSignature(
                             DLibUtils.convertBlobToBytes(moCertificate.getCertificateKeyPrivate_n()),
-                            DLibUtils.convertBlobToBytes(moCertificate.getCertificateKeyPublic_n()), moCertificate.getCertificateNumber());
+                            DLibUtils.convertBlobToBytes(moCertificate.getCertificateKeyPublic_n()),
+                            moCertificate.getCertificateNumber(),
+                            DCfdConsts.CFDI_VER_33);    // check out!: fixed option provided!
 
                     @Override
                     public int[] getKey() {
@@ -1170,7 +1185,6 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     public void actionHelpAbout() {
 
     }
-
     /**
     * @param args the command line arguments
     */
@@ -1242,6 +1256,14 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JTabbedPane jtpTabbedPane;
     // End of variables declaration//GEN-END:variables
 
+    /*
+     * Public methods
+     */
+
+    public HashMap<Integer, DXmlCatalog> getXmlCatalogsMap() {
+        return moXmlCatalogsMap;
+    }
+    
     /*
      * Overriden methods
      */

@@ -54,11 +54,14 @@ public class DFormUnit extends DBeanForm {
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
+        jPanel5 = new javax.swing.JPanel();
+        jlCfdUnitKey = new javax.swing.JLabel();
+        moTextCfdUnitKey = new sba.lib.gui.bean.DBeanFieldText();
 
         jpContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jpContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -83,18 +86,31 @@ public class DFormUnit extends DBeanForm {
 
         jPanel1.add(jPanel4);
 
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlCfdUnitKey.setText("Clave Unidad:*");
+        jlCfdUnitKey.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel5.add(jlCfdUnitKey);
+
+        moTextCfdUnitKey.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel5.add(moTextCfdUnitKey);
+
+        jPanel1.add(jPanel5);
+
         jpContainer.add(jPanel1, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(jpContainer, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
-        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), 10);
+        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), 10);
         moTextCode.setTextCaseType(DLibConsts.UNDEFINED);
-        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 50);
+        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 50);
+        moTextCfdUnitKey.setTextSettings(DGuiUtils.getLabelName(jlCfdUnitKey), 3);
         
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
+        moFields.addField(moTextCfdUnitKey);
         
         moFields.setFormButton(jbSave);
     }
@@ -103,9 +119,12 @@ public class DFormUnit extends DBeanForm {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel jlCfdUnitKey;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlName;
     private javax.swing.JPanel jpContainer;
+    private sba.lib.gui.bean.DBeanFieldText moTextCfdUnitKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
@@ -145,6 +164,7 @@ public class DFormUnit extends DBeanForm {
 
         moTextCode.setValue(moRegistry.getCode());
         moTextName.setValue(moRegistry.getName());
+        moTextCfdUnitKey.setValue(moRegistry.getCfdUnitKey());
 
         setFormEditable(true);
 
@@ -159,6 +179,7 @@ public class DFormUnit extends DBeanForm {
 
         registry.setCode(moTextCode.getValue());
         registry.setName(moTextName.getValue());
+        registry.setCfdUnitKey(moTextCfdUnitKey.getValue());
 
         return registry;
     }

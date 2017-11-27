@@ -90,6 +90,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel3 = new javax.swing.JPanel();
         jlItemCode = new javax.swing.JLabel();
         moTextItemCode = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKey = new javax.swing.JLabel();
+        moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlItemName = new javax.swing.JLabel();
         moTextItemName = new sba.lib.gui.bean.DBeanFieldText();
@@ -296,6 +298,14 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jlItemCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel3.add(jlItemCode);
         jPanel3.add(moTextItemCode);
+
+        jlCfdItemKey.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlCfdItemKey.setText("Clave ProdServ:");
+        jlCfdItemKey.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel3.add(jlCfdItemKey);
+
+        moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel3.add(moTextCfdItemKey);
 
         jPanel5.add(jPanel3);
 
@@ -898,6 +908,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyItemGenus.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemGenus), true);
         moKeyItemLine.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemLine), true);
         moTextItemCode.setTextSettings(DGuiUtils.getLabelName(jlItemCode), lenCode == 0 || lenCode > 20 ? 20 : lenCode);
+        moTextCfdItemKey.setTextSettings(DGuiUtils.getLabelName(jlCfdItemKey), 8, 0);
         moTextItemName.setTextSettings(DGuiUtils.getLabelName(jlItemName), 100);
         moTextItemPresentation.setTextSettings(DGuiUtils.getLabelName(jlItemPresentation), 50, 0);
         moKeyTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxRegime), true);
@@ -951,6 +962,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moKeyItemGenus);
         moFields.addField(moKeyItemLine);
         moFields.addField(moTextItemCode);
+        moFields.addField(moTextCfdItemKey);
         moFields.addField(moTextItemName);
         moFields.addField(moTextItemPresentation);
         moFields.addField(moKeyTaxRegime);
@@ -1798,6 +1810,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlAbpItem;
     private javax.swing.JLabel jlBarcode;
     private javax.swing.JLabel jlBrand;
+    private javax.swing.JLabel jlCfdItemKey;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
     private javax.swing.JLabel jlDepartment;
@@ -1892,6 +1905,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitVirtual;
     private sba.lib.gui.bean.DBeanFieldText moTextBarcode1;
     private sba.lib.gui.bean.DBeanFieldText moTextBarcode2;
+    private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
     private sba.lib.gui.bean.DBeanFieldText moTextIngredient;
     private sba.lib.gui.bean.DBeanFieldText moTextItemCode;
     private sba.lib.gui.bean.DBeanFieldText moTextItemName;
@@ -2038,6 +2052,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moDecPrice3.setValue(moRegistry.getPrice3());
         moDecPrice4.setValue(moRegistry.getPrice4());
         moDecPrice5.setValue(moRegistry.getPrice5());
+        moTextCfdItemKey.setValue(moRegistry.getCfdItemKey());
         moBoolBulk.setValue(moRegistry.isBulk());
         moBoolInventoriable.setValue(moRegistry.isInventoriable());
         moBoolLotApplying.setValue(moRegistry.isLotApplying());
@@ -2115,6 +2130,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         registry.setPrice3(moDecPrice3.getValue());
         registry.setPrice4(moDecPrice4.getValue());
         registry.setPrice5(moDecPrice5.getValue());
+        registry.setCfdItemKey(moTextCfdItemKey.getValue());
         registry.setBulk(moBoolBulk.getValue());
         registry.setInventoriable(moBoolInventoriable.getValue());
         registry.setLotApplying(moBoolLotApplying.getValue());

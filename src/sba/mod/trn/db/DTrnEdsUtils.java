@@ -6,13 +6,8 @@
 package sba.mod.trn.db;
 
 import cfd.DAttributeOptionCondicionesPago;
-import cfd.DAttributeOptionFormaPago;
 import cfd.DAttributeOptionImpuestoRetencion;
 import cfd.DAttributeOptionImpuestoTraslado;
-import cfd.DAttributeOptionMetodoPago;
-import cfd.DAttributeOptionMetodoPagoClave;
-import cfd.DAttributeOptionTipoComprobante;
-import cfd.DCfd;
 import cfd.DCfdConsts;
 import cfd.DCfdUtils;
 import cfd.DElementExtAddenda;
@@ -25,10 +20,8 @@ import cfd.ext.continental.DElementPo;
 import cfd.ext.continental.DElementPosicion;
 import cfd.ext.continental.DElementPosicionesPo;
 import cfd.ext.continental.DElementTipoProv;
-import cfd.util.DUtilUtils;
-import cfd.ver3.DElementConcepto;
-import cfd.ver3.DSelloDigital;
-import cfd.ver3.DTimbreFiscal;
+import cfd.ver32.DCfdiVer32Consts;
+import cfd.ver33.DCfdi33Catalogs;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +45,8 @@ import sba.lib.DLibConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
+import sba.lib.db.DDbRegistry;
+import sba.lib.gui.DGuiEdsSignature;
 import sba.lib.gui.DGuiSession;
 import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
@@ -70,10 +65,22 @@ import sba.mod.cfg.db.DDbConfigCompany;
  */
 public abstract class DTrnEdsUtils {
     
-    public static void configureCfdi(final DGuiSession session, final cfd.ver3.DElementComprobante comprobante) {
-        int decimals = ((DDbConfigCompany) session.getConfigCompany()).getPriceUnitaryDecimals();
+    public static void configureCfdi32(final DGuiSession session, final cfd.ver32.DElementComprobante comprobante) {
+        int decimalsQuantity = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity();
+        int decimalsPriceUnitary = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary();
         
-        for (DElementConcepto concepto : comprobante.getEltConceptos().getEltHijosConcepto()) {
+        for (cfd.ver32.DElementConcepto concepto : comprobante.getEltConceptos().getEltHijosConcepto()) {
+            concepto.getAttCantidad().setDecimals(decimalsQuantity);
+            concepto.getAttValorUnitario().setDecimals(decimalsPriceUnitary);
+        }
+    }
+    
+    public static void configureCfdi33(final DGuiSession session, final cfd.ver33.DElementComprobante comprobante) {
+        int decimalsQuantity = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity();
+        int decimals = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary();
+        
+        for (cfd.ver33.DElementConcepto concepto : comprobante.getEltConceptos().getEltConceptos()) {
+            concepto.getAttCantidad().setDecimals(decimalsQuantity);
             concepto.getAttValorUnitario().setDecimals(decimals);
         }
     }
@@ -82,7 +89,7 @@ public abstract class DTrnEdsUtils {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static cfd.ver3.DElementComprobante createCfdi(final DGuiSession session, final DDbDps dps, final DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps, final cfd.ver32.DTimbreFiscal timbreFiscal_n) throws Exception {
         int i = 0;
         int nPagos = 1;
         int nImptoTipo = 0;
@@ -119,7 +126,6 @@ public abstract class DTrnEdsUtils {
         DDbBizPartner bprReceptorName = null;
         DDbBranch braReceptor = null;
         DDbBranchAddress braAddressReceptor = null;
-        DAttributeOptionMetodoPagoClave attOptionMetodoPagoClave = new DAttributeOptionMetodoPagoClave("", false);
         String sNombreReceptor = "";
         
         // Check company branch emission configuration:
@@ -181,7 +187,7 @@ public abstract class DTrnEdsUtils {
         
         // Create XML's main element 'Comprobante':
 
-        cfd.ver3.DElementComprobante comprobante = new cfd.ver3.DElementComprobante(timbreFiscal_n != null && includeAddenda1); // include Addenda1 only if explicitly defined and CFD is already signed
+        cfd.ver32.DElementComprobante comprobante = new cfd.ver32.DElementComprobante(timbreFiscal_n != null && includeAddenda1); // include Addenda1 only if explicitly defined and CFD is already signed
 
         comprobante.getAttSerie().setString(dps.getSeries());
         comprobante.getAttFolio().setString("" + dps.getNumber());
@@ -190,7 +196,7 @@ public abstract class DTrnEdsUtils {
         if (dps.getChildEds() != null) {
             // If DPS's XML already exists, retrieve too the digital signature attributes:
             
-            DSelloDigital selloDigital = digestSelloDigital(dps);
+            cfd.ver32.DSelloDigital selloDigital = extractSello32(dps);
             
             comprobante.getAttSello().setString(selloDigital.getSello());
             comprobante.getAttNoCertificado().setString(selloDigital.getNoCertificado());
@@ -198,10 +204,10 @@ public abstract class DTrnEdsUtils {
         }
 
         if (nPagos <= 1) {
-            comprobante.getAttFormaDePago().setOption(DAttributeOptionFormaPago.CFD_UNA_EXHIBICION);
+            comprobante.getAttFormaDePago().setOption(DCfdiVer32Consts.CFD_PAGO_UNA_EXHIBICION);
         }
         else {
-            comprobante.getAttFormaDePago().setOption("" + nPagos, DAttributeOptionFormaPago.CFD_PARCIALIDADES);
+            comprobante.getAttFormaDePago().setOption(DCfdiVer32Consts.CFD_PAGO_PARCIALIDADES + " " + nPagos);
         }
 
         comprobante.getAttCondicionesDePago().setOption(dps.getFkPaymentTypeId() == DModSysConsts.FS_PAY_TP_CSH ? DAttributeOptionCondicionesPago.CFD_CONTADO : DAttributeOptionCondicionesPago.CFD_CREDITO);
@@ -216,48 +222,8 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttMoneda().setString(session.getSessionCustom().getCurrencyCode(dps.getCurrencyKey()));
         comprobante.getAttTotal().setDouble(dps.getTotalCy_r());
 
-        comprobante.getAttTipoDeComprobante().setOption(dps.isDpsDocument() ? DAttributeOptionTipoComprobante.CFD_INGRESO : DAttributeOptionTipoComprobante.CFD_EGRESO);
-
-        switch (dps.getFkModeOfPaymentTypeId()) {
-            case DModSysConsts.FS_MOP_TP_NA:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_APLICA));
-                break;
-            case DModSysConsts.FS_MOP_TP_CSH:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_EFECTIVO));
-                break;
-            case DModSysConsts.FS_MOP_TP_CHK:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_CHEQUE_NOMINATIVO));
-                break;
-            case DModSysConsts.FS_MOP_TP_TRA:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TRANSFERENCIA_ELECTRONICA));
-                break;
-            case DModSysConsts.FS_MOP_TP_DBT:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_DEBITO));
-                break;
-            case DModSysConsts.FS_MOP_TP_CDT:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_CREDITO));
-                break;
-            case DModSysConsts.FS_MOP_TP_SRV:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_TARJETA_SERVICIO));
-                break;
-            case DModSysConsts.FS_MOP_TP_EPU:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_MONEDERO_ELECTRONICO));
-                break;
-            case DModSysConsts.FS_MOP_TP_EMO:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_DINERO_ELECTRONICO));
-                break;
-            case DModSysConsts.FS_MOP_TP_FTA:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_VALES_DESPENSA));
-                break;
-            case DModSysConsts.FS_MOP_TP_OTH:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_OTROS));
-                break;
-            case DModSysConsts.FS_MOP_TP_NON_DEF:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
-                break;
-            default:
-                comprobante.getAttMetodoDePago().setString(attOptionMetodoPagoClave.getOptions().get(DAttributeOptionMetodoPago.CFD_NO_IDENTIFICADO));
-        }
+        comprobante.getAttTipoDeComprobante().setOption(dps.isDpsDocument() ? DCfdiVer32Consts.CFD_INGRESO : DCfdiVer32Consts.CFD_EGRESO);
+        comprobante.getAttMetodoDePago().setString(DLibUtils.textRight("" + dps.getFkModeOfPaymentTypeId(), 2));    // ID of type of mode of payment matches with required value
 
         braAddressEmisor = bprEmisor.getChildBranches().get(0).getChildAddresses().get(0);
 
@@ -278,7 +244,7 @@ public abstract class DTrnEdsUtils {
         if (!DLibUtils.compareKeys(braEmisor.getPrimaryKey(), dps.getCompanyBranchKey()) && !subrogatedIssue) {
             braAddressEmisor = bprEmisor.getChildBranch(dps.getCompanyBranchKey()).getChildAddresses().get(0);
 
-            comprobante.getEltEmisor().setEltOpcExpedidoEn(new cfd.ver3.DElementTipoUbicacion("cfdi:ExpedidoEn"));
+            comprobante.getEltEmisor().setEltOpcExpedidoEn(new cfd.ver32.DElementTipoUbicacion("cfdi:ExpedidoEn"));
 
             comprobante.getEltEmisor().getEltOpcExpedidoEn().getAttCalle().setString(braAddressEmisor.getAddress1());
             comprobante.getEltEmisor().getEltOpcExpedidoEn().getAttNoExterior().setString(braAddressEmisor.getNumberExterior());
@@ -298,7 +264,7 @@ public abstract class DTrnEdsUtils {
         asRegimenes = DLibUtils.textExplode(((DDbConfigCompany) session.getConfigCompany()).getFiscalIdentity(), ";");
 
         for (String regimen : asRegimenes) {
-            cfd.ver3.DElementRegimenFiscal regimenFiscal = new cfd.ver3.DElementRegimenFiscal();
+            cfd.ver32.DElementRegimenFiscal regimenFiscal = new cfd.ver32.DElementRegimenFiscal();
             regimenFiscal.getAttRegimen().setString(regimen);
             comprobante.getEltEmisor().getEltHijosRegimenFiscal().add(regimenFiscal);
         }
@@ -328,14 +294,15 @@ public abstract class DTrnEdsUtils {
             if (!dpsRow.isDeleted()) {
                 // "Concepto" node:
 
-                cfd.ver3.DElementConcepto concepto = new cfd.ver3.DElementConcepto();
+                cfd.ver32.DElementConcepto concepto = new cfd.ver32.DElementConcepto();
                 DElementAdicionalConcepto adicionalConcepto = new DElementAdicionalConcepto();
 
                 concepto.getAttNoIdentificacion().setString(dpsRow.getCode());
                 concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
                 concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
+                concepto.getAttCantidad().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity());
                 concepto.getAttDescripcion().setString(dpsRow.getName());
-                concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getPriceUnitaryDecimals());
+                concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary());
                 concepto.getAttValorUnitario().setDouble(dpsRow.getPriceUnitaryCy());
                 concepto.getAttImporte().setDouble(dpsRow.getSubtotalProvCy_r());
 
@@ -343,7 +310,7 @@ public abstract class DTrnEdsUtils {
 
                 aImportDeclarations = DTrnDocRowUtils.getDpsRowImportDeclarations(session, dpsRow.getPrimaryKey());
                 for (DTrnImportDeclaration importDeclaration : aImportDeclarations) {
-                    cfd.ver3.DElementInformacionAduanera informacionAduanera = new cfd.ver3.DElementInformacionAduanera();
+                    cfd.ver32.DElementInformacionAduanera informacionAduanera = new cfd.ver32.DElementInformacionAduanera();
 
                     informacionAduanera.getAttNumero().setString(importDeclaration.getNumber());
                     informacionAduanera.getAttFecha().setDate(importDeclaration.getDate());
@@ -463,13 +430,13 @@ public abstract class DTrnEdsUtils {
 
         // Retained taxes:
 
-        cfd.ver3.DElementImpuestosRetenidos impuestosRetenidos = new cfd.ver3.DElementImpuestosRetenidos();
+        cfd.ver32.DElementImpuestosRetenidos impuestosRetenidos = new cfd.ver32.DElementImpuestosRetenidos();
 
         hmImpto = hmRetenidoIva;
         if (!hmImpto.isEmpty()) {
             setKeyImptos = hmImpto.keySet();
             for (Double key : setKeyImptos) {
-                cfd.ver3.DElementImpuestoRetencion impuestoRetencion = new cfd.ver3.DElementImpuestoRetencion();
+                cfd.ver32.DElementImpuestoRetencion impuestoRetencion = new cfd.ver32.DElementImpuestoRetencion();
 
                 dImpto = hmImpto.get(key);
                 if (dImpto != 0) {
@@ -486,7 +453,7 @@ public abstract class DTrnEdsUtils {
         if (!hmImpto.isEmpty()) {
             setKeyImptos = hmImpto.keySet();
             for (Double key : setKeyImptos) {
-                cfd.ver3.DElementImpuestoRetencion impuestoRetencion = new cfd.ver3.DElementImpuestoRetencion();
+                cfd.ver32.DElementImpuestoRetencion impuestoRetencion = new cfd.ver32.DElementImpuestoRetencion();
 
                 dImpto = hmImpto.get(key);
                 if (dImpto != 0) {
@@ -506,13 +473,13 @@ public abstract class DTrnEdsUtils {
 
         // Charged taxes:
 
-        cfd.ver3.DElementImpuestosTrasladados impuestosTrasladados = new cfd.ver3.DElementImpuestosTrasladados();
+        cfd.ver32.DElementImpuestosTrasladados impuestosTrasladados = new cfd.ver32.DElementImpuestosTrasladados();
 
         hmImpto = hmTrasladadoIva;
         if (!hmImpto.isEmpty()) {
             setKeyImptos = hmImpto.keySet();
             for (Double key : setKeyImptos) {
-                cfd.ver3.DElementImpuestoTraslado impuestoTraslado = new cfd.ver3.DElementImpuestoTraslado();
+                cfd.ver32.DElementImpuestoTraslado impuestoTraslado = new cfd.ver32.DElementImpuestoTraslado();
 
                 dImpto = hmImpto.get(key);
                 if (dImpto != 0) {
@@ -552,8 +519,8 @@ public abstract class DTrnEdsUtils {
         if (timbreFiscal_n != null) {
             // Create element Complemento:
 
-            cfd.ver3.DElementComplemento complemento = new cfd.ver3.DElementComplemento();
-            cfd.ver3.DElementTimbreFiscalDigital timbreFiscalDigital = new cfd.ver3.DElementTimbreFiscalDigital();
+            cfd.ver32.DElementComplemento complemento = new cfd.ver32.DElementComplemento();
+            cfd.ver32.DElementTimbreFiscalDigital timbreFiscalDigital = new cfd.ver32.DElementTimbreFiscalDigital();
 
             //timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());   // by default version is "1.0"
             timbreFiscalDigital.getAttUuid().setString(timbreFiscal_n.getUuid());
@@ -629,10 +596,415 @@ public abstract class DTrnEdsUtils {
         return comprobante;
     }
     
+    public static cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DDbDps dps, final cfd.ver32.DTimbreFiscal timbreFiscal_n, final DGuiEdsSignature signature) throws Exception {
+        int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
+        int decsTax = 6;
+        Date tDate = null;
+        Date tUpdateTs = dps.getTsUserUpdate() != null ? dps.getTsUserUpdate() : new Date();
+        int[] anDateDps = DLibTimeUtils.digestDate(dps.getDate());
+        int[] anDateEdit = DLibTimeUtils.digestDate(tUpdateTs);
+        GregorianCalendar oGregorianCalendar = null;
+        DDbConfigBranch configBranch = null;
+        DDbBizPartner bprEmisor = null;
+        DDbBranch braEmisor = null;
+        DDbBranchAddress braAddressEmisor = null;
+        DDbBizPartner bprReceptor = null;
+        DDbBizPartner bprReceptorName = null;
+        DDbBranch braReceptor = null;
+        
+        // Check company branch emission configuration:
+        
+        configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+
+        // Emisor:
+
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() == DLibConsts.UNDEFINED) {
+            // Document's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getCompanyKey());
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, dps.getCompanyBranchKey());
+        }
+        else {
+            // Company branch's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n(), DUtilConsts.BPR_BRA_ID });
+        }
+
+        // Receptor:
+
+        switch (dps.getFkEmissionTypeId()) {
+            case DModSysConsts.TS_EMI_TP_BPR:
+                bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
+                braReceptor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, dps.getBizPartnerBranchKey());
+                break;
+            case DModSysConsts.TS_EMI_TP_PUB_NAM:
+            case DModSysConsts.TS_EMI_TP_PUB:
+                bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkPublicBizPartnerSaleId() });
+                braReceptor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkPublicBizPartnerSaleId(), DUtilConsts.BPR_BRA_ID });
+                break;
+            default:
+        }
+
+        if (dps.getFkEmissionTypeId() == DModSysConsts.TS_EMI_TP_PUB_NAM) {
+            bprReceptorName = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
+        }
+        else {
+            bprReceptorName = bprReceptor;
+        }
+
+        if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
+            tDate = tUpdateTs;
+        }
+        else {
+            oGregorianCalendar = new GregorianCalendar();
+            oGregorianCalendar.setTime(tUpdateTs);
+            oGregorianCalendar.set(GregorianCalendar.YEAR, anDateDps[0]);
+            oGregorianCalendar.set(GregorianCalendar.MONTH, anDateDps[1] - 1);  // January is month 0
+            oGregorianCalendar.set(GregorianCalendar.DATE, anDateDps[2]);
+            tDate = oGregorianCalendar.getTime();
+        }
+        
+        // Create XML's main element 'Comprobante':
+
+        cfd.ver33.DElementComprobante comprobante = new cfd.ver33.DElementComprobante(); // include Addenda1 only if explicitly defined and CFD is already signed
+
+        comprobante.getAttSerie().setString(dps.getSeries());
+        comprobante.getAttFolio().setString("" + dps.getNumber());
+        comprobante.getAttFecha().setDatetime(tDate);
+        
+        if (timbreFiscal_n == null) {
+            // CFDI about to be signed:
+            comprobante.getAttSello().setString("");
+            comprobante.getAttNoCertificado().setString(signature.getCertificateNumber());
+            comprobante.getAttCertificado().setString(signature.getCertificateBase64());
+        }
+        else {
+            // CFDI already signed:
+            cfd.ver33.DSelloDigital selloDigital = extractSello33(dps);
+            comprobante.getAttSello().setString(selloDigital.getSello());
+            comprobante.getAttNoCertificado().setString(selloDigital.getNoCertificado());
+            comprobante.getAttCertificado().setString(selloDigital.getCertificado());
+        }
+
+        comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
+        comprobante.getAttCondicionesDePago().setString(dps.getEdsPaymentConditions());
+        
+        comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
+
+        if (dps.getDiscountDocCy_r() > 0) {
+            comprobante.getAttDescuento().setDouble(dps.getDiscountDocCy_r());
+        }
+
+        comprobante.getAttMoneda().setString(session.getSessionCustom().getCurrencyCode(dps.getCurrencyKey()));
+        if (!session.getSessionCustom().isLocalCurrency(dps.getCurrencyKey())) {
+            comprobante.getAttTipoCambio().setDouble(dps.getExchangeRate());
+        }
+        
+        comprobante.getAttTotal().setDouble(dps.getTotalCy_r());
+
+        comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi33Catalogs.CFD_TP_I : DCfdi33Catalogs.CFD_TP_E);
+        comprobante.getAttMetodoPago().setString(dps.getEdsMethodOfPayment());
+        
+        braAddressEmisor = bprEmisor.getChildBranches().get(0).getChildAddresses().get(0);
+        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        
+        comprobante.getAttConfirmacion().setString(dps.getEdsConfirmation());
+
+        // element 'Emisor':
+        comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getEdsTaxRegime());
+
+        // element 'Receptor':
+        comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getProperName());
+        //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
+        //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getEdsUsage());
+
+        // element 'Conceptos':
+        
+        HashMap<Double, Double> mapTaxIva = new HashMap<>();   // rate, tax
+        HashMap<Double, Double> mapRetIva = new HashMap<>();   // rate, retained
+        HashMap<Double, Double> mapRetIsr = new HashMap<>();   // rate, retained
+        
+        for (DDbDpsRow dpsRow : dps.getChildRows()) {
+            if (!dpsRow.isDeleted()) {
+                // "Concepto" node:
+
+                cfd.ver33.DElementConcepto concepto = new cfd.ver33.DElementConcepto();
+
+                concepto.getAttClaveProdServ().setString(dpsRow.getEdsItemKey());
+                concepto.getAttNoIdentificacion().setString(dpsRow.getCode());
+                concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
+                concepto.getAttCantidad().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity());
+                concepto.getAttClaveUnidad().setString(dpsRow.getEdsUnitKey());
+                concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
+                concepto.getAttDescripcion().setString(dpsRow.getName());
+                concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary());
+                concepto.getAttValorUnitario().setDouble(dpsRow.getPriceUnitaryCy());
+                concepto.getAttImporte().setDouble(dpsRow.getSubtotalProvCy_r());
+                concepto.getAttDescuento().setDouble(dpsRow.getDiscountDocCy());
+
+                // "Impuestos" node:
+                
+                // "ImpuestosTrasladados" node:
+                
+                cfd.ver33.DElementConceptoImpuestosTraslados impuestosTraslados = null;
+                
+                for (int index = 1; index <= 3; index++) {
+                    int taxId = DLibConsts.UNDEFINED;
+                    double taxRate = 0;
+                    double taxAmount = 0;
+                    String tax = "";
+                    HashMap<Double, Double> mapTax = null;  // rate, tax
+                    
+                    switch (index) {
+                        case 1:
+                            taxId = dpsRow.getFkTaxCharged1Id();
+                            taxRate = dpsRow.getTaxChargedRate1();
+                            taxAmount = dpsRow.getTaxCharged1Cy();
+                            break;
+                        case 2:
+                            taxId = dpsRow.getFkTaxCharged2Id();
+                            taxRate = dpsRow.getTaxChargedRate2();
+                            taxAmount = dpsRow.getTaxCharged2Cy();
+                            break;
+                        case 3:
+                            taxId = dpsRow.getFkTaxCharged3Id();
+                            taxRate = dpsRow.getTaxChargedRate3();
+                            taxAmount = dpsRow.getTaxCharged3Cy();
+                            break;
+                        default:
+                    }
+                    
+                    if (taxId != DLibConsts.UNDEFINED) {
+                        switch (taxId) {
+                            case 1: // (N/A)
+                                break;
+                            case 2: // IVA
+                                tax = DCfdi33Catalogs.IMP_IVA;
+                                mapTax = mapTaxIva;
+                                break;
+                            case 3: // ISR
+                                break;
+                            default:
+                                throw new Exception (DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                        }
+                        
+                        if (mapTax != null) {
+                            Double taxAcum = mapTax.get(taxRate);
+                            if (taxAcum == null) {
+                                mapTax.put(taxRate, taxAmount);
+                            }
+                            else {
+                                mapTax.put(taxRate, DLibUtils.round(taxAcum + taxAmount, decs));
+                            }
+                            
+                            cfd.ver33.DElementConceptoImpuestoTraslado impuestoTraslado = new cfd.ver33.DElementConceptoImpuestoTraslado();
+                            impuestoTraslado.getAttBase().setDouble(dpsRow.getSubtotalCy_r());
+                            impuestoTraslado.getAttImpuesto().setString(tax);
+                            impuestoTraslado.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
+                            impuestoTraslado.getAttTasaOCuota().setDouble(DLibUtils.round(taxRate, decsTax));
+                            impuestoTraslado.getAttImporte().setDouble(DLibUtils.round(taxAmount, decs));
+                            
+                            if (impuestosTraslados == null) {
+                                impuestosTraslados = new cfd.ver33.DElementConceptoImpuestosTraslados();
+                            }
+                            impuestosTraslados.getEltImpuestoTrasladados().add(impuestoTraslado);
+                        }
+                    }
+                }
+                
+                // "ImpuestosRetenidos" node:
+                
+                cfd.ver33.DElementConceptoImpuestosRetenciones impuestosRetenciones = null;
+                
+                for (int index = 1; index <= 3; index++) {
+                    int retId = DLibConsts.UNDEFINED;
+                    double retRate = 0;
+                    double retAmount = 0;
+                    String ret = "";
+                    HashMap<Double, Double> mapRet = null;  // rate, retention
+                    
+                    switch (index) {
+                        case 1:
+                            retId = dpsRow.getFkTaxRetained1Id();
+                            retRate = dpsRow.getTaxRetainedRate1();
+                            retAmount = dpsRow.getTaxRetained1Cy();
+                            break;
+                        case 2:
+                            retId = dpsRow.getFkTaxRetained2Id();
+                            retRate = dpsRow.getTaxRetainedRate2();
+                            retAmount = dpsRow.getTaxRetained2Cy();
+                            break;
+                        case 3:
+                            retId = dpsRow.getFkTaxRetained3Id();
+                            retRate = dpsRow.getTaxRetainedRate3();
+                            retAmount = dpsRow.getTaxRetained3Cy();
+                            break;
+                        default:
+                    }
+                    
+                    if (retId != DLibConsts.UNDEFINED) {
+                        switch (retId) {
+                            case 1: // (N/A)
+                                break;
+                            case 2: // IVA
+                                ret = DCfdi33Catalogs.IMP_IVA;
+                                mapRet = mapRetIva;
+                                break;
+                            case 3: // ISR
+                                ret = DCfdi33Catalogs.IMP_ISR;
+                                mapRet = mapRetIsr;
+                                break;
+                            default:
+                                throw new Exception (DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                        }
+                        
+                        if (mapRet != null) {
+                            Double retAcum = mapRet.get(retRate);
+                            if (retAcum == null) {
+                                mapRet.put(retRate, retAmount);
+                            }
+                            else {
+                                mapRet.put(retRate, DLibUtils.round(retAcum + retAmount, decs));
+                            }
+                            
+                            cfd.ver33.DElementConceptoImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementConceptoImpuestoRetencion();
+                            impuestoRetencion.getAttBase().setDouble(dpsRow.getSubtotalCy_r());
+                            impuestoRetencion.getAttImpuesto().setString(ret);
+                            impuestoRetencion.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
+                            impuestoRetencion.getAttTasaOCuota().setDouble(DLibUtils.round(retRate, decsTax));
+                            impuestoRetencion.getAttImporte().setDouble(DLibUtils.round(retAmount, decs));
+                            
+                            if (impuestosRetenciones == null) {
+                                impuestosRetenciones = new cfd.ver33.DElementConceptoImpuestosRetenciones();
+                            }
+                            impuestosRetenciones.getEltImpuestoRetenciones().add(impuestoRetencion);
+                        }
+                    }
+                }
+                
+                if (impuestosTraslados != null || impuestosRetenciones != null) {
+                    cfd.ver33.DElementConceptoImpuestos impuestos = new cfd.ver33.DElementConceptoImpuestos();
+                    
+                    if (impuestosTraslados != null) {
+                        impuestos.setEltOpcImpuestosTrasladados(impuestosTraslados);
+                    }
+                    if (impuestosRetenciones != null) {
+                        impuestos.setEltOpcImpuestosRetenciones(impuestosRetenciones);
+                    }
+                    
+                    concepto.setEltOpcConceptoImpuestos(impuestos);
+                }
+
+                // "InformacionAduanera" child nodes:
+
+                ArrayList<DTrnImportDeclaration> aImportDeclarations = DTrnDocRowUtils.getDpsRowImportDeclarations(session, dpsRow.getPrimaryKey());
+                if (!aImportDeclarations.isEmpty()) {
+                    
+                    for (DTrnImportDeclaration importDeclaration : aImportDeclarations) {
+                        cfd.ver33.DElementConceptoInformacionAduanera informacionAduanera = new cfd.ver33.DElementConceptoInformacionAduanera();
+
+                        informacionAduanera.getAttNumeroPedimento().setString(importDeclaration.getNumberFormatted());
+
+                        concepto.getEltOpcConceptoInformacionAduaneras().add(informacionAduanera);
+                    }
+                }
+
+                comprobante.getEltConceptos().getEltConceptos().add(concepto);
+            }
+        }
+        
+        double totalTrasladados = 0;
+        double totalRetenciones = 0;
+        cfd.ver33.DElementImpuestosTraslados impuestosTraslados = null;
+        cfd.ver33.DElementImpuestosRetenciones impuestosRetenciones = null;
+        
+        if (!mapTaxIva.isEmpty()) {
+            impuestosTraslados = new cfd.ver33.DElementImpuestosTraslados();
+            
+            for (Double rate : mapTaxIva.keySet()) {
+                cfd.ver33.DElementImpuestoTraslado impuestoTraslado = new cfd.ver33.DElementImpuestoTraslado();
+                impuestoTraslado.getAttImpuesto().setString(DCfdi33Catalogs.IMP_IVA);
+                impuestoTraslado.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
+                impuestoTraslado.getAttTasaOCuota().setDouble(DLibUtils.round(rate, decsTax));
+                impuestoTraslado.getAttImporte().setDouble(mapTaxIva.get(rate));
+                impuestosTraslados.getEltImpuestoTrasladados().add(impuestoTraslado);
+                
+                totalTrasladados = DLibUtils.round(totalTrasladados + mapTaxIva.get(rate), decs);
+            }
+        }
+
+        if (!mapRetIva.isEmpty() || !mapRetIsr.isEmpty()) {
+            impuestosRetenciones = new cfd.ver33.DElementImpuestosRetenciones();
+            
+            for (Double rate : mapRetIva.keySet()) {
+                cfd.ver33.DElementImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementImpuestoRetencion();
+                impuestoRetencion.getAttImpuesto().setString(DCfdi33Catalogs.IMP_IVA);
+                impuestoRetencion.getAttImporte().setDouble(mapRetIva.get(rate));
+                impuestosRetenciones.getEltImpuestoRetenciones().add(impuestoRetencion);
+                
+                totalRetenciones = DLibUtils.round(totalRetenciones+ mapRetIva.get(rate), decs);
+            }
+            
+            for (Double rate : mapRetIsr.keySet()) {
+                cfd.ver33.DElementImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementImpuestoRetencion();
+                impuestoRetencion.getAttImpuesto().setString(DCfdi33Catalogs.IMP_ISR);
+                impuestoRetencion.getAttImporte().setDouble(mapRetIsr.get(rate));
+                impuestosRetenciones.getEltImpuestoRetenciones().add(impuestoRetencion);
+                
+                totalRetenciones = DLibUtils.round(totalRetenciones+ mapRetIsr.get(rate), decs);
+            }
+        }
+        
+        if (impuestosTraslados != null || impuestosRetenciones != null) {
+            cfd.ver33.DElementImpuestos impuestos = new cfd.ver33.DElementImpuestos(comprobante);
+
+            if (impuestosTraslados != null) {
+                impuestos.getAttTotalImpuestosTraslados().setDouble(totalTrasladados);
+                impuestos.setEltOpcImpuestosTrasladados(impuestosTraslados);
+            }
+            if (impuestosRetenciones != null) {
+                impuestos.getAttTotalImpuestosRetenidos().setDouble(totalRetenciones);
+                impuestos.setEltOpcImpuestosRetenciones(impuestosRetenciones);
+            }
+
+            comprobante.setEltOpcImpuestos(impuestos);
+        }
+
+        if (timbreFiscal_n != null) {
+            // Create element Complemento:
+
+            cfd.ver33.DElementComplemento complemento = new cfd.ver33.DElementComplemento();
+            cfd.ver33.DElementTimbreFiscalDigital timbreFiscalDigital = new cfd.ver33.DElementTimbreFiscalDigital();
+
+            //timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());   // by default version is "1.0"
+            timbreFiscalDigital.getAttUuid().setString(timbreFiscal_n.getUuid());
+            timbreFiscalDigital.getAttFechaTimbrado().setString(timbreFiscal_n.getFechaTimbrado());
+            timbreFiscalDigital.getAttSelloCfd().setString(timbreFiscal_n.getSelloCfd());
+            timbreFiscalDigital.getAttNoCertificadoSAT().setString(timbreFiscal_n.getNoCertificadoSat());
+            timbreFiscalDigital.getAttSelloSAT().setString(timbreFiscal_n.getSelloSat());
+            //timbreFiscalDigital.getAttRfcProvCertif().setString(timbreFiscal_n.get());
+
+            complemento.getElements().add(timbreFiscalDigital);
+
+            comprobante.setEltOpcComplemento(complemento);
+        }
+
+        return comprobante;
+    }
+    
     /**
-     * Digests EDS addenda.
+     * Extracts EDS addenda.
+     * @param xmlAddenda
+     * @param typeXmlAddenda
+     * @return
+     * @throws Exception 
      */
-    public static DElementExtAddenda digestExtAddenda(final String xmlAddenda, final int typeXmlAddenda) throws Exception {
+    public static DElementExtAddenda extractExtAddenda(final String xmlAddenda, final int typeXmlAddenda) throws Exception {
         Document doc = null;
         Node node = null;
         Node nodeChild = null;
@@ -686,15 +1058,19 @@ public abstract class DTrnEdsUtils {
     }
     
     /**
-     * Digests existing EDS addenda on DPS only if its addenda's type corresponds to that one defined on business partner.
+     * Extracts existing EDS addenda on DPS only if its addenda's type corresponds to that one defined on business partner.
+     * @param dps
+     * @param typeXmlAddenda
+     * @return
+     * @throws Exception 
      */
-    public static DElementExtAddenda digestExtAddenda(final DDbDps dps, final int typeXmlAddenda) throws Exception {
+    public static DElementExtAddenda extractExtAddenda(final DDbDps dps, final int typeXmlAddenda) throws Exception {
         DElementExtAddenda extAddenda = null;
         
         if (dps.getChildEds() != null && dps.getChildEds().getFkXmlAddendaTypeId() == typeXmlAddenda) {
             switch (typeXmlAddenda) {
                 case DModSysConsts.TS_XML_ADD_TP_CON:
-                    extAddenda = (DElementAddendaContinentalTire) digestExtAddenda(dps.getChildEds().getDocXmlAddenda(), typeXmlAddenda);
+                    extAddenda = (DElementAddendaContinentalTire) DTrnEdsUtils.extractExtAddenda(dps.getChildEds().getDocXmlAddenda(), typeXmlAddenda);
                     break;
                     
                 default:
@@ -706,16 +1082,19 @@ public abstract class DTrnEdsUtils {
     }
 
     /**
-     * Digests existing digital signature attributes from CFD's XML.
+     * Extracts existing digital signature attributes from CFD's XML.
+     * @param dps
+     * @return
+     * @throws Exception 
      */
-    public static DSelloDigital digestSelloDigital(final DDbDps dps) throws Exception {
+    public static cfd.ver32.DSelloDigital extractSello32(final DDbDps dps) throws Exception {
         Document doc = null;
         Node node = null;
         NamedNodeMap namedNodeMapChild = null;
-        DSelloDigital selloDigital = null;
+        cfd.ver32.DSelloDigital selloDigital = null;
         
         if (dps.getChildEds() != null) {
-            selloDigital = new DSelloDigital();
+            selloDigital = new cfd.ver32.DSelloDigital();
 
             doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
 
@@ -731,35 +1110,31 @@ public abstract class DTrnEdsUtils {
     }
 
     /**
-     * Digests existing 'TimbreFiscalDigital' element from signed CFD's XML.
+     * Extracts existing digital signature attributes from CFD's XML.
+     * @param dps
+     * @return
+     * @throws Exception 
      */
-    public static DTimbreFiscal digestTimbreFiscal(final DDbDps dps) throws Exception {
+    public static cfd.ver33.DSelloDigital extractSello33(final DDbDps dps) throws Exception {
         Document doc = null;
         Node node = null;
-        Node nodeChild = null;
         NamedNodeMap namedNodeMapChild = null;
-        DTimbreFiscal timbreFiscal = null;
+        cfd.ver33.DSelloDigital selloDigital = null;
         
-        if (dps.getChildEds() != null && dps.getChildEds().getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
-            timbreFiscal = new DTimbreFiscal();
+        if (dps.getChildEds() != null) {
+            selloDigital = new cfd.ver33.DSelloDigital();
 
             doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
 
-            node = DXmlUtils.extractElements(doc, "cfdi:Complemento").item(0);
+            node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+            namedNodeMapChild = node.getAttributes();
 
-            nodeChild = DXmlUtils.extractChildElements(node, "tfd:TimbreFiscalDigital").get(0);
-            namedNodeMapChild = nodeChild.getAttributes();
-
-            timbreFiscal.setVersion(DXmlUtils.extractAttributeValue(namedNodeMapChild, "version", true));
-            timbreFiscal.setUuid(DXmlUtils.extractAttributeValue(namedNodeMapChild, "UUID", true));
-            timbreFiscal.setFechaTimbrado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "FechaTimbrado", true));
-            timbreFiscal.setSelloCfd(DXmlUtils.extractAttributeValue(namedNodeMapChild, "selloCFD", true));
-            timbreFiscal.setNoCertificadoSat(DXmlUtils.extractAttributeValue(namedNodeMapChild, "noCertificadoSAT", true));
-            timbreFiscal.setSelloSat(DXmlUtils.extractAttributeValue(namedNodeMapChild, "selloSAT", true));
-            timbreFiscal.setPacId(dps.getChildEds().getFkXmlSignatureProviderId());
+            selloDigital.setSello(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Sello", true));
+            selloDigital.setNoCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "NoCertificado", true));
+            selloDigital.setCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Certificado", true));
         }
         
-        return timbreFiscal;
+        return selloDigital;
     }
 
     /**
@@ -769,51 +1144,86 @@ public abstract class DTrnEdsUtils {
      * @param xmlType CFD type.
      * @param xmlRaw CFD XML file just as provided by XML Signature Provider. Required only when CFD is signed, otherwise empty string.
      * @param timbreFiscal_n CFD stamp. Required only when CFD is signed, otherwise null.
+     * @return
+     * @throws Exception 
      */
-    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType, final String xmlRaw, final DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType, final String xmlRaw, final cfd.ver32.DTimbreFiscal timbreFiscal_n) throws Exception {
         int xmlStatus = DLibConsts.UNDEFINED;
         int userIssuedId = DLibConsts.UNDEFINED;
-        String textToSign = "";
-        String textSigned = "";
-        DDbDpsEds eds = null;
+        String textToSign;
+        String textSigned;
+        DDbDpsEds eds;
+        DGuiEdsSignature signature;
         DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
-        DCfd cfd = new DCfd(configBranch.getEdsDirectory());
-        DElementExtAddenda extAddenda = null;
-        //cfd.ver2.DElementComprobante comprobante2 = null; // not supported yet
-        cfd.ver3.DElementComprobante comprobante3 = null;
+        cfd.DCfd cfd = new cfd.DCfd(configBranch.getEdsDirectory());
+        cfd.DElementExtAddenda extAddenda = null;
 
         switch (xmlType) {
             case DModSysConsts.TS_XML_TP_CFD:
                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
-            case DModSysConsts.TS_XML_TP_CFDI:
+            case DModSysConsts.TS_XML_TP_CFDI_32:
                 // Create EDS:
-                comprobante3 = createCfdi(session, dps, timbreFiscal_n);
+                signature = session.getEdsSignature(dps.getCompanyBranchKey());
+                cfd.ver32.DElementComprobante comprobante32 = createCfdi32(session, dps, timbreFiscal_n);
                 
                 // Append to EDS the very addenda previously added to DPS if any:
                 if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
-                    extAddenda = digestExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
+                    extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
-                        cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
+                        cfd.ver32.DElementAddenda addenda = new cfd.ver32.DElementAddenda();
                         addenda.getElements().add(extAddenda);
-                        comprobante3.setEltOpcAddenda(addenda);
+                        comprobante32.setEltOpcAddenda(addenda);
                     }
                 }
                 
                 // Sign EDS:
-                textToSign = DUtilUtils.generateOriginalString(comprobante3);
-                textSigned = session.getEdsSignature(dps.getCompanyBranchKey()).signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
-                cfd.write(comprobante3, textToSign, textSigned, 
-                        session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber(), 
-                        session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateBase64());
+                textToSign = DCfdUtils.generateOriginalString(comprobante32);
+                textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
+                cfd.write(comprobante32, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
 
                 // Set EDS status:
                 if (timbreFiscal_n == null) {
+                    // emit only CFDI:
                     xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                     userIssuedId = DUtilConsts.USR_NA_ID;
                 }
                 else {
+                    // CFDI just signed!:
+                    xmlStatus = DModSysConsts.TS_XML_ST_ISS;
+                    userIssuedId = session.getUser().getPkUserId();
+                }
+                break;
+
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                // Create EDS:
+                signature = session.getEdsSignature(dps.getCompanyBranchKey());
+                cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, dps, timbreFiscal_n, signature);
+                
+                // Append to EDS the very addenda previously added to DPS if any:
+                if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
+                    extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
+                    if (extAddenda != null) {
+                        cfd.ver33.DElementAddenda addenda = new cfd.ver33.DElementAddenda();
+                        addenda.getElements().add(extAddenda);
+                        comprobante33.setEltOpcAddenda(addenda);
+                    }
+                }
+                
+                // Sign EDS:
+                textToSign = comprobante33.getElementForOriginalString();
+                textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
+                cfd.write(comprobante33, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
+
+                // Set EDS status:
+                if (timbreFiscal_n == null) {
+                    // emit only CFDI:
+                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
+                    userIssuedId = DUtilConsts.USR_NA_ID;
+                }
+                else {
+                    // CFDI just signed!:
                     xmlStatus = DModSysConsts.TS_XML_ST_ISS;
                     userIssuedId = session.getUser().getPkUserId();
                 }
@@ -849,18 +1259,18 @@ public abstract class DTrnEdsUtils {
     }
 
     /**
-     * Validate that CFDI's XML corresponds to CFD registry.
+     * Validates that CFDI's XML corresponds to CFD registry.
      * @param xml CFDI's XML.
      * @param eds EDS registry.
      * @return true if is correct.
      */
     public static boolean belongsXmlToEds(final String xml, final DDbDpsEds eds) throws Exception {
-        cfd.ver3.DElementComprobante comprobanteXml = null;
-        cfd.ver3.DElementComprobante comprobanteEds = null;
+        cfd.ver32.DElementComprobante comprobanteXml = null;
+        cfd.ver32.DElementComprobante comprobanteEds = null;
         boolean valid = false;
 
-        comprobanteXml = DCfdUtils.getCfdi(xml);
-        comprobanteEds = DCfdUtils.getCfdi(eds.getDocXml());
+        comprobanteXml = DCfdUtils.getCfdi32(xml);
+        comprobanteEds = DCfdUtils.getCfdi32(eds.getDocXml());
 
         valid = comprobanteXml.getEltEmisor().getAttRfc().getString().compareTo(comprobanteEds.getEltEmisor().getAttRfc().getString()) == 0 &&
                 comprobanteXml.getEltReceptor().getAttRfc().getString().compareTo(comprobanteEds.getEltReceptor().getAttRfc().getString()) == 0 &&
@@ -883,7 +1293,7 @@ public abstract class DTrnEdsUtils {
         Node node = null;
         Node nodeChildTimbreFiscal = null;
         NamedNodeMap namedNodeMapTimbreFiscal = null;
-        DTimbreFiscal timbreFiscal = null;
+        cfd.ver32.DTimbreFiscal timbreFiscal = null;
         DDbConfigBranch configBranch = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDpsEds eds = null;
@@ -1131,7 +1541,7 @@ public abstract class DTrnEdsUtils {
 
             namedNodeMapTimbreFiscal = nodeChildTimbreFiscal.getAttributes();
 
-            timbreFiscal = new DTimbreFiscal();
+            timbreFiscal = new cfd.ver32.DTimbreFiscal();
 
             node = namedNodeMapTimbreFiscal.getNamedItem("UUID");
             timbreFiscal.setUuid(node.getNodeValue());

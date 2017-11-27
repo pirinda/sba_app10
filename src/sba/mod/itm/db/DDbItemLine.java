@@ -24,6 +24,7 @@ public class DDbItemLine extends DDbRegistryUser {
     protected int mnPkItemLineId;
     protected String msCode;
     protected String msName;
+    protected String msCfdItemKey;
     protected boolean mbBulk;
     protected boolean mbInventoriable;
     protected boolean mbLotApplying;
@@ -62,6 +63,7 @@ public class DDbItemLine extends DDbRegistryUser {
     public void setPkItemLineId(int n) { mnPkItemLineId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setCfdItemKey(String s) { msCfdItemKey = s; }
     public void setBulk(boolean b) { mbBulk = b; }
     public void setInventoriable(boolean b) { mbInventoriable = b; }
     public void setLotApplying(boolean b) { mbLotApplying = b; }
@@ -91,6 +93,7 @@ public class DDbItemLine extends DDbRegistryUser {
     public int getPkItemLineId() { return mnPkItemLineId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public String getCfdItemKey() { return msCfdItemKey; }
     public boolean isBulk() { return mbBulk; }
     public boolean isInventoriable() { return mbInventoriable; }
     public boolean isLotApplying() { return mbLotApplying; }
@@ -134,6 +137,7 @@ public class DDbItemLine extends DDbRegistryUser {
         mnPkItemLineId = 0;
         msCode = "";
         msName = "";
+        msCfdItemKey = "";
         mbBulk = false;
         mbInventoriable = false;
         mbLotApplying = false;
@@ -206,6 +210,7 @@ public class DDbItemLine extends DDbRegistryUser {
             mnPkItemLineId = resultSet.getInt("id_lin");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            msCfdItemKey = resultSet.getString("cfd_itm_key");
             mbBulk = resultSet.getBoolean("b_buk");
             mbInventoriable = resultSet.getBoolean("b_inv");
             mbLotApplying = resultSet.getBoolean("b_lot");
@@ -258,6 +263,7 @@ public class DDbItemLine extends DDbRegistryUser {
                     mnPkItemLineId + ", " +
                     "'" + (msCode.length() > 0 ? msCode : "" + mnPkItemLineId) + "', " +
                     "'" + msName + "', " +
+                    "'" + msCfdItemKey + "', " + 
                     (mbBulk ? 1 : 0) + ", " +
                     (mbInventoriable ? 1 : 0) + ", " +
                     (mbLotApplying ? 1 : 0) + ", " +
@@ -292,6 +298,7 @@ public class DDbItemLine extends DDbRegistryUser {
                     //"id_lin = " + mnPkItemLineId + ", " +
                     "code = '" + (msCode.length() > 0 ? msCode : "" + mnPkItemLineId) + "', " +
                     "name = '" + msName + "', " +
+                    "cfd_itm_key = '" + msCfdItemKey + "', " +
                     "b_buk = " + (mbBulk ? 1 : 0) + ", " +
                     "b_inv = " + (mbInventoriable ? 1 : 0) + ", " +
                     "b_lot = " + (mbLotApplying ? 1 : 0) + ", " +
@@ -332,6 +339,7 @@ public class DDbItemLine extends DDbRegistryUser {
         registry.setPkItemLineId(this.getPkItemLineId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setCfdItemKey(this.getCfdItemKey());
         registry.setBulk(this.isBulk());
         registry.setInventoriable(this.isInventoriable());
         registry.setLotApplying(this.isLotApplying());

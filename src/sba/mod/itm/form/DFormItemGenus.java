@@ -86,6 +86,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel3 = new javax.swing.JPanel();
         jlCode = new javax.swing.JLabel();
         moTextCode = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKey = new javax.swing.JLabel();
+        moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
@@ -175,7 +177,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Clasificación:"));
         jPanel1.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemCategory.setText("Categoría ítem:*");
         jlItemCategory.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -186,7 +188,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel11);
 
-        jPanel12.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemClass.setText("Clase ítem:*");
         jlItemClass.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -197,7 +199,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel12);
 
-        jPanel13.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemType.setText("Tipo ítem:*");
         jlItemType.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -208,7 +210,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel13);
 
-        jPanel14.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemFamily.setText("Familia ítems:*");
         jlItemFamily.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -219,7 +221,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel14);
 
-        jPanel19.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolItemLineApplying.setText("Aplica línea de ítems");
         moBoolItemLineApplying.setPreferredSize(new java.awt.Dimension(200, 23));
@@ -232,7 +234,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración:"));
         jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel15.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTaxGroup.setText("Grupo impuestos:*");
         jlTaxGroup.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -243,10 +245,10 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel5.add(jPanel15);
 
-        jPanel17.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel5.add(jPanel17);
 
-        jPanel20.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlAbpItem.setText("Paquete contable:*");
         jlAbpItem.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -257,10 +259,10 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel5.add(jPanel20);
 
-        jPanel18.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel5.add(jPanel18);
 
-        jPanel47.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel5.add(jPanel47);
 
         jPanel2.add(jPanel5);
@@ -274,7 +276,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
 
-        jPanel3.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código:*");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -283,9 +285,17 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moTextCode.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel3.add(moTextCode);
 
+        jlCfdItemKey.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlCfdItemKey.setText("Clave ProdServ:*");
+        jlCfdItemKey.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel3.add(jlCfdItemKey);
+
+        moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel3.add(moTextCfdItemKey);
+
         jPanel9.add(jPanel3);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre:*");
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -296,7 +306,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel4);
 
-        jPanel22.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolCodeEditable.setText("Código editable");
         moBoolCodeEditable.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -312,7 +322,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel22);
 
-        jPanel23.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolBulk.setText("A granel");
         moBoolBulk.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -320,7 +330,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel23);
 
-        jPanel24.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolInventoriable.setText("Inventariable");
         moBoolInventoriable.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -336,7 +346,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel24);
 
-        jPanel16.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSerialNumberType.setText("Tipo número serie:*");
         jlSerialNumberType.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -347,7 +357,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel16);
 
-        jPanel21.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSerialNumberName.setText("Número serie:*");
         jlSerialNumberName.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -365,7 +375,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel21);
 
-        jPanel25.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolUnitsVirtualApplying.setText("Un. virtuales");
         moBoolUnitsVirtualApplying.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -381,7 +391,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel25);
 
-        jPanel26.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolFreeOfPrice.setText("Sin precios");
         moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(115, 23));
@@ -408,7 +418,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel32.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración código ítems:"));
         jPanel32.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel33.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCodeOrderItemGenus.setText("Pos. género ítems:");
         jlCodeOrderItemGenus.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -419,7 +429,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel32.add(jPanel33);
 
-        jPanel34.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCodeOrderItemLine.setText("Pos. línea ítems:");
         jlCodeOrderItemLine.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -430,7 +440,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel32.add(jPanel34);
 
-        jPanel35.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel35.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCodeOrderBrand.setText("Pos. marca:");
         jlCodeOrderBrand.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -441,7 +451,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel32.add(jPanel35);
 
-        jPanel36.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCodeOrderManufacturer.setText("Pos. fabricante:");
         jlCodeOrderManufacturer.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -452,7 +462,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel32.add(jPanel36);
 
-        jPanel50.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCodeOrderItem.setText("Pos. ítem:*");
         jlCodeOrderItem.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -468,7 +478,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración nombre ítems:"));
         jPanel27.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
-        jPanel28.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNameOrderItemGenus.setText("Pos. género ítems:");
         jlNameOrderItemGenus.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -479,7 +489,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel27.add(jPanel28);
 
-        jPanel29.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNameOrderItemLine.setText("Pos. línea ítems:");
         jlNameOrderItemLine.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -490,7 +500,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel27.add(jPanel29);
 
-        jPanel30.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNameOrderBrand.setText("Pos. marca:");
         jlNameOrderBrand.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -501,7 +511,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel27.add(jPanel30);
 
-        jPanel31.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNameOrderManufacturer.setText("Pos. fabricante:");
         jlNameOrderManufacturer.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -512,7 +522,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel27.add(jPanel31);
 
-        jPanel49.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel49.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNameOrderItem.setText("Pos. ítem:*");
         jlNameOrderItem.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -534,7 +544,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel39.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel40.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolMeasurementLengthApplying.setText("Lon.");
         moBoolMeasurementLengthApplying.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -550,7 +560,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel39.add(jPanel40);
 
-        jPanel44.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolMeasurementMassApplying.setText("Masa");
         moBoolMeasurementMassApplying.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -562,7 +572,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel39.add(jPanel44);
 
-        jPanel45.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel39.add(jPanel45);
 
         jPanel38.add(jPanel39, java.awt.BorderLayout.NORTH);
@@ -574,21 +584,21 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel42.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel43.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolWeightGrossApplying.setText("Peso bruto");
         jPanel43.add(moBoolWeightGrossApplying);
 
         jPanel42.add(jPanel43);
 
-        jPanel48.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel48.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolWeightDeliveryApplying.setText("Peso flete");
         jPanel48.add(moBoolWeightDeliveryApplying);
 
         jPanel42.add(jPanel48);
 
-        jPanel46.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel42.add(jPanel46);
 
         jPanel41.add(jPanel42, java.awt.BorderLayout.NORTH);
@@ -611,15 +621,16 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         moFieldKeyGroup = new DGuiFieldKeyGroup(miClient);
 
-        moKeyItemCategory.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemCategory.getText()), true);
-        moKeyItemClass.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemClass.getText()), true);
-        moKeyItemType.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemType.getText()), true);
-        moKeyItemFamily.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemFamily.getText()), true);
+        moKeyItemCategory.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemCategory), true);
+        moKeyItemClass.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemClass), true);
+        moKeyItemType.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemType), true);
+        moKeyItemFamily.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemFamily), true);
         moBoolItemLineApplying.setBooleanSettings(moBoolItemLineApplying.getText(), false);
-        moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup.getText()), true);
-        moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem.getText()), true);
-        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), lenCode == 0 || lenCode > 5 ? 5 : lenCode);
-        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 25);
+        moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup), true);
+        moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem), true);
+        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), lenCode == 0 || lenCode > 5 ? 5 : lenCode);
+        moTextCfdItemKey.setTextSettings(DGuiUtils.getLabelName(jlCfdItemKey), 8);
+        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 25);
         moBoolCodeEditable.setBooleanSettings(moBoolCodeEditable.getText(), false);
         moBoolNameEditable.setBooleanSettings(moBoolNameEditable.getText(), false);
         moBoolIngredientApplying.setBooleanSettings(moBoolIngredientApplying.getText(), false);
@@ -627,25 +638,25 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moBoolInventoriable.setBooleanSettings(moBoolInventoriable.getText(), false);
         moBoolLotApplying.setBooleanSettings(moBoolLotApplying.getText(), false);
         moBoolSerialNumberApplying.setBooleanSettings(moBoolSerialNumberApplying.getText(), false);
-        moKeySerialNumberType.setKeySettings(miClient, DGuiUtils.getLabelName(jlSerialNumberType.getText()), true);
-        moTextSerialNumberName.setTextSettings(DGuiUtils.getLabelName(jlSerialNumberName.getText()), 25);
-        moIntSerialNumberLength.setIntegerSettings(DGuiUtils.getLabelName(jlSerialNumberLength.getText()), DGuiConsts.GUI_TYPE_INT, false);
+        moKeySerialNumberType.setKeySettings(miClient, DGuiUtils.getLabelName(jlSerialNumberType), true);
+        moTextSerialNumberName.setTextSettings(DGuiUtils.getLabelName(jlSerialNumberName), 25);
+        moIntSerialNumberLength.setIntegerSettings(DGuiUtils.getLabelName(jlSerialNumberLength), DGuiConsts.GUI_TYPE_INT, false);
         moBoolUnitsVirtualApplying.setBooleanSettings(moBoolUnitsVirtualApplying.getText(), false);
         moBoolUnitsContainedApplying.setBooleanSettings(moBoolUnitsContainedApplying.getText(), false);
         moBoolUnitsPackageApplying.setBooleanSettings(moBoolUnitsPackageApplying.getText(), false);
         moBoolFreeOfPrice.setBooleanSettings(moBoolFreeOfPrice.getText(), false);
         moBoolFreeOfDiscount.setBooleanSettings(moBoolFreeOfDiscount.getText(), false);
         moBoolFreeOfCommission.setBooleanSettings(moBoolFreeOfCommission.getText(), false);
-        moIntCodeOrderItemGenus.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItemGenus.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntCodeOrderItemLine.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItemLine.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntCodeOrderBrand.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderBrand.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntCodeOrderManufacturer.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderManufacturer.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntCodeOrderItem.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItem.getText()), DGuiConsts.GUI_TYPE_INT, true);
-        moIntNameOrderItemGenus.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItemGenus.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntNameOrderItemLine.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItemLine.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntNameOrderBrand.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderBrand.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntNameOrderManufacturer.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderManufacturer.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moIntNameOrderItem.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItem.getText()), DGuiConsts.GUI_TYPE_INT, true);
+        moIntCodeOrderItemGenus.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItemGenus), DGuiConsts.GUI_TYPE_INT, false);
+        moIntCodeOrderItemLine.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItemLine), DGuiConsts.GUI_TYPE_INT, false);
+        moIntCodeOrderBrand.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderBrand), DGuiConsts.GUI_TYPE_INT, false);
+        moIntCodeOrderManufacturer.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderManufacturer), DGuiConsts.GUI_TYPE_INT, false);
+        moIntCodeOrderItem.setIntegerSettings(DGuiUtils.getLabelName(jlCodeOrderItem), DGuiConsts.GUI_TYPE_INT, true);
+        moIntNameOrderItemGenus.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItemGenus), DGuiConsts.GUI_TYPE_INT, false);
+        moIntNameOrderItemLine.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItemLine), DGuiConsts.GUI_TYPE_INT, false);
+        moIntNameOrderBrand.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderBrand), DGuiConsts.GUI_TYPE_INT, false);
+        moIntNameOrderManufacturer.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderManufacturer), DGuiConsts.GUI_TYPE_INT, false);
+        moIntNameOrderItem.setIntegerSettings(DGuiUtils.getLabelName(jlNameOrderItem), DGuiConsts.GUI_TYPE_INT, true);
         moBoolMeasurementLengthApplying.setBooleanSettings(moBoolMeasurementLengthApplying.getText(), false);
         moBoolMeasurementSurfaceApplying.setBooleanSettings(moBoolMeasurementSurfaceApplying.getText(), false);
         moBoolMeasurementVolumeApplying.setBooleanSettings(moBoolMeasurementVolumeApplying.getText(), false);
@@ -662,6 +673,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moFields.addField(moKeyTaxGroup);
         moFields.addField(moKeyAbpItem);
         moFields.addField(moTextCode);
+        moFields.addField(moTextCfdItemKey);
         moFields.addField(moTextName);
         moFields.addField(moBoolCodeEditable);
         moFields.addField(moBoolNameEditable);
@@ -802,6 +814,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAbpItem;
+    private javax.swing.JLabel jlCfdItemKey;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlCodeOrderBrand;
     private javax.swing.JLabel jlCodeOrderItem;
@@ -862,6 +875,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private sba.lib.gui.bean.DBeanFieldKey moKeyItemType;
     private sba.lib.gui.bean.DBeanFieldKey moKeySerialNumberType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTaxGroup;
+    private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
     private sba.lib.gui.bean.DBeanFieldText moTextSerialNumberName;
@@ -933,6 +947,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moIntNameOrderItem.setValue(moRegistry.getNameOrderItem());
         moTextSerialNumberName.setValue(moRegistry.getSerialNumberName());
         moIntSerialNumberLength.setValue(moRegistry.getSerialNumberLength());
+        moTextCfdItemKey.setValue(moRegistry.getCfdItemKey());
         moBoolCodeEditable.setValue(moRegistry.isCodeEditable());
         moBoolNameEditable.setValue(moRegistry.isNameEditable());
         moBoolIngredientApplying.setValue(moRegistry.isIngredientApplying());
@@ -1099,6 +1114,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         registry.setNameOrderItem(moIntNameOrderItem.getValue());
         registry.setSerialNumberName(moTextSerialNumberName.getValue());
         registry.setSerialNumberLength(moIntSerialNumberLength.getValue());
+        registry.setCfdItemKey(moTextCfdItemKey.getValue());
         registry.setCodeEditable(moBoolCodeEditable.getValue());
         registry.setNameEditable(moBoolNameEditable.getValue());
         registry.setIngredientApplying(moBoolIngredientApplying.getValue());

@@ -35,8 +35,11 @@ public class DPrtUtils {
             case DModConsts.TR_DPS_CFD:
                 fileName = "reps/cfd.jasper";
                 break;
-            case DModConsts.TR_DPS_CFDI:
+            case DModConsts.TR_DPS_CFDI_32:
                 fileName = "reps/cfdi.jasper";
+                break;
+            case DModConsts.TR_DPS_CFDI_33:
+                fileName = "reps/cfdi33.jasper";
                 break;
             case DModConsts.SR_REP_NEW:
                 fileName = "reps/rep_new.jasper";

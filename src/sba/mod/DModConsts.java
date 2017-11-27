@@ -281,7 +281,8 @@ public abstract class DModConsts {
 
     public static final int TR_DPS = 650001;
     public static final int TR_DPS_CFD = 650002;
-    public static final int TR_DPS_CFDI = 650003;
+    public static final int TR_DPS_CFDI_32 = 650032;
+    public static final int TR_DPS_CFDI_33 = 650033;
 
     public static final int MS_PRC_TP = 710001;
     public static final int MS_ITM_PRC_TP = 710002;

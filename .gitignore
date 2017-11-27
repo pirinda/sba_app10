@@ -1,6 +1,6 @@
 # Git Ignore Settings
 # Author: Sergio Abraham Flores Guti�rrez
-# Date: 2015-09-01
+# Date: 2017-11-15
 
 # Java BiteCode files:
 *.class
@@ -17,14 +17,14 @@
 # Virtual machine crash log files (see http://www.java.com/en/download/help/error_hotspot.xml):
 hs_err_pid*
 
-# CVS, NetBeans and SIIE directories and files:
+# CVS, NetBeans and SBA directories and files:
 **/CVS/
 .cvsignore
 build/
+cfd/
 dist/
 nbproject/
 test/
-reps/cfd/
 build.xml
 manifest.mf
 Thumbs.db

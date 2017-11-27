@@ -6,7 +6,8 @@
 package sba.mod.trn.db;
 
 import cfd.DCfd;
-import cfd.DCfdUtils;
+import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver33.DCfdi33Consts;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -47,11 +48,11 @@ public class DPrtDps {
         moDps = dps;
     }
 
-    public HashMap<String, Object> cratePrintCfdMap() throws Exception {
+    public HashMap<String, Object> cratePrintMapCfd() throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public HashMap<String, Object> cratePrintCfdiMap() throws Exception {
+    public HashMap<String, Object> cratePrintMapCfdi32() throws Exception {
         Document doc = null;
         Node node = null;
         Node nodeChild = null;
@@ -101,7 +102,7 @@ public class DPrtDps {
         hashMap.put("sXmlTipoCambio", DXmlUtils.extractAttributeValue(namedNodeMap, "TipoCambio", true));   // actually "false" in CFDI 3.2 specification
         hashMap.put("sXmlMoneda", sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true));           // actually "false" in CFDI 3.2 specification
         hashMap.put("sXmlTipoDeComprobante", DXmlUtils.extractAttributeValue(namedNodeMap, "tipoDeComprobante", true));
-        hashMap.put("sXmlMetodoDePago", DCfdUtils.composeMetodoPago(DXmlUtils.extractAttributeValue(namedNodeMap, "metodoDePago", true)));
+        hashMap.put("sXmlMetodoDePago", DXmlUtils.extractAttributeValue(namedNodeMap, "metodoDePago", true));
         hashMap.put("sXmlNumCtaPago", DXmlUtils.extractAttributeValue(namedNodeMap, "NumCtaPago", false));
         hashMap.put("sXmlLugarExpedicion", sLugarExpedicion = DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
 
@@ -214,7 +215,7 @@ public class DPrtDps {
 
             hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMapChild, "selloSAT", true));
 
-            bufferedImage = DCfd.createQrCodeBufferedImage(sRfcEmisor, sRfcReceptor, dCfdTotal, sCfdUuid);
+            bufferedImage = DCfd.createQrCodeBufferedImageCfdi32(sRfcEmisor, sRfcReceptor, dCfdTotal, sCfdUuid);
             hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
         }
 
@@ -258,6 +259,155 @@ public class DPrtDps {
         }
 
         hashMap.put("sEdsDir", dbConfigBranch.getEdsDirectory());
+
+        return hashMap;
+    }
+    
+    public HashMap<String, Object> cratePrintMapCfdi33() throws Exception {
+        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        DDbConfigBranch dbConfigBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moDps.getCompanyBranchKey());
+        NamedNodeMap namedNodeMap;
+
+        hashMap.put("oDecimalFormatQuantity", ((DDbConfigCompany) moSession.getConfigCompany()).getDecimalFormatQuantity());
+        hashMap.put("oDecimalFormatPriceUnitary", ((DDbConfigCompany) moSession.getConfigCompany()).getDecimalFormatPriceUnitary());
+        hashMap.put("nPkDps", (long) moDps.getPkDpsId());
+        hashMap.put("nFkEmissionType", (long) moDps.getFkEmissionTypeId());
+        hashMap.put("sEdsDir", dbConfigBranch.getEdsDirectory());
+        
+        // XML parsing:
+
+        Document doc = DXmlUtils.parseDocument(moDps.getChildEds().getDocXml());
+
+        // Comprobante:
+
+        double dTotal;
+        String sMoneda;
+        Node nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+        
+        namedNodeMap = nodeComprobante.getAttributes();
+        hashMap.put("sXmlVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+        hashMap.put("sXmlTipoDeComprobante", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true)));
+        hashMap.put("sXmlSerie", DXmlUtils.extractAttributeValue(namedNodeMap, "Serie", false));
+        hashMap.put("sXmlFolio", DXmlUtils.extractAttributeValue(namedNodeMap, "Folio", true));
+        hashMap.put("sXmlFecha", DXmlUtils.extractAttributeValue(namedNodeMap, "Fecha", true));
+        hashMap.put("sXmlLugarExpedicion", DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
+        hashMap.put("sXmlNoCertificado", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificado", true));
+        hashMap.put("sXmlSello", DXmlUtils.extractAttributeValue(namedNodeMap, "Sello", true));
+        hashMap.put("sXmlMetodoPago", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MDP, DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true)));
+        hashMap.put("sXmlFormaPago", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_FDP, DXmlUtils.extractAttributeValue(namedNodeMap, "FormaPago", true)));
+        hashMap.put("sXmlCondicionesDePago", DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
+        hashMap.put("sXmlMoneda", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MON, sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
+        hashMap.put("sXmlTipoCambio", DXmlUtils.extractAttributeValue(namedNodeMap, "TipoCambio", false));
+        hashMap.put("dXmlSubTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "SubTotal", true)));
+        hashMap.put("dXmlDescuento", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Descuento", false)));
+        hashMap.put("dXmlTotal", dTotal = DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true)));
+        hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+
+        // Emisor:
+                
+        String sEmiRfc;
+        String sEmiNombre;
+        String sLugarExpedicion;
+        Node nodeEmisor = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+        
+        namedNodeMap = nodeEmisor.getAttributes();
+        hashMap.put("sXmlEmiRfc", sEmiRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
+        hashMap.put("sXmlEmiNombre", sEmiNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
+        hashMap.put("sXmlEmiRegimenFiscal", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", false)));
+        
+        DDbBranchAddress addressEmi = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), 1 });
+        hashMap.put("sEmiDomCalle", addressEmi.getAddress1());
+        hashMap.put("sEmiDomNoExterior", addressEmi.getNumberExterior());
+        hashMap.put("sEmiDomNoInterior", addressEmi.getNumberInterior());
+        hashMap.put("sEmiDomColonia", addressEmi.getAddress2());
+        hashMap.put("sEmiDomLocalidad", addressEmi.getLocality());
+        hashMap.put("sEmiDomReferencia", addressEmi.getAddress3());
+        hashMap.put("sEmiDomMunicipio", addressEmi.getCounty());
+        hashMap.put("sEmiDomEstado", addressEmi.getState());
+        hashMap.put("sEmiDomPais", (String) moSession.readField(DModConsts.CS_CTY, new int[] { addressEmi.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME));
+        hashMap.put("sEmiDomCodigoPostal", addressEmi.getZipCode());
+        hashMap.put("sEmiDomTels", addressEmi.getTelecommDevices());
+        hashMap.put("sEmiDomEmails", addressEmi.getTelecommElectronics());
+        sLugarExpedicion = addressEmi.composeLocality(moSession);
+        
+        // Receptor:
+        
+        String sRecRfc;
+        String sRecNombre;
+        Node nodeReceptor = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+        
+        namedNodeMap = nodeReceptor.getAttributes();
+        hashMap.put("sXmlRecRfc", sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
+        hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
+        hashMap.put("sXmlRecUsoCFDI", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", false)));
+
+        DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), 1 });
+        hashMap.put("sRecDomCalle", addressRec.getAddress1());
+        hashMap.put("sRecDomNoExterior", addressRec.getNumberExterior());
+        hashMap.put("sRecDomNoInterior", addressRec.getNumberInterior());
+        hashMap.put("sRecDomColonia", addressRec.getAddress2());
+        hashMap.put("sRecDomLocalidad", addressRec.getLocality());
+        hashMap.put("sRecDomReferencia", addressRec.getAddress3());
+        hashMap.put("sRecDomMunicipio", addressRec.getCounty());
+        hashMap.put("sRecDomEstado", addressRec.getState());
+        hashMap.put("sRecDomPais", (String) moSession.readField(DModConsts.CS_CTY, new int[] { addressRec.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME));
+        hashMap.put("sRecDomCodigoPostal", addressRec.getZipCode());
+        hashMap.put("sRecDomTels", addressRec.getTelecommDevices());
+        hashMap.put("sRecDomEmails", addressRec.getTelecommElectronics());
+
+        // Impuestos:
+
+        Node nodeImpuestos = DXmlUtils.extractElements(doc, "cfdi:Impuestos").item(0);
+        
+        namedNodeMap = nodeImpuestos.getAttributes();
+        hashMap.put("dXmlImpTotalImptosRetenidos", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosRetenidos", false)));
+        hashMap.put("dXmlImpTotalImptosTrasladados", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosTrasladados", false)));
+
+        // Timbre fiscal:
+
+        if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:Complemento")) {
+            Node nodeComplemento = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:Complemento").get(0);
+            if (DXmlUtils.hasChildElement(nodeComplemento, "tfd:TimbreFiscalDigital")) {
+                String sUuid;
+                String sSelloCfd;
+                Node nodeTimbreFiscalDigital = DXmlUtils.extractChildElements(nodeComplemento, "tfd:TimbreFiscalDigital").get(0);
+                
+                namedNodeMap = nodeTimbreFiscalDigital.getAttributes();
+                hashMap.put("sXmlTimVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+                hashMap.put("sXmlTimUuid", sUuid = DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true));
+                hashMap.put("sXmlTimFechaTimbrado", DXmlUtils.extractAttributeValue(namedNodeMap, "FechaTimbrado", true));
+                hashMap.put("sXmlTimRfcProvCertif", DXmlUtils.extractAttributeValue(namedNodeMap, "RfcProvCertif", false));
+                hashMap.put("sXmlTimNoCertificadoSat", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificadoSAT", false));
+                hashMap.put("sXmlTimSelloCfd", sSelloCfd = DXmlUtils.extractAttributeValue(namedNodeMap, "SelloCFD", true));
+                hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMap, "SelloSAT", true));
+
+                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi33(DCfdi33Consts.URL_VERIFIC, sUuid, sEmiRfc, sRecRfc, dTotal, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
+                hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
+            }
+        }
+
+        // Otros campos:
+
+        DDbSysCurrency dbSysCurrency = (DDbSysCurrency) moSession.readRegistry(DModConsts.CS_CUR, moSession.getSessionCustom().getLocalCurrencyKey());
+
+        hashMap.put("sDocTipoDoc", (String) moSession.readField(DModConsts.TS_DPS_TP, moDps.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
+        hashMap.put("sDocRef", moDps.getOrder());
+        hashMap.put("sDocCadenaOriginal", moDps.getChildEds().getSignedText());
+        hashMap.put("sDocTotalConLetra", DLibUtils.translateValueToText(
+                moDps.getTotalCy_r(), DLibUtils.DecimalFormatValue2D.getMinimumFractionDigits(), moSession.getSessionCustom().getLocalLanguage(),
+                dbSysCurrency.getCurrencySingular(), dbSysCurrency.getCurrencyPlural(), dbSysCurrency.getCurrencyPrefix(), dbSysCurrency.getCurrencySuffix()));
+        hashMap.put("sDocUser", moSession.readField(DModConsts.CU_USR, new int[] { moDps.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));
+
+        if (moDps.getFkPaymentTypeId() == DModSysConsts.FS_PAY_TP_CDT) {
+            hashMap.put("sDocPagare", "LUGAR DE EXPEDICIÓN: " + sLugarExpedicion + ", A " + DLibUtils.DateFormatDateLong.format(moDps.getDate()).toUpperCase() + ".\n" +
+                    "POR ESTE PAGARÉ DEBO(EMOS) Y PAGARÉ(EMOS) INCONDICIONALMENTE A LA ORDEN DE \"" +
+                    sEmiNombre + "\", EL DÍA " + DLibUtils.DateFormatDateLong.format(DLibTimeUtils.addDate(moDps.getDateCredit(), 0, 0, moDps.getCreditDays())).toUpperCase() + ", " +
+                    "LA CANTIDAD DE $" + DLibUtils.getDecimalFormatAmount().format(moDps.getTotalCy_r()) + " " + sMoneda + ", " +
+                    "EN ESTA CIUDAD DE " + sLugarExpedicion + " O DONDE EXIJA EL TENEDOR, IMPORTE DE LA MERCANCÍA ARRIBA DESCRITA " +
+                    "A MI(NUESTRA) ENTERA CONFORMIDAD. EN CASO DE MORA SE CONVIENE EN PACTAR UN INTERÉS MORATORIO DEL " +
+                    DLibUtils.getDecimalFormatPercentageDiscount().format(((DDbConfigCompany) moSession.getConfigCompany()).getDelayInterestRate()) + " " +
+                    "MENSUAL DESDE SU VENCIMIENTO HASTA SU TOTAL LIQUIDACIÓN.");
+        }
 
         return hashMap;
     }

@@ -11,6 +11,9 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Vector;
 import net.sf.jasperreports.engine.JRException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
@@ -20,6 +23,7 @@ import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistry;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
+import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbConfigBranch;
@@ -119,6 +123,13 @@ public class DDbDps extends DDbRegistryUser {
     protected DDbDpsEds moChildEds;
     protected Vector<DDbDpsNote> mvChildNotes;
     protected Vector<DDbDpsRow> mvChildRows;
+
+    protected String msEdsUuid;
+    protected String msEdsMethodOfPayment;
+    protected String msEdsPaymentConditions;
+    protected String msEdsConfirmation;
+    protected String msEdsTaxRegime;
+    protected String msEdsUsage;
 
     protected int mnXtaIogId;
 
@@ -536,6 +547,74 @@ public class DDbDps extends DDbRegistryUser {
         }
     }
 
+    private void readEds() throws Exception {
+        if (moChildEds != null) {
+            Document doc = DXmlUtils.parseDocument(moChildEds.getDocXml());
+            Node node = null;
+            NamedNodeMap namedNodeMap = null;
+            
+            switch (moChildEds.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    break;
+                    
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    // comprobante:
+                    node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                    namedNodeMap = node.getAttributes();
+                    msEdsMethodOfPayment = DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true);
+                    msEdsPaymentConditions = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
+                    msEdsConfirmation = DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false);
+
+                    // emisor:
+                    node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    msEdsTaxRegime = DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true);
+
+                    // receptor:
+                    node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    msEdsUsage = DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true);
+                    
+                    // conceptos:
+                    int row = 0;
+                    node = DXmlUtils.extractElements(doc, "cfdi:Conceptos").item(0);
+                    Vector<Node> conceptos = DXmlUtils.extractChildElements(node, "cfdi:Concepto");
+                    for (Node concepto : conceptos) {
+                        DDbDpsRow dpsRow = null;
+                        
+                        do {
+                            dpsRow = mvChildRows.get(row++);
+                        } while (dpsRow.isDeleted());
+                        
+                        namedNodeMap = concepto.getAttributes();
+                        dpsRow.setEdsItemKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveProdServ", true));
+                        dpsRow.setEdsUnitKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveUnidad", true));
+                        
+                        if (DXmlUtils.hasChildElement(concepto, "cfdi:CuentaPredial")) {
+                            Vector<Node> cuentaPredial = DXmlUtils.extractChildElements(node, "cfdi:CuentaPredial");
+                            namedNodeMap = cuentaPredial.get(0).getAttributes();
+                            dpsRow.setEdsPredial(DXmlUtils.extractAttributeValue(namedNodeMap, "Numero", true));
+                        }
+                    }
+                    
+                    // complemento:
+                    if (DXmlUtils.hasChildElement(doc, "cfdi:Complemento")) {
+                        node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                        if (DXmlUtils.hasChildElement(node, "tfd:TimbreFiscalDigital")) {
+                            Vector<Node> timbreFiscalDigital = DXmlUtils.extractChildElements(node, "tfd:TimbreFiscalDigital");
+                            namedNodeMap = timbreFiscalDigital.get(0).getAttributes();
+                            msEdsUuid = DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
+                        }
+                    }
+                    break;
+                    
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
+    }
+
     private int countBookkeepingMoves(final DGuiSession session) throws SQLException, Exception {
         int count = 0;
         String sql = "";
@@ -882,6 +961,13 @@ public class DDbDps extends DDbRegistryUser {
         return row;
     }
 
+    //public void setEdsUuid(String s) { msEdsUuid = s; } // read-only member!
+    public void setEdsMethodOfPayment(String s) { msEdsMethodOfPayment = s; }
+    public void setEdsPaymentConditions(String s) { msEdsPaymentConditions = s; }
+    public void setEdsConfirmation(String s) { msEdsConfirmation = s; }
+    public void setEdsTaxRegime(String s) { msEdsTaxRegime = s; }
+    public void setEdsUsage(String s) { msEdsUsage = s; }
+    
     public void setXtaIogId(int n) { mnXtaIogId = n; }
 
     public void setAuxNewDpsSeriesId(int n) { mnAuxNewDpsSeriesId = n; }
@@ -889,6 +975,13 @@ public class DDbDps extends DDbRegistryUser {
     public void setAuxEdsRequired(boolean b) { mbAuxEdsRequired = b; }
     public void setAuxTotalQuantity(double d) { mdAuxTotalQuantity = d; }
 
+    public String getEdsUuid() { return msEdsUuid; }
+    public String getEdsMethodOfPayment() { return msEdsMethodOfPayment; }
+    public String getEdsPaymentConditions() { return msEdsPaymentConditions; }
+    public String getEdsConfirmation() { return msEdsConfirmation; }
+    public String getEdsTaxRegime() { return msEdsTaxRegime; }
+    public String getEdsUsage() { return msEdsUsage; }
+    
     public int getXtaIogId() { return mnXtaIogId; }
 
     public int getAuxNewDpsSeriesId() { return mnAuxNewDpsSeriesId; }
@@ -1012,6 +1105,13 @@ public class DDbDps extends DDbRegistryUser {
         moChildEds = null;
         mvChildNotes.clear();
         mvChildRows.clear();
+
+        msEdsUuid = "";
+        msEdsMethodOfPayment = "";
+        msEdsPaymentConditions = "";
+        msEdsConfirmation = "";
+        msEdsTaxRegime = "";
+        msEdsUsage = "";
 
         mnXtaIogId = 0;
 
@@ -1198,6 +1298,10 @@ public class DDbDps extends DDbRegistryUser {
             resultSet = statement.executeQuery(msSql);
             if (resultSet.next()) {
                 mnXtaIogId = resultSet.getInt(1);
+            }
+            
+            if (moChildEds != null) {
+                readEds();
             }
 
             // Finish registry reading:
@@ -1493,6 +1597,13 @@ public class DDbDps extends DDbRegistryUser {
         for (DDbDpsRow child : mvChildRows) {
             registry.getChildRows().add(child.clone());
         }
+
+        //registry.setEdsUuid(this.getEdsUuid()); // read-only member!
+        registry.setEdsMethodOfPayment(this.getEdsMethodOfPayment());
+        registry.setEdsPaymentConditions(this.getEdsPaymentConditions());
+        registry.setEdsConfirmation(this.getEdsConfirmation());
+        registry.setEdsTaxRegime(this.getEdsTaxRegime());
+        registry.setEdsUsage(this.getEdsUsage());
 
         registry.setXtaIogId(this.getXtaIogId());
 
@@ -1800,8 +1911,12 @@ public class DDbDps extends DDbRegistryUser {
                 case DModSysConsts.TS_XML_TP_CFD:
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
-                case DModSysConsts.TS_XML_TP_CFDI:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI, new DPrtDps(session, this).cratePrintCfdiMap(), fileName);
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_32, new DPrtDps(session, this).cratePrintMapCfdi32(), fileName);
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, new DPrtDps(session, this).cratePrintMapCfdi33(), fileName);
                     break;
 
                 default:

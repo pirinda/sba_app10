@@ -584,7 +584,7 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
             moBizPartnerBranch = moBizPartner.getChildBranches().get(0);
             moKeyBranchAddress.setEnabled(true);
 
-            text = moBizPartnerBranch.getChildAddresses().get(0).getProcAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession()));
+            text = moBizPartnerBranch.getChildAddresses().get(0).composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession()));
             text += (text.isEmpty() ? "" : "\n") + moBizPartner.getFiscalId();
             text += (text.isEmpty() ? "" : "\n") + moBizPartnerBranch.getChildAddresses().get(0).getTelecommDevices();
         }
@@ -600,7 +600,7 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
             jtaBranchAddressRo.setText("");
         }
         else {
-            jtaBranchAddressRo.setText(moKeyBranchAddress.getValue()[2] == DUtilConsts.BRA_ADD_ID ? "" : moBizPartnerBranch.getChildAddress(moKeyBranchAddress.getValue()).getProcAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession())));
+            jtaBranchAddressRo.setText(moKeyBranchAddress.getValue()[2] == DUtilConsts.BRA_ADD_ID ? "" : moBizPartnerBranch.getChildAddress(moKeyBranchAddress.getValue()).composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession())));
             jtaBranchAddressRo.setCaretPosition(0);
         }
 

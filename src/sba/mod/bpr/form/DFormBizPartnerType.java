@@ -11,8 +11,11 @@
 
 package sba.mod.bpr.form;
 
+import cfd.ver33.DCfdi33Catalogs;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import sba.gui.DGuiClientApp;
+import sba.gui.cat.DXmlCatalog;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -33,6 +36,7 @@ import sba.mod.bpr.db.DDbBizPartnerType;
 public class DFormBizPartnerType extends DBeanForm implements ItemListener {
 
     private DDbBizPartnerType moRegistry;
+    private DXmlCatalog moXmlCatalogCfdUsage;
 
     /** Creates new form DFormBizPartnerType */
     public DFormBizPartnerType(DGuiClient client, int subtype, String title) {
@@ -74,10 +78,13 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         jlModeOfPaymentType = new javax.swing.JLabel();
         moKeyModeOfPaymentType = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel9 = new javax.swing.JPanel();
+        jlCfdUsage = new javax.swing.JLabel();
+        moKeyCfdUsage = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel11 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jlAbpBizPartner = new javax.swing.JLabel();
         moKeyAbpBizPartner = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel11 = new javax.swing.JPanel();
+        jPanel13 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jlCustomerType = new javax.swing.JLabel();
         moKeyCustomerType = new sba.lib.gui.bean.DBeanFieldKey();
@@ -85,7 +92,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         jpContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jpContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(12, 1, 0, 5));
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -159,13 +166,25 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         jPanel8.add(jlModeOfPaymentType);
 
         moKeyModeOfPaymentType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        moKeyModeOfPaymentType.setPreferredSize(new java.awt.Dimension(200, 23));
+        moKeyModeOfPaymentType.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel8.add(moKeyModeOfPaymentType);
 
         jPanel1.add(jPanel8);
 
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlCfdUsage.setText("Uso CFDI:*");
+        jlCfdUsage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel9.add(jlCfdUsage);
+
+        moKeyCfdUsage.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        moKeyCfdUsage.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel9.add(moKeyCfdUsage);
+
         jPanel1.add(jPanel9);
+
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel1.add(jPanel11);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -179,8 +198,8 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel10);
 
-        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel1.add(jPanel11);
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel1.add(jPanel13);
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -200,18 +219,19 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
-        DGuiUtils.setWindowBounds(this, 640, 400);
+        DGuiUtils.setWindowBounds(this, 720, 450);
         
-        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), 5);
-        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 50);
-        moKeyCreditType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCreditType.getText()), true);
+        moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), 5);
+        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 50);
+        moKeyCreditType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCreditType), true);
         moCurCreditLimit.setCompoundFieldSettings(miClient);
-        moCurCreditLimit.getField().setDecimalSettings(DGuiUtils.getLabelName(jlCreditLimit.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, true);
-        moIntCreditDays.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDays.getText()), DGuiConsts.GUI_TYPE_INT, true);
-        moIntCreditDaysGrace.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDaysGrace.getText()), DGuiConsts.GUI_TYPE_INT, false);
-        moKeyModeOfPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlModeOfPaymentType.getText()), true);
-        moKeyAbpBizPartner.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpBizPartner.getText()), true);
-        moKeyCustomerType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCustomerType.getText()), true);
+        moCurCreditLimit.getField().setDecimalSettings(DGuiUtils.getLabelName(jlCreditLimit), DGuiConsts.GUI_TYPE_DEC_AMT, true);
+        moIntCreditDays.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDays), DGuiConsts.GUI_TYPE_INT, true);
+        moIntCreditDaysGrace.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDaysGrace), DGuiConsts.GUI_TYPE_INT, false);
+        moKeyModeOfPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlModeOfPaymentType), true);
+        moKeyCfdUsage.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdUsage), true);
+        moKeyAbpBizPartner.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpBizPartner), true);
+        moKeyCustomerType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCustomerType), true);
         
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
@@ -220,10 +240,14 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         moFields.addField(moIntCreditDays);
         moFields.addField(moIntCreditDaysGrace);
         moFields.addField(moKeyModeOfPaymentType);
+        moFields.addField(moKeyCfdUsage);
         moFields.addField(moKeyAbpBizPartner);
         moFields.addField(moKeyCustomerType);
         
         moFields.setFormButton(jbSave);
+        
+        moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_CFDI_USO);
+        moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
     }
 
     private void itemStateKeyCreditType() {
@@ -271,6 +295,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -280,6 +305,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAbpBizPartner;
+    private javax.swing.JLabel jlCfdUsage;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlCreditDays;
     private javax.swing.JLabel jlCreditDaysGrace;
@@ -293,6 +319,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
     private sba.lib.gui.bean.DBeanFieldInteger moIntCreditDays;
     private sba.lib.gui.bean.DBeanFieldInteger moIntCreditDaysGrace;
     private sba.lib.gui.bean.DBeanFieldKey moKeyAbpBizPartner;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyCfdUsage;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCreditType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCustomerType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyModeOfPaymentType;
@@ -341,6 +368,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         moCurCreditLimit.getField().setValue(moRegistry.getCreditLimit());
         moIntCreditDays.setValue(moRegistry.getCreditDays());
         moIntCreditDaysGrace.setValue(moRegistry.getCreditDaysGrace());
+        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getCfdUsage()) });
         moKeyCustomerType.setValue(new int[] { moRegistry.getFkCustomerTypeId_n() });
         moKeyCreditType.setValue(new int[] { moRegistry.getFkCreditTypeId() });
         moKeyModeOfPaymentType.setValue(new int[] { moRegistry.getFkModeOfPaymentTypeId() });
@@ -350,6 +378,10 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         itemStateKeyCreditType();
 
         if (mnFormSubtype != DModSysConsts.BS_BPR_CL_CUS) {
+            jlModeOfPaymentType.setEnabled(false);
+            moKeyModeOfPaymentType.setEnabled(false);
+            jlCfdUsage.setEnabled(false);
+            moKeyCfdUsage.setEnabled(false);
             jlCustomerType.setEnabled(false);
             moKeyCustomerType.setEnabled(false);
         }
@@ -379,9 +411,10 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         registry.setCreditLimit(moCurCreditLimit.getField().getValue());
         registry.setCreditDays(moIntCreditDays.getValue());
         registry.setCreditDaysGrace(moIntCreditDaysGrace.getValue());
+        registry.setCfdUsage(!moKeyCfdUsage.isEnabled() || moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moXmlCatalogCfdUsage.getCode(moKeyCfdUsage.getValue()[0]));
         registry.setFkCustomerTypeId_n(!moKeyCustomerType.isEnabled() ? DLibConsts.UNDEFINED : moKeyCustomerType.getValue()[0]);
         registry.setFkCreditTypeId(moKeyCreditType.getValue()[0]);
-        registry.setFkModeOfPaymentTypeId(moKeyModeOfPaymentType.getValue()[0]);
+        registry.setFkModeOfPaymentTypeId(!moKeyModeOfPaymentType.isEnabled() ? DModSysConsts.FS_MOP_TP_NA : moKeyModeOfPaymentType.getValue()[0]);
         registry.setFkAbpBizPartnerId(moKeyAbpBizPartner.getValue()[0]);
 
         return registry;

@@ -528,7 +528,7 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
         jtfXmlAddendaType.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ADD_TP, new int[] { moRegistry.getFkXmlAddendaTypeId() }, DDbRegistry.FIELD_NAME));
         jtfXmlAddendaType.setCaretPosition(0);
         
-        extAddenda = DTrnEdsUtils.digestExtAddenda(moDps, moRegistry.getFkXmlAddendaTypeId());
+        extAddenda = DTrnEdsUtils.extractExtAddenda(moDps, moRegistry.getFkXmlAddendaTypeId());
         
         switch (moRegistry.getFkXmlAddendaTypeId()) {
             case DModSysConsts.TS_XML_ADD_TP_CON:

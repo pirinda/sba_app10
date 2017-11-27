@@ -335,7 +335,7 @@ public abstract class DTrnEmissionUtils {
                 // Check if document number can be still changed:
 
                 if (DTrnUtils.isDpsNumberAutomatic(dps.getDpsClassKey()) && ((DDbConfigBranch) client.getSession().getConfigBranch()).isDpsPrintingDialog() &&
-                    (eds == null || (eds.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI && eds.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
+                    (eds == null || (DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }) && eds.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
                     formDpsPrinting = (DFormDpsPrinting) client.getSession().getModule(DModConsts.MOD_TRN).getForm(DModConsts.T_DPS_PRT, DLibConsts.UNDEFINED, null);
                     formDpsPrinting.setRegistry(dps);
                     formDpsPrinting.setVisible(true);
@@ -396,8 +396,13 @@ public abstract class DTrnEmissionUtils {
                             case DModSysConsts.TS_XML_TP_CFD:
                                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
                                 
-                            case DModSysConsts.TS_XML_TP_CFDI:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintCfdiMap());
+                            case DModSysConsts.TS_XML_TP_CFDI_32:
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
+                                printed = true;
+                                break;
+                                
+                            case DModSysConsts.TS_XML_TP_CFDI_33:
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
                                 printed = true;
                                 break;
                                 
@@ -492,9 +497,10 @@ public abstract class DTrnEmissionUtils {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (eds.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI) {
-                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser '" +
-                                    client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI }, DDbRegistry.FIELD_NAME) + "'.");
+                        else if (!DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
                         else if (!DLibUtils.belongsTo(eds.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El estatus del registro XML del documento debe ser '" +
@@ -656,9 +662,10 @@ public abstract class DTrnEmissionUtils {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (eds.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI) {
-                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El tipo del registro XML del documento debe ser '" +
-                                    client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI }, DDbRegistry.FIELD_NAME) + "'.");
+                        else if (!DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
                         else if (!DLibUtils.belongsTo(eds.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN, DModSysConsts.TS_XML_ST_ISS })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El estatus del registro XML del documento debe ser '" +

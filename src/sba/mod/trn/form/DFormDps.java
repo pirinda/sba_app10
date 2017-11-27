@@ -11,6 +11,7 @@
 
 package sba.mod.trn.form;
 
+import cfd.ver33.DCfdi33Catalogs;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -21,7 +22,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
@@ -30,9 +30,12 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import sba.gui.DGuiClientApp;
 import sba.gui.DGuiClientSessionCustom;
+import sba.gui.cat.DXmlCatalog;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
+import sba.lib.DLibTimeConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -53,7 +56,6 @@ import sba.lib.gui.bean.DBeanFieldBoolean;
 import sba.lib.gui.bean.DBeanFieldDecimal;
 import sba.lib.gui.bean.DBeanFieldInteger;
 import sba.lib.gui.bean.DBeanFieldKey;
-import sba.lib.gui.bean.DBeanFieldText;
 import sba.lib.gui.bean.DBeanForm;
 import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
@@ -138,26 +140,30 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private boolean mbQuantityAlreadySet;
     private boolean mbShowPricesOnFind;
     private boolean mbReloadItemsOnFind;
+    private boolean mbCheckEdsOnSaveOnlyOnce;
     private int mnNewDpsNumber;
     private int mnNewDpsSeriesId;
     private String msNewDpsSeries;
     private int mnOriginalYear;
     private Date mtOriginalDate;
     private Vector<DTrnStockMove> mvRowStockMoves;
-    private JButton mjButtonLaunchCalculator;
+    private JButton mjButtonLaunchCalc;
     private JButton mjButtonEditItem;
     private JButton mjButtonShowRowNote;
     private JButton mjButtonShowRowLot;
     private JButton mjButtonShowRowSerialNumber;
     private JButton mjButtonShowDependentDocs;
-    private JButton mjButtonShowAdjustedDocument;
+    private JButton mjButtonShowAdjustedDoc;
     private JButton mjButtonAdjustmentForMoney;
     private JButton mjButtonAdjustmentForStock;
-    private JButton mjButtonAdjustmentDocument;
+    private JButton mjButtonAdjustmentDoc;
     private JTextField mjTextCurrentAdjustmentType;
     private DDbDpsSeries moDpsSeries;
     private DDbDpsSeriesNumber moDpsSeriesNumber;
 
+    private DXmlCatalog moXmlCatalogCfdMethodOfPayment;
+    private DXmlCatalog moXmlCatalogCfdUsage;
+    
     /** Creates new form DFormDps
      * @param client GUI client.
      * @param type XType of DPS. Constants defined in DModConsts (TX_DPS_...).
@@ -183,83 +189,92 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel15 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jlBizPartner = new javax.swing.JLabel();
         moKeyBizPartner = new sba.lib.gui.bean.DBeanFieldKey();
-        jbBizPartner = new javax.swing.JButton();
+        jbBizPartnerPick = new javax.swing.JButton();
         jbBizPartnerEdit = new javax.swing.JButton();
         jspHeadquartersAddress = new javax.swing.JScrollPane();
-        jtaHeadquartersAddressRo = new javax.swing.JTextArea();
+        jtaHeadquartersAddress = new javax.swing.JTextArea();
         jPanel18 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jlBranchAddress = new javax.swing.JLabel();
         moKeyBranchAddress = new sba.lib.gui.bean.DBeanFieldKey();
         jspBranchAddress = new javax.swing.JScrollPane();
-        jtaBranchAddressRo = new javax.swing.JTextArea();
+        jtaBranchAddress = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jPanel21 = new javax.swing.JPanel();
         jlNumber = new javax.swing.JLabel();
         moTextSeries = new sba.lib.gui.bean.DBeanFieldText();
         moIntNumber = new sba.lib.gui.bean.DBeanFieldInteger();
+        jtfCfdUuid = new javax.swing.JTextField();
+        jtfCfdType = new javax.swing.JTextField();
+        jPanel23 = new javax.swing.JPanel();
         jlDateDate = new javax.swing.JLabel();
         moDateDate = new sba.lib.gui.bean.DBeanFieldDate();
-        jPanel23 = new javax.swing.JPanel();
-        jlDocType = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jtfCfdDate = new javax.swing.JTextField();
         jtfDocType = new javax.swing.JTextField();
-        jlDocStatus = new javax.swing.JLabel();
         jtfDocStatus = new javax.swing.JTextField();
         jPanel22 = new javax.swing.JPanel();
         jlCurrency = new javax.swing.JLabel();
         moKeyCurrency = new sba.lib.gui.bean.DBeanFieldKey();
         jlExchangeRate = new javax.swing.JLabel();
         moDecExchangeRate = new sba.lib.gui.bean.DBeanFieldDecimal();
-        jbExchangeRate = new javax.swing.JButton();
-        jPanel17 = new javax.swing.JPanel();
+        jbExchangeRatePick = new javax.swing.JButton();
+        jlCfdConfirmation = new javax.swing.JLabel();
+        moTextCfdConfirmation = new sba.lib.gui.bean.DBeanFieldText();
+        jPanel16 = new javax.swing.JPanel();
         jPanel25 = new javax.swing.JPanel();
         jPanel26 = new javax.swing.JPanel();
         jPanel27 = new javax.swing.JPanel();
         jlPaymentType = new javax.swing.JLabel();
         moKeyPaymentType = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel28 = new javax.swing.JPanel();
+        jlCfdMethodOfPayment = new javax.swing.JLabel();
+        moKeyCfdMethodOfPayment = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel55 = new javax.swing.JPanel();
         jlModeOfPaymentType = new javax.swing.JLabel();
         moKeyModeOfPaymentType = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel32 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jlCfdUsage = new javax.swing.JLabel();
+        moKeyCfdUsage = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel13 = new javax.swing.JPanel();
+        jlCfdTaxRegime = new javax.swing.JLabel();
+        moKeyCfdTaxRegime = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel56 = new javax.swing.JPanel();
+        jlCfdPaymentConditions = new javax.swing.JLabel();
+        jtfCfdPaymentConditions = new javax.swing.JTextField();
         jPanel29 = new javax.swing.JPanel();
         jPanel30 = new javax.swing.JPanel();
         jlCreditDays = new javax.swing.JLabel();
         moIntCreditDays = new sba.lib.gui.bean.DBeanFieldInteger();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel31 = new javax.swing.JPanel();
-        jlPaymentAccount = new javax.swing.JLabel();
-        moTextPaymentAccount = new sba.lib.gui.bean.DBeanFieldText();
-        jbPaymentAccount = new javax.swing.JButton();
-        jPanel32 = new javax.swing.JPanel();
         jPanel33 = new javax.swing.JPanel();
         jlDateCredit = new javax.swing.JLabel();
         moDateCredit = new sba.lib.gui.bean.DBeanFieldDate();
         jPanel34 = new javax.swing.JPanel();
         jlDateMaturity = new javax.swing.JLabel();
         jtfDateMaturity = new javax.swing.JTextField();
+        jPanel19 = new javax.swing.JPanel();
+        jPanel24 = new javax.swing.JPanel();
         jPanel35 = new javax.swing.JPanel();
-        jPanel36 = new javax.swing.JPanel();
-        jlDateDelivery = new javax.swing.JLabel();
-        moDateDelivery = new sba.lib.gui.bean.DBeanFieldDate();
-        jPanel37 = new javax.swing.JPanel();
-        jlOrder = new javax.swing.JLabel();
-        moTextOrder = new sba.lib.gui.bean.DBeanFieldText();
-        jPanel38 = new javax.swing.JPanel();
-        jPanel39 = new javax.swing.JPanel();
-        jlDateDocSending = new javax.swing.JLabel();
-        jtfDateDocSending = new javax.swing.JTextField();
-        jPanel40 = new javax.swing.JPanel();
-        jlDateDocReception = new javax.swing.JLabel();
-        jtfDateDocReception = new javax.swing.JTextField();
-        jPanel42 = new javax.swing.JPanel();
         jPanel54 = new javax.swing.JPanel();
         jlImportDeclaration = new javax.swing.JLabel();
         moTextImportDeclaration = new sba.lib.gui.bean.DBeanFieldText();
         jPanel49 = new javax.swing.JPanel();
         jlImportDeclarationDate = new javax.swing.JLabel();
         moDateImportDeclarationDate = new sba.lib.gui.bean.DBeanFieldDate();
+        jPanel42 = new javax.swing.JPanel();
+        jPanel37 = new javax.swing.JPanel();
+        jlOrder = new javax.swing.JLabel();
+        moTextOrder = new sba.lib.gui.bean.DBeanFieldText();
+        jPanel38 = new javax.swing.JPanel();
+        jlDateDelivery = new javax.swing.JLabel();
+        moDateDelivery = new sba.lib.gui.bean.DBeanFieldDate();
+        jPanel31 = new javax.swing.JPanel();
+        jlCfdRelated = new javax.swing.JLabel();
+        jtfCfdRelated = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jbCfdRelatedView = new javax.swing.JButton();
         jpRows = new javax.swing.JPanel();
         jpRows1 = new javax.swing.JPanel();
         jpRows11 = new javax.swing.JPanel();
@@ -267,11 +282,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel50 = new javax.swing.JPanel();
         moTextFind = new sba.lib.gui.bean.DBeanFieldText();
         jbFind = new javax.swing.JButton();
+        jlRowLabel1 = new javax.swing.JLabel();
         jlRowQuantity = new javax.swing.JLabel();
         jlRowUnitCode = new javax.swing.JLabel();
         jlRowPriceUnitary = new javax.swing.JLabel();
-        jlRowDiscountUnitary = new javax.swing.JLabel();
-        jlRowDiscountRow = new javax.swing.JLabel();
         jlRowSubtotalProv = new javax.swing.JLabel();
         jlRowDiscountDoc = new javax.swing.JLabel();
         jlRowSubtotal = new javax.swing.JLabel();
@@ -279,19 +293,22 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel51 = new javax.swing.JPanel();
         moTextRowCode = new sba.lib.gui.bean.DBeanFieldText();
         moTextRowName = new sba.lib.gui.bean.DBeanFieldText();
+        jtfRowCfdItemKey = new javax.swing.JTextField();
         moDecRowQuantity = new sba.lib.gui.bean.DBeanFieldDecimal();
         jtfRowUnitCode = new javax.swing.JTextField();
+        jtfRowCfdUnitKey = new javax.swing.JTextField();
         moDecRowPriceUnitary = new sba.lib.gui.bean.DBeanFieldDecimal();
-        moDecRowDiscountUnitary = new sba.lib.gui.bean.DBeanFieldDecimal();
-        moDecRowDiscountRow = new sba.lib.gui.bean.DBeanFieldDecimal();
         moDecRowSubtotalProv = new sba.lib.gui.bean.DBeanFieldDecimal();
         moDecRowDiscountDoc = new sba.lib.gui.bean.DBeanFieldDecimal();
         moDecRowSubtotal = new sba.lib.gui.bean.DBeanFieldDecimal();
         jbRowAdd = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        moBoolRowNote = new sba.lib.gui.bean.DBeanFieldBoolean();
         moTextRowNote = new sba.lib.gui.bean.DBeanFieldText();
         moBoolRowNotePrintable = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolRowCfdPredial = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moTextRowCfdPredial = new sba.lib.gui.bean.DBeanFieldText();
         jtfTaxRegion = new javax.swing.JTextField();
         jtfIdentityType = new javax.swing.JTextField();
         moBoolRowTaxInput = new sba.lib.gui.bean.DBeanFieldBoolean();
@@ -318,7 +335,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel11 = new javax.swing.JPanel();
         moBoolDiscountDocApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolDiscountDocPercentageApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jbDiscountDoc = new javax.swing.JButton();
+        jbDiscountDocSet = new javax.swing.JButton();
         jPanel12 = new javax.swing.JPanel();
         jlDiscountDocPercentage = new javax.swing.JLabel();
         moDecDiscountDocPercentage = new sba.lib.gui.bean.DBeanFieldDecimal();
@@ -345,28 +362,25 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpContainer.setLayout(new java.awt.BorderLayout());
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del documento:"));
-        jPanel6.setLayout(new java.awt.BorderLayout(5, 5));
+        jPanel6.setLayout(new java.awt.BorderLayout(0, 5));
 
         jPanel15.setLayout(new java.awt.BorderLayout(5, 5));
 
         jPanel7.setLayout(new java.awt.BorderLayout(0, 5));
 
-        jPanel3.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlBizPartner.setText("[Asociado]:*");
-        jlBizPartner.setPreferredSize(new java.awt.Dimension(70, 23));
-        jPanel3.add(jlBizPartner);
-
-        moKeyBizPartner.setPreferredSize(new java.awt.Dimension(240, 23));
+        moKeyBizPartner.setToolTipText("Asociado de negocios");
+        moKeyBizPartner.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel3.add(moKeyBizPartner);
 
-        jbBizPartner.setText("...");
-        jbBizPartner.setToolTipText("Buscar [F9]");
-        jbBizPartner.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel3.add(jbBizPartner);
+        jbBizPartnerPick.setText("...");
+        jbBizPartnerPick.setToolTipText("Buscar ... [F9]");
+        jbBizPartnerPick.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel3.add(jbBizPartnerPick);
 
         jbBizPartnerEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbBizPartnerEdit.setToolTipText("Modificar");
+        jbBizPartnerEdit.setToolTipText("Modificar ...");
         jbBizPartnerEdit.setPreferredSize(new java.awt.Dimension(23, 23));
         jPanel3.add(jbBizPartnerEdit);
 
@@ -375,13 +389,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jspHeadquartersAddress.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jspHeadquartersAddress.setPreferredSize(new java.awt.Dimension(100, 55));
 
-        jtaHeadquartersAddressRo.setEditable(false);
-        jtaHeadquartersAddressRo.setBackground(java.awt.SystemColor.control);
-        jtaHeadquartersAddressRo.setColumns(20);
-        jtaHeadquartersAddressRo.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
-        jtaHeadquartersAddressRo.setRows(5);
-        jtaHeadquartersAddressRo.setFocusable(false);
-        jspHeadquartersAddress.setViewportView(jtaHeadquartersAddressRo);
+        jtaHeadquartersAddress.setEditable(false);
+        jtaHeadquartersAddress.setBackground(java.awt.SystemColor.control);
+        jtaHeadquartersAddress.setColumns(20);
+        jtaHeadquartersAddress.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
+        jtaHeadquartersAddress.setRows(5);
+        jtaHeadquartersAddress.setFocusable(false);
+        jspHeadquartersAddress.setViewportView(jtaHeadquartersAddress);
 
         jPanel7.add(jspHeadquartersAddress, java.awt.BorderLayout.CENTER);
 
@@ -389,13 +403,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel18.setLayout(new java.awt.BorderLayout(0, 5));
 
-        jPanel4.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlBranchAddress.setText("Domicilio:*");
-        jlBranchAddress.setPreferredSize(new java.awt.Dimension(60, 23));
-        jPanel4.add(jlBranchAddress);
-
-        moKeyBranchAddress.setPreferredSize(new java.awt.Dimension(160, 23));
+        moKeyBranchAddress.setToolTipText("Domicilio de entrega");
+        moKeyBranchAddress.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel4.add(moKeyBranchAddress);
 
         jPanel18.add(jPanel4, java.awt.BorderLayout.NORTH);
@@ -403,13 +414,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jspBranchAddress.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jspBranchAddress.setPreferredSize(new java.awt.Dimension(100, 55));
 
-        jtaBranchAddressRo.setEditable(false);
-        jtaBranchAddressRo.setBackground(java.awt.SystemColor.control);
-        jtaBranchAddressRo.setColumns(20);
-        jtaBranchAddressRo.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
-        jtaBranchAddressRo.setRows(5);
-        jtaBranchAddressRo.setFocusable(false);
-        jspBranchAddress.setViewportView(jtaBranchAddressRo);
+        jtaBranchAddress.setEditable(false);
+        jtaBranchAddress.setBackground(java.awt.SystemColor.control);
+        jtaBranchAddress.setColumns(20);
+        jtaBranchAddress.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
+        jtaBranchAddress.setRows(5);
+        jtaBranchAddress.setFocusable(false);
+        jspBranchAddress.setViewportView(jtaBranchAddress);
 
         jPanel18.add(jspBranchAddress, java.awt.BorderLayout.CENTER);
 
@@ -421,71 +432,106 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel20.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel21.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlNumber.setText("Folio doc.:*");
-        jlNumber.setPreferredSize(new java.awt.Dimension(65, 23));
+        jlNumber.setText("Folio:*");
+        jlNumber.setPreferredSize(new java.awt.Dimension(60, 23));
         jlNumber.setRequestFocusEnabled(false);
         jPanel21.add(jlNumber);
 
+        moTextSeries.setText("TEXT");
         moTextSeries.setToolTipText("Serie");
-        moTextSeries.setPreferredSize(new java.awt.Dimension(40, 23));
+        moTextSeries.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel21.add(moTextSeries);
 
         moIntNumber.setToolTipText("Folio");
-        moIntNumber.setPreferredSize(new java.awt.Dimension(70, 23));
+        moIntNumber.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel21.add(moIntNumber);
 
-        jlDateDate.setText("Fecha doc.:*");
-        jlDateDate.setPreferredSize(new java.awt.Dimension(70, 23));
-        jPanel21.add(jlDateDate);
-        jPanel21.add(moDateDate);
+        jtfCfdUuid.setEditable(false);
+        jtfCfdUuid.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
+        jtfCfdUuid.setToolTipText("UUID del comprobante");
+        jtfCfdUuid.setFocusable(false);
+        jtfCfdUuid.setPreferredSize(new java.awt.Dimension(225, 20));
+        jPanel21.add(jtfCfdUuid);
+
+        jtfCfdType.setEditable(false);
+        jtfCfdType.setText("TEXT");
+        jtfCfdType.setToolTipText("Tipo de comprobante");
+        jtfCfdType.setFocusable(false);
+        jtfCfdType.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel21.add(jtfCfdType);
 
         jPanel20.add(jPanel21);
 
-        jPanel23.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDocType.setText("Tipo doc.:");
-        jlDocType.setPreferredSize(new java.awt.Dimension(65, 23));
-        jPanel23.add(jlDocType);
+        jlDateDate.setText("Fecha:*");
+        jlDateDate.setPreferredSize(new java.awt.Dimension(60, 23));
+        jPanel23.add(jlDateDate);
+
+        moDateDate.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel23.add(moDateDate);
+
+        jLabel2.setPreferredSize(new java.awt.Dimension(25, 23));
+        jLabel2.setRequestFocusEnabled(false);
+        jPanel23.add(jLabel2);
+
+        jtfCfdDate.setEditable(false);
+        jtfCfdDate.setText("01/01/2001 00:00:00");
+        jtfCfdDate.setToolTipText("Fecha-hora del comprobante");
+        jtfCfdDate.setFocusable(false);
+        jtfCfdDate.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel23.add(jtfCfdDate);
 
         jtfDocType.setEditable(false);
+        jtfDocType.setText("TEXT");
+        jtfDocType.setToolTipText("Tipo de documento");
         jtfDocType.setFocusable(false);
-        jtfDocType.setPreferredSize(new java.awt.Dimension(115, 23));
+        jtfDocType.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel23.add(jtfDocType);
 
-        jlDocStatus.setText("Estatus doc.:");
-        jlDocStatus.setPreferredSize(new java.awt.Dimension(70, 23));
-        jPanel23.add(jlDocStatus);
-
         jtfDocStatus.setEditable(false);
+        jtfDocStatus.setText("TEXT");
+        jtfDocStatus.setToolTipText("Estatus del documento");
         jtfDocStatus.setFocusable(false);
-        jtfDocStatus.setPreferredSize(new java.awt.Dimension(102, 23));
+        jtfDocStatus.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel23.add(jtfDocStatus);
 
         jPanel20.add(jPanel23);
 
-        jPanel22.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCurrency.setText("Moneda:*");
-        jlCurrency.setPreferredSize(new java.awt.Dimension(65, 23));
+        jlCurrency.setPreferredSize(new java.awt.Dimension(60, 23));
         jlCurrency.setRequestFocusEnabled(false);
         jPanel22.add(jlCurrency);
 
         moKeyCurrency.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel22.add(moKeyCurrency);
 
+        jlExchangeRate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlExchangeRate.setText("T. cambio:*");
-        jlExchangeRate.setPreferredSize(new java.awt.Dimension(70, 23));
+        jlExchangeRate.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel22.add(jlExchangeRate);
 
         moDecExchangeRate.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel22.add(moDecExchangeRate);
 
-        jbExchangeRate.setText("...");
-        jbExchangeRate.setToolTipText("Buscar tipo de cambio");
-        jbExchangeRate.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel22.add(jbExchangeRate);
+        jbExchangeRatePick.setText("...");
+        jbExchangeRatePick.setToolTipText("Buscar tipo de cambio");
+        jbExchangeRatePick.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel22.add(jbExchangeRatePick);
+
+        jlCfdConfirmation.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlCfdConfirmation.setText("Conf.:");
+        jlCfdConfirmation.setToolTipText("Número de confirmación");
+        jlCfdConfirmation.setPreferredSize(new java.awt.Dimension(52, 23));
+        jPanel22.add(jlCfdConfirmation);
+
+        moTextCfdConfirmation.setText("TEXT");
+        moTextCfdConfirmation.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel22.add(moTextCfdConfirmation);
 
         jPanel20.add(jPanel22);
 
@@ -493,183 +539,216 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel6.add(jPanel1, java.awt.BorderLayout.EAST);
 
-        jPanel17.setLayout(new java.awt.BorderLayout());
+        jPanel16.setLayout(new java.awt.BorderLayout());
 
-        jPanel25.setLayout(new java.awt.FlowLayout(0, 0, 0));
+        jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jPanel26.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel26.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel27.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         jlPaymentType.setText("Tipo pago:*");
         jlPaymentType.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel27.add(jlPaymentType);
+
+        moKeyPaymentType.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel27.add(moKeyPaymentType);
 
         jPanel26.add(jPanel27);
 
-        jPanel28.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlModeOfPaymentType.setText("Forma pago:*");
-        jlModeOfPaymentType.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel28.add(jlModeOfPaymentType);
-        jPanel28.add(moKeyModeOfPaymentType);
+        jlCfdMethodOfPayment.setText("Método pago:*");
+        jlCfdMethodOfPayment.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel28.add(jlCfdMethodOfPayment);
+
+        moKeyCfdMethodOfPayment.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel28.add(moKeyCfdMethodOfPayment);
 
         jPanel26.add(jPanel28);
 
+        jPanel55.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jlModeOfPaymentType.setText("Forma pago:*");
+        jlModeOfPaymentType.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel55.add(jlModeOfPaymentType);
+
+        moKeyModeOfPaymentType.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel55.add(moKeyModeOfPaymentType);
+
+        jPanel26.add(jPanel55);
+
         jPanel25.add(jPanel26);
 
-        jPanel29.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel32.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel30.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlCreditDays.setText("Crédito:*");
-        jlCreditDays.setToolTipText("Días de crédito");
-        jlCreditDays.setPreferredSize(new java.awt.Dimension(55, 23));
+        jlCfdUsage.setText("Uso CFDI:*");
+        jlCfdUsage.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel17.add(jlCfdUsage);
+
+        moKeyCfdUsage.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel17.add(moKeyCfdUsage);
+
+        jPanel32.add(jPanel17);
+
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jlCfdTaxRegime.setText("Régimen:*");
+        jlCfdTaxRegime.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel13.add(jlCfdTaxRegime);
+
+        moKeyCfdTaxRegime.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel13.add(moKeyCfdTaxRegime);
+
+        jPanel32.add(jPanel13);
+
+        jPanel56.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jlCfdPaymentConditions.setText("Condiciones:");
+        jlCfdPaymentConditions.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel56.add(jlCfdPaymentConditions);
+
+        jtfCfdPaymentConditions.setEditable(false);
+        jtfCfdPaymentConditions.setText("TEXT");
+        jtfCfdPaymentConditions.setToolTipText("Tipo de documento");
+        jtfCfdPaymentConditions.setFocusable(false);
+        jtfCfdPaymentConditions.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel56.add(jtfCfdPaymentConditions);
+
+        jPanel32.add(jPanel56);
+
+        jPanel25.add(jPanel32);
+
+        jPanel29.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+
+        jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jlCreditDays.setText("Días crédito:*");
+        jlCreditDays.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel30.add(jlCreditDays);
 
-        moIntCreditDays.setPreferredSize(new java.awt.Dimension(75, 23));
+        moIntCreditDays.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel30.add(moIntCreditDays);
-
-        jLabel1.setText("días");
-        jLabel1.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel30.add(jLabel1);
 
         jPanel29.add(jPanel30);
 
-        jPanel31.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlPaymentAccount.setText("No. cta.:*");
-        jlPaymentAccount.setToolTipText("No. de cuenta de pago");
-        jlPaymentAccount.setPreferredSize(new java.awt.Dimension(55, 23));
-        jPanel31.add(jlPaymentAccount);
-
-        moTextPaymentAccount.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel31.add(moTextPaymentAccount);
-
-        jbPaymentAccount.setText("...");
-        jbPaymentAccount.setToolTipText("Texto no identificado");
-        jbPaymentAccount.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel31.add(jbPaymentAccount);
-
-        jPanel29.add(jPanel31);
-
-        jPanel25.add(jPanel29);
-
-        jPanel32.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
-
-        jPanel33.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlDateCredit.setText("Base:*");
-        jlDateCredit.setToolTipText("Base crédito");
-        jlDateCredit.setPreferredSize(new java.awt.Dimension(45, 23));
+        jlDateCredit.setText("Base crédito:*");
+        jlDateCredit.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel33.add(jlDateCredit);
+
+        moDateCredit.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel33.add(moDateCredit);
 
-        jPanel32.add(jPanel33);
+        jPanel29.add(jPanel33);
 
-        jPanel34.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlDateMaturity.setText("Venc.:");
-        jlDateMaturity.setToolTipText("Vencimiento");
-        jlDateMaturity.setPreferredSize(new java.awt.Dimension(45, 23));
+        jlDateMaturity.setText("Vencimiento:");
+        jlDateMaturity.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel34.add(jlDateMaturity);
 
         jtfDateMaturity.setEditable(false);
         jtfDateMaturity.setText("00/00/0000");
         jtfDateMaturity.setFocusable(false);
-        jtfDateMaturity.setPreferredSize(new java.awt.Dimension(75, 23));
+        jtfDateMaturity.setPreferredSize(new java.awt.Dimension(72, 23));
         jPanel34.add(jtfDateMaturity);
 
-        jPanel32.add(jPanel34);
+        jPanel29.add(jPanel34);
 
-        jPanel25.add(jPanel32);
+        jPanel25.add(jPanel29);
+
+        jPanel16.add(jPanel25, java.awt.BorderLayout.CENTER);
+
+        jPanel19.setLayout(new java.awt.BorderLayout());
+
+        jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jPanel35.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
-        jPanel36.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel54.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlDateDelivery.setText("Entrega:");
-        jlDateDelivery.setPreferredSize(new java.awt.Dimension(45, 23));
-        jPanel36.add(jlDateDelivery);
-        jPanel36.add(moDateDelivery);
+        jlImportDeclaration.setText("Pedimento:");
+        jlImportDeclaration.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel54.add(jlImportDeclaration);
 
-        jPanel35.add(jPanel36);
+        moTextImportDeclaration.setText("TEXT");
+        jPanel54.add(moTextImportDeclaration);
 
-        jPanel37.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel35.add(jPanel54);
 
-        jlOrder.setText("Pedido:");
-        jlOrder.setPreferredSize(new java.awt.Dimension(45, 23));
-        jPanel37.add(jlOrder);
+        jPanel49.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        moTextOrder.setPreferredSize(new java.awt.Dimension(103, 23));
-        jPanel37.add(moTextOrder);
+        jlImportDeclarationDate.setText("Importación:");
+        jlImportDeclarationDate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel49.add(jlImportDeclarationDate);
 
-        jPanel35.add(jPanel37);
+        moDateImportDeclarationDate.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel49.add(moDateImportDeclarationDate);
 
-        jPanel25.add(jPanel35);
+        jPanel35.add(jPanel49);
 
-        jPanel38.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
-
-        jPanel39.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlDateDocSending.setText("Envío:");
-        jlDateDocSending.setPreferredSize(new java.awt.Dimension(45, 23));
-        jPanel39.add(jlDateDocSending);
-
-        jtfDateDocSending.setEditable(false);
-        jtfDateDocSending.setText("00/00/0000");
-        jtfDateDocSending.setFocusable(false);
-        jtfDateDocSending.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel39.add(jtfDateDocSending);
-
-        jPanel38.add(jPanel39);
-
-        jPanel40.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlDateDocReception.setText("Recep.:");
-        jlDateDocReception.setPreferredSize(new java.awt.Dimension(45, 23));
-        jPanel40.add(jlDateDocReception);
-
-        jtfDateDocReception.setEditable(false);
-        jtfDateDocReception.setText("00/00/0000");
-        jtfDateDocReception.setFocusable(false);
-        jtfDateDocReception.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel40.add(jtfDateDocReception);
-
-        jPanel38.add(jPanel40);
-
-        jPanel25.add(jPanel38);
+        jPanel24.add(jPanel35);
 
         jPanel42.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
-        jPanel54.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel37.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlImportDeclaration.setText("Pedmto.:");
-        jlImportDeclaration.setToolTipText("Número de pedimento de importación");
-        jlImportDeclaration.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel54.add(jlImportDeclaration);
+        jlOrder.setText("Pedido:");
+        jlOrder.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel37.add(jlOrder);
 
-        moTextImportDeclaration.setPreferredSize(new java.awt.Dimension(103, 23));
-        jPanel54.add(moTextImportDeclaration);
+        moTextOrder.setText("TEXT");
+        jPanel37.add(moTextOrder);
 
-        jPanel42.add(jPanel54);
+        jPanel42.add(jPanel37);
 
-        jPanel49.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel38.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlImportDeclarationDate.setText("Import.:");
-        jlImportDeclarationDate.setToolTipText("Importación");
-        jlImportDeclarationDate.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel49.add(jlImportDeclarationDate);
-        jPanel49.add(moDateImportDeclarationDate);
+        jlDateDelivery.setText("Entrega:");
+        jlDateDelivery.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel38.add(jlDateDelivery);
 
-        jPanel42.add(jPanel49);
+        moDateDelivery.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel38.add(moDateDelivery);
 
-        jPanel25.add(jPanel42);
+        jPanel42.add(jPanel38);
 
-        jPanel17.add(jPanel25, java.awt.BorderLayout.CENTER);
+        jPanel24.add(jPanel42);
 
-        jPanel6.add(jPanel17, java.awt.BorderLayout.SOUTH);
+        jPanel19.add(jPanel24, java.awt.BorderLayout.CENTER);
+
+        jPanel31.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jlCfdRelated.setText("Relacionados:");
+        jlCfdRelated.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel31.add(jlCfdRelated);
+
+        jtfCfdRelated.setEditable(false);
+        jtfCfdRelated.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
+        jtfCfdRelated.setToolTipText("UUID del comprobante");
+        jtfCfdRelated.setFocusable(false);
+        jtfCfdRelated.setPreferredSize(new java.awt.Dimension(252, 20));
+        jPanel31.add(jtfCfdRelated);
+
+        jLabel3.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel31.add(jLabel3);
+
+        jbCfdRelatedView.setText("...");
+        jbCfdRelatedView.setToolTipText("Ver CFDI relacionados");
+        jbCfdRelatedView.setEnabled(false);
+        jbCfdRelatedView.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel31.add(jbCfdRelatedView);
+
+        jPanel19.add(jPanel31, java.awt.BorderLayout.SOUTH);
+
+        jPanel16.add(jPanel19, java.awt.BorderLayout.EAST);
+
+        jPanel6.add(jPanel16, java.awt.BorderLayout.SOUTH);
 
         jpContainer.add(jPanel6, java.awt.BorderLayout.NORTH);
 
@@ -682,10 +761,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel48.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
-        jPanel50.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        moTextFind.setText("TEXT");
         moTextFind.setToolTipText("Buscar ítem");
-        moTextFind.setPreferredSize(new java.awt.Dimension(272, 23));
+        moTextFind.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel50.add(moTextFind);
 
         jbFind.setText("...");
@@ -693,35 +773,30 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbFind.setPreferredSize(new java.awt.Dimension(23, 23));
         jPanel50.add(jbFind);
 
+        jlRowLabel1.setPreferredSize(new java.awt.Dimension(227, 23));
+        jPanel50.add(jlRowLabel1);
+
         jlRowQuantity.setText("Cantidad:");
-        jlRowQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlRowQuantity.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel50.add(jlRowQuantity);
 
-        jlRowUnitCode.setPreferredSize(new java.awt.Dimension(30, 23));
+        jlRowUnitCode.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel50.add(jlRowUnitCode);
 
-        jlRowPriceUnitary.setText("Precio u.:");
+        jlRowPriceUnitary.setText("Precio unitario:");
         jlRowPriceUnitary.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel50.add(jlRowPriceUnitary);
 
-        jlRowDiscountUnitary.setText("Descto. u.:");
-        jlRowDiscountUnitary.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel50.add(jlRowDiscountUnitary);
-
-        jlRowDiscountRow.setText("Descto. par.:");
-        jlRowDiscountRow.setPreferredSize(new java.awt.Dimension(80, 23));
-        jPanel50.add(jlRowDiscountRow);
-
         jlRowSubtotalProv.setText("Importe:");
-        jlRowSubtotalProv.setPreferredSize(new java.awt.Dimension(80, 23));
+        jlRowSubtotalProv.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel50.add(jlRowSubtotalProv);
 
-        jlRowDiscountDoc.setText("Descto. doc.:");
-        jlRowDiscountDoc.setPreferredSize(new java.awt.Dimension(80, 23));
+        jlRowDiscountDoc.setText("Descuento:");
+        jlRowDiscountDoc.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel50.add(jlRowDiscountDoc);
 
         jlRowSubtotal.setText("Subtotal:");
-        jlRowSubtotal.setPreferredSize(new java.awt.Dimension(80, 23));
+        jlRowSubtotal.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel50.add(jlRowSubtotal);
 
         jbRowClear.setIcon(miClient.getImageIcon(DImgConsts.CMD_STD_CLEAR));
@@ -731,40 +806,48 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel48.add(jPanel50);
 
-        jPanel51.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel51.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moTextRowCode.setText("TEXT");
-        moTextRowCode.setToolTipText("Código");
+        moTextRowCode.setToolTipText("Código ...");
         moTextRowCode.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel51.add(moTextRowCode);
 
         moTextRowName.setText("TEXT");
-        moTextRowName.setToolTipText("Nombre");
-        moTextRowName.setPreferredSize(new java.awt.Dimension(220, 23));
+        moTextRowName.setToolTipText("Nombre ...");
+        moTextRowName.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel51.add(moTextRowName);
 
-        moDecRowQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
+        jtfRowCfdItemKey.setEditable(false);
+        jtfRowCfdItemKey.setText("12345678");
+        jtfRowCfdItemKey.setToolTipText("Clave ProdServ");
+        jtfRowCfdItemKey.setFocusable(false);
+        jtfRowCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel51.add(jtfRowCfdItemKey);
+
+        moDecRowQuantity.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel51.add(moDecRowQuantity);
 
         jtfRowUnitCode.setEditable(false);
         jtfRowUnitCode.setText("UN");
-        jtfRowUnitCode.setToolTipText("Unidad");
+        jtfRowUnitCode.setToolTipText("Unidad ...");
         jtfRowUnitCode.setFocusable(false);
-        jtfRowUnitCode.setPreferredSize(new java.awt.Dimension(30, 23));
+        jtfRowUnitCode.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel51.add(jtfRowUnitCode);
+
+        jtfRowCfdUnitKey.setEditable(false);
+        jtfRowCfdUnitKey.setText("XUN");
+        jtfRowCfdUnitKey.setToolTipText("Clave Unidad");
+        jtfRowCfdUnitKey.setFocusable(false);
+        jtfRowCfdUnitKey.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel51.add(jtfRowCfdUnitKey);
         jPanel51.add(moDecRowPriceUnitary);
-        jPanel51.add(moDecRowDiscountUnitary);
 
-        moDecRowDiscountRow.setPreferredSize(new java.awt.Dimension(80, 23));
-        jPanel51.add(moDecRowDiscountRow);
-
-        moDecRowSubtotalProv.setPreferredSize(new java.awt.Dimension(80, 23));
+        moDecRowSubtotalProv.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel51.add(moDecRowSubtotalProv);
 
-        moDecRowDiscountDoc.setPreferredSize(new java.awt.Dimension(80, 23));
+        moDecRowDiscountDoc.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel51.add(moDecRowDiscountDoc);
-
-        moDecRowSubtotal.setPreferredSize(new java.awt.Dimension(80, 23));
         jPanel51.add(moDecRowSubtotal);
 
         jbRowAdd.setIcon(miClient.getImageIcon(DImgConsts.CMD_STD_ADD));
@@ -776,23 +859,37 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jPanel5.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moTextRowNote.setToolTipText("Nota");
-        moTextRowNote.setPreferredSize(new java.awt.Dimension(300, 23));
+        moBoolRowNote.setText("Notas:");
+        moBoolRowNote.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(moBoolRowNote);
+
+        moTextRowNote.setText("TEXT");
+        moTextRowNote.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel5.add(moTextRowNote);
 
-        moBoolRowNotePrintable.setText("Para impresión");
-        moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(110, 23));
+        moBoolRowNotePrintable.setText("Imprimir");
+        moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel5.add(moBoolRowNotePrintable);
 
+        moBoolRowCfdPredial.setText("No. predial:");
+        moBoolRowCfdPredial.setPreferredSize(new java.awt.Dimension(85, 23));
+        jPanel5.add(moBoolRowCfdPredial);
+
+        moTextRowCfdPredial.setText("TEXT");
+        moTextRowCfdPredial.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(moTextRowCfdPredial);
+
         jtfTaxRegion.setEditable(false);
+        jtfTaxRegion.setText("TEXT");
         jtfTaxRegion.setToolTipText("Región de impuestos");
         jtfTaxRegion.setFocusable(false);
         jtfTaxRegion.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jtfTaxRegion);
 
         jtfIdentityType.setEditable(false);
+        jtfIdentityType.setText("TEXT");
         jtfIdentityType.setToolTipText("Tipo de persona");
         jtfIdentityType.setFocusable(false);
         jtfIdentityType.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -822,7 +919,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocInfo2.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
-        jPanel41.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel41.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlEmissionType.setText("Tipo emisión:*");
         jlEmissionType.setPreferredSize(new java.awt.Dimension(85, 23));
@@ -833,7 +930,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocInfo2.add(jPanel41);
 
-        jPanel14.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlAgent.setText("Agente:");
         jlAgent.setPreferredSize(new java.awt.Dimension(85, 23));
@@ -844,25 +941,28 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocInfo2.add(jPanel14);
 
-        jPanel53.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel53.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlOwnBranch.setText("Sucursal doc.:");
         jlOwnBranch.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel53.add(jlOwnBranch);
 
         jtfOwnBranch.setEditable(false);
+        jtfOwnBranch.setText("TEXT");
         jtfOwnBranch.setToolTipText(DUtilConsts.TXT_BRANCH);
         jtfOwnBranch.setFocusable(false);
         jtfOwnBranch.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel53.add(jtfOwnBranch);
 
         jtfBranchWarehose.setEditable(false);
+        jtfBranchWarehose.setText("TEXT");
         jtfBranchWarehose.setToolTipText(DUtilConsts.TXT_BRANCH_WAH);
         jtfBranchWarehose.setFocusable(false);
         jtfBranchWarehose.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel53.add(jtfBranchWarehose);
 
         jtfTerminal.setEditable(false);
+        jtfTerminal.setText("TEXT");
         jtfTerminal.setToolTipText("Terminal de captura del documento");
         jtfTerminal.setFocusable(false);
         jtfTerminal.setPreferredSize(new java.awt.Dimension(40, 23));
@@ -870,7 +970,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocInfo2.add(jPanel53);
 
-        jPanel52.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel52.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTotalQuantity.setText("Cantidad total:");
         jlTotalQuantity.setPreferredSize(new java.awt.Dimension(85, 23));
@@ -893,7 +993,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel8.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
-        jPanel11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolDiscountDocApplying.setText("Descto. doc.");
         moBoolDiscountDocApplying.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -903,14 +1003,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolDiscountDocPercentageApplying.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel11.add(moBoolDiscountDocPercentageApplying);
 
-        jbDiscountDoc.setText("...");
-        jbDiscountDoc.setToolTipText("Fijar descuento en documento");
-        jbDiscountDoc.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel11.add(jbDiscountDoc);
+        jbDiscountDocSet.setText("...");
+        jbDiscountDocSet.setToolTipText("Fijar descuento en documento");
+        jbDiscountDocSet.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel11.add(jbDiscountDocSet);
 
         jPanel8.add(jPanel11);
 
-        jPanel12.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDiscountDocPercentage.setText("Descto. %:*");
         jlDiscountDocPercentage.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -919,7 +1019,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel8.add(jPanel12);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSubtotalProv.setText("Importe:");
         jlSubtotalProv.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -928,7 +1028,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel8.add(jPanel9);
 
-        jPanel10.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDiscountDoc.setText("Descto. doc.:");
         jlDiscountDoc.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -941,7 +1041,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel43.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
-        jPanel44.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSubtotal.setText("Subtotal:");
         jlSubtotal.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -950,7 +1050,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel43.add(jPanel44);
 
-        jPanel45.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTaxCharged.setText("Imptos. tras.:");
         jlTaxCharged.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -959,7 +1059,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel43.add(jPanel45);
 
-        jPanel46.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTaxRetainded.setText("Imptos. rets.:");
         jlTaxRetainded.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -968,7 +1068,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel43.add(jPanel46);
 
-        jPanel47.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTotal.setText("Total:");
         jlTotal.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -989,62 +1089,66 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
-        // decimal format for unit price:
-        DecimalFormat decimalFormat = new DecimalFormat("#,##0." + DLibUtils.textRepeat("0", ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getPriceUnitaryDecimals()));
-        
         DGuiUtils.setWindowBounds(this, 1024, 640);
 
-        moKeyBizPartner.setKeySettings(miClient, DGuiUtils.getLabelName(jlBizPartner.getText()), true);
-        moKeyBizPartner.setFieldButton(jbBizPartner);
-        moKeyBranchAddress.setKeySettings(miClient, DGuiUtils.getLabelName(jlBranchAddress.getText()), true);
-        moTextSeries.setTextSettings(DGuiUtils.getLabelName(jlNumber.getText()), 10, 0);
-        moIntNumber.setIntegerSettings(DGuiUtils.getLabelName(jlNumber.getText()), DGuiConsts.GUI_TYPE_INT_RAW, true);
-        moDateDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDate.getText()), true);
-        moKeyCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlCurrency.getText()), true);
-        moDecExchangeRate.setDecimalSettings(DGuiUtils.getLabelName(jlExchangeRate.getText()), DGuiConsts.GUI_TYPE_DEC_EXC_RATE, true);
-        moDecExchangeRate.setFieldButton(jbExchangeRate);
-        moKeyPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlPaymentType.getText()), true);
-        moIntCreditDays.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDays.getText()), DGuiConsts.GUI_TYPE_INT, true);
-        moDateCredit.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateCredit.getText()), true);
-        moKeyModeOfPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlModeOfPaymentType.getText()), true);
-        moTextPaymentAccount.setTextSettings(DGuiUtils.getLabelName(jlPaymentAccount.getText()), 15);
-        moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery.getText()), false);
-        moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder.getText()), 15, 0);
-        moTextImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlImportDeclaration.getText()), 25, 0);
+        String bizPartner = DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype));
+        moKeyBizPartner.setKeySettings(miClient, DGuiUtils.getLabelName(bizPartner), true);
+        moKeyBizPartner.setFieldButton(jbBizPartnerPick);
+        moKeyBranchAddress.setKeySettings(miClient, DGuiUtils.getLabelName(DUtilConsts.TXT_BRANCH_ADD), true);
+        moTextSeries.setTextSettings(DGuiUtils.getLabelName(jlNumber), 10, 0);
+        moIntNumber.setIntegerSettings(DGuiUtils.getLabelName(jlNumber), DGuiConsts.GUI_TYPE_INT_RAW, true);
+        moDateDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDate), true);
+        moKeyCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlCurrency), true);
+        moDecExchangeRate.setDecimalSettings(DGuiUtils.getLabelName(jlExchangeRate), DGuiConsts.GUI_TYPE_DEC_EXC_RATE, true);
+        moDecExchangeRate.setFieldButton(jbExchangeRatePick);
+        moTextCfdConfirmation.setTextSettings(DGuiUtils.getLabelName(jlCfdConfirmation), 5, 0);
+        moKeyPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlPaymentType), true);
+        moKeyCfdMethodOfPayment.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdMethodOfPayment), true);
+        moKeyModeOfPaymentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlModeOfPaymentType), true);
+        moKeyCfdUsage.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdUsage), true);
+        moKeyCfdTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdTaxRegime), true);
+        moIntCreditDays.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDays), DGuiConsts.GUI_TYPE_INT, true);
+        moDateCredit.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateCredit), true);
+        moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder), 15, 0);
+        moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery), false);
+        moTextImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlImportDeclaration), 15, 0);
         moDateImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlImportDeclarationDate), false);
+        
         moTextFind.setTextSettings(DGuiUtils.getLabelName(moTextFind.getToolTipText()), 100, 0);
         moTextFind.setFieldButton(jbFind);
         moTextRowCode.setTextSettings(moTextRowCode.getToolTipText(), 45, 1);
         moTextRowName.setTextSettings(moTextRowName.getToolTipText(), 150, 1);
-        moDecRowQuantity.setDecimalSettings(DGuiUtils.getLabelName(jlRowQuantity.getText()), DGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecRowPriceUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlRowPriceUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecRowPriceUnitary.setDecimalFormat(decimalFormat);
-        moDecRowDiscountUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
-        moDecRowDiscountUnitary.setDecimalFormat(decimalFormat);
-        moDecRowDiscountRow.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountRow.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecRowSubtotalProv.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotalProv.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecRowDiscountDoc.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountDoc.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecRowSubtotal.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moTextRowNote.setTextSettings(DGuiUtils.getLabelName(moTextRowNote.getToolTipText()), 255, 0);
+        moDecRowQuantity.setDecimalSettings(DGuiUtils.getLabelName(jlRowQuantity), DGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecRowQuantity.setDecimalFormat(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatQuantity());
+        moDecRowPriceUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlRowPriceUnitary), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
+        moDecRowPriceUnitary.setDecimalFormat(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatPriceUnitary());
+        moDecRowSubtotalProv.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotalProv), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecRowDiscountDoc.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountDoc), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecRowSubtotal.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotal), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moBoolRowNote.setBooleanSettings(DGuiUtils.getLabelName(moBoolRowNote.getText()), false);
+        moTextRowNote.setTextSettings(DGuiUtils.getLabelName(moBoolRowNote.getText()), 255, 0);
         moBoolRowNotePrintable.setBooleanSettings(moBoolRowNotePrintable.getText(), true);
+        moBoolRowCfdPredial.setBooleanSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), false);
+        moTextRowCfdPredial.setTextSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), 150, 0);
+        
         moBoolRowTaxInput.setBooleanSettings(moBoolRowTaxInput.getText(), false);
-        moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType.getText()), true);
-        moKeyAgent.setKeySettings(miClient, DGuiUtils.getLabelName(jlAgent.getText()), true);
+        moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType), true);
+        moKeyAgent.setKeySettings(miClient, DGuiUtils.getLabelName(jlAgent), true);
         moBoolDiscountDocApplying.setBooleanSettings(moBoolDiscountDocApplying.getText(), false);
         moBoolDiscountDocPercentageApplying.setBooleanSettings(moBoolDiscountDocPercentageApplying.getText(), false);
-        moDecDiscountDocPercentage.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountDocPercentage.getText()), DGuiConsts.GUI_TYPE_DEC_PER_DISC, true);
+        moDecDiscountDocPercentage.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountDocPercentage), DGuiConsts.GUI_TYPE_DEC_PER_DISC, true);
         moCurSubtotalProv.setCompoundFieldSettings(miClient);
-        moCurSubtotalProv.getField().setDecimalSettings(DGuiUtils.getLabelName(jlSubtotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurSubtotalProv.getField().setDecimalSettings(DGuiUtils.getLabelName(jlSubtotal), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moCurDiscountDoc.setCompoundFieldSettings(miClient);
-        moCurDiscountDoc.getField().setDecimalSettings(DGuiUtils.getLabelName(jlDiscountDoc.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurDiscountDoc.getField().setDecimalSettings(DGuiUtils.getLabelName(jlDiscountDoc), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moCurSubtotal.setCompoundFieldSettings(miClient);
-        moCurSubtotal.getField().setDecimalSettings(DGuiUtils.getLabelName(jlSubtotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurSubtotal.getField().setDecimalSettings(DGuiUtils.getLabelName(jlSubtotal), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moCurTaxCharged.setCompoundFieldSettings(miClient);
-        moCurTaxCharged.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTaxCharged.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurTaxCharged.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTaxCharged), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moCurTaxRetained.setCompoundFieldSettings(miClient);
-        moCurTaxRetained.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTaxRetainded.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurTaxRetained.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTaxRetainded), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moCurTotal.setCompoundFieldSettings(miClient);
-        moCurTotal.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moCurTotal.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTotal), DGuiConsts.GUI_TYPE_DEC_AMT, false);
 
         moFields.addField(moKeyBizPartner);
         moFields.addField(moKeyBranchAddress);
@@ -1053,28 +1157,32 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moDateDate);
         moFields.addField(moKeyCurrency);
         moFields.addField(moDecExchangeRate);
+        moFields.addField(moTextCfdConfirmation);
         moFields.addField(moKeyPaymentType);
+        moFields.addField(moKeyCfdMethodOfPayment);
+        moFields.addField(moKeyModeOfPaymentType);
         moFields.addField(moIntCreditDays);
         moFields.addField(moDateCredit);
-        moFields.addField(moKeyModeOfPaymentType);
-        moFields.addField(moTextPaymentAccount);
-        moFields.addField(moDateDelivery);
         moFields.addField(moTextOrder);
+        moFields.addField(moDateDelivery);
         moFields.addField(moTextImportDeclaration);
         moFields.addField(moDateImportDeclarationDate);
+        
         moFields.addField(moTextFind);
         moFields.addField(moTextRowCode);
         moFields.addField(moTextRowName);
         moFields.addField(moDecRowQuantity);
         moFields.addField(moDecRowPriceUnitary);
-        moFields.addField(moDecRowDiscountUnitary);
-        moFields.addField(moDecRowDiscountRow);
         moFields.addField(moDecRowSubtotalProv);
         moFields.addField(moDecRowDiscountDoc);
         moFields.addField(moDecRowSubtotal);
+        moFields.addField(moBoolRowNote);
         moFields.addField(moTextRowNote);
         moFields.addField(moBoolRowNotePrintable);
+        moFields.addField(moBoolRowCfdPredial);
+        moFields.addField(moTextRowCfdPredial);
         moFields.addField(moBoolRowTaxInput);
+        
         moFields.addField(moKeyEmissionType);
         moFields.addField(moKeyAgent);
         moFields.addField(moBoolDiscountDocApplying);
@@ -1088,10 +1196,19 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moCurTotal.getField());
 
         moDecRowSubtotal.setNextButton(jbRowAdd);
-        moBoolRowNotePrintable.setNextButton(jbRowAdd);
+        moBoolRowTaxInput.setNextButton(jbRowAdd);
 
         moFields.setFormButton(jbSave);
 
+        jbBizPartnerPick.setToolTipText(DGuiConsts.TXT_BTN_FIND + " " + bizPartner.toLowerCase() + " " + DUtilConsts.ACTION_KEY);
+        jbBizPartnerEdit.setToolTipText(DGuiConsts.TXT_BTN_EDIT + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)).toLowerCase());
+        
+        moXmlCatalogCfdMethodOfPayment = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_MDP);
+        moXmlCatalogCfdMethodOfPayment.populateCatalog(moKeyCfdMethodOfPayment);
+        
+        moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_CFDI_USO);
+        moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
+        
         mnIogCategory = DTrnUtils.isDpsClassForStockIn(DTrnUtils.getDpsClassByDpsXType(mnFormType, mnFormSubtype)) ? DModSysConsts.TS_IOG_CT_IN : DModSysConsts.TS_IOG_CT_OUT;
 
         switch (mnFormType) {
@@ -1146,7 +1263,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
 
         mvRowStockMoves = new Vector<DTrnStockMove>();
-        mjButtonLaunchCalculator = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_cal.gif")), "Mostrar calculadora", this);
+        mjButtonLaunchCalc = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_cal.gif")), "Mostrar calculadora", this);
         mjButtonEditItem = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mon.gif")), "Editar ítem", this);
         mjButtonShowRowNote = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_NOTE), "Ver notas", this);
         mjButtonShowRowLot = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_LOT), "Ver lotes", this);
@@ -1157,10 +1274,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDialogDpsDependentDocsShow = new DDialogDpsDependentDocsShow(miClient);
 
             moDialogDpsAdjustedDocumentShow = null;
-            mjButtonShowAdjustedDocument = null;
+            mjButtonShowAdjustedDoc = null;
             mjButtonAdjustmentForMoney = null;
             mjButtonAdjustmentForStock = null;
-            mjButtonAdjustmentDocument = null;
+            mjButtonAdjustmentDoc = null;
             mjTextCurrentAdjustmentType = null;
         }
         else {
@@ -1168,10 +1285,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDialogDpsDependentDocsShow = null;
 
             moDialogDpsAdjustedDocumentShow = new DDialogDpsAdjustedDocShow(miClient);
-            mjButtonShowAdjustedDocument = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Ver documento ajustado", this);
+            mjButtonShowAdjustedDoc = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Ver documento ajustado", this);
             mjButtonAdjustmentForMoney = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_ADJ_DISC), DUtilConsts.TXT_CREATE + " " + DTrnUtils.getAdjustmentClassName(manAdjustmentClassMoneyKey).toLowerCase(), this);
             mjButtonAdjustmentForStock = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_ADJ_RET), DUtilConsts.TXT_CREATE + " " + DTrnUtils.getAdjustmentClassName(manAdjustmentClassStockKey).toLowerCase(), this);
-            mjButtonAdjustmentDocument = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_ADJ_DOC), DUtilConsts.TXT_CREATE + " ajuste", this);
+            mjButtonAdjustmentDoc = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_ADJ_DOC), DUtilConsts.TXT_CREATE + " ajuste", this);
             mjTextCurrentAdjustmentType = DGridUtils.createTextField("Tipo de ajuste", new Dimension(200, 23));
         }
 
@@ -1191,11 +1308,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDialogFindItem.setValue(DModSysConsts.FLAG_SHOW_PRICES, mbShowPricesOnFind);
         moDialogFindItem.setValue(DModSysConsts.FLAG_ONLY_IN_STOCK, (mbIsDocument || mbIsAdjustment) && DTrnUtils.isDpsClassForStockOut(DTrnUtils.getDpsClassByDpsXType(mnFormType, mnFormSubtype)));
         moDialogFindItem.setValue(DModSysConsts.FLAG_VALIDATE_STOCK, (mbIsDocument || mbIsAdjustment) && DTrnUtils.isDpsClassForStockOut(DTrnUtils.getDpsClassByDpsXType(mnFormType, mnFormSubtype)));
-
-        jlBizPartner.setText(DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)) + ":*");
-        jbBizPartner.setToolTipText(DGuiConsts.TXT_BTN_FIND + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)).toLowerCase() + " " + DUtilConsts.ACTION_KEY);
-        jbBizPartnerEdit.setToolTipText(DGuiConsts.TXT_BTN_EDIT + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)).toLowerCase() + " " + DUtilConsts.ACTION_KEY);
-        moKeyBizPartner.setFieldName(DGuiUtils.getLabelName(jlBizPartner.getText()));
 
         moTextFind.addKeyListener(new KeyAdapter() {
             @Override
@@ -1238,21 +1350,20 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             public void createGridColumns() {
                 int col = 0;
                 DGridColumnForm[] columns = new DGridColumnForm[15];
-                DecimalFormat decimalFormat = new DecimalFormat("#,##0." + DLibUtils.textRepeat("0", ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getPriceUnitaryDecimals()));
 
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_2B, "#");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_1B, "#");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE + " concepto");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_S, DGridConsts.COL_TITLE_NAME + " concepto");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "Clave ProdServ");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_QTY, "Cantidad");
+                columns[col++].setCellRenderer(new DGridCellRendererNumber(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatQuantity()));
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE);
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_S, DGridConsts.COL_TITLE_NAME);
-                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Precio u. $ M");
-                columns[col++].setCellRenderer(new DGridCellRendererNumber(decimalFormat));
-                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Descto. u. $ M");
-                columns[col++].setCellRenderer(new DGridCellRendererNumber(decimalFormat));
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Descto. par. $ M");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "Clave Unidad");
+                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT_UNIT, "Precio unitario $ M");
+                columns[col++].setCellRenderer(new DGridCellRendererNumber(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatPriceUnitary()));
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Importe $ M");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_BOOL_S, "Descto. doc.");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Descto. doc. $ M");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_BOOL_S, "Descuento");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Descuento $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Subtotal $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Imptos. tras. $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Imptos. rets. $ M");
@@ -1268,7 +1379,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moGridDpsNotes.setPaneFormOwner(this);
         jpDocInfo1.add(moGridDpsNotes, BorderLayout.CENTER);
 
-        jpCommandLeft.add(mjButtonLaunchCalculator);
+        jpCommandLeft.add(mjButtonLaunchCalc);
 
         moGridDpsRows.setForm(null);
         moGridDpsRows.setPaneFormOwner(this);
@@ -1284,10 +1395,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowDependentDocs);
         }
         else {
-            moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowAdjustedDocument);
+            moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowAdjustedDoc);
             moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonAdjustmentForMoney);
             moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonAdjustmentForStock);
-            moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonAdjustmentDocument);
+            moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonAdjustmentDoc);
             moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjTextCurrentAdjustmentType);
         }
 
@@ -1312,12 +1423,38 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void processIsPos() {
+    private void computeIsPos() {
         if (mbIsPosModule) {
             moDateDate.setEditable(false);
         }
     }
 
+    private void computeCreditInfo() {
+        if (moDateCredit.getValue() == null) {
+            moDateCredit.setValue(moDateDate.getValue() == null ? mtOriginalDate : moDateDate.getValue());
+        }
+
+        jtfDateMaturity.setText(DLibUtils.DateFormatDate.format(DLibTimeUtils.addDate(moDateCredit.getValue(), 0, 0, moIntCreditDays.getValue())));
+        jtfDateMaturity.setCaretPosition(0);
+
+        String conditions = "";
+        
+        if (moKeyPaymentType.getSelectedIndex() > 0) {
+            switch (moKeyPaymentType.getValue()[0]) {
+                case DModSysConsts.FS_PAY_TP_CSH:
+                    conditions = DFinConsts.TXT_PAY_TP_CSH;
+                    break;
+                case DModSysConsts.FS_PAY_TP_CDT:
+                    conditions = DFinConsts.TXT_PAY_TP_CDT + " " + moIntCreditDays.getValue() + " " + (moIntCreditDays.getValue() == 1 ? DLibTimeConsts.TXT_DAY : DLibTimeConsts.TXT_DAYS).toUpperCase();
+                    break;
+                default:
+            }
+        }
+        
+        jtfCfdPaymentConditions.setText(conditions);
+        jtfCfdPaymentConditions.setCaretPosition(0);
+    }
+    
     /**
      * This method must be called only for new registries on method setRegistry().
      */
@@ -1441,8 +1578,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         renderItem(null, 0);
 
         moTextFind.resetField();
-        moTextRowNote.resetField();
-        moBoolRowNotePrintable.resetField();
+        moBoolRowNote.resetField();
+        itemStateChangedRowNote();
+        moBoolRowCfdPredial.resetField();
+        itemStateChangedRowPredial();
 
         mvRowStockMoves.clear();
 
@@ -1469,11 +1608,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else if (moDecRowPriceUnitary.isEnabled()) {
             moDecRowPriceUnitary.requestFocus();
         }
-        else if (moDecRowDiscountUnitary.isEnabled()) {
-            moDecRowDiscountUnitary.requestFocus();
-        }
-        else if (moDecRowDiscountRow.isEnabled()) {
-            moDecRowDiscountRow.requestFocus();
+        else if (moDecRowSubtotalProv.isEnabled()) {
+            moDecRowSubtotalProv.requestFocus();
         }
         else if (moDecRowDiscountDoc.isEnabled()) {
             moDecRowDiscountDoc.requestFocus();
@@ -1487,16 +1623,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     private void computeRowPriceUnitary() {
+        double qty = !moDecRowQuantity.isEnabled() ? 1 : moDecRowQuantity.getValue();    // when adjustments for money, quantity is disabled
+        
+        // backwards calculation:
         double stot = moDecRowSubtotal.getValue();
         double discDoc = moDecRowDiscountDoc.getValue();
-        double stotProv = 0;
-        double discRow = moDecRowDiscountRow.getValue();
-        double discUnt = moDecRowDiscountUnitary.getValue();
-        double prcUnt = 0;
-        double qty = !moDecRowQuantity.isEnabled() ? 1 : moDecRowQuantity.getValue();    // when adjustments for money, quantity is disabled
-
-        stotProv = stot + discDoc;
-        prcUnt = qty == 0 ? 0 : ((stotProv + discRow) / qty) + discUnt;
+        double stotProv = DLibUtils.round(stot + discDoc, DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits());
+        double prcUnt = qty == 0 ? 0 : DLibUtils.round(stotProv / qty, DLibUtils.getDecimalFormatAmountUnitary().getMaximumFractionDigits());
 
         moDecRowSubtotalProv.setValue(stotProv);
         moDecRowPriceUnitary.setValue(prcUnt);
@@ -1504,16 +1637,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     private void computeRowTotal() {
         double qty = !moDecRowQuantity.isEnabled() ? 1 : moDecRowQuantity.getValue();    // when adjustments for money, quantity is disabled
+        
+        // forwards calculation:
         double prcUnt = moDecRowPriceUnitary.getValue();
-        double discUnt = moDecRowDiscountUnitary.getValue();
-        double discRow = moDecRowDiscountRow.getValue();
-        double stotProv = 0;
-        double discDoc = 0;
-        double stot = 0;
-
-        stotProv = qty * (prcUnt - discUnt) - discRow;
-        discDoc = moBoolDiscountDocPercentageApplying.getValue() ? stotProv * moDecDiscountDocPercentage.getValue() : moDecRowDiscountDoc.getValue();
-        stot = stotProv - discDoc;
+        double stotProv = DLibUtils.round(qty * prcUnt, DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits());
+        double discDoc = DLibUtils.round(moBoolDiscountDocPercentageApplying.getValue() ? stotProv * moDecDiscountDocPercentage.getValue() : moDecRowDiscountDoc.getValue(), DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits());
+        double stot = DLibUtils.round(stotProv - discDoc, DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits());
 
         moDecRowSubtotalProv.setValue(stotProv);
         moDecRowSubtotal.setValue(stot);
@@ -1534,18 +1663,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moCurTaxRetained.getField().setValue(moRegistry.getTaxRetainedCy_r());
         moCurTotal.getField().setValue(moRegistry.getTotalCy_r());
 
-        jtfTotalQuantity.setText(DLibUtils.getDecimalFormatQuantity().format(moRegistry.getAuxTotalQuantity()));
+        jtfTotalQuantity.setText(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatQuantity().format(moRegistry.getAuxTotalQuantity()));
 
         evaluateIsDpsSource();
 
         if (!mbIsAdjustment) {
-            moKeyCurrency.setEnabled(!mbIsDpsSource);
+            moKeyCurrency.setEnabled(!mbIsDpsSource && moKeyBizPartner.getSelectedIndex() > 0);
         }
 
         if (moRegistry.getActiveRowsCount() == 0) {
             moKeyBizPartner.setEnabled(true);
             moKeyPaymentType.setEnabled(enablePaymentType());
-            jbBizPartner.setEnabled(true);
+            jbBizPartnerPick.setEnabled(true);
             jbBizPartnerEdit.setEnabled(true);
 
             if (mbIsAdjustment) {
@@ -1555,7 +1684,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             moKeyBizPartner.setEnabled(false);
             moKeyPaymentType.setEnabled(false);
-            jbBizPartner.setEnabled(false);
+            jbBizPartnerPick.setEnabled(false);
             jbBizPartnerEdit.setEnabled(false);
 
             if (mbIsAdjustment) {
@@ -1573,8 +1702,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             miClient.getSession().populateCatalogue(moKeyBranchAddress, DModConsts.BU_ADD, DLibConsts.UNDEFINED, new DGuiParams(moBizPartnerBranch.getPrimaryKey()));
 
-            // Select default branch address:
-
+            // select default branch address:
             for (int i = 0; i < moKeyBranchAddress.getItemCount(); i++) {
                 complement = ((DGuiItem) moKeyBranchAddress.getItemAt(i)).getComplement();
                 if (complement != null && complement instanceof Boolean && (Boolean) complement) {
@@ -1602,12 +1730,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         if (moKeyBizPartner.getSelectedIndex() <= 0) {
             validate = false;
-            miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlBizPartner.getText()) + "'.");
+            miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyBizPartner.getFieldName() + "'.");
             moKeyBizPartner.requestFocus();
         }
         else if (moKeyBranchAddress.getSelectedIndex() <= 0) {
             validate = false;
-            miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlBranchAddress.getText()) + "'.");
+            miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyBranchAddress.getFieldName() + "'.");
             moKeyBranchAddress.requestFocus();
         }
         else if (moDateDate.getValue() == null) {
@@ -1921,14 +2049,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moTextRowName.setToolTipText(DGuiConsts.TXT_LBL_NAME);
             jtfRowUnitCode.setToolTipText(DGuiConsts.TXT_LBL_UNIT);
 
+            jtfRowCfdItemKey.setText("");
             jtfRowUnitCode.setText("");
+            jtfRowCfdUnitKey.setText("");
 
             moTextRowCode.setEditable(false);
             moTextRowName.setEditable(false);
             moDecRowQuantity.setEnabled(false);
             moDecRowPriceUnitary.setEnabled(false);
-            moDecRowDiscountUnitary.setEnabled(false);
-            moDecRowDiscountRow.setEnabled(false);
             moDecRowSubtotalProv.setEnabled(false);
             moDecRowDiscountDoc.setEnabled(false);
             moDecRowSubtotal.setEnabled(false);
@@ -1937,8 +2065,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moTextRowName.resetField();
             moDecRowQuantity.resetField();
             moDecRowPriceUnitary.resetField();
-            moDecRowDiscountUnitary.resetField();
-            moDecRowDiscountRow.resetField();
             moDecRowSubtotalProv.resetField();
             moDecRowDiscountDoc.resetField();
             moDecRowSubtotal.resetField();
@@ -2000,16 +2126,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 moTextRowName.setEditable(moItem.getParentGenus().isNameEditable());
                 moDecRowQuantity.setEnabled(!isCurrentAdjustmentForMoney());
                 moDecRowPriceUnitary.setEnabled(canChangePrice || prices[0] == 0d);
-                moDecRowDiscountUnitary.setEnabled(canChangeDiscount && !moItem.isFreeOfDiscount());
-                moDecRowDiscountRow.setEnabled(canChangeDiscount && !moItem.isFreeOfDiscount());
                 moDecRowSubtotalProv.setEnabled(canChangePrice);
                 moDecRowDiscountDoc.setEnabled(canChangeDiscount && !moItem.isFreeOfDiscount() && moBoolDiscountDocApplying.getValue() && !moBoolDiscountDocPercentageApplying.getValue());
                 moDecRowSubtotal.setEnabled(canChangePrice);
 
                 moTextRowCode.setValue(moItem.getCode());
                 moTextRowName.setValue(moItem.getName());
+                jtfRowCfdItemKey.setText(moItem.getActualCfdItemKey());
+                jtfRowCfdItemKey.setCaretPosition(0);
                 jtfRowUnitCode.setText(moUnit.getCode());
                 jtfRowUnitCode.setCaretPosition(0);
+                jtfRowCfdUnitKey.setText(moUnit.getCfdUnitKey());
+                jtfRowCfdUnitKey.setCaretPosition(0);
 
                 moTextRowCode.setToolTipText(DGuiConsts.TXT_LBL_CODE + ": " + moItem.getCode());
                 moTextRowName.setToolTipText(DGuiConsts.TXT_LBL_NAME + ": " + moItem.getName());
@@ -2020,8 +2148,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 }
 
                 moDecRowPriceUnitary.setValue(prices[0]);
-                moDecRowDiscountUnitary.setValue(prices[1]);
-                moDecRowDiscountRow.setValue(prices[2]);
+                //moDecRowDiscountUnitary.setValue(prices[1]);
+                //moDecRowDiscountRow.setValue(prices[2]);
             }
         }
 
@@ -2032,8 +2160,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moTextFind.setEnabled(editable);
         jbFind.setEnabled(editable);
 
-        moTextRowNote.setEnabled(editable);
-        moBoolRowNotePrintable.setEnabled(editable);
+        moBoolRowNote.setEnabled(editable);
+        moTextRowNote.setEnabled(editable && moBoolRowNote.isSelected());
+        moBoolRowNotePrintable.setEnabled(editable && moBoolRowNote.isSelected());
+        moBoolRowCfdPredial.setEnabled(editable);
+        moTextRowCfdPredial.setEnabled(editable && moBoolRowCfdPredial.isSelected());
         moBoolRowTaxInput.setEnabled(editable);
 
         jbRowClear.setEnabled(editable);
@@ -2042,11 +2173,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     private DDbDpsRow createDpsRow() {
         double taxRate = 0;
-        double quantity = moDecRowQuantity.getValue();
-        double priceUnitary = moDecRowPriceUnitary.getValue();
-        double discountUnitary = moDecRowDiscountUnitary.getValue();
-        double discountRow = moDecRowDiscountRow.getValue();
-        double discountDoc = moDecRowDiscountDoc.getValue();
+        double qty = moDecRowQuantity.getValue();
+        double prcUnt = moDecRowPriceUnitary.getValue();
+        double discDoc = moDecRowDiscountDoc.getValue();
         DDbDpsRow dpsRow = new DDbDpsRow();
         DDbTaxGroupConfigRow taxGroupConfigRow = null;
 
@@ -2061,10 +2190,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             // Subtract taxes:
 
             taxRate = DTrnUtils.computeTaxRate(taxGroupConfigRow, mnFormSubtype);
-            priceUnitary = DTrnUtils.computePrice(priceUnitary, taxRate);
-            discountUnitary = DTrnUtils.computePrice(discountUnitary, taxRate);
-            discountRow = DTrnUtils.computePrice(discountRow, taxRate);
-            discountDoc = DTrnUtils.computePrice(discountDoc, taxRate);
+            prcUnt = DTrnUtils.computePrice(prcUnt, taxRate);
+            discDoc = DTrnUtils.computePrice(discDoc, taxRate);
         }
 
         dpsRow.setPkDpsId(0);
@@ -2072,14 +2199,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setCode(moTextRowCode.getText());
         dpsRow.setName(moTextRowName.getText());
         dpsRow.setSortingPos(0);
-        dpsRow.setDiscountDocApplying(true);      // XXX improve this!!!
+        dpsRow.setDiscountDocApplying(true);      // XXX improve this!, set discount only if item settings allow it
         //dpsRow.setDiscountDocApplying(!moItem.isFreeOfDiscount());
         dpsRow.setDiscountUnitaryPercentageApplying(false);
         dpsRow.setDiscountRowPercentageApplying(false);
         dpsRow.setDiscountUnitaryPercentage(0);
         dpsRow.setDiscountRowPercentage(0);
 
-        dpsRow.setQuantity(quantity);
+        dpsRow.setQuantity(qty);
 
         dpsRow.setPriceUnitary(0);
         dpsRow.setDiscountUnitary(0);
@@ -2092,11 +2219,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTotal_r(0);
         dpsRow.setPriceUnitaryCalculated_r(0);
 
-        dpsRow.setPriceUnitaryCy(priceUnitary);
-        dpsRow.setDiscountUnitaryCy(discountUnitary);
-        dpsRow.setDiscountRowCy(discountRow);
+        dpsRow.setPriceUnitaryCy(prcUnt);
+        dpsRow.setDiscountUnitaryCy(0);
+        dpsRow.setDiscountRowCy(0);
         dpsRow.setSubtotalProvCy_r(0);
-        dpsRow.setDiscountDocCy(discountDoc);
+        dpsRow.setDiscountDocCy(discDoc);
         dpsRow.setSubtotalCy_r(0);
         dpsRow.setTaxChargedCy_r(0);
         dpsRow.setTaxRetainedCy_r(0);
@@ -2153,13 +2280,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTaxRetained2Cy(0);
         dpsRow.setTaxRetained3Cy(0);
 
-        dpsRow.setMeasurementLength(quantity * moItem.getMeasurementLength());
-        dpsRow.setMeasurementSurface(quantity * moItem.getMeasurementSurface());
-        dpsRow.setMeasurementVolume(quantity * moItem.getMeasurementVolume());
-        dpsRow.setMeasurementMass(quantity * moItem.getMeasurementMass());
-        dpsRow.setMeasurementTime(quantity * moItem.getMeasurementTime());
-        dpsRow.setWeightGross(quantity * moItem.getWeightGross());
-        dpsRow.setWeightDelivery(quantity * moItem.getWeightDelivery());
+        dpsRow.setMeasurementLength(qty * moItem.getMeasurementLength());
+        dpsRow.setMeasurementSurface(qty * moItem.getMeasurementSurface());
+        dpsRow.setMeasurementVolume(qty * moItem.getMeasurementVolume());
+        dpsRow.setMeasurementMass(qty * moItem.getMeasurementMass());
+        dpsRow.setMeasurementTime(qty * moItem.getMeasurementTime());
+        dpsRow.setWeightGross(qty * moItem.getWeightGross());
+        dpsRow.setWeightDelivery(qty * moItem.getWeightDelivery());
         dpsRow.setSurplusPercentage(0);
         dpsRow.setTaxManual(false);
         dpsRow.setInventoriable(moItem.isInventoriable());
@@ -2201,12 +2328,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTsUserInsert(null);
         dpsRow.setTsUserUpdate(null);
 
+        dpsRow.setEdsItemKey(moItem.getActualCfdItemKey());
+        dpsRow.setEdsUnitKey(moUnit.getCfdUnitKey());
+        dpsRow.setEdsPredial(moTextRowCfdPredial.getText());
+        
         dpsRow.setDbUnitCode(moUnit.getCode());
 
         return dpsRow;
     }
 
-    private void actionBizPartner() {
+    private void actionPerformedBizPartnerPick() {
         moDialogFindBizPartner.resetForm();
         moDialogFindBizPartner.initForm();
         moDialogFindBizPartner.setVisible(true);
@@ -2220,7 +2351,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionBizPartnerEdit() {
+    private void actionPerformedBizPartnerEdit() {
         int[] key = null;
 
         if (jbBizPartnerEdit.isEnabled()) {
@@ -2239,16 +2370,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionExchangeRate() {
+    private void actionPerformedExchangeRatePick() {
 
     }
 
-    private void actionPaymentAccount() {
-        moTextPaymentAccount.setValue(DFinConsts.TXT_MOP_NON_DEF);
-        moTextPaymentAccount.requestFocus();
-    }
-
-    private void actionFind(final DTrnItemsFound itemsFound) {
+    private void actionPerformedFind(final DTrnItemsFound itemsFound) {
         DTrnItemsFound itemsFoundActual = itemsFound;
 
         if (itemsFoundActual == null) {
@@ -2275,11 +2401,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDialogFindItem.setVisible(true);
 
             if (moDialogFindItem.getFormResult() != DGuiConsts.FORM_RESULT_OK) {
-                actionRowClear();
+                actionPerformedRowClear();
             }
             else {
                 if (!renderItem((int[]) moDialogFindItem.getValue(DModConsts.IU_ITM), itemsFoundActual.getQuantity())) {
-                    actionRowClear();
+                    actionPerformedRowClear();
                 }
                 else {
                     computeRowTotal();
@@ -2289,18 +2415,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionRowClear() {
+    private void actionPerformedRowClear() {
         clearRow();
 
         if (!mbIsAdjustment) {
             moTextFind.requestFocus();
         }
         else {
-            mjButtonAdjustmentDocument.requestFocus();
+            mjButtonAdjustmentDoc.requestFocus();
         }
     }
 
-    private void actionRowAdd() {
+    private void actionPerformedRowAdd() {
         double quantity = 0;
         boolean add = true;
         DDbDpsRow dpsRow = null;
@@ -2345,7 +2471,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         if (quantity != moDecRowQuantity.getValue()) {
                             // Redefine row stock moves (lots, serial numbers, etc.):
 
-                            add = defineRowStockMoves(moDecRowQuantity.getValue(), new double[] { moDecRowPriceUnitary.getValue(), moDecRowDiscountUnitary.getValue(), moDecRowDiscountRow.getValue()});
+                            add = defineRowStockMoves(moDecRowQuantity.getValue(), new double[] { moDecRowPriceUnitary.getValue(), 0, 0 });
+                            //add = defineRowStockMoves(moDecRowQuantity.getValue(), new double[] { moDecRowPriceUnitary.getValue(), moDecRowDiscountUnitary.getValue(), moDecRowDiscountRow.getValue() });
                         }
                     }
 
@@ -2368,13 +2495,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moGridDpsRows.setSelectedGridRow(moGridDpsRows.getTable().getRowCount() - 1);
                     }
 
-                    actionRowClear();
+                    actionPerformedRowClear();
                 }
             }
         }
     }
 
-    private void actionDiscountDoc() {
+    private void actionPerformedDiscountDocSet() {
         int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
         boolean proceed = false;
         boolean allreadySet = false;
@@ -2456,7 +2583,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moGridDpsRows.renderGridRows();
                         moGridDpsRows.setSelectedGridRow(0);
 
-                        actionRowClear();
+                        actionPerformedRowClear();
                     }
                 }
             }
@@ -2466,11 +2593,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionLaunchCalculator() {
+    private void actionPerformedLaunchCalc() {
         DLibUtils.launchCalculator();
     }
 
-    private void actionEditItem() {
+    private void actionPerformedEditItem() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2481,7 +2608,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionShowNote() {
+    private void actionPerformedShowNote() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2499,7 +2626,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionShowLot() {
+    private void actionPerformedShowLot() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2520,7 +2647,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionShowSerialNumber() {
+    private void actionPerformedShowSerialNumber() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2541,7 +2668,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionShowDependentDocs() {
+    private void actionPerformedShowDependentDocs() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2559,7 +2686,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void actionShowAdjustedDocument() {
+    private void actionPerformedShowAdjustedDoc() {
         DDbDpsRow row = (DDbDpsRow) moGridDpsRows.getSelectedGridRow();
 
         if (row == null) {
@@ -2577,7 +2704,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     @SuppressWarnings("unchecked")
-    private void actionAdjustmentForMoney() {
+    private void actionPerformedAdjustmentForMoney() {
         boolean added = false;
         Vector<DDbDpsRow> rows = null;
 
@@ -2608,14 +2735,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     moGridDpsRows.renderGridRows();
                     moGridDpsRows.setSelectedGridRow(moGridDpsRows.getTable().getRowCount() - 1);
 
-                    actionRowClear();
+                    actionPerformedRowClear();
                 }
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void actionAdjustmentForStock() {
+    private void actionPerformedAdjustmentForStock() {
         boolean added = false;
         Vector<DDbDpsRow> rows = null;
 
@@ -2646,13 +2773,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     moGridDpsRows.renderGridRows();
                     moGridDpsRows.setSelectedGridRow(moGridDpsRows.getTable().getRowCount() - 1);
 
-                    actionRowClear();
+                    actionPerformedRowClear();
                 }
             }
         }
     }
 
-    private void actionAdjustmentDocument() {
+    private void actionPerformedAdjustmentDoc() {
         if (validateCoreData()) {
             clearRow();
 
@@ -2685,7 +2812,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
 
             if (itemsFound.getItemsFoundKeys().isEmpty()) {
-                actionFind(itemsFound);   // no items found, so find item (itemsFoundObject will be used only for quantity)
+                actionPerformedFind(itemsFound);   // no items found, so find item (itemsFoundObject will be used only for quantity)
             }
             else if (itemsFound.getItemsFoundKeys().size() == 1) {
                 itemFoundKey = itemsFound.getItemsFoundKeys().get(0);
@@ -2708,7 +2835,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 }
 
                 if (!renderItem(itemFoundKey, itemsFound.getQuantity())) {
-                    actionRowClear();
+                    actionPerformedRowClear();
                 }
                 else {
                     computeRowTotal();
@@ -2718,7 +2845,35 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void itemStateBoolDiscountDocApplying(boolean computeTotal) {
+    private void itemStateChangedRowNote() {
+        if (moBoolRowNote.isSelected()) {
+            moTextRowNote.setEnabled(true);
+            moBoolRowNotePrintable.setEnabled(true);
+            moBoolRowNotePrintable.setSelected(true);
+            
+            moTextRowNote.requestFocus();
+        }
+        else {
+            moTextRowNote.setEnabled(false);
+            moTextRowNote.resetField();
+            moBoolRowNotePrintable.setEnabled(false);
+            moBoolRowNotePrintable.setSelected(false);
+        }
+    }
+    
+    private void itemStateChangedRowPredial() {
+        if (moBoolRowCfdPredial.isSelected()) {
+            moTextRowCfdPredial.setEnabled(true);
+            
+            moTextRowCfdPredial.requestFocus();
+        }
+        else {
+            moTextRowCfdPredial.setEnabled(false);
+            moTextRowCfdPredial.resetField();
+        }
+    }
+
+    private void itemStateChangedDiscountDocApplying(boolean computeTotal) {
         if (moBoolDiscountDocApplying.getValue()) {
             moBoolDiscountDocPercentageApplying.setEnabled(true);
         }
@@ -2728,19 +2883,19 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moBoolDiscountDocPercentageApplying.setSelected(false);
         }
 
-        itemStateBoolDiscountDocPercentageApplying(computeTotal);
+        itemStateChangedDiscountDocPercentageApplying(computeTotal);
     }
 
-    private void itemStateBoolDiscountDocPercentageApplying(boolean computeTotal) {
+    private void itemStateChangedDiscountDocPercentageApplying(boolean computeTotal) {
         if (moBoolDiscountDocPercentageApplying.getValue()) {
             moDecDiscountDocPercentage.setEnabled(true);
-            jbDiscountDoc.setEnabled(false);
+            jbDiscountDocSet.setEnabled(false);
 
             moDecRowDiscountDoc.setEnabled(false);
         }
         else {
             moDecDiscountDocPercentage.setEnabled(false);
-            jbDiscountDoc.setEnabled(moBoolDiscountDocApplying.getValue());
+            jbDiscountDocSet.setEnabled(moBoolDiscountDocApplying.getValue());
 
             moDecRowDiscountDoc.setEnabled(moItem == null ? false : !moItem.isFreeOfDiscount() && moBoolDiscountDocApplying.getValue());
 
@@ -2755,7 +2910,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
     }
 
-    private void itemStateKeyBizPartner() {
+    private void itemStateChangedBizPartner() {
         int identity = DLibConsts.UNDEFINED;
         DDbCustomerItemPriceType itemPriceType = null;
 
@@ -2769,9 +2924,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyBranchAddress.setEnabled(false);
             moKeyCurrency.setEnabled(false);
             moKeyPaymentType.setEnabled(false);
-            moKeyModeOfPaymentType.setEnabled(false);
-            moDateDelivery.setEnabled(false);
+            moKeyCfdUsage.setEnabled(false);
+            moKeyCfdTaxRegime.setEnabled(false);
             moTextOrder.setEnabled(false);
+            moDateDelivery.setEnabled(false);
+            moTextImportDeclaration.setEnabled(false);
+            moDateImportDeclarationDate.setEnabled(false);
             setRowFieldsEditable(false);
 
             moKeyEmissionType.setEnabled(false);
@@ -2779,13 +2937,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyBranchAddress.resetField();
             moKeyCurrency.resetField();
             moKeyPaymentType.resetField();
-            moKeyModeOfPaymentType.resetField();
-            moDateDelivery.resetField();
+            moKeyCfdUsage.resetField();
+            moKeyCfdTaxRegime.resetField();
             moTextOrder.resetField();
+            moDateDelivery.resetField();
+            moTextImportDeclaration.resetField();
+            moDateImportDeclarationDate.resetField();
 
             moKeyEmissionType.resetField();
 
-            jtaHeadquartersAddressRo.setText("");
+            jtaHeadquartersAddress.setText("");
             jtfTaxRegion.setText("");
             jtfIdentityType.setText("");
 
@@ -2805,9 +2966,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyBranchAddress.setEnabled(true);
             moKeyCurrency.setEnabled(!mbIsPosModule);
             moKeyPaymentType.setEnabled(enablePaymentType());
-            moKeyModeOfPaymentType.setEnabled(!mbIsAdjustment);
-            moDateDelivery.setEnabled(!mbIsAdjustment);
+            moKeyCfdUsage.setEnabled(moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
+            moKeyCfdTaxRegime.setEnabled(moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
             moTextOrder.setEnabled(!mbIsAdjustment);
+            moDateDelivery.setEnabled(!mbIsAdjustment);
+            moTextImportDeclaration.setEnabled(mbIsImportDeclaration);
+            moDateImportDeclarationDate.setEnabled(mbIsImportDeclaration);
             setRowFieldsEditable(!mbIsAdjustment);
 
             moKeyEmissionType.setEnabled(moRegistry.isDpsForSale());
@@ -2815,16 +2979,20 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyBranchAddress.setValue(moBizPartnerBranch.getChildDefaultAddress().getPrimaryKey());
             moKeyCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
             moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_NA : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
-            moKeyModeOfPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_MOP_TP_NA : moBizPartnerConfig.getActualFkModeOfPaymentTypeId() });
-            moDateDelivery.setValue(null);
+            moKeyCfdUsage.setValue(new int[] { !moKeyCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartnerConfig.getActualCfdUsage()) });
+            moKeyCfdTaxRegime.setValue(new int[] { !moKeyCfdTaxRegime.isEnabled() ? 0 : moConfigCompany.getFkTaxRegimeId() });
             moTextOrder.setValue("");
+            moDateDelivery.setValue(null);
+            moTextImportDeclaration.setValue("");
+            moDateImportDeclarationDate.setValue(null);
 
             moKeyEmissionType.setValue(new int[] { moRegistry.isDpsForSale() ? moBizPartner.getFkEmissionTypeId() : DModSysConsts.TS_EMI_TP_BPR });
 
-            jtaHeadquartersAddressRo.setText(moBizPartnerBranch.getChildAddresses().get(0).getProcAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession())));
+            String address = moBizPartnerBranch.getChildAddresses().get(0).composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession()));
+            jtaHeadquartersAddress.setText(address + (address.isEmpty() ? "" : "\n") + moBizPartner.getFiscalId());
             jtfTaxRegion.setText((String) miClient.getSession().readField(DModConsts.FU_TAX_REG, new int[] { moBizPartnerBranch.getActualFkTaxRegionId(miClient.getSession()) }, DDbRegistry.FIELD_NAME));
             jtfIdentityType.setText((String) miClient.getSession().readField(DModConsts.BS_IDY_TP, new int[] { moBizPartner.getFkIdentityTypeId() }, DDbRegistry.FIELD_NAME));
-            jtaHeadquartersAddressRo.setCaretPosition(0);
+            jtaHeadquartersAddress.setCaretPosition(0);
             jtfTaxRegion.setCaretPosition(0);
             jtfIdentityType.setCaretPosition(0);
 
@@ -2842,16 +3010,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
         }
 
-        // Update import declarations controls:
-
-        moTextImportDeclaration.setEditable(mbIsImportDeclaration);
-        moDateImportDeclarationDate.setEditable(mbIsImportDeclaration);
-
-        if (!mbIsImportDeclaration) {
-            moTextImportDeclaration.setValue("");
-            moDateImportDeclarationDate.setValue(null);
-        }
-
         // Update item finding settings:
 
         moDialogFindItem.setValue(DModSysConsts.PARAM_BPR_IDY_TP, identity);
@@ -2866,29 +3024,27 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         updateCatalogueBranchAddress();
 
-        itemStateKeyBranchAddress();
-        itemStateKeyCurrency();
-        itemStateKeyPaymentType();
-        itemStateKeyModeOfPaymentType();
-        focusLostDateDate();
-        focusLostDateCredit();
+        itemStateChangedBranchAddress();
+        itemStateChangedCurrency();
+        itemStateChangedPaymentType();
+        focusLostDate();
 
         clearRow();
     }
 
-    private void itemStateKeyBranchAddress() {
+    private void itemStateChangedBranchAddress() {
         if (moKeyBranchAddress.getSelectedIndex() <= 0) {
-            jtaBranchAddressRo.setText("");
+            jtaBranchAddress.setText("");
         }
         else {
-            jtaBranchAddressRo.setText(moKeyBranchAddress.getValue()[2] == DUtilConsts.BRA_ADD_ID ? "" : moBizPartnerBranch.getChildAddress(moKeyBranchAddress.getValue()).getProcAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession())));
-            jtaBranchAddressRo.setCaretPosition(0);
+            jtaBranchAddress.setText(moKeyBranchAddress.getValue()[2] == DUtilConsts.BRA_ADD_ID ? "" : moBizPartnerBranch.getChildAddress(moKeyBranchAddress.getValue()).composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession())));
+            jtaBranchAddress.setCaretPosition(0);
         }
 
         jspBranchAddress.getVerticalScrollBar().setValue(0);
     }
 
-    private void itemStateKeyCurrency() {
+    private void itemStateChangedCurrency() {
         String code = "";
 
         if (moKeyCurrency.getSelectedIndex() <= 0) {
@@ -2904,7 +3060,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             code = moKeyCurrency.getSelectedItem().getCode();
         }
 
-        jbExchangeRate.setEnabled(moDecExchangeRate.isEnabled());
+        jbExchangeRatePick.setEnabled(moDecExchangeRate.isEnabled());
 
         moCurSubtotalProv.setCompoundText(code);
         moCurDiscountDoc.setCompoundText(code);
@@ -2914,71 +3070,55 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moCurTotal.setCompoundText(code);
     }
 
-    private void itemStateKeyPaymentType() {
-        if (moKeyPaymentType.getSelectedIndex() <= 0) {
+    private void itemStateChangedPaymentType() {
+        int paymentType = DLibConsts.UNDEFINED;
+        
+        if (moKeyPaymentType.getSelectedIndex() <= 0 || moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_NA) {
+            moKeyCfdMethodOfPayment.setEnabled(false);
+            moKeyModeOfPaymentType.setEnabled(false);
             moIntCreditDays.setEnabled(false);
             moDateCredit.setEnabled(false);
 
+            moKeyCfdMethodOfPayment.resetField();
+            moKeyModeOfPaymentType.resetField();
             moIntCreditDays.setValue(0);
             moDateCredit.setValue(null);
         }
         else {
-            moIntCreditDays.setEnabled(!mbIsPosModule && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CDT);
-            moDateCredit.setEnabled(!mbIsPosModule && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CDT);
+            paymentType = moKeyPaymentType.getValue()[0];
+            
+            moKeyCfdMethodOfPayment.setEnabled(!mbIsPosModule && moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
+            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
+            moIntCreditDays.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
+            moDateCredit.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
 
-            moIntCreditDays.setValue(moKeyPaymentType.getValue()[0] != DModSysConsts.FS_PAY_TP_CDT ? 0 : moBizPartnerConfig.getActualCreditDays());
+            moKeyCfdMethodOfPayment.setValue(new int [] { !(moRegistry.isDpsForSale() && moRegistry.isDpsDocument()) ? 
+                    DLibConsts.UNDEFINED : paymentType == DModSysConsts.FS_PAY_TP_CSH ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID });
+            moKeyModeOfPaymentType.setValue(new int[] { !(moRegistry.isDpsForSale() && moRegistry.isDpsDocument()) ? 
+                    DLibConsts.UNDEFINED : paymentType == DModSysConsts.FS_PAY_TP_CSH ? moBizPartnerConfig.getActualFkModeOfPaymentTypeId() : DModSysConsts.FS_MOP_TP_TO_DEF });
+            moIntCreditDays.setValue(paymentType == DModSysConsts.FS_PAY_TP_CSH ? 0 : moBizPartnerConfig.getActualCreditDays());
             moDateCredit.setValue(moDateDate.getValue());
         }
 
-        focusLostDateCredit();
+        computeCreditInfo();
     }
 
-    private void itemStateKeyModeOfPaymentType() {
-        if (moKeyModeOfPaymentType.getSelectedIndex() <= 0 || !moRegistry.isDpsForSale() || !mbIsDocument || mbIsAdjustment ||
-                DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_CSH, DModSysConsts.FS_MOP_TP_EPU, DModSysConsts.FS_MOP_TP_EMO, DModSysConsts.FS_MOP_TP_FTA, DModSysConsts.FS_MOP_TP_OTH })) {
-            moTextPaymentAccount.setEnabled(false);
-            jbPaymentAccount.setEnabled(false);
-
-            moTextPaymentAccount.setValue("");
-        }
-        else {
-            if (moKeyModeOfPaymentType.getValue()[0] == DModSysConsts.FS_MOP_TP_NON_DEF) {
-                moTextPaymentAccount.setEnabled(false);
-                jbPaymentAccount.setEnabled(false);
-
-                moTextPaymentAccount.setValue(DFinConsts.TXT_MOP_NON_DEF);
-            }
-            else {
-                moTextPaymentAccount.setEnabled(true);
-                jbPaymentAccount.setEnabled(true);
-
-                if (moTextPaymentAccount.getValue().compareTo(DFinConsts.TXT_MOP_NON_DEF) == 0) {
-                    moTextPaymentAccount.setValue("");
-                }
-
-                if (moTextPaymentAccount.getValue().isEmpty()) {
-                    moTextPaymentAccount.setValue(DTrnUtils.getLastPaymentAccount(miClient.getSession(), moRegistry.getDpsTypeKey(), moKeyBizPartner.getValue()));
-                }
-            }
-        }
-    }
-
-    private void focusLostDateDate() {
+    private void focusLostDate() {
         if (moDateDate.getValue() == null) {
             moDateDate.setValue(mtOriginalDate);
         }
 
         moDateCredit.setValue(moDateDate.getValue());
-        focusLostDateCredit();
+        
+        computeCreditInfo();
     }
 
-    private void focusLostDateCredit() {
-        if (moDateCredit.getValue() == null) {
-            moDateCredit.setValue(moDateDate.getValue() == null ? mtOriginalDate : moDateDate.getValue());
-        }
+    private void focusLostCredit() {
+        computeCreditInfo();
+    }
 
-        jtfDateMaturity.setText(DLibUtils.DateFormatDate.format(DLibTimeUtils.addDate(moDateCredit.getValue(), 0, 0, moIntCreditDays.getValue())));
-        jtfDateMaturity.setCaretPosition(0);
+    private void focusLostCreditDays() {
+        computeCreditInfo();
     }
 
     private void focusLostDiscountDocPercentage() {
@@ -2988,25 +3128,26 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moGridDpsRows.setSelectedGridRow(0);
     }
 
-    private void focusLostPaymentAccount() {
-        moTextPaymentAccount.setCaretPosition(0);
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
@@ -3019,12 +3160,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JPanel jPanel33;
     private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel35;
-    private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel38;
-    private javax.swing.JPanel jPanel39;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel40;
     private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
     private javax.swing.JPanel jPanel43;
@@ -3040,33 +3178,35 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JPanel jPanel52;
     private javax.swing.JPanel jPanel53;
     private javax.swing.JPanel jPanel54;
+    private javax.swing.JPanel jPanel55;
+    private javax.swing.JPanel jPanel56;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JButton jbBizPartner;
     private javax.swing.JButton jbBizPartnerEdit;
-    private javax.swing.JButton jbDiscountDoc;
-    private javax.swing.JButton jbExchangeRate;
+    private javax.swing.JButton jbBizPartnerPick;
+    private javax.swing.JButton jbCfdRelatedView;
+    private javax.swing.JButton jbDiscountDocSet;
+    private javax.swing.JButton jbExchangeRatePick;
     private javax.swing.JButton jbFind;
-    private javax.swing.JButton jbPaymentAccount;
     private javax.swing.JButton jbRowAdd;
     private javax.swing.JButton jbRowClear;
     private javax.swing.JLabel jlAgent;
-    private javax.swing.JLabel jlBizPartner;
-    private javax.swing.JLabel jlBranchAddress;
+    private javax.swing.JLabel jlCfdConfirmation;
+    private javax.swing.JLabel jlCfdMethodOfPayment;
+    private javax.swing.JLabel jlCfdPaymentConditions;
+    private javax.swing.JLabel jlCfdRelated;
+    private javax.swing.JLabel jlCfdTaxRegime;
+    private javax.swing.JLabel jlCfdUsage;
     private javax.swing.JLabel jlCreditDays;
     private javax.swing.JLabel jlCurrency;
     private javax.swing.JLabel jlDateCredit;
     private javax.swing.JLabel jlDateDate;
     private javax.swing.JLabel jlDateDelivery;
-    private javax.swing.JLabel jlDateDocReception;
-    private javax.swing.JLabel jlDateDocSending;
     private javax.swing.JLabel jlDateMaturity;
     private javax.swing.JLabel jlDiscountDoc;
     private javax.swing.JLabel jlDiscountDocPercentage;
-    private javax.swing.JLabel jlDocStatus;
-    private javax.swing.JLabel jlDocType;
     private javax.swing.JLabel jlEmissionType;
     private javax.swing.JLabel jlExchangeRate;
     private javax.swing.JLabel jlImportDeclaration;
@@ -3075,11 +3215,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JLabel jlNumber;
     private javax.swing.JLabel jlOrder;
     private javax.swing.JLabel jlOwnBranch;
-    private javax.swing.JLabel jlPaymentAccount;
     private javax.swing.JLabel jlPaymentType;
     private javax.swing.JLabel jlRowDiscountDoc;
-    private javax.swing.JLabel jlRowDiscountRow;
-    private javax.swing.JLabel jlRowDiscountUnitary;
+    private javax.swing.JLabel jlRowLabel1;
     private javax.swing.JLabel jlRowPriceUnitary;
     private javax.swing.JLabel jlRowQuantity;
     private javax.swing.JLabel jlRowSubtotal;
@@ -3102,22 +3240,29 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JPanel jpRows2;
     private javax.swing.JScrollPane jspBranchAddress;
     private javax.swing.JScrollPane jspHeadquartersAddress;
-    private javax.swing.JTextArea jtaBranchAddressRo;
-    private javax.swing.JTextArea jtaHeadquartersAddressRo;
+    private javax.swing.JTextArea jtaBranchAddress;
+    private javax.swing.JTextArea jtaHeadquartersAddress;
     private javax.swing.JTextField jtfBranchWarehose;
-    private javax.swing.JTextField jtfDateDocReception;
-    private javax.swing.JTextField jtfDateDocSending;
+    private javax.swing.JTextField jtfCfdDate;
+    private javax.swing.JTextField jtfCfdPaymentConditions;
+    private javax.swing.JTextField jtfCfdRelated;
+    private javax.swing.JTextField jtfCfdType;
+    private javax.swing.JTextField jtfCfdUuid;
     private javax.swing.JTextField jtfDateMaturity;
     private javax.swing.JTextField jtfDocStatus;
     private javax.swing.JTextField jtfDocType;
     private javax.swing.JTextField jtfIdentityType;
     private javax.swing.JTextField jtfOwnBranch;
+    private javax.swing.JTextField jtfRowCfdItemKey;
+    private javax.swing.JTextField jtfRowCfdUnitKey;
     private javax.swing.JTextField jtfRowUnitCode;
     private javax.swing.JTextField jtfTaxRegion;
     private javax.swing.JTextField jtfTerminal;
     private javax.swing.JTextField jtfTotalQuantity;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolDiscountDocApplying;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolDiscountDocPercentageApplying;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowCfdPredial;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNote;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNotePrintable;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowTaxInput;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDiscountDoc;
@@ -3133,8 +3278,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldDecimal moDecDiscountDocPercentage;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecExchangeRate;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowDiscountDoc;
-    private sba.lib.gui.bean.DBeanFieldDecimal moDecRowDiscountRow;
-    private sba.lib.gui.bean.DBeanFieldDecimal moDecRowDiscountUnitary;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowPriceUnitary;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowQuantity;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowSubtotal;
@@ -3144,14 +3287,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldKey moKeyAgent;
     private sba.lib.gui.bean.DBeanFieldKey moKeyBizPartner;
     private sba.lib.gui.bean.DBeanFieldKey moKeyBranchAddress;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyCfdMethodOfPayment;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyCfdTaxRegime;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyCfdUsage;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCurrency;
     private sba.lib.gui.bean.DBeanFieldKey moKeyEmissionType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyModeOfPaymentType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyPaymentType;
+    private sba.lib.gui.bean.DBeanFieldText moTextCfdConfirmation;
     private sba.lib.gui.bean.DBeanFieldText moTextFind;
     private sba.lib.gui.bean.DBeanFieldText moTextImportDeclaration;
     private sba.lib.gui.bean.DBeanFieldText moTextOrder;
-    private sba.lib.gui.bean.DBeanFieldText moTextPaymentAccount;
+    private sba.lib.gui.bean.DBeanFieldText moTextRowCfdPredial;
     private sba.lib.gui.bean.DBeanFieldText moTextRowCode;
     private sba.lib.gui.bean.DBeanFieldText moTextRowName;
     private sba.lib.gui.bean.DBeanFieldText moTextRowNote;
@@ -3160,36 +3307,35 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     @Override
     public void addAllListeners() {
-        jbBizPartner.addActionListener(this);
+        jbBizPartnerPick.addActionListener(this);
         jbBizPartnerEdit.addActionListener(this);
-        jbExchangeRate.addActionListener(this);
-        jbPaymentAccount.addActionListener(this);
+        jbExchangeRatePick.addActionListener(this);
         jbFind.addActionListener(this);
         jbRowClear.addActionListener(this);
         jbRowAdd.addActionListener(this);
-        jbDiscountDoc.addActionListener(this);
-        mjButtonLaunchCalculator.addActionListener(this);
+        jbDiscountDocSet.addActionListener(this);
+        mjButtonLaunchCalc.addActionListener(this);
         mjButtonEditItem.addActionListener(this);
         mjButtonShowRowNote.addActionListener(this);
         mjButtonShowRowLot.addActionListener(this);
         mjButtonShowRowSerialNumber.addActionListener(this);
+        
         moIntCreditDays.addFocusListener(this);
         moDateDate.getComponent().addFocusListener(this);
         moDateCredit.getComponent().addFocusListener(this);
-        moTextPaymentAccount.addFocusListener(this);
         moDecRowQuantity.addFocusListener(this);
         moDecRowPriceUnitary.addFocusListener(this);
-        moDecRowDiscountUnitary.addFocusListener(this);
-        moDecRowDiscountRow.addFocusListener(this);
         moDecRowSubtotalProv.addFocusListener(this);
         moDecRowDiscountDoc.addFocusListener(this);
         moDecRowSubtotal.addFocusListener(this);
         moDecDiscountDocPercentage.addFocusListener(this);
+        
         moKeyBizPartner.addItemListener(this);
         moKeyBranchAddress.addItemListener(this);
         moKeyCurrency.addItemListener(this);
         moKeyPaymentType.addItemListener(this);
-        moKeyModeOfPaymentType.addItemListener(this);
+        moBoolRowNote.addItemListener(this);
+        moBoolRowCfdPredial.addItemListener(this);
         moBoolDiscountDocApplying.addItemListener(this);
         moBoolDiscountDocPercentageApplying.addItemListener(this);
 
@@ -3199,43 +3345,40 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             mjButtonAdjustmentForMoney.addActionListener(this);
             mjButtonAdjustmentForStock.addActionListener(this);
-            mjButtonAdjustmentDocument.addActionListener(this);
-            mjButtonShowAdjustedDocument.addActionListener(this);
+            mjButtonAdjustmentDoc.addActionListener(this);
+            mjButtonShowAdjustedDoc.addActionListener(this);
         }
     }
 
     @Override
     public void removeAllListeners() {
-        jbBizPartner.removeActionListener(this);
+        jbBizPartnerPick.removeActionListener(this);
         jbBizPartnerEdit.removeActionListener(this);
-        jbExchangeRate.removeActionListener(this);
-        jbPaymentAccount.removeActionListener(this);
+        jbExchangeRatePick.removeActionListener(this);
         jbFind.removeActionListener(this);
         jbRowClear.removeActionListener(this);
         jbRowAdd.removeActionListener(this);
-        jbDiscountDoc.removeActionListener(this);
-        mjButtonLaunchCalculator.removeActionListener(this);
+        jbDiscountDocSet.removeActionListener(this);
+        mjButtonLaunchCalc.removeActionListener(this);
         mjButtonEditItem.removeActionListener(this);
         mjButtonShowRowNote.removeActionListener(this);
         mjButtonShowRowLot.removeActionListener(this);
         mjButtonShowRowSerialNumber.removeActionListener(this);
+        
         moIntCreditDays.removeFocusListener(this);
         moDateDate.getComponent().removeFocusListener(this);
         moDateCredit.getComponent().removeFocusListener(this);
-        moTextPaymentAccount.removeFocusListener(this);
         moDecRowQuantity.removeFocusListener(this);
         moDecRowPriceUnitary.removeFocusListener(this);
-        moDecRowDiscountUnitary.removeFocusListener(this);
-        moDecRowDiscountRow.removeFocusListener(this);
         moDecRowSubtotalProv.removeFocusListener(this);
         moDecRowDiscountDoc.removeFocusListener(this);
         moDecRowSubtotal.removeFocusListener(this);
         moDecDiscountDocPercentage.removeFocusListener(this);
+        
         moKeyBizPartner.removeItemListener(this);
         moKeyBranchAddress.removeItemListener(this);
         moKeyCurrency.removeItemListener(this);
         moKeyPaymentType.removeItemListener(this);
-        moKeyModeOfPaymentType.removeItemListener(this);
         moBoolDiscountDocApplying.removeItemListener(this);
         moBoolDiscountDocPercentageApplying.removeItemListener(this);
 
@@ -3245,8 +3388,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             mjButtonAdjustmentForMoney.removeActionListener(this);
             mjButtonAdjustmentForStock.removeActionListener(this);
-            mjButtonAdjustmentDocument.removeActionListener(this);
-            mjButtonShowAdjustedDocument.removeActionListener(this);
+            mjButtonAdjustmentDoc.removeActionListener(this);
+            mjButtonShowAdjustedDoc.removeActionListener(this);
         }
     }
 
@@ -3256,6 +3399,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         miClient.getSession().populateCatalogue(moKeyCurrency, DModConsts.CS_CUR, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyPaymentType, DModConsts.FS_PAY_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyModeOfPaymentType, DModConsts.FS_MOP_TP, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyCfdTaxRegime, DModConsts.CS_TAX_REG, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyEmissionType, DModConsts.TS_EMI_TP, DLibConsts.UNDEFINED, null);
     }
 
@@ -3305,6 +3449,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         reloadCatalogues();
 
         mbIsPosModule = false;
+        mbCheckEdsOnSaveOnlyOnce = true;
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
@@ -3358,47 +3503,59 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         mnOriginalYear = DLibTimeUtils.digestYear(mtOriginalDate)[0];
         moDateDate.setValue(mtOriginalDate);
 
-        moTextImportDeclaration.setValue(moRegistry.getImportDeclaration());            // depends on business partner settings (i.e. country)
-        moDateImportDeclarationDate.setValue(moRegistry.getImportDeclarationDate_n());  // depends on business partner settings (i.e. country)
-
         moKeyBizPartner.setValue(moRegistry.getBizPartnerKey());
-        itemStateKeyBizPartner();
+        itemStateChangedBizPartner();
 
         moKeyBranchAddress.setValue(moRegistry.getBizPartnerBranchAddressKey());
-        itemStateKeyBranchAddress();
+        itemStateChangedBranchAddress();
 
         moKeyCurrency.setValue(moRegistry.getCurrencyKey());
-        itemStateKeyCurrency();
+        itemStateChangedCurrency();
         moDecExchangeRate.setValue(moRegistry.getExchangeRate());
+        
+        moTextCfdConfirmation.setValue(moRegistry.getEdsConfirmation());
 
         moKeyPaymentType.setValue(moRegistry.getPaymentTypeKey());
-        itemStateKeyPaymentType();
+        itemStateChangedPaymentType();
+        moKeyCfdMethodOfPayment.setValue(new int[] { moXmlCatalogCfdMethodOfPayment.getId(moRegistry.getEdsMethodOfPayment()) });
+        moKeyModeOfPaymentType.setValue(new int[] { moRegistry.getFkModeOfPaymentTypeId() });
+        
+        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getEdsUsage()) });
+        moKeyCfdTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getEdsTaxRegime()) });
+                
         moIntCreditDays.setValue(moRegistry.getCreditDays());
         moDateCredit.setValue(moRegistry.getDateCredit());
-        moDateDelivery.setValue(moRegistry.getDateDelivery_n());
-
-        moKeyModeOfPaymentType.setValue(new int[] { moRegistry.getFkModeOfPaymentTypeId() });
-        itemStateKeyModeOfPaymentType();
-
-        moTextPaymentAccount.setValue(moRegistry.getPaymentAccount());
+        computeCreditInfo();
+        
         moTextOrder.setValue(moRegistry.getOrder());
+        moDateDelivery.setValue(moRegistry.getDateDelivery_n());
+        
+        moTextImportDeclaration.setValue(moRegistry.getImportDeclaration());            // depends on business partner settings (i.e. country)
+        moDateImportDeclarationDate.setValue(moRegistry.getImportDeclarationDate_n());  // depends on business partner settings (i.e. country)
 
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
 
         moBoolDiscountDocApplying.setValue(moRegistry.isDiscountDocApplying());
-        itemStateBoolDiscountDocApplying(false);
+        itemStateChangedDiscountDocApplying(false);
 
         moBoolDiscountDocPercentageApplying.setValue(moRegistry.isDiscountDocPercentageApplying());
-        itemStateBoolDiscountDocPercentageApplying(false);
+        itemStateChangedDiscountDocPercentageApplying(false);
         moDecDiscountDocPercentage.setValue(moRegistry.getDiscountDocPercentage());
 
+        jtfCfdUuid.setText(moRegistry.getEdsUuid());
+        jtfCfdType.setText("");
+        jtfCfdDate.setText(moRegistry.getChildEds() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getChildEds().getDocTs()));
         jtfDocType.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_TP, moRegistry.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         jtfDocStatus.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_ST, moRegistry.getDpsStatusKey(), DDbRegistry.FIELD_NAME));
+        jtfCfdRelated.setText("");
         jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moRegistry.getCompanyBranchKey(), DDbRegistry.FIELD_CODE));
         jtfBranchWarehose.setText(moRegistry.getBranchWarehouseKey_n() == null ? "" : (String) miClient.getSession().readField(DModConsts.CU_WAH, moRegistry.getBranchWarehouseKey_n(), DDbRegistry.FIELD_CODE));
         jtfTerminal.setText("" + moRegistry.getTerminal());
+        jtfCfdUuid.setCaretPosition(0);
+        jtfCfdType.setCaretPosition(0);
         jtfDocType.setCaretPosition(0);
         jtfDocStatus.setCaretPosition(0);
+        jtfCfdRelated.setCaretPosition(0);
         jtfOwnBranch.setCaretPosition(0);
         jtfBranchWarehose.setCaretPosition(0);
         jtfTerminal.setCaretPosition(0);
@@ -3507,7 +3664,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         registry.setApproveYear(0);
         registry.setApproveNumber(0);
         registry.setCreditDays(moIntCreditDays.getValue());
-        registry.setPaymentAccount(moTextPaymentAccount.getValue());
+        registry.setPaymentAccount("");
         registry.setImportDeclaration(moTextImportDeclaration.getValue());
         registry.setImportDeclarationDate_n(moDateImportDeclarationDate.getValue());
         registry.setDiscountDocApplying(moBoolDiscountDocApplying.getValue());
@@ -3526,7 +3683,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         registry.setFkDpsStatusId(DModSysConsts.TS_DPS_ST_ISS);
         registry.setFkCurrencyId(moKeyCurrency.getValue()[0]);
         registry.setFkPaymentTypeId(moKeyPaymentType.getValue()[0]);
-        registry.setFkModeOfPaymentTypeId(moKeyModeOfPaymentType.getValue()[0]);
+        registry.setFkModeOfPaymentTypeId(moKeyModeOfPaymentType.getSelectedIndex() <= 0 ? DModSysConsts.FS_MOP_TP_NA : moKeyModeOfPaymentType.getValue()[0]);
         registry.setFkEmissionTypeId(!moKeyEmissionType.isEnabled() ? DModSysConsts.TS_EMI_TP_BPR : moKeyEmissionType.getValue()[0]);
         //registry.setFkOwnerBizPartnerId(?);
         //registry.setFkOwnerBranchId(?);
@@ -3588,10 +3745,19 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             registry.setAuxEdsRequired(false);
         }
         else {
+            registry.setEdsMethodOfPayment(moKeyCfdMethodOfPayment.getSelectedIndex() <= 0 ? "" : moKeyCfdMethodOfPayment.getSelectedItem().getCode());
+            registry.setEdsPaymentConditions(jtfCfdPaymentConditions.getText());
+            registry.setEdsConfirmation(moTextCfdConfirmation.getValue());
+            registry.setEdsTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
+            registry.setEdsUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
+            
             if (moDpsSeriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                  // Create dummy e-document only to verify if it can be processed:
 
-                DTrnEdsUtils.createDpsEds(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId(), "", null);
+                if (mbCheckEdsOnSaveOnlyOnce) {
+                    DTrnEdsUtils.createDpsEds(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId(), "", null);
+                    mbCheckEdsOnSaveOnlyOnce = false;
+                }
             }
 
             // Real e-document will be created in method DDbDps.save():
@@ -3633,7 +3799,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclarationDate.getText()) + "'.");
                 validation.setComponent(moDateImportDeclarationDate);
             }
-            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_OTH, DModSysConsts.FS_MOP_TP_NON_DEF })) {
+            else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moTextImportDeclaration.getValue().length() != 15) {
+                validation.setMessage("La longitud del campo '" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " 15.");
+                validation.setComponent(moTextImportDeclaration);
+            }
+            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_TO_DEF })) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
                 validation.setComponent(moKeyModeOfPaymentType);
             }
@@ -3709,7 +3879,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         switch (type) {
             case DModSysConsts.FLAG_IS_POS:
                 mbIsPosModule = (Boolean) value;
-                processIsPos();
+                computeIsPos();
                 break;
             default:
                 miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -3762,59 +3932,56 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
 
-            if (button == jbBizPartner) {
-                actionBizPartner();
+            if (button == jbBizPartnerPick) {
+                actionPerformedBizPartnerPick();
             }
             else if (button == jbBizPartnerEdit) {
-                actionBizPartnerEdit();
+                actionPerformedBizPartnerEdit();
             }
-            else if (button == jbExchangeRate) {
-                actionExchangeRate();
-            }
-            else if (button == jbPaymentAccount) {
-                actionPaymentAccount();
+            else if (button == jbExchangeRatePick) {
+                actionPerformedExchangeRatePick();
             }
             else if (button == jbFind) {
-                actionFind(null);
+                actionPerformedFind(null);
             }
             else if (button == jbRowClear) {
-                actionRowClear();
+                actionPerformedRowClear();
             }
             else if (button == jbRowAdd) {
-                actionRowAdd();
+                actionPerformedRowAdd();
             }
-            else if (button == jbDiscountDoc) {
-                actionDiscountDoc();
+            else if (button == jbDiscountDocSet) {
+                actionPerformedDiscountDocSet();
             }
-            else if (button == mjButtonLaunchCalculator) {
-                actionLaunchCalculator();
+            else if (button == mjButtonLaunchCalc) {
+                actionPerformedLaunchCalc();
             }
             else if (button == mjButtonEditItem) {
-                actionEditItem();
+                actionPerformedEditItem();
             }
             else if (button == mjButtonShowRowNote) {
-                actionShowNote();
+                actionPerformedShowNote();
             }
             else if (button == mjButtonShowRowLot) {
-                actionShowLot();
+                actionPerformedShowLot();
             }
             else if (button == mjButtonShowRowSerialNumber) {
-                actionShowSerialNumber();
+                actionPerformedShowSerialNumber();
             }
             else if (button == mjButtonShowDependentDocs) {
-                actionShowDependentDocs();
+                actionPerformedShowDependentDocs();
             }
-            else if (button == mjButtonShowAdjustedDocument) {
-                actionShowAdjustedDocument();
+            else if (button == mjButtonShowAdjustedDoc) {
+                actionPerformedShowAdjustedDoc();
             }
             else if (button == mjButtonAdjustmentForMoney) {
-                actionAdjustmentForMoney();
+                actionPerformedAdjustmentForMoney();
             }
             else if (button == mjButtonAdjustmentForStock) {
-                actionAdjustmentForStock();
+                actionPerformedAdjustmentForStock();
             }
-            else if (button == mjButtonAdjustmentDocument) {
-                actionAdjustmentDocument();
+            else if (button == mjButtonAdjustmentDoc) {
+                actionPerformedAdjustmentDoc();
             }
         }
     }
@@ -3830,17 +3997,17 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             JFormattedTextField field = (JFormattedTextField) e.getSource();
 
             if (field == moDateDate.getComponent()) {
-                focusLostDateDate();
+                focusLostDate();
             }
             else if (field == moDateCredit.getComponent()) {
-                focusLostDateCredit();
+                focusLostCredit();
             }
         }
         else if (e.getSource() instanceof DBeanFieldInteger) {
             DBeanFieldInteger field = (DBeanFieldInteger) e.getSource();
 
             if (field == moIntCreditDays) {
-                focusLostDateCredit();
+                focusLostCreditDays();
             }
         }
         else if (e.getSource() instanceof DBeanFieldDecimal) {
@@ -3850,12 +4017,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 computeRowTotal();
             }
             else if (field == moDecRowPriceUnitary) {
-                computeRowTotal();
-            }
-            else if (field == moDecRowDiscountUnitary) {
-                computeRowTotal();
-            }
-            else if (field == moDecRowDiscountRow) {
                 computeRowTotal();
             }
             else if (field == moDecRowSubtotalProv) {
@@ -3875,13 +4036,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 focusLostDiscountDocPercentage();
             }
         }
-        else if (e.getSource() instanceof DBeanFieldText) {
-            DBeanFieldText field = (DBeanFieldText) e.getSource();
-
-            if (field == moTextPaymentAccount) {
-                focusLostPaymentAccount();
-            }
-        }
     }
 
     @Override
@@ -3889,11 +4043,17 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         if (e.getSource() instanceof DBeanFieldBoolean) {
             DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
 
-            if (field == moBoolDiscountDocApplying) {
-                itemStateBoolDiscountDocApplying(true);
+            if (field == moBoolRowNote) {
+                itemStateChangedRowNote();
+            }
+            else if (field == moBoolRowCfdPredial) {
+                itemStateChangedRowPredial();
+            }
+            else if (field == moBoolDiscountDocApplying) {
+                itemStateChangedDiscountDocApplying(true);
             }
             else if (field == moBoolDiscountDocPercentageApplying) {
-                itemStateBoolDiscountDocPercentageApplying(true);
+                itemStateChangedDiscountDocPercentageApplying(true);
             }
         }
         else if (e.getSource() instanceof DBeanFieldKey) {
@@ -3901,19 +4061,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 DBeanFieldKey field = (DBeanFieldKey) e.getSource();
 
                 if (field == moKeyBizPartner) {
-                    itemStateKeyBizPartner();
+                    itemStateChangedBizPartner();
                 }
                 else if (field == moKeyBranchAddress) {
-                    itemStateKeyBranchAddress();
+                    itemStateChangedBranchAddress();
                 }
                 else if (field == moKeyCurrency) {
-                    itemStateKeyCurrency();
+                    itemStateChangedCurrency();
                 }
                 else if (field == moKeyPaymentType) {
-                    itemStateKeyPaymentType();
-                }
-                else if (field == moKeyModeOfPaymentType) {
-                    itemStateKeyModeOfPaymentType();
+                    itemStateChangedPaymentType();
                 }
             }
         }

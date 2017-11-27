@@ -189,7 +189,16 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         return s;
     }
 
-    public String getProcAddress(DGuiSession session, int formatType) {
+    public String composeLocality(DGuiSession session) {
+        String country = (String) session.readField(DModConsts.CS_CTY, new int[] { getActualFkCountryId_n(session) }, DDbRegistry.FIELD_NAME);
+        
+        return msLocality +
+                (msCounty.isEmpty() ? "" : ", " + msCounty) +
+                (msState.isEmpty() ? "" : ", " + msState) +
+                (country.isEmpty() ? "" : ", " + country);
+    }
+    
+    public String composeAddress(DGuiSession session, int formatType) {
         String address = "";
         String country = "";
 
@@ -218,6 +227,8 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
 
         return address;
     }
+    
+    
 
     @Override
     public void setPrimaryKey(int[] pk) {

@@ -25,4 +25,19 @@ public final class DTrnImportDeclaration {
 
     public String getNumber() { return msNumber; }
     public Date getDate() { return mtDate; }
+    
+    /**
+     * Gets number formatted according to this:
+     * index:  012345678901234
+     * number: 104738078003832
+     * number formatted:
+     * 10  47  3807  8003832
+    */
+    public String getNumberFormatted() {
+        return msNumber.length() != 15 ? "" : 
+                msNumber.substring(0, 2) + "  " +
+                msNumber.substring(2, 4) + "  " +
+                msNumber.substring(4, 8) + "  " +
+                msNumber.substring(8, 15);
+    }
 }

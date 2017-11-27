@@ -51,6 +51,7 @@ public class DViewItemGenus extends DGridPaneView {
                 "ict.name, " +
                 "icl.name, " +
                 "itp.name, " +
+                "v.cfd_itm_key, " +
                 "v.b_lin, " +
                 "v.b_ing, " +
                 "v.b_buk, " +
@@ -92,7 +93,7 @@ public class DViewItemGenus extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[22];
+        DGridColumnView[] columns = new DGridColumnView[23];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
@@ -101,6 +102,7 @@ public class DViewItemGenus extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "ict.name", "Categoría ítems");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "icl.name", "Clase ítems");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "itp.name", "Tipo ítems");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.cfd_itm_key", "Clave ProdServ");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_ing", "Ingrediente");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_buk", "A granel");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_inv", "Inventariable");

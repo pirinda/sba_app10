@@ -113,6 +113,10 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     protected Date mtTsUserUpdate;
     */
 
+    protected String msEdsItemKey;
+    protected String msEdsUnitKey;
+    protected String msEdsPredial;
+    
     protected String msDbUnitCode;
     protected Vector<int[]> mvDbDependentDpsRowKeys;
 
@@ -316,10 +320,17 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public void setEdsItemKey(String s) { msEdsItemKey = s; }
+    public void setEdsUnitKey(String s) { msEdsUnitKey = s; }
+    public void setEdsPredial(String s) { msEdsPredial = s; }
+    
+    public String getEdsItemKey() { return msEdsItemKey; }
+    public String getEdsUnitKey() { return msEdsUnitKey; }
+    public String getEdsPredial() { return msEdsPredial; }
+    
     public void setDbUnitCode(String s) { msDbUnitCode = s; }
 
     public String getDbUnitCode() { return msDbUnitCode; }
-
     public Vector<int[]> getDbDependentDpsRowKeys() { return mvDbDependentDpsRowKeys; }
 
     public Vector<DDbDpsRowNote> getChildRowNotes() { return mvChildRowNotes; }
@@ -439,6 +450,10 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
+        msEdsItemKey = "";
+        msEdsUnitKey = "";
+        msEdsPredial = "";
+        
         msDbUnitCode = "";
         mvDbDependentDpsRowKeys.clear();
 
@@ -582,14 +597,14 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
             statement = session.getStatement().getConnection().createStatement();
 
+            msDbUnitCode = (String) session.readField(DModConsts.IU_UNT, new int[] { mnFkRowUnitId }, DDbRegistry.FIELD_CODE);
+            
             msSql = "SELECT id_dps, id_row FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_ROW) + " " +
                     "WHERE b_del = 0 AND fk_src_dps_n = " + mnPkDpsId + " AND fk_src_row_n = " + mnPkRowId + " ";
             resultSet = statement.executeQuery(msSql);
             while (resultSet.next()) {
                 mvDbDependentDpsRowKeys.add(new int[] { resultSet.getInt(1), resultSet.getInt(2) });
             }
-
-            msDbUnitCode = (String) session.readField(DModConsts.IU_UNT, new int[] { mnFkRowUnitId }, DDbRegistry.FIELD_CODE);
 
             // Read aswell child registries:
 
@@ -928,6 +943,10 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
+        registry.setEdsItemKey(this.getEdsItemKey());
+        registry.setEdsUnitKey(this.getEdsUnitKey());
+        registry.setEdsPredial(this.getEdsPredial());
+        
         registry.setDbUnitCode(this.getDbUnitCode());
 
         for (int[] key : mvDbDependentDpsRowKeys) {
@@ -1002,25 +1021,25 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                 value = mnSortingPos;
                 break;
             case 1:
-                value = mdQuantity;
-                break;
-            case 2:
-                value = msDbUnitCode;
-                break;
-            case 3:
                 value = msCode;
                 break;
-            case 4:
+            case 2:
                 value = msName;
                 break;
+            case 3:
+                value = msEdsItemKey;
+                break;
+            case 4:
+                value = mdQuantity;
+                break;
             case 5:
-                value = mdPriceUnitaryCy;
+                value = msDbUnitCode;
                 break;
             case 6:
-                value = mdDiscountUnitaryCy;
+                value = msEdsUnitKey;
                 break;
             case 7:
-                value = mdDiscountRowCy;
+                value = mdPriceUnitaryCy;
                 break;
             case 8:
                 value = mdSubtotalProvCy_r;

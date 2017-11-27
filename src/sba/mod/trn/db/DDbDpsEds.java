@@ -23,7 +23,7 @@ import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbConfigBranch;
-import static sba.mod.trn.db.DTrnEdsUtils.digestExtAddenda;
+import static sba.mod.trn.db.DTrnEdsUtils.extractExtAddenda;
 
 /**
  *
@@ -52,7 +52,7 @@ public class DDbDpsEds extends DDbRegistry {
     protected int mnFkUserAnnulId;
     protected Date mtTsUserIssue;
     protected Date mtTsUserAnnul;
-
+    
     protected boolean mbAuxIssued;
     protected boolean mbAuxAnnulled;
     protected boolean mbAuxRegenerateXmlOnSave;
@@ -62,6 +62,14 @@ public class DDbDpsEds extends DDbRegistry {
         super(DModConsts.T_DPS_EDS);
         initRegistry();
     }
+    
+    /*
+     * Private methods:
+     */
+    
+    /*
+     * Public methods:
+     */
 
     public void setPkDpsId(int n) { mnPkDpsId = n; }
     public void setCertificateNumber(String s) { msCertificateNumber = s; }
@@ -152,7 +160,7 @@ public class DDbDpsEds extends DDbRegistry {
         mnFkUserAnnulId = 0;
         mtTsUserIssue = null;
         mtTsUserAnnul = null;
-
+        
         mbAuxIssued = false;
         mbAuxAnnulled = false;
         mbAuxRegenerateXmlOnSave = false;
@@ -247,11 +255,9 @@ public class DDbDpsEds extends DDbRegistry {
         }
 
         if (mbAuxRegenerateXmlOnSave) {
-            // XML must be regenerated, so embed addenda:
+            // XML must be regenerated, so embeed addenda:
             
             DElementExtAddenda extAddenda = null;
-            //cfd.ver2.DElementComprobante comprobante2 = null; // not supported yet
-            cfd.ver3.DElementComprobante comprobante3 = null;
             
             dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
             
@@ -259,23 +265,23 @@ public class DDbDpsEds extends DDbRegistry {
                 case DModSysConsts.TS_XML_TP_CFD:
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
-                case DModSysConsts.TS_XML_TP_CFDI:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
                     // Create EDS:
-                    comprobante3 = DCfdUtils.getCfdi(msDocXml);
-                    DTrnEdsUtils.configureCfdi(session, comprobante3);
+                    cfd.ver32.DElementComprobante comprobante32 = DCfdUtils.getCfdi32(msDocXml);
+                    DTrnEdsUtils.configureCfdi32(session, comprobante32);
 
                     // Append to EDS the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = digestExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
                         if (extAddenda != null) {
-                            cfd.ver3.DElementAddenda addenda = null;
+                            cfd.ver32.DElementAddenda addenda = null;
                             
-                            if (comprobante3.getEltOpcAddenda() != null) {
-                                addenda = comprobante3.getEltOpcAddenda();
+                            if (comprobante32.getEltOpcAddenda() != null) {
+                                addenda = comprobante32.getEltOpcAddenda();
                             }
                             else {
-                                addenda = new cfd.ver3.DElementAddenda();
-                                comprobante3.setEltOpcAddenda(addenda);
+                                addenda = new cfd.ver32.DElementAddenda();
+                                comprobante32.setEltOpcAddenda(addenda);
                             }
                             
                             for (DElement element : addenda.getElements()) {
@@ -289,7 +295,40 @@ public class DDbDpsEds extends DDbRegistry {
                         }
                     }
                     
-                    msDocXml = DCfdConsts.XML_HEADER + comprobante3.getElementForXml();
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante32.getElementForXml();
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    // Create EDS:
+                    cfd.ver33.DElementComprobante comprobante33 = DCfdUtils.getCfdi33(msDocXml);
+                    DTrnEdsUtils.configureCfdi33(session, comprobante33);
+
+                    // Append to EDS the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver33.DElementAddenda addenda = null;
+                            
+                            if (comprobante33.getEltOpcAddenda() != null) {
+                                addenda = comprobante33.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver33.DElementAddenda();
+                                comprobante33.setEltOpcAddenda(addenda);
+                            }
+                            
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+                            
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+                    
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante33.getElementForXml();
                     break;
 
                 default:

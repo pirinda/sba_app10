@@ -365,8 +365,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
                 break;
             case DModConsts.CS_TAX_REG:
                 settings = new DGuiCatalogueSettings("Régimen fiscal", 1);
-                settings.setCodeApplying(true);
-                sql = "SELECT id_tax_reg AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
+                sql = "SELECT id_tax_reg AS " + DDbConsts.FIELD_ID + "1, CONCAT(code, ' - ', name) AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND " +
                         "(id_tax_reg = " + DModSysConsts.CS_TAX_REG_NA + " OR " + (((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId() == DModSysConsts.BS_IDY_TP_PER ? "b_per" : "b_org") + ") " +
                         "ORDER BY sort ";
