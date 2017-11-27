@@ -55,7 +55,7 @@ public class DViewItem extends DGridPaneView {
                 "cmp.name, " +
                 "dep.name, " +
                 "unt.code, " +
-                "tr.name, " +
+                "CONCAT(tr.code, ' - ', tr.name) AS _tax_reg, " +
                 "bar.bar, " +
                 "v.cfd_itm_key, " +
                 "v.b_buk, " +
@@ -128,7 +128,7 @@ public class DViewItem extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_fre_dsc", "Sin descuentos");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_fre_cmm", "Sin comisiones");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "bar.bar", "Código barras");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tr.name", "Régimen fiscal");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_tax_reg", "Régimen fiscal");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

@@ -397,12 +397,12 @@ public abstract class DTrnEmissionUtils {
                                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_32:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
                                 printed = true;
                                 break;
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_33:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, new DPrtDps(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
                                 printed = true;
                                 break;
                                 

@@ -2015,6 +2015,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
+            moRegistry.setFkTaxRegimeId(DModSysConsts.CS_TAX_REG_NA);
             jtfRegistryKey.setText("");
         }
         else {

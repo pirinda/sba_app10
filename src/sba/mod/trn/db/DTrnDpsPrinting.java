@@ -33,17 +33,17 @@ import sba.mod.cfg.db.DDbSysCurrency;
  *
  * @author Sergio Flores
  */
-public class DPrtDps {
+public class DTrnDpsPrinting {
 
     protected DGuiSession moSession;
     protected DDbDps moDps;
 
-    public DPrtDps(DGuiSession session, int[] dpsKey) {
+    public DTrnDpsPrinting(DGuiSession session, int[] dpsKey) {
         moSession = session;
         moDps = (DDbDps) moSession.readRegistry(DModConsts.T_DPS, dpsKey);
     }
 
-    public DPrtDps(DGuiSession session, DDbDps dps) {
+    public DTrnDpsPrinting(DGuiSession session, DDbDps dps) {
         moSession = session;
         moDps = dps;
     }
@@ -324,11 +324,11 @@ public class DPrtDps {
         hashMap.put("sEmiDomReferencia", addressEmi.getAddress3());
         hashMap.put("sEmiDomMunicipio", addressEmi.getCounty());
         hashMap.put("sEmiDomEstado", addressEmi.getState());
-        hashMap.put("sEmiDomPais", (String) moSession.readField(DModConsts.CS_CTY, new int[] { addressEmi.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME));
+        hashMap.put("sEmiDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressEmi.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
         hashMap.put("sEmiDomCodigoPostal", addressEmi.getZipCode());
         hashMap.put("sEmiDomTels", addressEmi.getTelecommDevices());
         hashMap.put("sEmiDomEmails", addressEmi.getTelecommElectronics());
-        sLugarExpedicion = addressEmi.composeLocality(moSession);
+        sLugarExpedicion = addressEmi.composeLocality(moSession).toUpperCase();
         
         // Receptor:
         
@@ -350,7 +350,7 @@ public class DPrtDps {
         hashMap.put("sRecDomReferencia", addressRec.getAddress3());
         hashMap.put("sRecDomMunicipio", addressRec.getCounty());
         hashMap.put("sRecDomEstado", addressRec.getState());
-        hashMap.put("sRecDomPais", (String) moSession.readField(DModConsts.CS_CTY, new int[] { addressRec.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME));
+        hashMap.put("sRecDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressRec.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
         hashMap.put("sRecDomCodigoPostal", addressRec.getZipCode());
         hashMap.put("sRecDomTels", addressRec.getTelecommDevices());
         hashMap.put("sRecDomEmails", addressRec.getTelecommElectronics());

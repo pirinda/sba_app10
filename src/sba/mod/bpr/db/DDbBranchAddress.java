@@ -193,7 +193,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         String country = (String) session.readField(DModConsts.CS_CTY, new int[] { getActualFkCountryId_n(session) }, DDbRegistry.FIELD_NAME);
         
         return msLocality +
-                (msCounty.isEmpty() ? "" : ", " + msCounty) +
+                (msCounty.isEmpty() || msCounty.compareTo(msLocality) == 0 ? "" : ", " + msCounty) +
                 (msState.isEmpty() ? "" : ", " + msState) +
                 (country.isEmpty() ? "" : ", " + country);
     }

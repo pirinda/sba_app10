@@ -1912,11 +1912,11 @@ public class DDbDps extends DDbRegistryUser {
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_32:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_32, new DPrtDps(session, this).cratePrintMapCfdi32(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_32, new DTrnDpsPrinting(session, this).cratePrintMapCfdi32(), fileName);
                     break;
 
                 case DModSysConsts.TS_XML_TP_CFDI_33:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, new DPrtDps(session, this).cratePrintMapCfdi33(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, new DTrnDpsPrinting(session, this).cratePrintMapCfdi33(), fileName);
                     break;
 
                 default:

@@ -336,13 +336,15 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
             case DModConsts.CS_CTY:
                 settings = new DGuiCatalogueSettings("País", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_cty AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
+                settings.setCodeVisible(false);
+                sql = "SELECT id_cty AS " + DDbConsts.FIELD_ID + "1, CONCAT(code, ' - ', name) AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case DModConsts.CS_CUR:
                 settings = new DGuiCatalogueSettings("Moneda", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_cur AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
+                settings.setCodeVisible(false);
+                sql = "SELECT id_cur AS " + DDbConsts.FIELD_ID + "1, CONCAT(code, ' - ', name) AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case DModConsts.CS_CUR_DEN:
