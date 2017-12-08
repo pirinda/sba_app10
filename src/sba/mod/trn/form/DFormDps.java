@@ -1355,7 +1355,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE + " concepto");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_S, DGridConsts.COL_TITLE_NAME + " concepto");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "Clave ProdServ");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_QTY, "Cantidad");
+                columns[col] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_QTY, "Cantidad");
                 columns[col++].setCellRenderer(new DGridCellRendererNumber(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getDecimalFormatQuantity()));
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "Clave Unidad");
