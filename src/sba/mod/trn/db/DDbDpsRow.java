@@ -20,6 +20,7 @@ import sba.lib.grid.DGridRow;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.itm.db.DDbItem;
 
 /**
  *
@@ -31,6 +32,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     protected int mnPkRowId;
     protected String msCode;
     protected String msName;
+    protected String msPredial;
     protected int mnSortingPos;
     protected boolean mbDiscountDocApplying;
     protected boolean mbDiscountUnitaryPercentageApplying;
@@ -115,9 +117,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
     protected String msEdsItemKey;
     protected String msEdsUnitKey;
-    protected String msEdsPredial;
     
     protected String msDbUnitCode;
+    protected int mnDbTaxRegimeId;
     protected Vector<int[]> mvDbDependentDpsRowKeys;
 
     protected Vector<DDbDpsRowNote> mvChildRowNotes;
@@ -160,6 +162,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public void setPkRowId(int n) { mnPkRowId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setPredial(String s) { msPredial = s; }
     public void setSortingPos(int n) { mnSortingPos = n; }
     public void setDiscountDocApplying(boolean b) { mbDiscountDocApplying = b; }
     public void setDiscountUnitaryPercentageApplying(boolean b) { mbDiscountUnitaryPercentageApplying = b; }
@@ -242,6 +245,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public int getPkRowId() { return mnPkRowId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public String getPredial() { return msPredial; }
     public int getSortingPos() { return mnSortingPos; }
     public boolean isDiscountDocApplying() { return mbDiscountDocApplying; }
     public boolean isDiscountUnitaryPercentageApplying() { return mbDiscountUnitaryPercentageApplying; }
@@ -322,15 +326,15 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
     public void setEdsItemKey(String s) { msEdsItemKey = s; }
     public void setEdsUnitKey(String s) { msEdsUnitKey = s; }
-    public void setEdsPredial(String s) { msEdsPredial = s; }
     
     public String getEdsItemKey() { return msEdsItemKey; }
     public String getEdsUnitKey() { return msEdsUnitKey; }
-    public String getEdsPredial() { return msEdsPredial; }
     
     public void setDbUnitCode(String s) { msDbUnitCode = s; }
+    public void setDbTaxRegimeId(int n) { mnDbTaxRegimeId = n; }
 
     public String getDbUnitCode() { return msDbUnitCode; }
+    public int getDbTaxRegimeId() { return mnDbTaxRegimeId; }
     public Vector<int[]> getDbDependentDpsRowKeys() { return mvDbDependentDpsRowKeys; }
 
     public Vector<DDbDpsRowNote> getChildRowNotes() { return mvChildRowNotes; }
@@ -372,6 +376,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         mnPkRowId = 0;
         msCode = "";
         msName = "";
+        msPredial = "";
         mnSortingPos = 0;
         mbDiscountDocApplying = false;
         mbDiscountUnitaryPercentageApplying = false;
@@ -452,9 +457,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
         msEdsItemKey = "";
         msEdsUnitKey = "";
-        msEdsPredial = "";
         
         msDbUnitCode = "";
+        mnDbTaxRegimeId = 0;
         mvDbDependentDpsRowKeys.clear();
 
         mvChildRowNotes.clear();
@@ -515,6 +520,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
             mnPkRowId = resultSet.getInt("id_row");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            msPredial = resultSet.getString("pred");
             mnSortingPos = resultSet.getInt("sort");
             mbDiscountDocApplying = resultSet.getBoolean("b_dsc_doc");
             mbDiscountUnitaryPercentageApplying = resultSet.getBoolean("b_dsc_unt_per");
@@ -598,6 +604,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
             statement = session.getStatement().getConnection().createStatement();
 
             msDbUnitCode = (String) session.readField(DModConsts.IU_UNT, new int[] { mnFkRowUnitId }, DDbRegistry.FIELD_CODE);
+            mnDbTaxRegimeId = ((DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { mnFkRowItemId })).getFkTaxRegimeId();
             
             msSql = "SELECT id_dps, id_row FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_ROW) + " " +
                     "WHERE b_del = 0 AND fk_src_dps_n = " + mnPkDpsId + " AND fk_src_row_n = " + mnPkRowId + " ";
@@ -668,6 +675,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                     mnPkRowId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
+                    "'" + msPredial + "', " + 
                     mnSortingPos + ", " +
                     (mbDiscountDocApplying ? 1 : 0) + ", " +
                     (mbDiscountUnitaryPercentageApplying ? 1 : 0) + ", " +
@@ -757,6 +765,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                     */
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "pred = '" + msPredial + "', " +
                     "sort = " + mnSortingPos + ", " +
                     "b_dsc_doc = " + (mbDiscountDocApplying ? 1 : 0) + ", " +
                     "b_dsc_unt_per = " + (mbDiscountUnitaryPercentageApplying ? 1 : 0) + ", " +
@@ -865,6 +874,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         registry.setPkRowId(this.getPkRowId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setPredial(this.getPredial());
         registry.setSortingPos(this.getSortingPos());
         registry.setDiscountDocApplying(this.isDiscountDocApplying());
         registry.setDiscountUnitaryPercentageApplying(this.isDiscountUnitaryPercentageApplying());
@@ -945,9 +955,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
         registry.setEdsItemKey(this.getEdsItemKey());
         registry.setEdsUnitKey(this.getEdsUnitKey());
-        registry.setEdsPredial(this.getEdsPredial());
         
         registry.setDbUnitCode(this.getDbUnitCode());
+        registry.setDbTaxRegimeId(this.getDbTaxRegimeId());
 
         for (int[] key : mvDbDependentDpsRowKeys) {
             registry.getDbDependentDpsRowKeys().add(key);
@@ -1061,6 +1071,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                 break;
             case 14:
                 value = mdTotalCy_r;
+                break;
+            case 15:
+                value = msPredial;
                 break;
             default:
         }

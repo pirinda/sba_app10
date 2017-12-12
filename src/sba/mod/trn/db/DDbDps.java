@@ -594,7 +594,7 @@ public class DDbDps extends DDbRegistryUser {
                         if (DXmlUtils.hasChildElement(concepto, "cfdi:CuentaPredial")) {
                             Vector<Node> cuentaPredial = DXmlUtils.extractChildElements(node, "cfdi:CuentaPredial");
                             namedNodeMap = cuentaPredial.get(0).getAttributes();
-                            dpsRow.setEdsPredial(DXmlUtils.extractAttributeValue(namedNodeMap, "Numero", true));
+                            dpsRow.setPredial(DXmlUtils.extractAttributeValue(namedNodeMap, "Numero", true));
                         }
                     }
                     

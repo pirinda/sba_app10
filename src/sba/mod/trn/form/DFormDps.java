@@ -1349,7 +1349,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             @Override
             public void createGridColumns() {
                 int col = 0;
-                DGridColumnForm[] columns = new DGridColumnForm[15];
+                DGridColumnForm[] columns = new DGridColumnForm[16];
 
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_1B, "#");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE + " concepto");
@@ -1368,6 +1368,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Imptos. tras. $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Imptos. rets. $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Total $ M");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Predial");
 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);
@@ -2330,9 +2331,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         dpsRow.setEdsItemKey(moItem.getActualCfdItemKey());
         dpsRow.setEdsUnitKey(moUnit.getCfdUnitKey());
-        dpsRow.setEdsPredial(moTextRowCfdPredial.getText());
+        dpsRow.setPredial(moTextRowCfdPredial.getText());
         
         dpsRow.setDbUnitCode(moUnit.getCode());
+        dpsRow.setDbTaxRegimeId(moItem.getFkTaxRegimeId());
 
         return dpsRow;
     }
@@ -3848,6 +3850,20 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     if (validation.isValid()) {
                         if (mnNewDpsNumber != moIntNumber.getValue()) {
                             moIntNumber.setValue(mnNewDpsNumber);
+                        }
+                    }
+                }
+                
+                // Validate tax regime in sales documents:
+
+                if (validation.isValid() && mbIsDocument && mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL) {
+                    for (DGridRow row : moGridDpsRows.getModel().getGridRows()) {
+                        DDbDpsRow dpsRow = (DDbDpsRow) row;
+                        if (dpsRow.getDbTaxRegimeId() != DModSysConsts.CS_TAX_REG_NA && dpsRow.getDbTaxRegimeId() != moKeyCfdTaxRegime.getValue()[0]) {
+                            validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moKeyCfdTaxRegime.getFieldName() + "'" + 
+                                    DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + ((String) miClient.getSession().readField(DModConsts.CS_TAX_REG, new int[] { dpsRow.getDbTaxRegimeId() }, DDbRegistry.FIELD_CODE))  + "'.");
+                            validation.setComponent(moKeyCfdTaxRegime);
+                            break;
                         }
                     }
                 }

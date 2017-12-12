@@ -89,7 +89,7 @@ public abstract class DTrnEdsUtils {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps, final cfd.ver32.DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps, final cfd.ver3.DTimbreFiscal timbreFiscal_n) throws Exception {
         int i = 0;
         int nPagos = 1;
         int nImptoTipo = 0;
@@ -522,10 +522,10 @@ public abstract class DTrnEdsUtils {
             cfd.ver32.DElementComplemento complemento = new cfd.ver32.DElementComplemento();
             cfd.ver32.DElementTimbreFiscalDigital timbreFiscalDigital = new cfd.ver32.DElementTimbreFiscalDigital();
 
-            //timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());   // by default version is "1.0"
-            timbreFiscalDigital.getAttUuid().setString(timbreFiscal_n.getUuid());
+            timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());
+            timbreFiscalDigital.getAttUUID().setString(timbreFiscal_n.getUuid());
             timbreFiscalDigital.getAttFechaTimbrado().setString(timbreFiscal_n.getFechaTimbrado());
-            timbreFiscalDigital.getAttSelloCfd().setString(timbreFiscal_n.getSelloCfd());
+            timbreFiscalDigital.getAttSelloCFD().setString(timbreFiscal_n.getSelloCfd());
             timbreFiscalDigital.getAttNoCertificadoSAT().setString(timbreFiscal_n.getNoCertificadoSat());
             timbreFiscalDigital.getAttSelloSAT().setString(timbreFiscal_n.getSelloSat());
 
@@ -596,7 +596,7 @@ public abstract class DTrnEdsUtils {
         return comprobante;
     }
     
-    public static cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DDbDps dps, final cfd.ver32.DTimbreFiscal timbreFiscal_n, final DGuiEdsSignature signature) throws Exception {
+    public static cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DDbDps dps, final cfd.ver3.DTimbreFiscal timbreFiscal_n, final DGuiEdsSignature signature) throws Exception {
         int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
         int decsTax = 6;
         Date tDate = null;
@@ -914,6 +914,16 @@ public abstract class DTrnEdsUtils {
                     }
                 }
 
+                // "CuentaPredial" child node:
+                
+                if (!dpsRow.getPredial().isEmpty()) {
+                    cfd.ver33.DElementConceptoCuentaPredial cuentaPredial = new cfd.ver33.DElementConceptoCuentaPredial();
+                    
+                    cuentaPredial.getAttNumero().setString(dpsRow.getPredial());
+                    
+                    concepto.setEltOpcConceptoCuentaPredial(cuentaPredial);
+                }
+
                 comprobante.getEltConceptos().getEltConceptos().add(concepto);
             }
         }
@@ -981,13 +991,14 @@ public abstract class DTrnEdsUtils {
             cfd.ver33.DElementComplemento complemento = new cfd.ver33.DElementComplemento();
             cfd.ver33.DElementTimbreFiscalDigital timbreFiscalDigital = new cfd.ver33.DElementTimbreFiscalDigital();
 
-            //timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());   // by default version is "1.0"
-            timbreFiscalDigital.getAttUuid().setString(timbreFiscal_n.getUuid());
+            timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());
+            timbreFiscalDigital.getAttUUID().setString(timbreFiscal_n.getUuid());
             timbreFiscalDigital.getAttFechaTimbrado().setString(timbreFiscal_n.getFechaTimbrado());
-            timbreFiscalDigital.getAttSelloCfd().setString(timbreFiscal_n.getSelloCfd());
+            timbreFiscalDigital.getAttRfcProvCertif().setString(timbreFiscal_n.getRfcProdCertif());
+            timbreFiscalDigital.getAttLeyenda().setString(timbreFiscal_n.getLeyenda());
+            timbreFiscalDigital.getAttSelloCFD().setString(timbreFiscal_n.getSelloCfd());
             timbreFiscalDigital.getAttNoCertificadoSAT().setString(timbreFiscal_n.getNoCertificadoSat());
             timbreFiscalDigital.getAttSelloSAT().setString(timbreFiscal_n.getSelloSat());
-            //timbreFiscalDigital.getAttRfcProvCertif().setString(timbreFiscal_n.get());
 
             complemento.getElements().add(timbreFiscalDigital);
 
@@ -1147,7 +1158,7 @@ public abstract class DTrnEdsUtils {
      * @return
      * @throws Exception 
      */
-    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType, final String xmlRaw, final cfd.ver32.DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType, final String xmlRaw, final cfd.ver3.DTimbreFiscal timbreFiscal_n) throws Exception {
         int xmlStatus = DLibConsts.UNDEFINED;
         int userIssuedId = DLibConsts.UNDEFINED;
         String textToSign;
@@ -1293,7 +1304,7 @@ public abstract class DTrnEdsUtils {
         Node node = null;
         Node nodeChildTimbreFiscal = null;
         NamedNodeMap namedNodeMapTimbreFiscal = null;
-        cfd.ver32.DTimbreFiscal timbreFiscal = null;
+        cfd.ver3.DTimbreFiscal timbreFiscal = null;
         DDbConfigBranch configBranch = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDpsEds eds = null;
@@ -1352,6 +1363,8 @@ public abstract class DTrnEdsUtils {
                         
                         if (((DDbConfigCompany) session.getConfigCompany()).isDevelopment()) {
                             // Development environment:
+                            
+                            // WARNING: Works only with CFDI 3.2!
 
                             com.wscliente.WSForcogsaService fcgService = null;
                             com.wscliente.WSForcogsa fcgPort = null;
@@ -1383,13 +1396,47 @@ public abstract class DTrnEdsUtils {
                         }
                         else {
                             // Production environment:
-
+                            
+                            /*
+                            // This commented source-code block works only with CFDI 3.2!
                             forsedi.timbrado.WSForcogsaService fcgService = null;
                             forsedi.timbrado.WSForcogsa fcgPort = null;
                             forsedi.timbrado.WsAutenticarResponse autenticarResponse = null;
                             forsedi.timbrado.WsTimbradoResponse timbradoResponse = null;
 
                             fcgService = new forsedi.timbrado.WSForcogsaService();
+                            fcgPort = fcgService.getWSForcogsaPort();
+
+                            // Web Service Autentication:
+
+                            autenticarResponse = fcgPort.autenticar(edsName, edsPassword);
+
+                            // Web service request:
+
+                            timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+
+                            // Process response:
+
+                            if (timbradoResponse.getMensaje() != null) {
+                                xsr.delete(session);    // delete request log
+
+                                message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
+
+                                System.err.println(message);
+                                throw new Exception(message);
+                            }
+
+                            cfdi = timbradoResponse.getCfdi();
+                            */
+                            
+                            // NOTE: Works only with CFDI 3.3!
+
+                            wservicios.WSForcogsaService fcgService = null;
+                            wservicios.WSForcogsa fcgPort = null;
+                            wservicios.WsAutenticarResponse autenticarResponse = null;
+                            wservicios.WsTimbradoResponse timbradoResponse = null;
+
+                            fcgService = new wservicios.WSForcogsaService();
                             fcgPort = fcgService.getWSForcogsaPort();
 
                             // Web Service Autentication:
@@ -1517,7 +1564,7 @@ public abstract class DTrnEdsUtils {
             nodeList = doc.getElementsByTagName("cfdi:Complemento");
 
             if (nodeList == null) {
-                throw new Exception("XML element '" + "cfdi:Complemento" + "' not found!");
+                throw new Exception("XML element 'cfdi:Complemento' not found!");
             }
             else {
                 node = nodeList.item(0);
@@ -1526,7 +1573,7 @@ public abstract class DTrnEdsUtils {
             nodeList = node.getChildNodes();
 
             if (nodeList == null) {
-                throw new Exception("XML element '" + "tfd:TimbreFiscalDigital" + "' does not have child elements!");
+                throw new Exception("XML element 'cfdi:Complemento' does not have child elements!");
             }
             else {
                 for (int i = 0; i < nodeList.getLength(); i++) {
@@ -1536,29 +1583,67 @@ public abstract class DTrnEdsUtils {
                     }
                 }
             }
-
+            
             // Preserve signed XML into EDS:
 
+            timbreFiscal = new cfd.ver3.DTimbreFiscal();
             namedNodeMapTimbreFiscal = nodeChildTimbreFiscal.getAttributes();
-
-            timbreFiscal = new cfd.ver32.DTimbreFiscal();
-
-            node = namedNodeMapTimbreFiscal.getNamedItem("UUID");
-            timbreFiscal.setUuid(node.getNodeValue());
-
-            node = namedNodeMapTimbreFiscal.getNamedItem("FechaTimbrado");
-            timbreFiscal.setFechaTimbrado(node.getNodeValue());
-
-            node = namedNodeMapTimbreFiscal.getNamedItem("selloCFD");
-            timbreFiscal.setSelloCfd(node.getNodeValue());
-
-            node = namedNodeMapTimbreFiscal.getNamedItem("noCertificadoSAT");
-            timbreFiscal.setNoCertificadoSat(node.getNodeValue());
-
-            node = namedNodeMapTimbreFiscal.getNamedItem("selloSAT");
-            timbreFiscal.setSelloSat(node.getNodeValue());
             
-            timbreFiscal.setPacId(xmlSignatureProviderId);
+            switch (dps.getChildEds().getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    node = namedNodeMapTimbreFiscal.getNamedItem("Version");
+                    timbreFiscal.setVersion(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("UUID");
+                    timbreFiscal.setUuid(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("FechaTimbrado");
+                    timbreFiscal.setFechaTimbrado(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("selloCFD");
+                    timbreFiscal.setSelloCfd(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("noCertificadoSAT");
+                    timbreFiscal.setNoCertificadoSat(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("selloSAT");
+                    timbreFiscal.setSelloSat(node.getNodeValue());
+
+                    timbreFiscal.setPacId(xmlSignatureProviderId);
+                    break;
+                    
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    node = namedNodeMapTimbreFiscal.getNamedItem("Version");
+                    timbreFiscal.setVersion(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("UUID");
+                    timbreFiscal.setUuid(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("FechaTimbrado");
+                    timbreFiscal.setFechaTimbrado(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("RfcProvCertif");
+                    timbreFiscal.setRfcProdCertif(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("Leyenda");
+                    if (node != null) {
+                        timbreFiscal.setLeyenda(node.getNodeValue());
+                    }
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("SelloCFD");
+                    timbreFiscal.setSelloCfd(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("NoCertificadoSAT");
+                    timbreFiscal.setNoCertificadoSat(node.getNodeValue());
+
+                    node = namedNodeMapTimbreFiscal.getNamedItem("SelloSAT");
+                    timbreFiscal.setSelloSat(node.getNodeValue());
+
+                    timbreFiscal.setPacId(xmlSignatureProviderId);
+                    break;
+                    
+                default:
+            }
 
             eds = createDpsEds(session, dps, dps.getChildEds().getFkXmlTypeId(), cfdi, timbreFiscal);
 
