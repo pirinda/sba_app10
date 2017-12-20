@@ -126,7 +126,7 @@ public class DDbDps extends DDbRegistryUser {
 
     protected String msEdsUuid;
     protected String msEdsMethodOfPayment;
-    protected String msEdsPaymentConditions;
+    protected String msEdsPaymentTerms;
     protected String msEdsConfirmation;
     protected String msEdsTaxRegime;
     protected String msEdsUsage;
@@ -519,7 +519,7 @@ public class DDbDps extends DDbRegistryUser {
          */
 
         if ((mbAuxEdsRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildEds != null)) {
-            moChildEds = DTrnEdsUtils.createDpsEds(session, this, mbAuxEdsRequired ? mnAuxXmlTypeId : moChildEds.getFkXmlTypeId(), "", null);
+            moChildEds = DTrnEdsUtils.createDpsEds(session, this, mbAuxEdsRequired ? mnAuxXmlTypeId : moChildEds.getFkXmlTypeId());
             save = true;
         }
         else if (!mbAuxEdsRequired && mnAuxXmlTypeId == DModSysConsts.TS_XML_TP_NA) {
@@ -549,21 +549,21 @@ public class DDbDps extends DDbRegistryUser {
 
     private void readEds() throws Exception {
         if (moChildEds != null) {
-            Document doc = DXmlUtils.parseDocument(moChildEds.getDocXml());
-            Node node = null;
-            NamedNodeMap namedNodeMap = null;
-            
             switch (moChildEds.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFD:
                 case DModSysConsts.TS_XML_TP_CFDI_32:
                     break;
                     
                 case DModSysConsts.TS_XML_TP_CFDI_33:
+                    Node node;
+                    NamedNodeMap namedNodeMap;
+                    Document doc = DXmlUtils.parseDocument(moChildEds.getSuitableDocXml());
+                    
                     // comprobante:
                     node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
                     namedNodeMap = node.getAttributes();
                     msEdsMethodOfPayment = DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true);
-                    msEdsPaymentConditions = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
+                    msEdsPaymentTerms = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
                     msEdsConfirmation = DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false);
 
                     // emisor:
@@ -592,15 +592,16 @@ public class DDbDps extends DDbRegistryUser {
                         dpsRow.setEdsUnitKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveUnidad", true));
                         
                         if (DXmlUtils.hasChildElement(concepto, "cfdi:CuentaPredial")) {
-                            Vector<Node> cuentaPredial = DXmlUtils.extractChildElements(node, "cfdi:CuentaPredial");
+                            Vector<Node> cuentaPredial = DXmlUtils.extractChildElements(concepto, "cfdi:CuentaPredial");
                             namedNodeMap = cuentaPredial.get(0).getAttributes();
                             dpsRow.setPredial(DXmlUtils.extractAttributeValue(namedNodeMap, "Numero", true));
                         }
                     }
                     
                     // complemento:
-                    if (DXmlUtils.hasChildElement(doc, "cfdi:Complemento")) {
-                        node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                    Node comprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                    if (DXmlUtils.hasChildElement(comprobante, "cfdi:Complemento")) {
+                        node = DXmlUtils.extractChildElements(comprobante, "cfdi:Complemento").get(0);
                         if (DXmlUtils.hasChildElement(node, "tfd:TimbreFiscalDigital")) {
                             Vector<Node> timbreFiscalDigital = DXmlUtils.extractChildElements(node, "tfd:TimbreFiscalDigital");
                             namedNodeMap = timbreFiscalDigital.get(0).getAttributes();
@@ -963,7 +964,7 @@ public class DDbDps extends DDbRegistryUser {
 
     //public void setEdsUuid(String s) { msEdsUuid = s; } // read-only member!
     public void setEdsMethodOfPayment(String s) { msEdsMethodOfPayment = s; }
-    public void setEdsPaymentConditions(String s) { msEdsPaymentConditions = s; }
+    public void setEdsPaymentTerms(String s) { msEdsPaymentTerms = s; }
     public void setEdsConfirmation(String s) { msEdsConfirmation = s; }
     public void setEdsTaxRegime(String s) { msEdsTaxRegime = s; }
     public void setEdsUsage(String s) { msEdsUsage = s; }
@@ -977,7 +978,7 @@ public class DDbDps extends DDbRegistryUser {
 
     public String getEdsUuid() { return msEdsUuid; }
     public String getEdsMethodOfPayment() { return msEdsMethodOfPayment; }
-    public String getEdsPaymentConditions() { return msEdsPaymentConditions; }
+    public String getEdsPaymentTerms() { return msEdsPaymentTerms; }
     public String getEdsConfirmation() { return msEdsConfirmation; }
     public String getEdsTaxRegime() { return msEdsTaxRegime; }
     public String getEdsUsage() { return msEdsUsage; }
@@ -1108,7 +1109,7 @@ public class DDbDps extends DDbRegistryUser {
 
         msEdsUuid = "";
         msEdsMethodOfPayment = "";
-        msEdsPaymentConditions = "";
+        msEdsPaymentTerms = "";
         msEdsConfirmation = "";
         msEdsTaxRegime = "";
         msEdsUsage = "";
@@ -1600,7 +1601,7 @@ public class DDbDps extends DDbRegistryUser {
 
         //registry.setEdsUuid(this.getEdsUuid()); // read-only member!
         registry.setEdsMethodOfPayment(this.getEdsMethodOfPayment());
-        registry.setEdsPaymentConditions(this.getEdsPaymentConditions());
+        registry.setEdsPaymentTerms(this.getEdsPaymentTerms());
         registry.setEdsConfirmation(this.getEdsConfirmation());
         registry.setEdsTaxRegime(this.getEdsTaxRegime());
         registry.setEdsUsage(this.getEdsUsage());

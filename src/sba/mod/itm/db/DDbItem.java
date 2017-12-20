@@ -59,6 +59,7 @@ public class DDbItem extends DDbRegistryUser {
     protected boolean mbFreeOfPrice;
     protected boolean mbFreeOfDiscount;
     protected boolean mbFreeOfCommission;
+    protected boolean mbPredial;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -215,6 +216,7 @@ public class DDbItem extends DDbRegistryUser {
     public void setFreeOfPrice(boolean b) { mbFreeOfPrice = b; }
     public void setFreeOfDiscount(boolean b) { mbFreeOfDiscount = b; }
     public void setFreeOfCommission(boolean b) { mbFreeOfCommission = b; }
+    public void setPredial(boolean b) { mbPredial = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -270,6 +272,7 @@ public class DDbItem extends DDbRegistryUser {
     public boolean isFreeOfPrice() { return mbFreeOfPrice; }
     public boolean isFreeOfDiscount() { return mbFreeOfDiscount; }
     public boolean isFreeOfCommission() { return mbFreeOfCommission; }
+    public boolean isPredial() { return mbPredial; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -364,6 +367,7 @@ public class DDbItem extends DDbRegistryUser {
         mbFreeOfPrice = false;
         mbFreeOfDiscount = false;
         mbFreeOfCommission = false;
+        mbPredial = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -472,6 +476,7 @@ public class DDbItem extends DDbRegistryUser {
             mbFreeOfPrice = resultSet.getBoolean("b_fre_prc");
             mbFreeOfDiscount = resultSet.getBoolean("b_fre_dsc");
             mbFreeOfCommission = resultSet.getBoolean("b_fre_cmm");
+//            mbPredial = resultSet.getBoolean("b_pred");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -595,6 +600,7 @@ public class DDbItem extends DDbRegistryUser {
                     (mbFreeOfPrice ? 1 : 0) + ", " +
                     (mbFreeOfDiscount ? 1 : 0) + ", " +
                     (mbFreeOfCommission ? 1 : 0) + ", " +
+                    (mbPredial ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -655,6 +661,7 @@ public class DDbItem extends DDbRegistryUser {
                     "b_fre_prc = " + (mbFreeOfPrice ? 1 : 0) + ", " +
                     "b_fre_dsc = " + (mbFreeOfDiscount ? 1 : 0) + ", " +
                     "b_fre_cmm = " + (mbFreeOfCommission ? 1 : 0) + ", " +
+                    "b_pred = " + (mbPredial ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -735,6 +742,7 @@ public class DDbItem extends DDbRegistryUser {
         registry.setFreeOfPrice(this.isFreeOfPrice());
         registry.setFreeOfDiscount(this.isFreeOfDiscount());
         registry.setFreeOfCommission(this.isFreeOfCommission());
+        registry.setPredial(this.isPredial());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

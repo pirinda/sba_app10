@@ -166,6 +166,9 @@ public abstract class DModSysConsts {
     public static final int CS_CTY_NA = 1;
 
     public static final int CS_CUR_NA = 1;
+    public static final int CS_CUR_EUR = 51;
+    public static final int CS_CUR_MXN = 104;
+    public static final int CS_CUR_USD = 151;
 
     public static final int CS_EMS_TP_NA = 1;
     public static final int CS_EMS_TP_OWN = 2;
@@ -175,6 +178,7 @@ public abstract class DModSysConsts {
     public static final int CS_XSP_NA = 1;
     public static final int CS_XSP_FCG = 2;     // FORCOGSA
     public static final int CS_XSP_FNK = 3;     // Finkok
+    public static final int CS_XSP_TST = 99;    // testing
 
     public static final int CS_TAX_REG_NA = 1;
 

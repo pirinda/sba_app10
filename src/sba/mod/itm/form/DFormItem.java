@@ -135,6 +135,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfPrice = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolFreeOfDiscount = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolFreeOfCommission = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolPredial = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel38 = new javax.swing.JPanel();
         jPanel46 = new javax.swing.JPanel();
         jPanel54 = new javax.swing.JPanel();
@@ -478,6 +479,10 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfCommission.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel26.add(moBoolFreeOfCommission);
 
+        moBoolPredial.setText("No. predial");
+        moBoolPredial.setPreferredSize(new java.awt.Dimension(90, 23));
+        jPanel26.add(moBoolPredial);
+
         jPanel1.add(jPanel26);
 
         jPanel24.add(jPanel1, java.awt.BorderLayout.NORTH);
@@ -737,11 +742,9 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jlBarcode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel51.add(jlBarcode);
 
-        moTextBarcode1.setText("dBeanFieldText1");
         moTextBarcode1.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel51.add(moTextBarcode1);
 
-        moTextBarcode2.setText("dBeanFieldText1");
         moTextBarcode2.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel51.add(moTextBarcode2);
 
@@ -924,6 +927,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfPrice.setBooleanSettings(moBoolFreeOfPrice.getText(), false);
         moBoolFreeOfDiscount.setBooleanSettings(moBoolFreeOfDiscount.getText(), false);
         moBoolFreeOfCommission.setBooleanSettings(moBoolFreeOfCommission.getText(), false);
+        moBoolPredial.setBooleanSettings(moBoolPredial.getText(), false);
         moDecPriceSrp.setDecimalSettings(DGuiUtils.getLabelName(jlPriceSrp), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
         moDecPrice1.setDecimalSettings(DGuiUtils.getLabelName(jlPrice1), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
         moDecPrice2.setDecimalSettings(DGuiUtils.getLabelName(jlPrice2), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
@@ -978,6 +982,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moBoolFreeOfPrice);
         moFields.addField(moBoolFreeOfDiscount);
         moFields.addField(moBoolFreeOfCommission);
+        moFields.addField(moBoolPredial);
         moFields.addField(moDecPriceSrp);
         moFields.addField(moDecPrice1);
         moFields.addField(moDecPrice2);
@@ -1864,6 +1869,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolFreeOfPrice;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolInventoriable;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolLotApplying;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolPredial;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolSerialNumberApplying;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTaxGroupByUser;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecMeasurementLength;
@@ -2061,6 +2067,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfPrice.setValue(moRegistry.isFreeOfPrice());
         moBoolFreeOfDiscount.setValue(moRegistry.isFreeOfDiscount());
         moBoolFreeOfCommission.setValue(moRegistry.isFreeOfCommission());
+        moBoolPredial.setValue(moRegistry.isPredial());
         moKeyBrand.setValue(new int[] { moRegistry.getFkBrandId() });
         moKeyManufacturer.setValue(new int[] { moRegistry.getFkManufacturerId() });
         moKeyComponent.setValue(new int[] { moRegistry.getFkComponentId() });
@@ -2139,6 +2146,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         registry.setFreeOfPrice(moBoolFreeOfPrice.getValue());
         registry.setFreeOfDiscount(moBoolFreeOfDiscount.getValue());
         registry.setFreeOfCommission(moBoolFreeOfCommission.getValue());
+        registry.setPredial(moBoolPredial.getValue());
         registry.setFkItemGenusId(moKeyItemGenus.getValue()[0]);
         registry.setFkItemLineId_n(moKeyItemLine.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyItemLine.getValue()[0]);
         registry.setFkBrandId(moKeyBrand.getValue()[0]);

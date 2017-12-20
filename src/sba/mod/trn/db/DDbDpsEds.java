@@ -55,6 +55,7 @@ public class DDbDpsEds extends DDbRegistry {
     
     protected boolean mbAuxIssued;
     protected boolean mbAuxAnnulled;
+    protected boolean mbAuxRewriteXmlOnSave;
     protected boolean mbAuxRegenerateXmlOnSave;
     protected int[] manAuxXmlSignatureRequestKey;
 
@@ -117,13 +118,23 @@ public class DDbDpsEds extends DDbRegistry {
 
     public void setAuxIssued(boolean b) { mbAuxIssued = b; }
     public void setAuxAnnulled(boolean b) { mbAuxAnnulled = b; }
+    public void setAuxRewriteXmlOnSave(boolean b) { mbAuxRewriteXmlOnSave = b; }
     public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
     public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
 
     public boolean isAuxIssued() { return mbAuxIssued; }
     public boolean isAuxAnnulled() { return mbAuxAnnulled; }
+    public boolean isAuxRewriteXmlOnSave() { return mbAuxRewriteXmlOnSave; }
     public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
     public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
+    
+    /**
+     * Get XML raw (just as fetched from web service) if available and its status is at least 'issued', otherwise own generated XML.
+     * @return Suitable XML.
+     */
+    public String getSuitableDocXml() {
+        return mnFkXmlStatusId >= DModSysConsts.TS_XML_ST_ISS && !msDocXmlRaw.isEmpty() ? msDocXmlRaw : msDocXml;
+    }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -163,6 +174,7 @@ public class DDbDpsEds extends DDbRegistry {
         
         mbAuxIssued = false;
         mbAuxAnnulled = false;
+        mbAuxRewriteXmlOnSave = false;
         mbAuxRegenerateXmlOnSave = false;
         manAuxXmlSignatureRequestKey = null;
     }
@@ -254,12 +266,14 @@ public class DDbDpsEds extends DDbRegistry {
             mnFkUserAnnulId = DUtilConsts.USR_NA_ID;
         }
 
+        if (mbAuxRewriteXmlOnSave || mbAuxRegenerateXmlOnSave) {
+            dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
+        }
+
         if (mbAuxRegenerateXmlOnSave) {
             // XML must be regenerated, so embeed addenda:
             
             DElementExtAddenda extAddenda = null;
-            
-            dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
             
             switch (mnFkXmlTypeId) {
                 case DModSysConsts.TS_XML_TP_CFD:
@@ -389,12 +403,12 @@ public class DDbDpsEds extends DDbRegistry {
 
         session.getStatement().execute(msSql);
         
-        if (mbAuxRegenerateXmlOnSave) {
+        if (mbAuxRewriteXmlOnSave || mbAuxRegenerateXmlOnSave) {
             // XML must be regenerated, so save new XML file:
             
             DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
             
-            DXmlUtils.writeXml(msDocXml, configBranch.getEdsDirectory() + msDocXmlName);
+            DXmlUtils.writeXml(getSuitableDocXml(), configBranch.getEdsDirectory() + msDocXmlName);
         }
         
         mbRegistryNew = false;
@@ -429,6 +443,7 @@ public class DDbDpsEds extends DDbRegistry {
 
         registry.setAuxIssued(this.isAuxIssued());
         registry.setAuxAnnulled(this.isAuxAnnulled());
+        registry.setAuxRewriteXmlOnSave(this.isAuxRewriteXmlOnSave());
         registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
         registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
 

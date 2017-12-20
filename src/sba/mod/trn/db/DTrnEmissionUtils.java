@@ -353,7 +353,7 @@ public abstract class DTrnEmissionUtils {
                             seriesNumber = DTrnUtils.getDpsSeriesNumber(client.getSession(), dps.getDpsTypeKey(), dps.getSeries(), dps.getNumber());
                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId(), "", null);
+                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
                                 dps.updateEds(client.getSession(), eds);
                             }
                         }
@@ -542,7 +542,7 @@ public abstract class DTrnEmissionUtils {
                                             seriesNumber = DTrnUtils.getDpsSeriesNumber(client.getSession(), dps.getDpsTypeKey(), dps.getSeries(), dps.getNumber());
                                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                                                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId(), "", null);
+                                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
                                                 dps.updateEds(client.getSession(), eds);
                                             }
                                         }

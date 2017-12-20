@@ -35,7 +35,6 @@ import sba.gui.DGuiClientSessionCustom;
 import sba.gui.cat.DXmlCatalog;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
-import sba.lib.DLibTimeConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -69,7 +68,6 @@ import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbUser;
 import sba.mod.fin.db.DDbTaxGroupConfigRow;
-import sba.mod.fin.db.DFinConsts;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
 import sba.mod.mkt.db.DDbCustomerItemPriceType;
@@ -242,8 +240,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jlCfdTaxRegime = new javax.swing.JLabel();
         moKeyCfdTaxRegime = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel56 = new javax.swing.JPanel();
-        jlCfdPaymentConditions = new javax.swing.JLabel();
-        jtfCfdPaymentConditions = new javax.swing.JTextField();
+        jlCfdPaymentTerms = new javax.swing.JLabel();
+        jtfCfdPaymentTerms = new javax.swing.JTextField();
         jPanel29 = new javax.swing.JPanel();
         jPanel30 = new javax.swing.JPanel();
         jlCreditDays = new javax.swing.JLabel();
@@ -606,16 +604,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel56.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlCfdPaymentConditions.setText("Condiciones:");
-        jlCfdPaymentConditions.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel56.add(jlCfdPaymentConditions);
+        jlCfdPaymentTerms.setText("Condiciones:");
+        jlCfdPaymentTerms.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel56.add(jlCfdPaymentTerms);
 
-        jtfCfdPaymentConditions.setEditable(false);
-        jtfCfdPaymentConditions.setText("TEXT");
-        jtfCfdPaymentConditions.setToolTipText("Tipo de documento");
-        jtfCfdPaymentConditions.setFocusable(false);
-        jtfCfdPaymentConditions.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel56.add(jtfCfdPaymentConditions);
+        jtfCfdPaymentTerms.setEditable(false);
+        jtfCfdPaymentTerms.setText("TEXT");
+        jtfCfdPaymentTerms.setToolTipText("Tipo de documento");
+        jtfCfdPaymentTerms.setFocusable(false);
+        jtfCfdPaymentTerms.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel56.add(jtfCfdPaymentTerms);
 
         jPanel32.add(jPanel56);
 
@@ -1109,10 +1107,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moKeyCfdTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdTaxRegime), true);
         moIntCreditDays.setIntegerSettings(DGuiUtils.getLabelName(jlCreditDays), DGuiConsts.GUI_TYPE_INT, true);
         moDateCredit.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateCredit), true);
-        moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder), 15, 0);
-        moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery), false);
         moTextImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlImportDeclaration), 15, 0);
         moDateImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlImportDeclarationDate), false);
+        moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder), 15, 0);
+        moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery), false);
         
         moTextFind.setTextSettings(DGuiUtils.getLabelName(moTextFind.getToolTipText()), 100, 0);
         moTextFind.setFieldButton(jbFind);
@@ -1163,10 +1161,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moKeyModeOfPaymentType);
         moFields.addField(moIntCreditDays);
         moFields.addField(moDateCredit);
-        moFields.addField(moTextOrder);
-        moFields.addField(moDateDelivery);
         moFields.addField(moTextImportDeclaration);
         moFields.addField(moDateImportDeclarationDate);
+        moFields.addField(moTextOrder);
+        moFields.addField(moDateDelivery);
         
         moFields.addField(moTextFind);
         moFields.addField(moTextRowCode);
@@ -1438,22 +1436,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfDateMaturity.setText(DLibUtils.DateFormatDate.format(DLibTimeUtils.addDate(moDateCredit.getValue(), 0, 0, moIntCreditDays.getValue())));
         jtfDateMaturity.setCaretPosition(0);
 
-        String conditions = "";
+        String paymentTerms = "";
         
         if (moKeyPaymentType.getSelectedIndex() > 0) {
-            switch (moKeyPaymentType.getValue()[0]) {
-                case DModSysConsts.FS_PAY_TP_CSH:
-                    conditions = DFinConsts.TXT_PAY_TP_CSH;
-                    break;
-                case DModSysConsts.FS_PAY_TP_CDT:
-                    conditions = DFinConsts.TXT_PAY_TP_CDT + " " + moIntCreditDays.getValue() + " " + (moIntCreditDays.getValue() == 1 ? DLibTimeConsts.TXT_DAY : DLibTimeConsts.TXT_DAYS).toUpperCase();
-                    break;
-                default:
-            }
+            paymentTerms = DTrnEdsUtils.composeCfdiPaymentTerms(moKeyPaymentType.getValue()[0], moIntCreditDays.getValue());
         }
         
-        jtfCfdPaymentConditions.setText(conditions);
-        jtfCfdPaymentConditions.setCaretPosition(0);
+        jtfCfdPaymentTerms.setText(paymentTerms);
+        jtfCfdPaymentTerms.setCaretPosition(0);
     }
     
     /**
@@ -2447,6 +2437,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextRowName.getFieldName() + "'.");
                 moTextRowName.requestFocus();
             }
+            else if (moItem.isPredial() && !moBoolRowCfdPredial.getValue()) {
+                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moBoolRowCfdPredial.getText() + "'.");
+                moBoolRowCfdPredial.requestFocus();
+            }
+            else if (moItem.isPredial() && moTextRowCfdPredial.isEnabled() && moTextRowCfdPredial.getValue().isEmpty()) {
+                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moBoolRowCfdPredial.getText() + "'.");
+                moTextRowCfdPredial.requestFocus();
+            }
             else if (moDecRowQuantity.getValue() == 0 && !isCurrentAdjustmentForMoney()) {
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecRowQuantity.getText() + "'.");
                 moDecRowQuantity.requestFocus();
@@ -3197,7 +3195,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JLabel jlAgent;
     private javax.swing.JLabel jlCfdConfirmation;
     private javax.swing.JLabel jlCfdMethodOfPayment;
-    private javax.swing.JLabel jlCfdPaymentConditions;
+    private javax.swing.JLabel jlCfdPaymentTerms;
     private javax.swing.JLabel jlCfdRelated;
     private javax.swing.JLabel jlCfdTaxRegime;
     private javax.swing.JLabel jlCfdUsage;
@@ -3246,7 +3244,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JTextArea jtaHeadquartersAddress;
     private javax.swing.JTextField jtfBranchWarehose;
     private javax.swing.JTextField jtfCfdDate;
-    private javax.swing.JTextField jtfCfdPaymentConditions;
+    private javax.swing.JTextField jtfCfdPaymentTerms;
     private javax.swing.JTextField jtfCfdRelated;
     private javax.swing.JTextField jtfCfdType;
     private javax.swing.JTextField jtfCfdUuid;
@@ -3529,12 +3527,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDateCredit.setValue(moRegistry.getDateCredit());
         computeCreditInfo();
         
-        moTextOrder.setValue(moRegistry.getOrder());
-        moDateDelivery.setValue(moRegistry.getDateDelivery_n());
-        
         moTextImportDeclaration.setValue(moRegistry.getImportDeclaration());            // depends on business partner settings (i.e. country)
         moDateImportDeclarationDate.setValue(moRegistry.getImportDeclarationDate_n());  // depends on business partner settings (i.e. country)
 
+        moTextOrder.setValue(moRegistry.getOrder());
+        moDateDelivery.setValue(moRegistry.getDateDelivery_n());
+        
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
 
         moBoolDiscountDocApplying.setValue(moRegistry.isDiscountDocApplying());
@@ -3747,17 +3745,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             registry.setAuxEdsRequired(false);
         }
         else {
-            registry.setEdsMethodOfPayment(moKeyCfdMethodOfPayment.getSelectedIndex() <= 0 ? "" : moKeyCfdMethodOfPayment.getSelectedItem().getCode());
-            registry.setEdsPaymentConditions(jtfCfdPaymentConditions.getText());
-            registry.setEdsConfirmation(moTextCfdConfirmation.getValue());
-            registry.setEdsTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
-            registry.setEdsUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
-            
             if (moDpsSeriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
-                 // Create dummy e-document only to verify if it can be processed:
-
+                if (moDpsSeriesNumber.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI_33) {
+                    registry.setEdsMethodOfPayment(moKeyCfdMethodOfPayment.getSelectedIndex() <= 0 ? "" : moKeyCfdMethodOfPayment.getSelectedItem().getCode());
+                    registry.setEdsPaymentTerms(jtfCfdPaymentTerms.getText());
+                    registry.setEdsConfirmation(moTextCfdConfirmation.getValue());
+                    registry.setEdsTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
+                    registry.setEdsUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
+                }
+                
+                // create dummy e-document only to verify if it can be processed:
                 if (mbCheckEdsOnSaveOnlyOnce) {
-                    DTrnEdsUtils.createDpsEds(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId(), "", null);
+                    DTrnEdsUtils.createDpsEds(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId());
                     mbCheckEdsOnSaveOnlyOnce = false;
                 }
             }
@@ -3804,10 +3803,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moTextImportDeclaration.getValue().length() != 15) {
                 validation.setMessage("La longitud del campo '" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " 15.");
                 validation.setComponent(moTextImportDeclaration);
-            }
-            else if (!mbIsAdjustment && moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_CSH && DLibUtils.belongsTo(moKeyModeOfPaymentType.getValue()[0], new int[] { DModSysConsts.FS_MOP_TP_NA, DModSysConsts.FS_MOP_TP_TO_DEF })) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlModeOfPaymentType.getText()) + "'.");
-                validation.setComponent(moKeyModeOfPaymentType);
             }
             else if (moGridDpsRows.getTable().getRowCount() == 0) {
                 validation.setMessage(DUtilConsts.ERR_MSG_DOC_NO_ROWS);

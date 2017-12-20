@@ -5,16 +5,25 @@
 
 package sba.mod.trn.db;
 
+import cfd.ver33.DCfdi33Catalogs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import sba.gui.DGuiClientApp;
+import sba.gui.cat.DXmlCatalog;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
+import sba.lib.db.DDbRegistry;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DDbBizPartner;
+import sba.mod.bpr.db.DDbBizPartnerConfig;
+import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.itm.db.DDbItem;
+import sba.mod.itm.db.DDbUnit;
 
 /**
  *
@@ -323,7 +332,29 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         dps.setFkDpsTypeId(mnFkNewDpsTypeId);
 
         if (mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) {
-            dps.setChildEds(DTrnEdsUtils.createDpsEds(session, dps, mnAuxXmlTypeId, "", null));
+            // prepare CFDI:
+            
+            DXmlCatalog xmlCatalogMethodOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_MDP);
+            DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
+            DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
+            
+            dps.setEdsMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID));
+            dps.setEdsPaymentTerms(DTrnEdsUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
+            dps.setEdsConfirmation("");
+            dps.setEdsTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.setEdsUsage(bizPartnerConfig.getActualCfdUsage());
+            
+            for (DDbDpsRow row : dps.getChildRows()) {
+                if (!row.isDeleted()) {
+                    DDbItem item = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { row.getFkRowItemId() });
+                    DDbUnit unit = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { row.getFkRowUnitId() });
+                    
+                    row.setEdsItemKey(item.getActualCfdItemKey());
+                    row.setEdsUnitKey(unit.getCfdUnitKey());
+                }
+            }
+            
+            dps.setChildEds(DTrnEdsUtils.createDpsEds(session, dps, mnAuxXmlTypeId));
         }
 
         dps.save(session);

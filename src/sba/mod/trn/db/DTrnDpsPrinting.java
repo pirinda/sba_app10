@@ -276,7 +276,7 @@ public class DTrnDpsPrinting {
         
         // XML parsing:
 
-        Document doc = DXmlUtils.parseDocument(moDps.getChildEds().getDocXml());
+        Document doc = DXmlUtils.parseDocument(moDps.getChildEds().getSuitableDocXml());
 
         // Comprobante:
 
@@ -341,7 +341,7 @@ public class DTrnDpsPrinting {
         hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
         hashMap.put("sXmlRecUsoCFDI", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", false)));
 
-        DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), 1 });
+        DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkBizPartnerBizPartnerId(), moDps.getFkBizPartnerBranchId(), moDps.getFkBizPartnerAddressId() });
         hashMap.put("sRecDomCalle", addressRec.getAddress1());
         hashMap.put("sRecDomNoExterior", addressRec.getNumberExterior());
         hashMap.put("sRecDomNoInterior", addressRec.getNumberInterior());
@@ -388,14 +388,14 @@ public class DTrnDpsPrinting {
 
         // Otros campos:
 
-        DDbSysCurrency dbSysCurrency = (DDbSysCurrency) moSession.readRegistry(DModConsts.CS_CUR, moSession.getSessionCustom().getLocalCurrencyKey());
+        DDbSysCurrency dbCurrency = (DDbSysCurrency) moSession.readRegistry(DModConsts.CS_CUR, new int[] { moDps.getFkCurrencyId() });
 
         hashMap.put("sDocTipoDoc", (String) moSession.readField(DModConsts.TS_DPS_TP, moDps.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         hashMap.put("sDocRef", moDps.getOrder());
         hashMap.put("sDocCadenaOriginal", moDps.getChildEds().getSignedText());
         hashMap.put("sDocTotalConLetra", DLibUtils.translateValueToText(
                 moDps.getTotalCy_r(), DLibUtils.DecimalFormatValue2D.getMinimumFractionDigits(), moSession.getSessionCustom().getLocalLanguage(),
-                dbSysCurrency.getCurrencySingular(), dbSysCurrency.getCurrencyPlural(), dbSysCurrency.getCurrencyPrefix(), dbSysCurrency.getCurrencySuffix()));
+                dbCurrency.getCurrencySingular(), dbCurrency.getCurrencyPlural(), dbCurrency.getCurrencyPrefix(), dbCurrency.getCurrencySuffix()));
         hashMap.put("sDocUser", moSession.readField(DModConsts.CU_USR, new int[] { moDps.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));
 
         if (moDps.getFkPaymentTypeId() == DModSysConsts.FS_PAY_TP_CDT) {

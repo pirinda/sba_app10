@@ -42,6 +42,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
+import sba.lib.DLibTimeConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
@@ -57,6 +58,7 @@ import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbCertificate;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.fin.db.DFinConsts;
 
 /**
  * Utilities related to CFD generation and PAC transaction control for CFD signing and cancelling.
@@ -65,6 +67,62 @@ import sba.mod.cfg.db.DDbConfigCompany;
  */
 public abstract class DTrnEdsUtils {
     
+    /**
+     * Extracts existing digital signature attributes from CFD's XML.
+     * @param dps
+     * @return
+     * @throws Exception 
+     */
+    private static cfd.ver32.DSelloDigital extractSello32(final DDbDps dps) throws Exception {
+        Document doc = null;
+        Node node = null;
+        NamedNodeMap namedNodeMapChild = null;
+        cfd.ver32.DSelloDigital selloDigital = null;
+        
+        if (dps.getChildEds() != null) {
+            selloDigital = new cfd.ver32.DSelloDigital();
+
+            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
+
+            node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+            namedNodeMapChild = node.getAttributes();
+
+            selloDigital.setSello(DXmlUtils.extractAttributeValue(namedNodeMapChild, "sello", true));
+            selloDigital.setNoCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "noCertificado", true));
+            selloDigital.setCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "certificado", true));
+        }
+        
+        return selloDigital;
+    }
+
+    /**
+     * Extracts existing digital signature attributes from CFD's XML.
+     * @param dps
+     * @return
+     * @throws Exception 
+     */
+    private static cfd.ver33.DSelloDigital extractSello33(final DDbDps dps) throws Exception {
+        Document doc = null;
+        Node node = null;
+        NamedNodeMap namedNodeMapChild = null;
+        cfd.ver33.DSelloDigital selloDigital = null;
+        
+        if (dps.getChildEds() != null) {
+            selloDigital = new cfd.ver33.DSelloDigital();
+
+            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
+
+            node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+            namedNodeMapChild = node.getAttributes();
+
+            selloDigital.setSello(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Sello", true));
+            selloDigital.setNoCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "NoCertificado", true));
+            selloDigital.setCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Certificado", true));
+        }
+        
+        return selloDigital;
+    }
+
     public static void configureCfdi32(final DGuiSession session, final cfd.ver32.DElementComprobante comprobante) {
         int decimalsQuantity = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity();
         int decimalsPriceUnitary = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary();
@@ -89,7 +147,7 @@ public abstract class DTrnEdsUtils {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps, final cfd.ver3.DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps) throws Exception {
         int i = 0;
         int nPagos = 1;
         int nImptoTipo = 0;
@@ -187,7 +245,7 @@ public abstract class DTrnEdsUtils {
         
         // Create XML's main element 'Comprobante':
 
-        cfd.ver32.DElementComprobante comprobante = new cfd.ver32.DElementComprobante(timbreFiscal_n != null && includeAddenda1); // include Addenda1 only if explicitly defined and CFD is already signed
+        cfd.ver32.DElementComprobante comprobante = new cfd.ver32.DElementComprobante(includeAddenda1); // include Addenda1 only if explicitly defined
 
         comprobante.getAttSerie().setString(dps.getSeries());
         comprobante.getAttFolio().setString("" + dps.getNumber());
@@ -516,6 +574,9 @@ public abstract class DTrnEdsUtils {
         }
         */
         
+        /*
+        (Signed CFDI will be only gotten fetching it from certification provider, 2017-12-18, sflores)
+        
         if (timbreFiscal_n != null) {
             // Create element Complemento:
 
@@ -533,7 +594,7 @@ public abstract class DTrnEdsUtils {
 
             comprobante.setEltOpcComplemento(complemento);
 
-            /* Addenda1 not needed anymore:
+            // Addenda1 not needed anymore:
             // Create element Addenda1:
 
             DElementAddenda1 addenda1 = new DElementAddenda1();
@@ -590,13 +651,13 @@ public abstract class DTrnEdsUtils {
             addenda.getElements().add(addenda1);
 
             comprobante.setEltOpcAddenda(addenda);
-            */
         }
+        */
 
         return comprobante;
     }
     
-    public static cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DDbDps dps, final cfd.ver3.DTimbreFiscal timbreFiscal_n, final DGuiEdsSignature signature) throws Exception {
+    public static cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DDbDps dps, final DGuiEdsSignature signature) throws Exception {
         int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
         int decsTax = 6;
         Date tDate = null;
@@ -673,22 +734,12 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttFolio().setString("" + dps.getNumber());
         comprobante.getAttFecha().setDatetime(tDate);
         
-        if (timbreFiscal_n == null) {
-            // CFDI about to be signed:
-            comprobante.getAttSello().setString("");
-            comprobante.getAttNoCertificado().setString(signature.getCertificateNumber());
-            comprobante.getAttCertificado().setString(signature.getCertificateBase64());
-        }
-        else {
-            // CFDI already signed:
-            cfd.ver33.DSelloDigital selloDigital = extractSello33(dps);
-            comprobante.getAttSello().setString(selloDigital.getSello());
-            comprobante.getAttNoCertificado().setString(selloDigital.getNoCertificado());
-            comprobante.getAttCertificado().setString(selloDigital.getCertificado());
-        }
+        comprobante.getAttSello().setString("");
+        comprobante.getAttNoCertificado().setString(signature.getCertificateNumber());
+        comprobante.getAttCertificado().setString(signature.getCertificateBase64());
 
         comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
-        comprobante.getAttCondicionesDePago().setString(dps.getEdsPaymentConditions());
+        comprobante.getAttCondicionesDePago().setString(dps.getEdsPaymentTerms());
         
         comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
 
@@ -985,6 +1036,9 @@ public abstract class DTrnEdsUtils {
             comprobante.setEltOpcImpuestos(impuestos);
         }
 
+        /*
+        (Signed CFDI will be only gotten fetching it from certification provider, 2017-12-18, sflores)
+        
         if (timbreFiscal_n != null) {
             // Create element Complemento:
 
@@ -1004,6 +1058,7 @@ public abstract class DTrnEdsUtils {
 
             comprobante.setEltOpcComplemento(complemento);
         }
+        */
 
         return comprobante;
     }
@@ -1093,74 +1148,15 @@ public abstract class DTrnEdsUtils {
     }
 
     /**
-     * Extracts existing digital signature attributes from CFD's XML.
-     * @param dps
-     * @return
-     * @throws Exception 
-     */
-    public static cfd.ver32.DSelloDigital extractSello32(final DDbDps dps) throws Exception {
-        Document doc = null;
-        Node node = null;
-        NamedNodeMap namedNodeMapChild = null;
-        cfd.ver32.DSelloDigital selloDigital = null;
-        
-        if (dps.getChildEds() != null) {
-            selloDigital = new cfd.ver32.DSelloDigital();
-
-            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
-
-            node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
-            namedNodeMapChild = node.getAttributes();
-
-            selloDigital.setSello(DXmlUtils.extractAttributeValue(namedNodeMapChild, "sello", true));
-            selloDigital.setNoCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "noCertificado", true));
-            selloDigital.setCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "certificado", true));
-        }
-        
-        return selloDigital;
-    }
-
-    /**
-     * Extracts existing digital signature attributes from CFD's XML.
-     * @param dps
-     * @return
-     * @throws Exception 
-     */
-    public static cfd.ver33.DSelloDigital extractSello33(final DDbDps dps) throws Exception {
-        Document doc = null;
-        Node node = null;
-        NamedNodeMap namedNodeMapChild = null;
-        cfd.ver33.DSelloDigital selloDigital = null;
-        
-        if (dps.getChildEds() != null) {
-            selloDigital = new cfd.ver33.DSelloDigital();
-
-            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
-
-            node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
-            namedNodeMapChild = node.getAttributes();
-
-            selloDigital.setSello(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Sello", true));
-            selloDigital.setNoCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "NoCertificado", true));
-            selloDigital.setCertificado(DXmlUtils.extractAttributeValue(namedNodeMapChild, "Certificado", true));
-        }
-        
-        return selloDigital;
-    }
-
-    /**
      * Creates new Electronic Document Supporting for provided document and type.
      * @param session Current GUI user session.
      * @param dps Document.
      * @param xmlType CFD type.
-     * @param xmlRaw CFD XML file just as provided by XML Signature Provider. Required only when CFD is signed, otherwise empty string.
-     * @param timbreFiscal_n CFD stamp. Required only when CFD is signed, otherwise null.
      * @return
      * @throws Exception 
      */
-    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType, final String xmlRaw, final cfd.ver3.DTimbreFiscal timbreFiscal_n) throws Exception {
+    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType) throws Exception {
         int xmlStatus = DLibConsts.UNDEFINED;
-        int userIssuedId = DLibConsts.UNDEFINED;
         String textToSign;
         String textSigned;
         DDbDpsEds eds;
@@ -1177,7 +1173,7 @@ public abstract class DTrnEdsUtils {
             case DModSysConsts.TS_XML_TP_CFDI_32:
                 // Create EDS:
                 signature = session.getEdsSignature(dps.getCompanyBranchKey());
-                cfd.ver32.DElementComprobante comprobante32 = createCfdi32(session, dps, timbreFiscal_n);
+                cfd.ver32.DElementComprobante comprobante32 = createCfdi32(session, dps);
                 
                 // Append to EDS the very addenda previously added to DPS if any:
                 if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
@@ -1195,22 +1191,13 @@ public abstract class DTrnEdsUtils {
                 cfd.write(comprobante32, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
 
                 // Set EDS status:
-                if (timbreFiscal_n == null) {
-                    // emit only CFDI:
-                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
-                    userIssuedId = DUtilConsts.USR_NA_ID;
-                }
-                else {
-                    // CFDI just signed!:
-                    xmlStatus = DModSysConsts.TS_XML_ST_ISS;
-                    userIssuedId = session.getUser().getPkUserId();
-                }
+                xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                 break;
 
             case DModSysConsts.TS_XML_TP_CFDI_33:
                 // Create EDS:
                 signature = session.getEdsSignature(dps.getCompanyBranchKey());
-                cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, dps, timbreFiscal_n, signature);
+                cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, dps, signature);
                 
                 // Append to EDS the very addenda previously added to DPS if any:
                 if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
@@ -1228,16 +1215,7 @@ public abstract class DTrnEdsUtils {
                 cfd.write(comprobante33, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
 
                 // Set EDS status:
-                if (timbreFiscal_n == null) {
-                    // emit only CFDI:
-                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
-                    userIssuedId = DUtilConsts.USR_NA_ID;
-                }
-                else {
-                    // CFDI just signed!:
-                    xmlStatus = DModSysConsts.TS_XML_ST_ISS;
-                    userIssuedId = session.getUser().getPkUserId();
-                }
+                xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                 break;
 
             default:
@@ -1250,10 +1228,10 @@ public abstract class DTrnEdsUtils {
         eds.setCertificateNumber(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber());
         eds.setSignedText(cfd.getLastStringSigned());
         eds.setSignature(cfd.getLastSignature());
-        eds.setUniqueId(timbreFiscal_n == null ? "" : timbreFiscal_n.getUuid());
+        eds.setUniqueId("");
         eds.setDocTs(cfd.getLastTimestamp());
         eds.setDocXml(cfd.getLastXml());
-        eds.setDocXmlRaw(xmlRaw);
+        eds.setDocXmlRaw("");
         eds.setDocXmlAddenda(extAddenda == null ? "" : extAddenda.getElementForXml());
         eds.setDocXmlName(cfd.getLastXmlFileName());
         eds.setCancelXml("");
@@ -1261,10 +1239,11 @@ public abstract class DTrnEdsUtils {
         eds.setFkXmlTypeId(xmlType);
         eds.setFkXmlStatusId(xmlStatus);
         eds.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
-        eds.setFkXmlSignatureProviderId(timbreFiscal_n == null ? DModSysConsts.CS_XSP_NA : timbreFiscal_n.getPacId());
+        eds.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);
         eds.setFkCertificateId(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateId());
-        eds.setFkUserIssuedId(userIssuedId);
-        eds.setFkUserAnnulId(DUtilConsts.USR_NA_ID);
+        //eds.setFkUserIssuedId(...);   // will be set as needed when saved!
+        //eds.setFkUserAnnulId(...);    // will be set as needed when saved!
+        eds.setAuxIssued(true);
 
         return eds;
     }
@@ -1307,7 +1286,6 @@ public abstract class DTrnEdsUtils {
         cfd.ver3.DTimbreFiscal timbreFiscal = null;
         DDbConfigBranch configBranch = null;
         DDbXmlSignatureRequest xsr = null;
-        DDbDpsEds eds = null;
 
         // Create or obtain XML Signature Request for signature:
 
@@ -1553,6 +1531,10 @@ public abstract class DTrnEdsUtils {
                     }
                     break;
 
+                case DModSysConsts.CS_XSP_TST:  // testing
+                    cfdi = dps.getChildEds().getDocXml();   // insert 'Complemento' node into local variable cfdi!
+                    break;
+                    
                 default:
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " " + DTrnEmissionConsts.PAC);
             }
@@ -1645,9 +1627,14 @@ public abstract class DTrnEdsUtils {
                 default:
             }
 
-            eds = createDpsEds(session, dps, dps.getChildEds().getFkXmlTypeId(), cfdi, timbreFiscal);
-
-            dps.updateEds(session, eds);
+            dps.getChildEds().setUniqueId(timbreFiscal.getUuid());
+            dps.getChildEds().setDocXmlRaw(cfdi);
+            dps.getChildEds().setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
+            dps.getChildEds().setFkXmlSignatureProviderId(timbreFiscal.getPacId());
+            dps.getChildEds().setAuxIssued(true);
+            dps.getChildEds().setAuxRewriteXmlOnSave(true);
+            dps.getChildEds().save(session);
+            
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
             xsr.save(session);
         }
@@ -2043,7 +2030,7 @@ public abstract class DTrnEdsUtils {
                 eds = dps.getChildEds();
                 eds.setCancelXml(xml);
                 eds.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
-                eds.setFkUserAnnulId(session.getUser().getPkUserId());
+                eds.setAuxAnnulled(true);
 
                 dps.updateEds(session, eds);
             }
@@ -2073,5 +2060,27 @@ public abstract class DTrnEdsUtils {
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
+    }
+    
+    /**
+     * Composes text of payment terms for CFDI.
+     * @param paymentType Constants defined in DModSysConsts.FS_PAY_TP_...
+     * @param creditDays Credit days.
+     * @return 
+     */
+    public static String composeCfdiPaymentTerms(final int paymentType, final int creditDays) {
+        String paymentTerms = "";
+        
+        switch (paymentType) {
+            case DModSysConsts.FS_PAY_TP_CSH:
+                paymentTerms = DFinConsts.TXT_PAY_TP_CSH;
+                break;
+            case DModSysConsts.FS_PAY_TP_CDT:
+                paymentTerms = DFinConsts.TXT_PAY_TP_CDT + " " + creditDays + " " + (creditDays == 1 ? DLibTimeConsts.TXT_DAY : DLibTimeConsts.TXT_DAYS).toUpperCase();
+                break;
+            default:
+        }
+        
+        return paymentTerms;
     }
 }

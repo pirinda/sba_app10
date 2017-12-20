@@ -606,7 +606,7 @@
                             <Property name="verticalGap" type="int" value="0"/>
                           </Layout>
                           <SubComponents>
-                            <Component class="javax.swing.JLabel" name="jlCfdPaymentConditions">
+                            <Component class="javax.swing.JLabel" name="jlCfdPaymentTerms">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="Condiciones:"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -614,7 +614,7 @@
                                 </Property>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JTextField" name="jtfCfdPaymentConditions">
+                            <Component class="javax.swing.JTextField" name="jtfCfdPaymentTerms">
                               <Properties>
                                 <Property name="editable" type="boolean" value="false"/>
                                 <Property name="text" type="java.lang.String" value="TEXT"/>
