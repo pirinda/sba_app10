@@ -476,7 +476,7 @@ public class DDbItem extends DDbRegistryUser {
             mbFreeOfPrice = resultSet.getBoolean("b_fre_prc");
             mbFreeOfDiscount = resultSet.getBoolean("b_fre_dsc");
             mbFreeOfCommission = resultSet.getBoolean("b_fre_cmm");
-//            mbPredial = resultSet.getBoolean("b_pred");
+            mbPredial = resultSet.getBoolean("b_pred");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");

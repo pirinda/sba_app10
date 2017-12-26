@@ -357,11 +357,13 @@ public class DTrnDpsPrinting {
 
         // Impuestos:
 
-        Node nodeImpuestos = DXmlUtils.extractElements(doc, "cfdi:Impuestos").item(0);
-        
-        namedNodeMap = nodeImpuestos.getAttributes();
-        hashMap.put("dXmlImpTotalImptosRetenidos", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosRetenidos", false)));
-        hashMap.put("dXmlImpTotalImptosTrasladados", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosTrasladados", false)));
+        if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:Impuestos")) {
+            Node nodeImpuestos = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:Impuestos").get(0);
+
+            namedNodeMap = nodeImpuestos.getAttributes();
+            hashMap.put("dXmlImpTotalImptosRetenidos", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosRetenidos", false)));
+            hashMap.put("dXmlImpTotalImptosTrasladados", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "TotalImpuestosTrasladados", false)));
+        }
 
         // Timbre fiscal:
 
