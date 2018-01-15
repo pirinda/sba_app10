@@ -11,6 +11,7 @@
 
 package sba.mod.trn.form;
 
+import cfd.ver3.DCfdVer3Consts;
 import cfd.ver33.DCfdi33Catalogs;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -114,6 +115,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private DDialogSerialNumberCompound moDialogSerialNumberCompound;
     private DDialogSerialNumberInStock moDialogSerialNumberInStock;
     private DDialogSerialNumberShow moDialogSerialNumberShow;
+    private DDialogCfdiRelated moDialogCfdiRelated;
     private DGridPaneForm moGridDpsNotes;
     private DGridPaneForm moGridDpsRows;
     private DDbItem moItem;
@@ -145,6 +147,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private int mnOriginalYear;
     private Date mtOriginalDate;
     private Vector<DTrnStockMove> mvRowStockMoves;
+    private ArrayList<String> maUuids;
     private JButton mjButtonLaunchCalc;
     private JButton mjButtonEditItem;
     private JButton mjButtonShowRowNote;
@@ -161,6 +164,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     private DXmlCatalog moXmlCatalogCfdMethodOfPayment;
     private DXmlCatalog moXmlCatalogCfdUsage;
+    private DXmlCatalog moXmlCatalogCfdRelationType;
     
     /** Creates new form DFormDps
      * @param client GUI client.
@@ -269,10 +273,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jlDateDelivery = new javax.swing.JLabel();
         moDateDelivery = new sba.lib.gui.bean.DBeanFieldDate();
         jPanel31 = new javax.swing.JPanel();
-        jlCfdRelated = new javax.swing.JLabel();
-        jtfCfdRelated = new javax.swing.JTextField();
+        jlCfdRelationType = new javax.swing.JLabel();
+        moKeyCfdRelationType = new sba.lib.gui.bean.DBeanFieldKey();
+        jLabel1 = new javax.swing.JLabel();
+        jbCfdCfdiRelatedShow = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jbCfdRelatedView = new javax.swing.JButton();
+        jtfCfdiRelated = new javax.swing.JTextField();
         jpRows = new javax.swing.JPanel();
         jpRows1 = new javax.swing.JPanel();
         jpRows11 = new javax.swing.JPanel();
@@ -722,25 +728,31 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel31.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
         jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        jlCfdRelated.setText("Relacionados:");
-        jlCfdRelated.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel31.add(jlCfdRelated);
+        jlCfdRelationType.setText("Tipo relación:");
+        jlCfdRelationType.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel31.add(jlCfdRelationType);
 
-        jtfCfdRelated.setEditable(false);
-        jtfCfdRelated.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
-        jtfCfdRelated.setToolTipText("UUID del comprobante");
-        jtfCfdRelated.setFocusable(false);
-        jtfCfdRelated.setPreferredSize(new java.awt.Dimension(252, 20));
-        jPanel31.add(jtfCfdRelated);
+        moKeyCfdRelationType.setPreferredSize(new java.awt.Dimension(215, 23));
+        jPanel31.add(moKeyCfdRelationType);
+
+        jLabel1.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel31.add(jLabel1);
+
+        jbCfdCfdiRelatedShow.setText("...");
+        jbCfdCfdiRelatedShow.setToolTipText("Ver CFDI relacionados");
+        jbCfdCfdiRelatedShow.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel31.add(jbCfdCfdiRelatedShow);
 
         jLabel3.setPreferredSize(new java.awt.Dimension(5, 23));
         jPanel31.add(jLabel3);
 
-        jbCfdRelatedView.setText("...");
-        jbCfdRelatedView.setToolTipText("Ver CFDI relacionados");
-        jbCfdRelatedView.setEnabled(false);
-        jbCfdRelatedView.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel31.add(jbCfdRelatedView);
+        jtfCfdiRelated.setEditable(false);
+        jtfCfdiRelated.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jtfCfdiRelated.setText("0");
+        jtfCfdiRelated.setToolTipText("CFDI relacionados");
+        jtfCfdiRelated.setFocusable(false);
+        jtfCfdiRelated.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel31.add(jtfCfdiRelated);
 
         jPanel19.add(jPanel31, java.awt.BorderLayout.SOUTH);
 
@@ -1111,6 +1123,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDateImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlImportDeclarationDate), false);
         moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder), 15, 0);
         moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery), false);
+        moKeyCfdRelationType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCfdRelationType), false);
         
         moTextFind.setTextSettings(DGuiUtils.getLabelName(moTextFind.getToolTipText()), 100, 0);
         moTextFind.setFieldButton(jbFind);
@@ -1165,6 +1178,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moDateImportDeclarationDate);
         moFields.addField(moTextOrder);
         moFields.addField(moDateDelivery);
+        moFields.addField(moKeyCfdRelationType);
         
         moFields.addField(moTextFind);
         moFields.addField(moTextRowCode);
@@ -1206,6 +1220,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         
         moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_CFDI_USO);
         moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
+        
+        moXmlCatalogCfdRelationType = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_REL_TP);
+        moXmlCatalogCfdRelationType.populateCatalog(moKeyCfdRelationType);
         
         mnIogCategory = DTrnUtils.isDpsClassForStockIn(DTrnUtils.getDpsClassByDpsXType(mnFormType, mnFormSubtype)) ? DModSysConsts.TS_IOG_CT_IN : DModSysConsts.TS_IOG_CT_OUT;
 
@@ -1258,9 +1275,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDialogSerialNumberCompound = new DDialogSerialNumberCompound(miClient);
             moDialogSerialNumberInStock = new DDialogSerialNumberInStock(miClient);
             moDialogSerialNumberShow = new DDialogSerialNumberShow(miClient, DDialogSerialNumberShow.TYPE_DPS);
+            moDialogCfdiRelated = new DDialogCfdiRelated(miClient);
         }
 
-        mvRowStockMoves = new Vector<DTrnStockMove>();
+        mvRowStockMoves = new Vector<>();
+        maUuids = new ArrayList<>();
         mjButtonLaunchCalc = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_cal.gif")), "Mostrar calculadora", this);
         mjButtonEditItem = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mon.gif")), "Editar ítem", this);
         mjButtonShowRowNote = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_NOTE), "Ver notas", this);
@@ -1564,7 +1583,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         return true;
     }
-
+    
     private void clearRow() {
         renderItem(null, 0);
 
@@ -1664,7 +1683,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         if (moRegistry.getActiveRowsCount() == 0) {
             moKeyBizPartner.setEnabled(true);
-            moKeyPaymentType.setEnabled(enablePaymentType());
+            moKeyPaymentType.setEnabled(enablePaymentTypeField());
             jbBizPartnerPick.setEnabled(true);
             jbBizPartnerEdit.setEnabled(true);
 
@@ -1682,6 +1701,72 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 moKeyCurrency.setEnabled(false);
             }
         }
+    }
+    
+    private void showCfdiRelated() {
+        jtfCfdiRelated.setText("" + maUuids.size());
+    }
+    
+    /**
+     * Adds UUID only if it is not already a member in array of UUID's.
+     * @param uuidToAdd UUID to add.
+     */
+    private void computeCfdiRelatedAddition(String uuidToAdd) {
+        if (!uuidToAdd.isEmpty()) {
+            if (uuidToAdd.length() != DCfdVer3Consts.LEN_UUID) {
+                miClient.showMsgBoxError("Longitud de UUID inválida: [" + uuidToAdd + "].");
+            }
+            else {
+                boolean add = true;
+
+                for (String uuid : maUuids) {
+                    if (uuid.compareToIgnoreCase(uuidToAdd) == 0) {
+                        add = false;
+                        break;
+                    }
+                }
+
+                if (add) {
+                    maUuids.add(uuidToAdd);
+                    showCfdiRelated();
+                }
+            }
+        }
+    }
+
+    /**
+     * Deletes UUID only if it is not longer used by any row in document.
+     * @param uuidToAdd UUID to add.
+     */
+    private void computeCfdiRelatedDeletion(String uuidToDelete) {
+        boolean delete = true;
+        
+        for (DGridRow row : moGridDpsRows.getModel().getGridRows()) {
+            if (((DDbDpsRow) row).getEdsSourceUuid().compareToIgnoreCase(uuidToDelete) == 0) {
+                delete = false;
+                break;
+            }
+        }
+        
+        if (delete) {
+            for (int index = 0; index < maUuids.size(); index++) {
+                if (maUuids.get(index).compareToIgnoreCase(uuidToDelete) == 0) {
+                    maUuids.remove(index);
+                    showCfdiRelated();
+                    break;
+                }
+            }
+        }
+    }
+
+    private String composeCfdiRelated() {
+        String cfdis = "";
+        
+        for (String uuid : maUuids) {
+            cfdis += (cfdis.isEmpty() ? "" : "\n") + uuid;
+        }
+        
+        return cfdis;
     }
 
     private void updateCatalogueBranchAddress() {
@@ -1712,8 +1797,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         return moItem.isInventoriable() && (mbIsDocument || mbIsAdjustment) && !isCurrentAdjustmentForMoney();
     }
 
-    private boolean enablePaymentType() {
+    private boolean enablePaymentTypeField() {
         return !mbIsPosModule && !mbIsAdjustment && moBizPartnerConfig != null && moBizPartnerConfig.getActualFkCreditTypeId() != DModSysConsts.BS_CDT_TP_CDT_NON;
+    }
+
+    private boolean enableCfdFields() {
+        return mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment);
+    }
+
+    private boolean isSalesAdjustment() {
+        return mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && mbIsAdjustment;
     }
 
     private boolean validateCoreData() {
@@ -2123,11 +2216,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
                 moTextRowCode.setValue(moItem.getCode());
                 moTextRowName.setValue(moItem.getName());
-                jtfRowCfdItemKey.setText(moItem.getActualCfdItemKey());
+                jtfRowCfdItemKey.setText(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFact : moItem.getActualCfdItemKey());
                 jtfRowCfdItemKey.setCaretPosition(0);
                 jtfRowUnitCode.setText(moUnit.getCode());
                 jtfRowUnitCode.setCaretPosition(0);
-                jtfRowCfdUnitKey.setText(moUnit.getCfdUnitKey());
+                jtfRowCfdUnitKey.setText(isSalesAdjustment() ? DCfdi33Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
                 jtfRowCfdUnitKey.setCaretPosition(0);
 
                 moTextRowCode.setToolTipText(DGuiConsts.TXT_LBL_CODE + ": " + moItem.getCode());
@@ -2189,6 +2282,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setPkRowId(0);
         dpsRow.setCode(moTextRowCode.getText());
         dpsRow.setName(moTextRowName.getText());
+        dpsRow.setPredial(moTextRowCfdPredial.getText());
         dpsRow.setSortingPos(0);
         dpsRow.setDiscountDocApplying(true);      // XXX improve this!, set discount only if item settings allow it
         //dpsRow.setDiscountDocApplying(!moItem.isFreeOfDiscount());
@@ -2319,9 +2413,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTsUserInsert(null);
         dpsRow.setTsUserUpdate(null);
 
-        dpsRow.setEdsItemKey(moItem.getActualCfdItemKey());
-        dpsRow.setEdsUnitKey(moUnit.getCfdUnitKey());
-        dpsRow.setPredial(moTextRowCfdPredial.getText());
+        dpsRow.setEdsItemKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFact : moItem.getActualCfdItemKey());
+        dpsRow.setEdsUnitKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
+        dpsRow.setEdsSourceUuid("");
         
         dpsRow.setDbUnitCode(moUnit.getCode());
         dpsRow.setDbTaxRegimeId(moItem.getFkTaxRegimeId());
@@ -2364,6 +2458,35 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     private void actionPerformedExchangeRatePick() {
 
+    }
+
+    private void actionPerformedCfdCfdiRelatedShow() {
+        String cfdiRelated = composeCfdiRelated();
+        
+        if (mbIsDocument) {
+            moDialogCfdiRelated.setValue(DDialogCfdiRelated.UUID, cfdiRelated);
+            moDialogCfdiRelated.setVisible(true);
+
+            if (moDialogCfdiRelated.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                String[] uuids = DLibUtils.textExplode((String) moDialogCfdiRelated.getValue(DDialogCfdiRelated.UUID), "\n");
+                maUuids.clear();
+                for (String uuid : uuids) {
+                    if (uuid.isEmpty()) {
+                        continue;
+                    }
+                    else if (uuid.length() != DCfdVer3Consts.LEN_UUID) {
+                        miClient.showMsgBoxError("Longitud de UUID inválida: [" + uuid + "].");
+                    }
+                    else {
+                        maUuids.add(uuid);
+                    }
+                }
+                showCfdiRelated();
+            }
+        }
+        else if (mbIsAdjustment) {
+            miClient.showMsgBoxInformation(jtfCfdiRelated.getToolTipText() + ":\n" + (cfdiRelated.isEmpty() ? "¡Ninguno!" : cfdiRelated));
+        }
     }
 
     private void actionPerformedFind(final DTrnItemsFound itemsFound) {
@@ -2726,6 +2849,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         added = true;
                         moRegistry.getChildRows().add(row);
                         moGridDpsRows.addGridRow(row);
+                        
+                        computeCfdiRelatedAddition(row.getEdsSourceUuid());
                     }
                 }
 
@@ -2764,6 +2889,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         added = true;
                         moRegistry.getChildRows().add(row);
                         moGridDpsRows.addGridRow(row);
+                        
+                        computeCfdiRelatedAddition(row.getEdsSourceUuid());
                     }
                 }
 
@@ -2926,10 +3053,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyPaymentType.setEnabled(false);
             moKeyCfdUsage.setEnabled(false);
             moKeyCfdTaxRegime.setEnabled(false);
-            moTextOrder.setEnabled(false);
-            moDateDelivery.setEnabled(false);
             moTextImportDeclaration.setEnabled(false);
             moDateImportDeclarationDate.setEnabled(false);
+            moTextOrder.setEnabled(false);
+            moDateDelivery.setEnabled(false);
+            moKeyCfdRelationType.setEnabled(false);
+            jbCfdCfdiRelatedShow.setEnabled(false);
+            maUuids.clear();
             setRowFieldsEditable(false);
 
             moKeyEmissionType.setEnabled(false);
@@ -2939,10 +3069,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyPaymentType.resetField();
             moKeyCfdUsage.resetField();
             moKeyCfdTaxRegime.resetField();
-            moTextOrder.resetField();
-            moDateDelivery.resetField();
             moTextImportDeclaration.resetField();
             moDateImportDeclarationDate.resetField();
+            moTextOrder.resetField();
+            moDateDelivery.resetField();
+            moKeyCfdRelationType.resetField();
 
             moKeyEmissionType.resetField();
 
@@ -2965,26 +3096,29 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             moKeyBranchAddress.setEnabled(true);
             moKeyCurrency.setEnabled(!mbIsPosModule);
-            moKeyPaymentType.setEnabled(enablePaymentType());
-            moKeyCfdUsage.setEnabled(moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
-            moKeyCfdTaxRegime.setEnabled(moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
-            moTextOrder.setEnabled(!mbIsAdjustment);
-            moDateDelivery.setEnabled(!mbIsAdjustment);
+            moKeyPaymentType.setEnabled(enablePaymentTypeField());
+            moKeyCfdUsage.setEnabled(enableCfdFields());
+            moKeyCfdTaxRegime.setEnabled(enableCfdFields());
             moTextImportDeclaration.setEnabled(mbIsImportDeclaration);
             moDateImportDeclarationDate.setEnabled(mbIsImportDeclaration);
+            moTextOrder.setEnabled(!mbIsAdjustment);
+            moDateDelivery.setEnabled(!mbIsAdjustment);
+            moKeyCfdRelationType.setEnabled(enableCfdFields());
+            jbCfdCfdiRelatedShow.setEnabled(enableCfdFields());
             setRowFieldsEditable(!mbIsAdjustment);
 
             moKeyEmissionType.setEnabled(moRegistry.isDpsForSale());
 
             moKeyBranchAddress.setValue(moBizPartnerBranch.getChildDefaultAddress().getPrimaryKey());
             moKeyCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
-            moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_NA : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
+            moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_CSH : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
             moKeyCfdUsage.setValue(new int[] { !moKeyCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartnerConfig.getActualCfdUsage()) });
             moKeyCfdTaxRegime.setValue(new int[] { !moKeyCfdTaxRegime.isEnabled() ? 0 : moConfigCompany.getFkTaxRegimeId() });
-            moTextOrder.setValue("");
-            moDateDelivery.setValue(null);
             moTextImportDeclaration.setValue("");
             moDateImportDeclarationDate.setValue(null);
+            moTextOrder.setValue("");
+            moDateDelivery.setValue(null);
+            moKeyCfdRelationType.setValue(null);
 
             moKeyEmissionType.setValue(new int[] { moRegistry.isDpsForSale() ? moBizPartner.getFkEmissionTypeId() : DModSysConsts.TS_EMI_TP_BPR });
 
@@ -3087,15 +3221,15 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             paymentType = moKeyPaymentType.getValue()[0];
             
-            moKeyCfdMethodOfPayment.setEnabled(!mbIsPosModule && moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
-            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && moRegistry.isDpsForSale() && moRegistry.isDpsDocument());
+            moKeyCfdMethodOfPayment.setEnabled(!mbIsPosModule && enableCfdFields());
+            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdFields());
             moIntCreditDays.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
             moDateCredit.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
 
-            moKeyCfdMethodOfPayment.setValue(new int [] { !(moRegistry.isDpsForSale() && moRegistry.isDpsDocument()) ? 
-                    DLibConsts.UNDEFINED : paymentType == DModSysConsts.FS_PAY_TP_CSH ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID });
-            moKeyModeOfPaymentType.setValue(new int[] { !(moRegistry.isDpsForSale() && moRegistry.isDpsDocument()) ? 
-                    DLibConsts.UNDEFINED : paymentType == DModSysConsts.FS_PAY_TP_CSH ? moBizPartnerConfig.getActualFkModeOfPaymentTypeId() : DModSysConsts.FS_MOP_TP_TO_DEF });
+            moKeyCfdMethodOfPayment.setValue(new int [] { !enableCfdFields() ? 
+                    DLibConsts.UNDEFINED : (paymentType == DModSysConsts.FS_PAY_TP_CSH || mbIsAdjustment) ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID });
+            moKeyModeOfPaymentType.setValue(new int[] { !enableCfdFields() ? 
+                    DLibConsts.UNDEFINED : (paymentType == DModSysConsts.FS_PAY_TP_CSH || mbIsAdjustment) ? moBizPartnerConfig.getActualFkModeOfPaymentTypeId() : DModSysConsts.FS_MOP_TP_TO_DEF });
             moIntCreditDays.setValue(paymentType == DModSysConsts.FS_PAY_TP_CSH ? 0 : moBizPartnerConfig.getActualCreditDays());
             moDateCredit.setValue(moDateDate.getValue());
         }
@@ -3129,6 +3263,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
@@ -3186,7 +3321,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JPanel jPanel9;
     private javax.swing.JButton jbBizPartnerEdit;
     private javax.swing.JButton jbBizPartnerPick;
-    private javax.swing.JButton jbCfdRelatedView;
+    private javax.swing.JButton jbCfdCfdiRelatedShow;
     private javax.swing.JButton jbDiscountDocSet;
     private javax.swing.JButton jbExchangeRatePick;
     private javax.swing.JButton jbFind;
@@ -3196,7 +3331,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JLabel jlCfdConfirmation;
     private javax.swing.JLabel jlCfdMethodOfPayment;
     private javax.swing.JLabel jlCfdPaymentTerms;
-    private javax.swing.JLabel jlCfdRelated;
+    private javax.swing.JLabel jlCfdRelationType;
     private javax.swing.JLabel jlCfdTaxRegime;
     private javax.swing.JLabel jlCfdUsage;
     private javax.swing.JLabel jlCreditDays;
@@ -3245,9 +3380,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JTextField jtfBranchWarehose;
     private javax.swing.JTextField jtfCfdDate;
     private javax.swing.JTextField jtfCfdPaymentTerms;
-    private javax.swing.JTextField jtfCfdRelated;
     private javax.swing.JTextField jtfCfdType;
     private javax.swing.JTextField jtfCfdUuid;
+    private javax.swing.JTextField jtfCfdiRelated;
     private javax.swing.JTextField jtfDateMaturity;
     private javax.swing.JTextField jtfDocStatus;
     private javax.swing.JTextField jtfDocType;
@@ -3288,6 +3423,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldKey moKeyBizPartner;
     private sba.lib.gui.bean.DBeanFieldKey moKeyBranchAddress;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCfdMethodOfPayment;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyCfdRelationType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCfdTaxRegime;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCfdUsage;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCurrency;
@@ -3310,6 +3446,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbBizPartnerPick.addActionListener(this);
         jbBizPartnerEdit.addActionListener(this);
         jbExchangeRatePick.addActionListener(this);
+        jbCfdCfdiRelatedShow.addActionListener(this);
         jbFind.addActionListener(this);
         jbRowClear.addActionListener(this);
         jbRowAdd.addActionListener(this);
@@ -3355,6 +3492,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbBizPartnerPick.removeActionListener(this);
         jbBizPartnerEdit.removeActionListener(this);
         jbExchangeRatePick.removeActionListener(this);
+        jbCfdCfdiRelatedShow.removeActionListener(this);
         jbFind.removeActionListener(this);
         jbRowClear.removeActionListener(this);
         jbRowAdd.removeActionListener(this);
@@ -3533,6 +3671,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moTextOrder.setValue(moRegistry.getOrder());
         moDateDelivery.setValue(moRegistry.getDateDelivery_n());
         
+        moKeyCfdRelationType.setValue(new int[] { moXmlCatalogCfdRelationType.getId(moRegistry.getEdsRelationType()) });
+        maUuids.clear();
+        maUuids.addAll(moRegistry.getEdsCfdiRelated());
+        showCfdiRelated();
+        
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
 
         moBoolDiscountDocApplying.setValue(moRegistry.isDiscountDocApplying());
@@ -3547,7 +3690,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfCfdDate.setText(moRegistry.getChildEds() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getChildEds().getDocTs()));
         jtfDocType.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_TP, moRegistry.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         jtfDocStatus.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_ST, moRegistry.getDpsStatusKey(), DDbRegistry.FIELD_NAME));
-        jtfCfdRelated.setText("");
         jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moRegistry.getCompanyBranchKey(), DDbRegistry.FIELD_CODE));
         jtfBranchWarehose.setText(moRegistry.getBranchWarehouseKey_n() == null ? "" : (String) miClient.getSession().readField(DModConsts.CU_WAH, moRegistry.getBranchWarehouseKey_n(), DDbRegistry.FIELD_CODE));
         jtfTerminal.setText("" + moRegistry.getTerminal());
@@ -3555,7 +3697,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfCfdType.setCaretPosition(0);
         jtfDocType.setCaretPosition(0);
         jtfDocStatus.setCaretPosition(0);
-        jtfCfdRelated.setCaretPosition(0);
         jtfOwnBranch.setCaretPosition(0);
         jtfBranchWarehose.setCaretPosition(0);
         jtfTerminal.setCaretPosition(0);
@@ -3752,6 +3893,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     registry.setEdsConfirmation(moTextCfdConfirmation.getValue());
                     registry.setEdsTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
                     registry.setEdsUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
+                    registry.setEdsRelationType(moKeyCfdRelationType.getSelectedIndex() <= 0 ? "" : moKeyCfdRelationType.getSelectedItem().getCode());
+                    registry.getEdsCfdiRelated().clear();
+                    registry.getEdsCfdiRelated().addAll(maUuids);
                 }
                 
                 // create dummy e-document only to verify if it can be processed:
@@ -3803,6 +3947,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moTextImportDeclaration.getValue().length() != 15) {
                 validation.setMessage("La longitud del campo '" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " 15.");
                 validation.setComponent(moTextImportDeclaration);
+            }
+            else if (moKeyCfdRelationType.getSelectedIndex() <= 0 && !maUuids.isEmpty()) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlCfdRelationType.getText()) + "'.");
+                validation.setComponent(moKeyCfdRelationType);
+            }
+            else if (moKeyCfdRelationType.getSelectedIndex() > 0 && maUuids.isEmpty()) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jtfCfdiRelated.getToolTipText()) + "'.");
+                validation.setComponent(jbCfdCfdiRelatedShow);
             }
             else if (moGridDpsRows.getTable().getRowCount() == 0) {
                 validation.setMessage(DUtilConsts.ERR_MSG_DOC_NO_ROWS);
@@ -3918,7 +4070,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             case DModConsts.T_DPS_NOT:
                 break;
             case DModConsts.T_DPS_ROW:
-                moRegistry.getChildRows().remove((DDbDpsRow) gridRow);
+                DDbDpsRow dpsRow = (DDbDpsRow) gridRow;
+                moRegistry.getChildRows().remove(dpsRow);
+                computeCfdiRelatedDeletion(dpsRow.getEdsSourceUuid());
                 computeTotal();
                 break;
             default:
@@ -3951,6 +4105,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
             else if (button == jbExchangeRatePick) {
                 actionPerformedExchangeRatePick();
+            }
+            else if (button == jbCfdCfdiRelatedShow) {
+                actionPerformedCfdCfdiRelatedShow();
             }
             else if (button == jbFind) {
                 actionPerformedFind(null);

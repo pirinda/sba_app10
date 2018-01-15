@@ -8,6 +8,7 @@ package sba.mod.trn.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import net.sf.jasperreports.engine.JRException;
@@ -130,6 +131,8 @@ public class DDbDps extends DDbRegistryUser {
     protected String msEdsConfirmation;
     protected String msEdsTaxRegime;
     protected String msEdsUsage;
+    protected String msEdsRelationType;
+    protected ArrayList<String> maEdsCfdiRelated;
 
     protected int mnXtaIogId;
 
@@ -140,8 +143,9 @@ public class DDbDps extends DDbRegistryUser {
 
     public DDbDps() {
         super(DModConsts.T_DPS);
-        mvChildNotes = new Vector<DDbDpsNote>();
-        mvChildRows = new Vector<DDbDpsRow>();
+        mvChildNotes = new Vector<>();
+        mvChildRows = new Vector<>();
+        maEdsCfdiRelated = new ArrayList<>();
         initRegistry();
     }
 
@@ -566,6 +570,19 @@ public class DDbDps extends DDbRegistryUser {
                     msEdsPaymentTerms = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
                     msEdsConfirmation = DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false);
 
+                    // CFDI relacionados:
+                    if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
+                        node = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados").get(0);
+                        namedNodeMap = node.getAttributes();
+                        msEdsRelationType = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
+                        
+                        maEdsCfdiRelated.clear();
+                        for (Node child : DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionado")) {
+                            namedNodeMap = child.getAttributes();
+                            maEdsCfdiRelated.add(DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false));
+                        }
+                    }
+
                     // emisor:
                     node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
                     namedNodeMap = node.getAttributes();
@@ -968,6 +985,7 @@ public class DDbDps extends DDbRegistryUser {
     public void setEdsConfirmation(String s) { msEdsConfirmation = s; }
     public void setEdsTaxRegime(String s) { msEdsTaxRegime = s; }
     public void setEdsUsage(String s) { msEdsUsage = s; }
+    public void setEdsRelationType(String s) { msEdsRelationType = s; }
     
     public void setXtaIogId(int n) { mnXtaIogId = n; }
 
@@ -982,6 +1000,8 @@ public class DDbDps extends DDbRegistryUser {
     public String getEdsConfirmation() { return msEdsConfirmation; }
     public String getEdsTaxRegime() { return msEdsTaxRegime; }
     public String getEdsUsage() { return msEdsUsage; }
+    public String getEdsRelationType() { return msEdsRelationType; }
+    public ArrayList<String> getEdsCfdiRelated() { return maEdsCfdiRelated; }
     
     public int getXtaIogId() { return mnXtaIogId; }
 
@@ -1113,6 +1133,8 @@ public class DDbDps extends DDbRegistryUser {
         msEdsConfirmation = "";
         msEdsTaxRegime = "";
         msEdsUsage = "";
+        msEdsRelationType = "";
+        maEdsCfdiRelated.clear();;
 
         mnXtaIogId = 0;
 
@@ -1605,6 +1627,8 @@ public class DDbDps extends DDbRegistryUser {
         registry.setEdsConfirmation(this.getEdsConfirmation());
         registry.setEdsTaxRegime(this.getEdsTaxRegime());
         registry.setEdsUsage(this.getEdsUsage());
+        registry.setEdsRelationType(this.getEdsRelationType());
+        registry.getEdsCfdiRelated().addAll(this.getEdsCfdiRelated());
 
         registry.setXtaIogId(this.getXtaIogId());
 

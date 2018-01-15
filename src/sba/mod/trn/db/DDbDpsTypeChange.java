@@ -343,6 +343,8 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             dps.setEdsConfirmation("");
             dps.setEdsTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
             dps.setEdsUsage(bizPartnerConfig.getActualCfdUsage());
+            dps.setEdsRelationType("");
+            dps.getEdsCfdiRelated().clear();    // it is assumed that no UUID's are available
             
             for (DDbDpsRow row : dps.getChildRows()) {
                 if (!row.isDeleted()) {

@@ -11,6 +11,7 @@
 
 package sba.mod.trn.form;
 
+import cfd.ver33.DCfdi33Catalogs;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -478,6 +479,7 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         dpsRowNew.setPkRowId(0);
         dpsRowNew.setCode(dpsRow.getCode());
         dpsRowNew.setName(dpsRow.getName());
+        dpsRowNew.setPredial(dpsRow.getPredial());
         dpsRowNew.setSortingPos(0);
         dpsRowNew.setDiscountDocApplying(false);
         dpsRowNew.setDiscountUnitaryPercentageApplying(false);
@@ -572,7 +574,18 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         dpsRowNew.setTsUserInsert(null);
         dpsRowNew.setTsUserUpdate(null);
 
+        /* 2018-01-14 (Sergio Flores): It seems that ClaveProdServ and ClaveUnidad attributes are fixed in CFDI 3.3 credit notes.
+        DDbItem item = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, new int[] { dpsRow.getFkRowItemId() });
+        DDbUnit unit = (DDbUnit) miClient.getSession().readRegistry(DModConsts.IU_UNT, new int[] { dpsRow.getFkRowUnitId() });
+        dpsRowNew.setEdsItemKey(item.getActualCfdItemKey());
+        dpsRowNew.setEdsUnitKey(unit.getCfdUnitKey());
+        */
+        dpsRowNew.setEdsItemKey(DCfdi33Catalogs.ClaveProdServServsFact); //fixed ClaveProdServ
+        dpsRowNew.setEdsUnitKey(DCfdi33Catalogs.ClaveUnidadAct); //fixed ClaveUnidad
+        dpsRowNew.setEdsSourceUuid(moDps.getEdsUuid());
+        
         dpsRowNew.setDbUnitCode(dpsRow.getDbUnitCode());
+        dpsRowNew.setDbTaxRegimeId(dpsRow.getDbTaxRegimeId());
 
         if (dpsRowNew.isInventoriable()) {
             dpsRowNew.getAuxStockMoves().addAll(rowAdjusted.getStockMovesAdjusted());

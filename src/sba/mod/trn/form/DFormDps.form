@@ -878,22 +878,34 @@
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlCfdRelated">
+                        <Component class="javax.swing.JLabel" name="jlCfdRelationType">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Relacionados:"/>
+                            <Property name="text" type="java.lang.String" value="Tipo relaci&#xf3;n:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JTextField" name="jtfCfdRelated">
+                        <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyCfdRelationType">
                           <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="text" type="java.lang.String" value="F5343B75-9A23-4E25-979A-03CA560FEE62"/>
-                            <Property name="toolTipText" type="java.lang.String" value="UUID del comprobante"/>
-                            <Property name="focusable" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[252, 20]"/>
+                              <Dimension value="[215, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel1">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[5, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="jbCfdCfdiRelatedShow">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="..."/>
+                            <Property name="toolTipText" type="java.lang.String" value="Ver CFDI relacionados"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[23, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -904,13 +916,15 @@
                             </Property>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="jbCfdRelatedView">
+                        <Component class="javax.swing.JTextField" name="jtfCfdiRelated">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="..."/>
-                            <Property name="toolTipText" type="java.lang.String" value="Ver CFDI relacionados"/>
-                            <Property name="enabled" type="boolean" value="false"/>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="horizontalAlignment" type="int" value="11"/>
+                            <Property name="text" type="java.lang.String" value="0"/>
+                            <Property name="toolTipText" type="java.lang.String" value="CFDI relacionados"/>
+                            <Property name="focusable" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[23, 23]"/>
+                              <Dimension value="[25, 23]"/>
                             </Property>
                           </Properties>
                         </Component>

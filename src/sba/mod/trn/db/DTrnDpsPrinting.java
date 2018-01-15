@@ -302,6 +302,22 @@ public class DTrnDpsPrinting {
         hashMap.put("dXmlDescuento", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Descuento", false)));
         hashMap.put("dXmlTotal", dTotal = DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true)));
         hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+        
+        // CFDI Relacionados:
+
+        if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:CfdiRelacionados")) {
+            String cfdiRelacionados = "";
+            Node nodeCfdiRelacionados = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados").get(0);
+
+            namedNodeMap = nodeCfdiRelacionados.getAttributes();
+            hashMap.put("sXmlTipoRelacion", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REL_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true)));
+            
+            for (Node nodeCfdiRelacionado : DXmlUtils.extractChildElements(nodeCfdiRelacionados, "cfdi:CfdiRelacionado")) {
+                namedNodeMap = nodeCfdiRelacionado.getAttributes();
+                cfdiRelacionados += (cfdiRelacionados.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
+            }
+            hashMap.put("sXmlCfdiRelacionados", cfdiRelacionados);
+        }
 
         // Emisor:
                 

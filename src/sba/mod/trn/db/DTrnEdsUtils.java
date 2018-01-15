@@ -761,6 +761,18 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
         comprobante.getAttConfirmacion().setString(dps.getEdsConfirmation());
+        
+        // element 'CfdiRelacionados':
+        if (!dps.getEdsRelationType().isEmpty()) {
+            cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
+            cfdiRelacionados.getAttTipoRelacion().setString(dps.getEdsRelationType());
+            for (String uuid : dps.getEdsCfdiRelated()) {
+                cfd.ver33.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver33.DElementCfdiRelacionado();
+                cfdiRelacionado.getAttUuid().setString(uuid);
+                cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
+            }
+            comprobante.setEltOpcCfdiRelacionados(cfdiRelacionados);
+        }
 
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
@@ -776,9 +788,9 @@ public abstract class DTrnEdsUtils {
 
         // element 'Conceptos':
         
-        HashMap<Double, Double> mapTaxIva = new HashMap<>();   // rate, tax
-        HashMap<Double, Double> mapRetIva = new HashMap<>();   // rate, retained
-        HashMap<Double, Double> mapRetIsr = new HashMap<>();   // rate, retained
+        HashMap<Double, Double> mapTaxIva = new HashMap<>();   //tax rate, tax amount
+        HashMap<String, Double> mapRetIva = new HashMap<>();   //retention code, retained amount
+        HashMap<String, Double> mapRetIsr = new HashMap<>();   //retention code, retained amount
         
         for (DDbDpsRow dpsRow : dps.getChildRows()) {
             if (!dpsRow.isDeleted()) {
@@ -804,12 +816,14 @@ public abstract class DTrnEdsUtils {
                 
                 cfd.ver33.DElementConceptoImpuestosTraslados impuestosTraslados = null;
                 
+                //go through the 3 possible taxes on each document row:
+                
                 for (int index = 1; index <= 3; index++) {
                     int taxId = DLibConsts.UNDEFINED;
                     double taxRate = 0;
                     double taxAmount = 0;
-                    String tax = "";
-                    HashMap<Double, Double> mapTax = null;  // rate, tax
+                    String taxCode = "";
+                    HashMap<Double, Double> mapTax = null; //tax rate, tax amount
                     
                     switch (index) {
                         case 1:
@@ -835,7 +849,7 @@ public abstract class DTrnEdsUtils {
                             case 1: // (N/A)
                                 break;
                             case 2: // IVA
-                                tax = DCfdi33Catalogs.IMP_IVA;
+                                taxCode = DCfdi33Catalogs.IMP_IVA;
                                 mapTax = mapTaxIva;
                                 break;
                             case 3: // ISR
@@ -846,6 +860,7 @@ public abstract class DTrnEdsUtils {
                         
                         if (mapTax != null) {
                             Double taxAcum = mapTax.get(taxRate);
+                            
                             if (taxAcum == null) {
                                 mapTax.put(taxRate, taxAmount);
                             }
@@ -855,7 +870,7 @@ public abstract class DTrnEdsUtils {
                             
                             cfd.ver33.DElementConceptoImpuestoTraslado impuestoTraslado = new cfd.ver33.DElementConceptoImpuestoTraslado();
                             impuestoTraslado.getAttBase().setDouble(dpsRow.getSubtotalCy_r());
-                            impuestoTraslado.getAttImpuesto().setString(tax);
+                            impuestoTraslado.getAttImpuesto().setString(taxCode);
                             impuestoTraslado.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
                             impuestoTraslado.getAttTasaOCuota().setDouble(DLibUtils.round(taxRate, decsTax));
                             impuestoTraslado.getAttImporte().setDouble(DLibUtils.round(taxAmount, decs));
@@ -872,12 +887,14 @@ public abstract class DTrnEdsUtils {
                 
                 cfd.ver33.DElementConceptoImpuestosRetenciones impuestosRetenciones = null;
                 
+                //go through the 3 possible taxes on each document row:
+                
                 for (int index = 1; index <= 3; index++) {
                     int retId = DLibConsts.UNDEFINED;
                     double retRate = 0;
                     double retAmount = 0;
-                    String ret = "";
-                    HashMap<Double, Double> mapRet = null;  // rate, retention
+                    String retCode = "";
+                    HashMap<String, Double> mapRet = null; //retention code, retained amount
                     
                     switch (index) {
                         case 1:
@@ -903,11 +920,11 @@ public abstract class DTrnEdsUtils {
                             case 1: // (N/A)
                                 break;
                             case 2: // IVA
-                                ret = DCfdi33Catalogs.IMP_IVA;
+                                retCode = DCfdi33Catalogs.IMP_IVA;
                                 mapRet = mapRetIva;
                                 break;
                             case 3: // ISR
-                                ret = DCfdi33Catalogs.IMP_ISR;
+                                retCode = DCfdi33Catalogs.IMP_ISR;
                                 mapRet = mapRetIsr;
                                 break;
                             default:
@@ -915,17 +932,18 @@ public abstract class DTrnEdsUtils {
                         }
                         
                         if (mapRet != null) {
-                            Double retAcum = mapRet.get(retRate);
+                            Double retAcum = mapRet.get(retCode);
+                            
                             if (retAcum == null) {
-                                mapRet.put(retRate, retAmount);
+                                mapRet.put(retCode, retAmount);
                             }
                             else {
-                                mapRet.put(retRate, DLibUtils.round(retAcum + retAmount, decs));
+                                mapRet.put(retCode, DLibUtils.round(retAcum + retAmount, decs));
                             }
                             
                             cfd.ver33.DElementConceptoImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementConceptoImpuestoRetencion();
                             impuestoRetencion.getAttBase().setDouble(dpsRow.getSubtotalCy_r());
-                            impuestoRetencion.getAttImpuesto().setString(ret);
+                            impuestoRetencion.getAttImpuesto().setString(retCode);
                             impuestoRetencion.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
                             impuestoRetencion.getAttTasaOCuota().setDouble(DLibUtils.round(retRate, decsTax));
                             impuestoRetencion.getAttImporte().setDouble(DLibUtils.round(retAmount, decs));
@@ -944,6 +962,7 @@ public abstract class DTrnEdsUtils {
                     if (impuestosTraslados != null) {
                         impuestos.setEltOpcImpuestosTrasladados(impuestosTraslados);
                     }
+                    
                     if (impuestosRetenciones != null) {
                         impuestos.setEltOpcImpuestosRetenciones(impuestosRetenciones);
                     }
@@ -987,37 +1006,37 @@ public abstract class DTrnEdsUtils {
         if (!mapTaxIva.isEmpty()) {
             impuestosTraslados = new cfd.ver33.DElementImpuestosTraslados();
             
-            for (Double rate : mapTaxIva.keySet()) {
+            for (Double taxRate : mapTaxIva.keySet()) {
                 cfd.ver33.DElementImpuestoTraslado impuestoTraslado = new cfd.ver33.DElementImpuestoTraslado();
                 impuestoTraslado.getAttImpuesto().setString(DCfdi33Catalogs.IMP_IVA);
                 impuestoTraslado.getAttTipoFactor().setString(DCfdi33Catalogs.FAC_TP_TASA);
-                impuestoTraslado.getAttTasaOCuota().setDouble(DLibUtils.round(rate, decsTax));
-                impuestoTraslado.getAttImporte().setDouble(mapTaxIva.get(rate));
+                impuestoTraslado.getAttTasaOCuota().setDouble(DLibUtils.round(taxRate, decsTax));
+                impuestoTraslado.getAttImporte().setDouble(mapTaxIva.get(taxRate));
                 impuestosTraslados.getEltImpuestoTrasladados().add(impuestoTraslado);
                 
-                totalTrasladados = DLibUtils.round(totalTrasladados + mapTaxIva.get(rate), decs);
+                totalTrasladados = DLibUtils.round(totalTrasladados + mapTaxIva.get(taxRate), decs);
             }
         }
 
         if (!mapRetIva.isEmpty() || !mapRetIsr.isEmpty()) {
             impuestosRetenciones = new cfd.ver33.DElementImpuestosRetenciones();
             
-            for (Double rate : mapRetIva.keySet()) {
+            for (String retCode : mapRetIva.keySet()) {
                 cfd.ver33.DElementImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementImpuestoRetencion();
                 impuestoRetencion.getAttImpuesto().setString(DCfdi33Catalogs.IMP_IVA);
-                impuestoRetencion.getAttImporte().setDouble(mapRetIva.get(rate));
+                impuestoRetencion.getAttImporte().setDouble(mapRetIva.get(retCode));
                 impuestosRetenciones.getEltImpuestoRetenciones().add(impuestoRetencion);
                 
-                totalRetenciones = DLibUtils.round(totalRetenciones+ mapRetIva.get(rate), decs);
+                totalRetenciones = DLibUtils.round(totalRetenciones + mapRetIva.get(retCode), decs);
             }
             
-            for (Double rate : mapRetIsr.keySet()) {
+            for (String retCode : mapRetIsr.keySet()) {
                 cfd.ver33.DElementImpuestoRetencion impuestoRetencion = new cfd.ver33.DElementImpuestoRetencion();
                 impuestoRetencion.getAttImpuesto().setString(DCfdi33Catalogs.IMP_ISR);
-                impuestoRetencion.getAttImporte().setDouble(mapRetIsr.get(rate));
+                impuestoRetencion.getAttImporte().setDouble(mapRetIsr.get(retCode));
                 impuestosRetenciones.getEltImpuestoRetenciones().add(impuestoRetencion);
                 
-                totalRetenciones = DLibUtils.round(totalRetenciones+ mapRetIsr.get(rate), decs);
+                totalRetenciones = DLibUtils.round(totalRetenciones + mapRetIsr.get(retCode), decs);
             }
         }
         
@@ -1028,6 +1047,7 @@ public abstract class DTrnEdsUtils {
                 impuestos.getAttTotalImpuestosTraslados().setDouble(totalTrasladados);
                 impuestos.setEltOpcImpuestosTrasladados(impuestosTraslados);
             }
+            
             if (impuestosRetenciones != null) {
                 impuestos.getAttTotalImpuestosRetenidos().setDouble(totalRetenciones);
                 impuestos.setEltOpcImpuestosRetenciones(impuestosRetenciones);

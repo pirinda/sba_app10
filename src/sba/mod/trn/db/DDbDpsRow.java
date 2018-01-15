@@ -117,6 +117,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
     protected String msEdsItemKey;
     protected String msEdsUnitKey;
+    protected String msEdsSourceUuid;
     
     protected String msDbUnitCode;
     protected int mnDbTaxRegimeId;
@@ -131,9 +132,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
     public DDbDpsRow() {
         super(DModConsts.T_DPS_ROW);
-        mvDbDependentDpsRowKeys = new Vector<int[]>();
-        mvChildRowNotes = new Vector<DDbDpsRowNote>();
-        mvAuxStockMoves = new Vector<DTrnStockMove>();
+        mvDbDependentDpsRowKeys = new Vector<>();
+        mvChildRowNotes = new Vector<>();
+        mvAuxStockMoves = new Vector<>();
         initRegistry();
     }
 
@@ -326,9 +327,11 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
     public void setEdsItemKey(String s) { msEdsItemKey = s; }
     public void setEdsUnitKey(String s) { msEdsUnitKey = s; }
+    public void setEdsSourceUuid(String s) { msEdsSourceUuid = s; }
     
     public String getEdsItemKey() { return msEdsItemKey; }
     public String getEdsUnitKey() { return msEdsUnitKey; }
+    public String getEdsSourceUuid() { return msEdsSourceUuid; }
     
     public void setDbUnitCode(String s) { msDbUnitCode = s; }
     public void setDbTaxRegimeId(int n) { mnDbTaxRegimeId = n; }
@@ -457,6 +460,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
         msEdsItemKey = "";
         msEdsUnitKey = "";
+        msEdsSourceUuid = "";
         
         msDbUnitCode = "";
         mnDbTaxRegimeId = 0;
@@ -955,6 +959,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
 
         registry.setEdsItemKey(this.getEdsItemKey());
         registry.setEdsUnitKey(this.getEdsUnitKey());
+        registry.setEdsSourceUuid(this.getEdsSourceUuid());
         
         registry.setDbUnitCode(this.getDbUnitCode());
         registry.setDbTaxRegimeId(this.getDbTaxRegimeId());

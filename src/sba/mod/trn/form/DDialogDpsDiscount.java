@@ -47,14 +47,10 @@ public class DDialogDpsDiscount extends DBeanFormDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonGroup = new javax.swing.ButtonGroup();
-        jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jlDiscountDoc = new javax.swing.JLabel();
         moCurDiscountDoc = new sba.lib.gui.bean.DBeanCompoundFieldCurrency();
-
-        jLabel2.setText("jLabel1");
 
         setTitle("Descuento del documento:");
 
@@ -95,8 +91,6 @@ public class DDialogDpsDiscount extends DBeanFormDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup jButtonGroup;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel jlDiscountDoc;
