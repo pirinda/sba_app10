@@ -453,6 +453,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public void setDecimalFormatQuantity(DecimalFormat o) { moDecimalFormatQuantity = o; }
+    public void setDecimalFormatPriceUnitary(DecimalFormat o) { moDecimalFormatPriceUnitary = o; }
+
     public DecimalFormat getDecimalFormatQuantity() { return moDecimalFormatQuantity; }
     public DecimalFormat getDecimalFormatPriceUnitary() { return moDecimalFormatPriceUnitary; }
     
@@ -1244,6 +1247,9 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
+        registry.setDecimalFormatQuantity(this.getDecimalFormatQuantity());
+        registry.setDecimalFormatPriceUnitary(this.getDecimalFormatPriceUnitary());
+    
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }

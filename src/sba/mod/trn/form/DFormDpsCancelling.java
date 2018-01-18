@@ -199,7 +199,7 @@ public class DFormDpsCancelling extends DBeanForm {
 
     @Override
     public DDbDpsSigning getRegistry() throws Exception {
-        return new DDbDpsSigning();
+        return new DDbDpsSigning(); //XXX 2018-01-15 (Sergio Flores): Fix this! Improper registry type, even though it is actually obsolete!
     }
 
     @Override

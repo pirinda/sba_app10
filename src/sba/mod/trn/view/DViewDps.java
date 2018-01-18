@@ -279,7 +279,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonTypeChange);
 
             mjButtonImport = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_IMPORT), DUtilConsts.TXT_IMPORT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-            mjButtonImport.setEnabled(mbEnableRowNew && DTrnUtils.isDpsClassDocument(manFilterDpsClassKey));
+            mjButtonImport.setEnabled(false/*mbEnableRowNew && DTrnUtils.isDpsClassDocument(manFilterDpsClassKey)*/); //2018-01-16 (Sergio Flores): it seems that this button is not already implemented, so it has been disabled!
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonImport);
         }
 

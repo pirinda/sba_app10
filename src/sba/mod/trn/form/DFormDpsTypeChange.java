@@ -28,7 +28,10 @@ import sba.lib.gui.bean.DBeanFieldKey;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DDbDpsSeriesBranch;
 import sba.mod.trn.db.DDbDpsSeriesNumber;
@@ -42,6 +45,7 @@ import sba.mod.trn.db.DTrnUtils;
 public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
 
     private DDbDps moRegistry;
+    private DDbLock moRegistryLock;
     private boolean mbSeriesAlreadySet;
 
     /** Creates new form DFormDpsTypeChange
@@ -74,6 +78,12 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
         jlNumber = new javax.swing.JLabel();
         moTextSeries = new sba.lib.gui.bean.DBeanFieldText();
         moIntNumber = new sba.lib.gui.bean.DBeanFieldInteger();
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jpContainer.setLayout(new java.awt.BorderLayout());
 
@@ -123,6 +133,10 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
         getContentPane().add(jpContainer, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        freeLockByCancel();
+    }//GEN-LAST:event_formWindowClosing
+
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 640, 400);
 
@@ -138,6 +152,20 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
 
         moPanelDps.setPanelSettings(miClient);
         moPanelDps.enableShowCardex();
+    }
+    
+    private void freeLockByCancel() {
+        if (moRegistryLock != null) {
+            try {
+                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+            finally {
+                moRegistryLock = null;
+            }
+        }
     }
 
     private void itemStateKeyDocType() {
@@ -290,6 +318,8 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
         }
         else {
             jtfRegistryKey.setText("");
+            
+            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDpsId(), DDbDps.TIMEOUT);
         }
 
         setFormEditable(true);  // enable all controls before setting form values
@@ -331,6 +361,7 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
 
         dpsSeriesNumber = DTrnUtils.getDpsSeriesNumber(miClient.getSession(), moKeyDocType.getValue(), moTextSeries.getValue(), moIntNumber.getValue());
         registry.setAuxXmlTypeId(dpsSeriesNumber.getFkXmlTypeId());
+        registry.setAuxLock(moRegistryLock);
 
         return registry;
     }
@@ -395,7 +426,13 @@ public class DFormDpsTypeChange extends DBeanForm implements ItemListener {
     public Object getValue(final int type) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
+    @Override
+    public void actionCancel() {
+        freeLockByCancel();
+        super.actionCancel();
+    }
+    
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof DBeanFieldKey) {

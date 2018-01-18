@@ -8,7 +8,7 @@ package sba.mod.trn.db;
 import cfd.DCfdConsts;
 import cfd.DCfdUtils;
 import cfd.DElement;
-import cfd.DElementExtAddenda;
+import cfd.DSubelementAddenda;
 import cfd.ext.continental.DElementAddendaContinentalTire;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -243,8 +243,6 @@ public class DDbDpsEds extends DDbRegistry {
 
     @Override
     public void save(DGuiSession session) throws SQLException, Exception {
-        DDbDps dps = null;
-        
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
@@ -266,14 +264,10 @@ public class DDbDpsEds extends DDbRegistry {
             mnFkUserAnnulId = DUtilConsts.USR_NA_ID;
         }
 
-        if (mbAuxRewriteXmlOnSave || mbAuxRegenerateXmlOnSave) {
-            dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
-        }
-
         if (mbAuxRegenerateXmlOnSave) {
             // XML must be regenerated, so embeed addenda:
             
-            DElementExtAddenda extAddenda = null;
+            DSubelementAddenda extAddenda = null;
             
             switch (mnFkXmlTypeId) {
                 case DModSysConsts.TS_XML_TP_CFD:
@@ -281,20 +275,20 @@ public class DDbDpsEds extends DDbRegistry {
 
                 case DModSysConsts.TS_XML_TP_CFDI_32:
                     // Create EDS:
-                    cfd.ver32.DElementComprobante comprobante32 = DCfdUtils.getCfdi32(msDocXml);
+                    cfd.ver32.DElementComprobante comprobante32 = DCfdUtils.getCfdi32(getSuitableDocXml());
                     DTrnEdsUtils.configureCfdi32(session, comprobante32);
 
                     // Append to EDS the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {
                         extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
                         if (extAddenda != null) {
-                            cfd.ver32.DElementAddenda addenda = null;
+                            cfd.ver3.DElementAddenda addenda = null;
                             
                             if (comprobante32.getEltOpcAddenda() != null) {
                                 addenda = comprobante32.getEltOpcAddenda();
                             }
                             else {
-                                addenda = new cfd.ver32.DElementAddenda();
+                                addenda = new cfd.ver3.DElementAddenda();
                                 comprobante32.setEltOpcAddenda(addenda);
                             }
                             
@@ -314,20 +308,20 @@ public class DDbDpsEds extends DDbRegistry {
 
                 case DModSysConsts.TS_XML_TP_CFDI_33:
                     // Create EDS:
-                    cfd.ver33.DElementComprobante comprobante33 = DCfdUtils.getCfdi33(msDocXml);
+                    cfd.ver33.DElementComprobante comprobante33 = DCfdUtils.getCfdi33(getSuitableDocXml());
                     DTrnEdsUtils.configureCfdi33(session, comprobante33);
 
                     // Append to EDS the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {
                         extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
                         if (extAddenda != null) {
-                            cfd.ver33.DElementAddenda addenda = null;
+                            cfd.ver3.DElementAddenda addenda = null;
                             
                             if (comprobante33.getEltOpcAddenda() != null) {
                                 addenda = comprobante33.getEltOpcAddenda();
                             }
                             else {
-                                addenda = new cfd.ver33.DElementAddenda();
+                                addenda = new cfd.ver3.DElementAddenda();
                                 comprobante33.setEltOpcAddenda(addenda);
                             }
                             
@@ -406,9 +400,10 @@ public class DDbDpsEds extends DDbRegistry {
         if (mbAuxRewriteXmlOnSave || mbAuxRegenerateXmlOnSave) {
             // XML must be regenerated, so save new XML file:
             
+            DDbDps dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, getPrimaryKey());
             DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
             
-            DXmlUtils.writeXml(getSuitableDocXml(), configBranch.getEdsDirectory() + msDocXmlName);
+            DXmlUtils.writeXml(mbAuxRegenerateXmlOnSave ? msDocXml : getSuitableDocXml(), configBranch.getEdsDirectory() + msDocXmlName);
         }
         
         mbRegistryNew = false;

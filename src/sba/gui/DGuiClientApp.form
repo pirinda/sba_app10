@@ -26,7 +26,14 @@
                 <Property name="text" type="java.lang.String" value="Cambiar contrase&#xf1;a..."/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jsFile1">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile1">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiFileDeleteActiveLocks">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar los bloqueos a registros..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile2">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiFileCloseViewsAll">
               <Properties>
@@ -38,14 +45,14 @@
                 <Property name="text" type="java.lang.String" value="Cerrar las otras vistas"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jsFile2">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile3">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiFileCloseSession">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cerrar sesi&#xf3;n de usuario"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jsFile3">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile4">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiFileExit">
               <Properties>
@@ -141,7 +148,7 @@
                 <Property name="text" type="java.lang.String" value="Contenido de ayuda..."/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jsHelp1">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsHelp1">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiHelpAbout">
               <Properties>

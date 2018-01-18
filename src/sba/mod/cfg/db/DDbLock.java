@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package sba.mod.trn.db;
+package sba.mod.cfg.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,72 +18,75 @@ import sba.mod.DModConsts;
  *
  * @author Sergio Flores
  */
-public class DDbDpsSending extends DDbRegistryUser {
+public class DDbLock extends DDbRegistryUser {
 
-    protected int mnPkDpsId;
-    protected int mnPkSendingId;
-    protected String msContact1;
-    protected String msContact2;
-    protected String msEmail1;
-    protected String msEmail2;
-    /*
+    protected int mnPkLockId;
+    protected int mnRegistryTypeId;
+    protected int mnRegistryId;
+    protected int mnLockTimeout;
+    protected Date mtLockTimestamp;
+    protected int mnLockStatus;
     protected boolean mbDeleted;
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
-    */
-
-    public DDbDpsSending() {
-        super(DModConsts.T_DPS_SND);
+    
+    protected boolean mbAuxUpdateLockTimestamp;
+            
+    public DDbLock() {
+        super(DModConsts.C_LOCK);
         initRegistry();
     }
 
-    public void setPkDpsId(int n) { mnPkDpsId = n; }
-    public void setPkSendingId(int n) { mnPkSendingId = n; }
-    public void setContact1(String s) { msContact1 = s; }
-    public void setContact2(String s) { msContact2 = s; }
-    public void setEmail1(String s) { msEmail1 = s; }
-    public void setEmail2(String s) { msEmail2 = s; }
+    public void setPkLockId(int n) { mnPkLockId = n; }
+    public void setRegistryTypeId(int n) { mnRegistryTypeId = n; }
+    public void setRegistryId(int n) { mnRegistryId = n; }
+    public void setLockTimeout(int n) { mnLockTimeout = n; }
+    public void setLockTimestamp(Date t) { mtLockTimestamp = t; }
+    public void setLockStatus(int n) { mnLockStatus = n; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkDpsId() { return mnPkDpsId; }
-    public int getPkSendingId() { return mnPkSendingId; }
-    public String getContact1() { return msContact1; }
-    public String getContact2() { return msContact2; }
-    public String getEmail1() { return msEmail1; }
-    public String getEmail2() { return msEmail2; }
+    public int getPkLockId() { return mnPkLockId; }
+    public int getRegistryTypeId() { return mnRegistryTypeId; }
+    public int getRegistryId() { return mnRegistryId; }
+    public int getLockTimeout() { return mnLockTimeout; }
+    public Date getLockTimestamp() { return mtLockTimestamp; }
+    public int getLockStatus() { return mnLockStatus; }
     public boolean isDeleted() { return mbDeleted; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public void setAuxUpdateLockTimestamp(boolean b) { mbAuxUpdateLockTimestamp = b; }
+
+    public boolean isAuxUpdateLockTimestamp() { return mbAuxUpdateLockTimestamp; }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkDpsId = pk[0];
-        mnPkSendingId = pk[1];
+        mnPkLockId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkDpsId, mnPkSendingId };
+        return new int[] { mnPkLockId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkDpsId = 0;
-        mnPkSendingId = 0;
-        msContact1 = "";
-        msContact2 = "";
-        msEmail1 = "";
-        msEmail2 = "";
+        mnPkLockId = 0;
+        mnRegistryTypeId = 0;
+        mnRegistryId = 0;
+        mnLockTimeout = 0;
+        mtLockTimestamp = null;
+        mnLockStatus = 0;
         mbDeleted = false;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -98,27 +101,24 @@ public class DDbDpsSending extends DDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_dps = " + mnPkDpsId + " AND " +
-                "id_snd = " + mnPkSendingId + " ";
+        return "WHERE id_lock = " + mnPkLockId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_dps = " + pk[0] + " AND " +
-                "id_snd = " + pk[1] + " ";
+        return "WHERE id_lock = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(DGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkSendingId = 0;
+        mnPkLockId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_snd), 0) + 1 FROM " + getSqlTable() + " " +
-                "WHERE id_dps = " + mnPkDpsId + " ";
+        msSql = "SELECT COALESCE(MAX(id_lock), 0) + 1 FROM " + getSqlTable();
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkSendingId = resultSet.getInt(1);
+            mnPkLockId = resultSet.getInt(1);
         }
     }
 
@@ -136,18 +136,18 @@ public class DDbDpsSending extends DDbRegistryUser {
             throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkDpsId = resultSet.getInt("id_dps");
-            mnPkSendingId = resultSet.getInt("id_snd");
-            msContact1 = resultSet.getString("con_1");
-            msContact2 = resultSet.getString("con_2");
-            msEmail1 = resultSet.getString("ema_1");
-            msEmail2 = resultSet.getString("ema_2");
+            mnPkLockId = resultSet.getInt("id_lock");
+            mnRegistryTypeId = resultSet.getInt("reg_tp_id");
+            mnRegistryId = resultSet.getInt("reg_id");
+            mnLockTimeout = resultSet.getInt("lock_tout");
+            mtLockTimestamp = resultSet.getTimestamp("lock_ts");
+            mnLockStatus = resultSet.getInt("lock_st");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-
+            
             mbRegistryNew = false;
         }
 
@@ -162,64 +162,67 @@ public class DDbDpsSending extends DDbRegistryUser {
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbDeleted = false;
+            //mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = DUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkDpsId + ", " +
-                    mnPkSendingId + ", " +
-                    "'" + msContact1 + "', " +
-                    "'" + msContact2 + "', " +
-                    "'" + msEmail1 + "', " +
-                    "'" + msEmail2 + "', " +
-                    (mbDeleted ? 1 : 0) + ", " +
-                    mnFkUserInsertId + ", " +
-                    mnFkUserUpdateId + ", " +
-                    "NOW()" + ", " +
-                    "NOW()" + " " +
+                    mnPkLockId + ", " + 
+                    mnRegistryTypeId + ", " + 
+                    mnRegistryId + ", " + 
+                    mnLockTimeout + ", " + 
+                    "NOW()" + ", " + 
+                    mnLockStatus + ", " + 
+                    (mbDeleted ? 1 : 0) + ", " + 
+                    mnFkUserInsertId + ", " + 
+                    mnFkUserUpdateId + ", " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + " " + 
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    /*
-                    "id_dps = " + mnPkDpsId + ", " +
-                    "id_snd = " + mnPkSendingId + ", " +
-                    */
-                    "con_1 = '" + msContact1 + "', " +
-                    "con_2 = '" + msContact2 + "', " +
-                    "ema_1 = '" + msEmail1 + "', " +
-                    "ema_2 = '" + msEmail2 + "', " +
+                    //"id_lock = " + mnPkLockId + ", " +
+                    "reg_tp_id = " + mnRegistryTypeId + ", " +
+                    "reg_id = " + mnRegistryId + ", " +
+                    "lock_tout = " + mnLockTimeout + ", " +
+                    (!mbAuxUpdateLockTimestamp ? "" : "lock_ts = NOW(), ") +
+                    "lock_st = " + mnLockStatus + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
+            
+            mbAuxUpdateLockTimestamp = false; //disable automatic further lock-timestamp updates
         }
 
         session.getStatement().execute(msSql);
-
         mbRegistryNew = false;
+
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
 
     @Override
-    public DDbDpsSending clone() throws CloneNotSupportedException {
-        DDbDpsSending registry = new DDbDpsSending();
+    public DDbLock clone() throws CloneNotSupportedException {
+        DDbLock registry = new DDbLock();
 
-        registry.setPkDpsId(this.getPkDpsId());
-        registry.setPkSendingId(this.getPkSendingId());
-        registry.setContact1(this.getContact1());
-        registry.setContact2(this.getContact2());
-        registry.setEmail1(this.getEmail1());
-        registry.setEmail2(this.getEmail2());
+        registry.setPkLockId(this.getPkLockId());
+        registry.setRegistryTypeId(this.getRegistryTypeId());
+        registry.setRegistryId(this.getRegistryId());
+        registry.setLockTimeout(this.getLockTimeout());
+        registry.setLockTimestamp(this.getLockTimestamp());
+        registry.setLockStatus(this.getLockStatus());
         registry.setDeleted(this.isDeleted());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
+        
+        registry.setAuxUpdateLockTimestamp(this.isAuxUpdateLockTimestamp());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

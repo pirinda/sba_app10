@@ -22,6 +22,7 @@ import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBizPartnerConfig;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
 
@@ -58,6 +59,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
     */
 
     private int mnAuxXmlTypeId;
+    protected DDbLock moAuxLock;
 
     public DDbDpsTypeChange() {
         super(DModConsts.T_DPS_CHG);
@@ -117,8 +119,10 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
     public void setAuxXmlTypeId(int n) { mnAuxXmlTypeId = n; }
+    public void setAuxLock(DDbLock o) { moAuxLock = o; }
 
     public int getAuxXmlTypeId() { return mnAuxXmlTypeId; }
+    public DDbLock getAuxLock() { return moAuxLock; }
 
     public int[] getNewDpsCategoryKey() { return new int[] { mnFkNewDpsCategoryId }; }
     public int[] getNewDpsClassKey() { return new int[] { mnFkNewDpsCategoryId, mnFkNewDpsClassId }; }
@@ -169,6 +173,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         mtTsUserUpdate = null;
 
         mnAuxXmlTypeId = 0;
+        moAuxLock = null;
     }
 
     @Override
@@ -330,6 +335,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         dps.setFkDpsCategoryId(mnFkNewDpsCategoryId);
         dps.setFkDpsClassId(mnFkNewDpsClassId);
         dps.setFkDpsTypeId(mnFkNewDpsTypeId);
+        dps.setAuxLock(moAuxLock);
 
         if (mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) {
             // prepare CFDI:
@@ -394,6 +400,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         registry.setTsUserUpdate(this.getTsUserUpdate());
         
         registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
+        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

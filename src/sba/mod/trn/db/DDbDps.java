@@ -28,7 +28,10 @@ import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbConfigBranch;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DDbAbpBizPartner;
 import sba.mod.fin.db.DDbAbpItem;
 import sba.mod.fin.db.DDbBookkeepingMove;
@@ -44,6 +47,7 @@ public class DDbDps extends DDbRegistryUser {
     public static final int FIELD_CLOSED_DPS = 1;
     public static final int FIELD_CLOSED_IOG = 2;
     public static final int FIELD_AUDITED = 3;
+    public static final int TIMEOUT = 15; //15 min.
 
     protected int mnPkDpsId;
     protected String msSeries;
@@ -140,6 +144,7 @@ public class DDbDps extends DDbRegistryUser {
     protected int mnAuxXmlTypeId;
     protected boolean mbAuxEdsRequired;
     protected double mdAuxTotalQuantity;
+    protected DDbLock moAuxLock;
 
     public DDbDps() {
         super(DModConsts.T_DPS);
@@ -729,7 +734,7 @@ public class DDbDps extends DDbRegistryUser {
         return canChange;
     }
 
-    private String composeDpsReference(DGuiSession session) {
+    private String composeDpsReference(final DGuiSession session) {
         String sql = "";
         String reference = "";
         ResultSet resultSet = null;
@@ -752,7 +757,7 @@ public class DDbDps extends DDbRegistryUser {
 
         return reference;
     }
-
+    
     /*
      * Public methods
      */
@@ -805,6 +810,34 @@ public class DDbDps extends DDbRegistryUser {
         }
 
         return text;
+    }
+
+    /**
+     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @throws Exception 
+     */
+    public void assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDpsId, TIMEOUT);
+            }
+            else {
+                DLockUtils.validateLock(session, moAuxLock);
+            }
+        }
+    }
+
+    /**
+     * Frees current lock, if any, with by-update status.
+     * @param session GUI session.
+     * @throws Exception 
+     */
+    public void freeLockByUpdate(final DGuiSession session) throws Exception {
+        if (moAuxLock != null) {
+            DLockUtils.freeLock(session, moAuxLock, DLockConsts.LOCK_ST_FREED_UPDATE);
+            moAuxLock = null;
+        }
     }
 
     public void setPkDpsId(int n) { mnPkDpsId = n; }
@@ -993,6 +1026,7 @@ public class DDbDps extends DDbRegistryUser {
     public void setAuxXmlTypeId(int n) { mnAuxXmlTypeId = n; }
     public void setAuxEdsRequired(boolean b) { mbAuxEdsRequired = b; }
     public void setAuxTotalQuantity(double d) { mdAuxTotalQuantity = d; }
+    public void setAuxLock(DDbLock o) { moAuxLock = o; }
 
     public String getEdsUuid() { return msEdsUuid; }
     public String getEdsMethodOfPayment() { return msEdsMethodOfPayment; }
@@ -1009,6 +1043,7 @@ public class DDbDps extends DDbRegistryUser {
     public int getAuxXmlTypeId() { return mnAuxXmlTypeId; }
     public boolean isAuxEdsRequired() { return mbAuxEdsRequired; }
     public double getAuxTotalQuantity() { return mdAuxTotalQuantity; }
+    public DDbLock getAuxLock() { return moAuxLock; }
 
     public int getActiveRowsCount() {
         int count = 0;
@@ -1134,7 +1169,7 @@ public class DDbDps extends DDbRegistryUser {
         msEdsTaxRegime = "";
         msEdsUsage = "";
         msEdsRelationType = "";
-        maEdsCfdiRelated.clear();;
+        maEdsCfdiRelated.clear();
 
         mnXtaIogId = 0;
 
@@ -1142,6 +1177,7 @@ public class DDbDps extends DDbRegistryUser {
         mnAuxXmlTypeId = 0;
         mbAuxEdsRequired = false;
         mdAuxTotalQuantity = 0;
+        moAuxLock = null;
     }
 
     @Override
@@ -1424,6 +1460,8 @@ public class DDbDps extends DDbRegistryUser {
                     ")";
         }
         else {
+            assureLock(session);
+            
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
@@ -1532,6 +1570,10 @@ public class DDbDps extends DDbRegistryUser {
         computeEds(session);
 
         // Finish registry updating:
+        
+        if (!mbRegistryNew) {
+            freeLockByUpdate(session);
+        }
 
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
@@ -1636,6 +1678,7 @@ public class DDbDps extends DDbRegistryUser {
         registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
         registry.setAuxEdsRequired(this.isAuxEdsRequired());
         registry.setAuxTotalQuantity(this.getAuxTotalQuantity());
+        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
 
         registry.setRegistryNew(this.isRegistryNew());
 
@@ -1668,7 +1711,7 @@ public class DDbDps extends DDbRegistryUser {
     public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
-
+        
         msSql = "UPDATE " + getSqlTable() + " SET ";
 
         switch (field) {
@@ -1749,6 +1792,10 @@ public class DDbDps extends DDbRegistryUser {
                 }
             }
         }
+        
+        if (canSave) {
+            assureLock(session);
+        }
 
         return canSave;
     }
@@ -1767,6 +1814,10 @@ public class DDbDps extends DDbRegistryUser {
                 // If document is annuled already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
                 
                 can = canChangeStatus(session, mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ANN);
+            }
+            
+            if (can) {
+                assureLock(session);
             }
         }
 
@@ -1787,6 +1838,10 @@ public class DDbDps extends DDbRegistryUser {
                 // If document is deleted already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
                 
                 can = canChangeStatus(session, mbDeleted);
+            }
+            
+            if (can) {
+                assureLock(session);
             }
         }
 
@@ -1909,6 +1964,8 @@ public class DDbDps extends DDbRegistryUser {
 
     /**
      * Updates Electronic Document Supporting (EDS).
+     * VERY IMPORTANT NOTICE!: Check on each usage of this method that is covered by exclusive-access locks.
+     * By now, all current usages (one in DTrnEdsUtils, two in DTrnEmissionUtils) are covered properly by these locks.
      */
     public void updateEds(final DGuiSession session, final DDbDpsEds eds) throws SQLException, Exception {
         initQueryMembers();
@@ -1971,6 +2028,8 @@ public class DDbDps extends DDbRegistryUser {
         dpsPrinting.setFkUserUpdateId(this.getFkUserUpdateId());
         dpsPrinting.setTsUserInsert(this.getTsUserInsert());
         dpsPrinting.setTsUserUpdate(this.getTsUserUpdate());
+        
+        dpsPrinting.setAuxLock(this.getAuxLock());
 
         return dpsPrinting;
     }
@@ -1996,6 +2055,8 @@ public class DDbDps extends DDbRegistryUser {
         dpsSigning.setFkUserUpdateId(this.getFkUserUpdateId());
         dpsSigning.setTsUserInsert(this.getTsUserInsert());
         dpsSigning.setTsUserUpdate(this.getTsUserUpdate());
+
+        dpsSigning.setAuxLock(this.getAuxLock());
 
         return dpsSigning;
     }

@@ -14,6 +14,7 @@ import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.fin.db.DFinUtils;
 
 /**
@@ -43,6 +44,7 @@ public class DDbDpsSigning extends DDbRegistryUser {
     */
 
     protected boolean mbHasDpsChanged;
+    protected DDbLock moAuxLock;
 
     public DDbDpsSigning() {
         super(DModConsts.T_DPS_SIG);
@@ -81,7 +83,10 @@ public class DDbDpsSigning extends DDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public void setAuxLock(DDbLock o) { moAuxLock = o; }
+    
     public boolean hasDpsChanged() { return mbHasDpsChanged; }
+    public DDbLock getAuxLock() { return moAuxLock; }
 
     public int[] getDpsCategoryKey() { return new int[] { mnFkDpsCategoryId }; }
     public int[] getDpsClassKey() { return new int[] { mnFkDpsCategoryId, mnFkDpsClassId }; }
@@ -121,6 +126,7 @@ public class DDbDpsSigning extends DDbRegistryUser {
         mtTsUserUpdate = null;
 
         mbHasDpsChanged = false;
+        moAuxLock = null;
     }
 
     @Override
@@ -250,8 +256,11 @@ public class DDbDpsSigning extends DDbRegistryUser {
         // Update DPS:
 
         dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnPkDpsId });
+        dps.setAuxLock(moAuxLock);
 
         if (mbHasDpsChanged = dps.hasDpsChanged(msSeries, mnNumber, msOrder, mtDate, mnFkEmissionTypeId, getDpsTypeKey())) {
+            dps.assureLock(session);
+            
             msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " SET " +
                     "ser = '" + msSeries + "', " +
                     "num = " + mnNumber + ", " +
@@ -270,6 +279,8 @@ public class DDbDpsSigning extends DDbRegistryUser {
             session.getStatement().execute(msSql);
         }
 
+        dps.freeLockByUpdate(session);
+        
         // Finish registry updating:
 
         mbRegistryNew = false;
@@ -296,6 +307,8 @@ public class DDbDpsSigning extends DDbRegistryUser {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
+        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
+        
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }

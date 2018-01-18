@@ -83,6 +83,7 @@ import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbUser;
 import sba.mod.cfg.db.DDbUserGui;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.cfg.form.DDialogUserSession;
 import sba.mod.trn.db.DDbDpsSeries;
 
@@ -93,7 +94,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 020.03";
+    public static final String APP_RELEASE = "SBA 1.0 021.02";
     public static final String APP_COPYRIGHT = "Copyright © 2011-2018 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -200,12 +201,14 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiFileWorkingDate = new javax.swing.JMenuItem();
         jmiFileSessionSettings = new javax.swing.JMenuItem();
         jmiFileUserPassword = new javax.swing.JMenuItem();
-        jsFile1 = new javax.swing.JSeparator();
+        jsFile1 = new javax.swing.JPopupMenu.Separator();
+        jmiFileDeleteActiveLocks = new javax.swing.JMenuItem();
+        jsFile2 = new javax.swing.JPopupMenu.Separator();
         jmiFileCloseViewsAll = new javax.swing.JMenuItem();
         jmiFileCloseViewsOther = new javax.swing.JMenuItem();
-        jsFile2 = new javax.swing.JSeparator();
+        jsFile3 = new javax.swing.JPopupMenu.Separator();
         jmiFileCloseSession = new javax.swing.JMenuItem();
-        jsFile3 = new javax.swing.JSeparator();
+        jsFile4 = new javax.swing.JPopupMenu.Separator();
         jmiFileExit = new javax.swing.JMenuItem();
         jmView = new javax.swing.JMenu();
         jmiViewModuleCfg = new javax.swing.JMenuItem();
@@ -218,7 +221,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleSrv = new javax.swing.JMenuItem();
         jmHelp = new javax.swing.JMenu();
         jmiHelpHelp = new javax.swing.JMenuItem();
-        jsHelp1 = new javax.swing.JSeparator();
+        jsHelp1 = new javax.swing.JPopupMenu.Separator();
         jmiHelpAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -341,7 +344,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         getContentPane().add(jtbToolBar, java.awt.BorderLayout.NORTH);
         getContentPane().add(jtpTabbedPane, java.awt.BorderLayout.CENTER);
 
-        jpStatusBar.setLayout(new java.awt.FlowLayout(0));
+        jpStatusBar.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jtfSystemDate.setEditable(false);
         jtfSystemDate.setText("01/01/2000");
@@ -439,16 +442,20 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmFile.add(jmiFileUserPassword);
         jmFile.add(jsFile1);
 
+        jmiFileDeleteActiveLocks.setText("Eliminar los bloqueos a registros...");
+        jmFile.add(jmiFileDeleteActiveLocks);
+        jmFile.add(jsFile2);
+
         jmiFileCloseViewsAll.setText("Cerrar todas las vistas");
         jmFile.add(jmiFileCloseViewsAll);
 
         jmiFileCloseViewsOther.setText("Cerrar las otras vistas");
         jmFile.add(jmiFileCloseViewsOther);
-        jmFile.add(jsFile2);
+        jmFile.add(jsFile3);
 
         jmiFileCloseSession.setText("Cerrar sesión de usuario");
         jmFile.add(jmiFileCloseSession);
-        jmFile.add(jsFile3);
+        jmFile.add(jsFile4);
 
         jmiFileExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         jmiFileExit.setText("Salir");
@@ -506,8 +513,8 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
 
         setJMenuBar(jmbMenu);
 
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-1024)/2, (screenSize.height-640)/2, 1024, 640);
+        setSize(new java.awt.Dimension(1024, 640));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -653,6 +660,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiFileWorkingDate.addActionListener(this);
         jmiFileSessionSettings.addActionListener(this);
         jmiFileUserPassword.addActionListener(this);
+        jmiFileDeleteActiveLocks.addActionListener(this);
         jmiFileCloseViewsAll.addActionListener(this);
         jmiFileCloseViewsOther.addActionListener(this);
         jmiFileCloseSession.addActionListener(this);
@@ -1120,6 +1128,18 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         new DUtilPasswordDlg(this).setVisible(true);
     }
 
+    public void actionFileDeleteActiveLocks() {
+        if (showMsgBoxConfirm("¿Está seguro que desea eliminar los bloqueos a registros?") == JOptionPane.YES_OPTION) {
+            try {
+                DLockUtils.deleteActiveLocks(moSession);
+                showMsgBoxInformation(DLibConsts.MSG_PROCESS_FINISHED);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+        }
+    }
+
     public void actionFileCloseViewAll() {
         try {
             DGuiUtils.setCursorWait(this);
@@ -1216,6 +1236,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiFileCloseSession;
     private javax.swing.JMenuItem jmiFileCloseViewsAll;
     private javax.swing.JMenuItem jmiFileCloseViewsOther;
+    private javax.swing.JMenuItem jmiFileDeleteActiveLocks;
     private javax.swing.JMenuItem jmiFileExit;
     private javax.swing.JMenuItem jmiFileSessionSettings;
     private javax.swing.JMenuItem jmiFileUserPassword;
@@ -1231,10 +1252,11 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiViewModuleSal;
     private javax.swing.JMenuItem jmiViewModuleSrv;
     private javax.swing.JPanel jpStatusBar;
-    private javax.swing.JSeparator jsFile1;
-    private javax.swing.JSeparator jsFile2;
-    private javax.swing.JSeparator jsFile3;
-    private javax.swing.JSeparator jsHelp1;
+    private javax.swing.JPopupMenu.Separator jsFile1;
+    private javax.swing.JPopupMenu.Separator jsFile2;
+    private javax.swing.JPopupMenu.Separator jsFile3;
+    private javax.swing.JPopupMenu.Separator jsFile4;
+    private javax.swing.JPopupMenu.Separator jsHelp1;
     private javax.swing.JToggleButton jtbModuleCfg;
     private javax.swing.JToggleButton jtbModuleFin;
     private javax.swing.JToggleButton jtbModuleInv;
@@ -1583,6 +1605,9 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             }
             else if (menuItem == jmiFileUserPassword) {
                 actionFileUserPassword();
+            }
+            else if (menuItem == jmiFileDeleteActiveLocks) {
+                actionFileDeleteActiveLocks();
             }
             else if (menuItem == jmiFileCloseViewsAll) {
                 actionFileCloseViewAll();

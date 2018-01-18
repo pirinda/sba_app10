@@ -10,7 +10,7 @@ import cfd.DAttributeOptionImpuestoRetencion;
 import cfd.DAttributeOptionImpuestoTraslado;
 import cfd.DCfdConsts;
 import cfd.DCfdUtils;
-import cfd.DElementExtAddenda;
+import cfd.DSubelementAddenda;
 import cfd.ext.addenda1.DElementAdicionalConcepto;
 import cfd.ext.addenda1.DElementNota;
 import cfd.ext.addenda1.DElementNotas;
@@ -58,6 +58,9 @@ import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbCertificate;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DFinConsts;
 
 /**
@@ -73,6 +76,7 @@ public abstract class DTrnEdsUtils {
      * @return
      * @throws Exception 
      */
+    @Deprecated
     private static cfd.ver32.DSelloDigital extractSello32(final DDbDps dps) throws Exception {
         Document doc = null;
         Node node = null;
@@ -101,6 +105,7 @@ public abstract class DTrnEdsUtils {
      * @return
      * @throws Exception 
      */
+    @Deprecated
     private static cfd.ver33.DSelloDigital extractSello33(final DDbDps dps) throws Exception {
         Document doc = null;
         Node node = null;
@@ -123,6 +128,7 @@ public abstract class DTrnEdsUtils {
         return selloDigital;
     }
 
+    @Deprecated
     public static void configureCfdi32(final DGuiSession session, final cfd.ver32.DElementComprobante comprobante) {
         int decimalsQuantity = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity();
         int decimalsPriceUnitary = ((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary();
@@ -143,10 +149,12 @@ public abstract class DTrnEdsUtils {
         }
     }
     
+    @Deprecated
     public static cfd.ver2.DElementComprobante createCfd(final DGuiSession session, final DDbDps dps) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Deprecated
     public static cfd.ver32.DElementComprobante createCfdi32(final DGuiSession session, final DDbDps dps) throws Exception {
         int i = 0;
         int nPagos = 1;
@@ -160,7 +168,6 @@ public abstract class DTrnEdsUtils {
         //double dTotalPesoBruto = 0;   // Addenda1 not needed anymore
         //double dTotalPesoNeto = 0;    // Addenda1 not needed anymore
         boolean subrogatedIssue = false;
-        boolean includeAddenda1 = false;
         Double oValue = null;
         Date tDate = null;
         Date tUpdateTs = dps.getTsUserUpdate() != null ? dps.getTsUserUpdate() : new Date();
@@ -245,7 +252,7 @@ public abstract class DTrnEdsUtils {
         
         // Create XML's main element 'Comprobante':
 
-        cfd.ver32.DElementComprobante comprobante = new cfd.ver32.DElementComprobante(includeAddenda1); // include Addenda1 only if explicitly defined
+        cfd.ver32.DElementComprobante comprobante = new cfd.ver32.DElementComprobante();
 
         comprobante.getAttSerie().setString(dps.getSeries());
         comprobante.getAttFolio().setString("" + dps.getNumber());
@@ -763,14 +770,16 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttConfirmacion().setString(dps.getEdsConfirmation());
         
         // element 'CfdiRelacionados':
-        if (!dps.getEdsRelationType().isEmpty()) {
+        if (!dps.getEdsRelationType().isEmpty() && !dps.getEdsCfdiRelated().isEmpty()) {
             cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
             cfdiRelacionados.getAttTipoRelacion().setString(dps.getEdsRelationType());
+            
             for (String uuid : dps.getEdsCfdiRelated()) {
                 cfd.ver33.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver33.DElementCfdiRelacionado();
                 cfdiRelacionado.getAttUuid().setString(uuid);
                 cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
             }
+            
             comprobante.setEltOpcCfdiRelacionados(cfdiRelacionados);
         }
 
@@ -1090,14 +1099,14 @@ public abstract class DTrnEdsUtils {
      * @return
      * @throws Exception 
      */
-    public static DElementExtAddenda extractExtAddenda(final String xmlAddenda, final int typeXmlAddenda) throws Exception {
+    public static DSubelementAddenda extractExtAddenda(final String xmlAddenda, final int typeXmlAddenda) throws Exception {
         Document doc = null;
         Node node = null;
         Node nodeChild = null;
         NamedNodeMap namedNodeMapChild = null;
         Vector<Node> nodeChildren = null;
         DElementAddendaContinentalTire addendaContinentalTire = null;
-        DElementExtAddenda extAddenda = null;
+        DSubelementAddenda extAddenda = null;
         
         switch (typeXmlAddenda) {
             case DModSysConsts.TS_XML_ADD_TP_CON:
@@ -1150,13 +1159,13 @@ public abstract class DTrnEdsUtils {
      * @return
      * @throws Exception 
      */
-    public static DElementExtAddenda extractExtAddenda(final DDbDps dps, final int typeXmlAddenda) throws Exception {
-        DElementExtAddenda extAddenda = null;
+    public static DSubelementAddenda extractExtAddenda(final DDbDps dps, final int typeXmlAddenda) throws Exception {
+        DSubelementAddenda extAddenda = null;
         
         if (dps.getChildEds() != null && dps.getChildEds().getFkXmlAddendaTypeId() == typeXmlAddenda) {
             switch (typeXmlAddenda) {
                 case DModSysConsts.TS_XML_ADD_TP_CON:
-                    extAddenda = (DElementAddendaContinentalTire) DTrnEdsUtils.extractExtAddenda(dps.getChildEds().getDocXmlAddenda(), typeXmlAddenda);
+                    extAddenda = (DElementAddendaContinentalTire) extractExtAddenda(dps.getChildEds().getDocXmlAddenda(), typeXmlAddenda);
                     break;
                     
                 default:
@@ -1184,7 +1193,7 @@ public abstract class DTrnEdsUtils {
         DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
         cfd.DCfd cfd = new cfd.DCfd(configBranch.getEdsDirectory());
-        cfd.DElementExtAddenda extAddenda = null;
+        cfd.DSubelementAddenda extAddenda = null;
 
         switch (xmlType) {
             case DModSysConsts.TS_XML_TP_CFD:
@@ -1199,7 +1208,7 @@ public abstract class DTrnEdsUtils {
                 if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
                     extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
-                        cfd.ver32.DElementAddenda addenda = new cfd.ver32.DElementAddenda();
+                        cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
                         addenda.getElements().add(extAddenda);
                         comprobante32.setEltOpcAddenda(addenda);
                     }
@@ -1223,7 +1232,7 @@ public abstract class DTrnEdsUtils {
                 if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
                     extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
-                        cfd.ver33.DElementAddenda addenda = new cfd.ver33.DElementAddenda();
+                        cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
                         addenda.getElements().add(extAddenda);
                         comprobante33.setEltOpcAddenda(addenda);
                     }
@@ -1306,6 +1315,7 @@ public abstract class DTrnEdsUtils {
         cfd.ver3.DTimbreFiscal timbreFiscal = null;
         DDbConfigBranch configBranch = null;
         DDbXmlSignatureRequest xsr = null;
+        DDbLock lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
 
         // Create or obtain XML Signature Request for signature:
 
@@ -1552,7 +1562,7 @@ public abstract class DTrnEdsUtils {
                     break;
 
                 case DModSysConsts.CS_XSP_TST:  // testing
-                    cfdi = dps.getChildEds().getDocXml();   // insert 'Complemento' node into local variable cfdi!
+                    cfdi = dps.getChildEds().getDocXml();   // insert by hand for testint purposes 'Complemento' node into this local variable 'cfdi'!
                     break;
                     
                 default:
@@ -1643,18 +1653,19 @@ public abstract class DTrnEdsUtils {
 
                     timbreFiscal.setPacId(xmlSignatureProviderId);
                     break;
-                    
+
                 default:
             }
 
             dps.getChildEds().setUniqueId(timbreFiscal.getUuid());
+            dps.getChildEds().setDocXml(cfdi);
             dps.getChildEds().setDocXmlRaw(cfdi);
             dps.getChildEds().setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
             dps.getChildEds().setFkXmlSignatureProviderId(timbreFiscal.getPacId());
             dps.getChildEds().setAuxIssued(true);
             dps.getChildEds().setAuxRewriteXmlOnSave(true);
             dps.getChildEds().save(session);
-            
+
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
             xsr.save(session);
         }
@@ -1674,6 +1685,8 @@ public abstract class DTrnEdsUtils {
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
+        
+        DLockUtils.freeLock(session, lock, DLockConsts.LOCK_ST_FREED_UPDATE);
     }
 
     public static void cancelDps(final DGuiSession session, final DDbDps dps, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action) throws TransformerConfigurationException, TransformerException, Exception {
@@ -1689,6 +1702,7 @@ public abstract class DTrnEdsUtils {
         DDbCertificate certificate = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDpsEds eds = null;
+        DDbLock lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
         
         // Create or obtain XML Signature Request for cancellation:
 
@@ -2080,6 +2094,8 @@ public abstract class DTrnEdsUtils {
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
+        
+        DLockUtils.freeLock(session, lock, DLockConsts.LOCK_ST_FREED_UPDATE);
     }
     
     /**

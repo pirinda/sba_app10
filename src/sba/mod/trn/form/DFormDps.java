@@ -67,7 +67,10 @@ import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DDbTaxGroupConfigRow;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
@@ -92,6 +95,7 @@ import sba.mod.trn.db.DTrnUtils;
 public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionListener, FocusListener, ItemListener {
 
     private DDbDps moRegistry;
+    private DDbLock moRegistryLock;
     private DDbBizPartner moBizPartner;
     private DDbBizPartnerConfig moBizPartnerConfig;
     private DDbBranch moBizPartnerBranch;
@@ -362,6 +366,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel47 = new javax.swing.JPanel();
         jlTotal = new javax.swing.JLabel();
         moCurTotal = new sba.lib.gui.bean.DBeanCompoundFieldCurrency();
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jpContainer.setLayout(new java.awt.BorderLayout());
 
@@ -1098,6 +1108,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         getContentPane().add(jpContainer, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        freeLockByCancel();
+    }//GEN-LAST:event_formWindowClosing
+
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 1024, 640);
 
@@ -1424,6 +1438,20 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         mvFormGrids.add(moGridDpsNotes);
         mvFormGrids.add(moGridDpsRows);
+    }
+    
+    private void freeLockByCancel() {
+        if (moRegistryLock != null) {
+            try {
+                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+            finally {
+                moRegistryLock = null;
+            }
+        }
     }
 
     private void evaluateIsDpsSource() {
@@ -1801,8 +1829,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         return !mbIsPosModule && !mbIsAdjustment && moBizPartnerConfig != null && moBizPartnerConfig.getActualFkCreditTypeId() != DModSysConsts.BS_CDT_TP_CDT_NON;
     }
 
-    private boolean enableCfdFields() {
-        return mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment);
+    private boolean enableCfdiFields() {
+        return mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment) && moDpsSeriesNumber.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI_33;
     }
 
     private boolean isSalesAdjustment() {
@@ -3050,6 +3078,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             moKeyBranchAddress.setEnabled(false);
             moKeyCurrency.setEnabled(false);
+            moTextCfdConfirmation.setEnabled(false);
             moKeyPaymentType.setEnabled(false);
             moKeyCfdUsage.setEnabled(false);
             moKeyCfdTaxRegime.setEnabled(false);
@@ -3066,6 +3095,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             moKeyBranchAddress.resetField();
             moKeyCurrency.resetField();
+            moTextCfdConfirmation.resetField();
             moKeyPaymentType.resetField();
             moKeyCfdUsage.resetField();
             moKeyCfdTaxRegime.resetField();
@@ -3096,15 +3126,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             moKeyBranchAddress.setEnabled(true);
             moKeyCurrency.setEnabled(!mbIsPosModule);
+            moTextCfdConfirmation.setEnabled(enableCfdiFields());
             moKeyPaymentType.setEnabled(enablePaymentTypeField());
-            moKeyCfdUsage.setEnabled(enableCfdFields());
-            moKeyCfdTaxRegime.setEnabled(enableCfdFields());
+            moKeyCfdUsage.setEnabled(enableCfdiFields());
+            moKeyCfdTaxRegime.setEnabled(enableCfdiFields());
             moTextImportDeclaration.setEnabled(mbIsImportDeclaration);
             moDateImportDeclarationDate.setEnabled(mbIsImportDeclaration);
             moTextOrder.setEnabled(!mbIsAdjustment);
             moDateDelivery.setEnabled(!mbIsAdjustment);
-            moKeyCfdRelationType.setEnabled(enableCfdFields());
-            jbCfdCfdiRelatedShow.setEnabled(enableCfdFields());
+            moKeyCfdRelationType.setEnabled(enableCfdiFields());
+            jbCfdCfdiRelatedShow.setEnabled(enableCfdiFields());
             setRowFieldsEditable(!mbIsAdjustment);
 
             moKeyEmissionType.setEnabled(moRegistry.isDpsForSale());
@@ -3221,14 +3252,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         else {
             paymentType = moKeyPaymentType.getValue()[0];
             
-            moKeyCfdMethodOfPayment.setEnabled(!mbIsPosModule && enableCfdFields());
-            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdFields());
+            moKeyCfdMethodOfPayment.setEnabled(!mbIsPosModule && enableCfdiFields());
+            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdiFields());
             moIntCreditDays.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
             moDateCredit.setEnabled(!mbIsPosModule && paymentType == DModSysConsts.FS_PAY_TP_CDT);
 
-            moKeyCfdMethodOfPayment.setValue(new int [] { !enableCfdFields() ? 
+            moKeyCfdMethodOfPayment.setValue(new int [] { !enableCfdiFields() ? 
                     DLibConsts.UNDEFINED : (paymentType == DModSysConsts.FS_PAY_TP_CSH || mbIsAdjustment) ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID });
-            moKeyModeOfPaymentType.setValue(new int[] { !enableCfdFields() ? 
+            moKeyModeOfPaymentType.setValue(new int[] { !enableCfdiFields() ? 
                     DLibConsts.UNDEFINED : (paymentType == DModSysConsts.FS_PAY_TP_CSH || mbIsAdjustment) ? moBizPartnerConfig.getActualFkModeOfPaymentTypeId() : DModSysConsts.FS_MOP_TP_TO_DEF });
             moIntCreditDays.setValue(paymentType == DModSysConsts.FS_PAY_TP_CSH ? 0 : moBizPartnerConfig.getActualCreditDays());
             moDateCredit.setValue(moDateDate.getValue());
@@ -3611,6 +3642,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moIntNumber.setValue(mnNewDpsNumber);   // new number defined above in computeNewDpsNumber() if required
 
             mtOriginalDate = miClient.getSession().getWorkingDate();
+            
+            moRegistryLock = null;
         }
         else {
             jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
@@ -3619,6 +3652,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moIntNumber.setValue(moRegistry.getNumber());
 
             mtOriginalDate = moRegistry.getDate();
+            
+            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDpsId(), DDbDps.TIMEOUT);
         }
 
         if (!isDpsNumberAutomatic) {
@@ -3791,6 +3826,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             if (DTrnUtils.isDpsNumberAutomatic(registry.getDpsClassKey())) {
                 registry.setAuxNewDpsSeriesId(mnNewDpsSeriesId);
             }
+        }
+        else {
+            registry.setAuxLock(moRegistryLock);
         }
 
         registry.setSeries(moTextSeries.getValue());
@@ -4088,6 +4126,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
 
         if (cancel) {
+            freeLockByCancel();
             super.actionCancel();
         }
     }

@@ -11,7 +11,7 @@
 
 package sba.mod.trn.form;
 
-import cfd.DElementExtAddenda;
+import cfd.DSubelementAddenda;
 import cfd.ext.continental.DElementAddendaContinentalTire;
 import cfd.ext.continental.DElementPosicion;
 import java.awt.BorderLayout;
@@ -503,7 +503,7 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
         int row = 0;
-        DElementExtAddenda extAddenda = null;
+        DSubelementAddenda extAddenda = null;
         DElementAddendaContinentalTire addendaContinentalTire = null;
         Vector<DGridRow> rows = new Vector<DGridRow>();
         
@@ -580,7 +580,7 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
 
     @Override
     public DDbDpsEds getRegistry() throws Exception {
-        DElementExtAddenda extAddenda = null;
+        DSubelementAddenda extAddenda = null;
         DElementAddendaContinentalTire addendaContinentalTire = null;
         DDbDpsEds registry = moRegistry.clone();
 

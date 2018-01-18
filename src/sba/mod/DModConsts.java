@@ -57,6 +57,7 @@ public abstract class DModConsts {
     public static final int CU_CER = 220013;
 
     public static final int C_USR_GUI = 230001;
+    public static final int C_LOCK = 230101;
 
     public static final int BS_BPR_CL = 310001;
     public static final int BS_IDY_TP = 310002;
@@ -377,6 +378,7 @@ public abstract class DModConsts {
         TablesMap.put(CU_CER, "cu_cer");
 
         TablesMap.put(C_USR_GUI, "c_usr_gui");
+        TablesMap.put(C_LOCK, "c_lock");
 
         TablesMap.put(BS_BPR_CL, "bs_bpr_cl");
         TablesMap.put(BS_IDY_TP, "bs_idy_tp");

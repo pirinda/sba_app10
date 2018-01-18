@@ -9,8 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistry;
 import sba.lib.grid.DGridPaneView;
@@ -27,6 +29,7 @@ import sba.mod.cfg.db.DDbBranchWarehouse;
 import sba.mod.cfg.db.DDbCertificate;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbSysCountry;
 import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysCurrencyDenomination;
@@ -41,6 +44,7 @@ import sba.mod.cfg.db.DDbUserCompany;
 import sba.mod.cfg.db.DDbUserCustomType;
 import sba.mod.cfg.db.DDbUserGui;
 import sba.mod.cfg.db.DDbUserPrivilege;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.cfg.form.DDialogUserBranch;
 import sba.mod.cfg.form.DFormBranchCash;
 import sba.mod.cfg.form.DFormBranchWarehouse;
@@ -88,6 +92,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
     private JMenuItem mjUsrUserBranchCash;
     private JMenuItem mjUsrUserBranchWarehouse;
     private JMenuItem mjUsrUserBranchDpsSeries;
+    private JMenuItem mjUsrDeleteAllActiveLocks;
     private JMenu mjSys;
     private JMenuItem mjSysConfigCompany;
     private JMenuItem mjSysConfigBranch;
@@ -148,6 +153,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
         mjUsrUserBranchCash = new JMenuItem("Usuarios y cuentas de dinero (Q)");
         mjUsrUserBranchWarehouse = new JMenuItem("Usuarios y almacenes de bienes (Q)");
         mjUsrUserBranchDpsSeries = new JMenuItem("Usuarios y series de documentos (Q)");
+        mjUsrDeleteAllActiveLocks = new JMenuItem("Eliminar todos los bloqueos a registros...");
         mjUsr.add(mjUsrUser);
         mjUsr.add(mjUsrUserCustomType);
         mjUsr.addSeparator();
@@ -158,6 +164,8 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
         mjUsr.add(mjUsrUserBranchCash);
         mjUsr.add(mjUsrUserBranchWarehouse);
         mjUsr.add(mjUsrUserBranchDpsSeries);
+        mjUsr.addSeparator();
+        mjUsr.add(mjUsrDeleteAllActiveLocks);
 
         mjSys = new JMenu("Sistema");
         mjSysConfigCompany = new JMenuItem("Configuración de empresa");
@@ -197,8 +205,21 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
         mjUsrUserBranchCash.addActionListener(this);
         mjUsrUserBranchWarehouse.addActionListener(this);
         mjUsrUserBranchDpsSeries.addActionListener(this);
+        mjUsrDeleteAllActiveLocks.addActionListener(this);
         mjSysConfigCompany.addActionListener(this);
         mjSysConfigBranch.addActionListener(this);
+    }
+    
+    private void actionPerformedDeleteAllActiveLocks() {
+        if (miClient.showMsgBoxConfirm("¿Está seguro que desea eliminar todos los bloqueos a registros?") == JOptionPane.YES_OPTION) {
+            try {
+                DLockUtils.deleteActiveLocks(miClient.getSession());
+                miClient.showMsgBoxInformation(DLibConsts.MSG_PROCESS_FINISHED);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+        }
     }
 
     @Override
@@ -273,6 +294,9 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
                 break;
             case DModConsts.C_USR_GUI:
                 registry = new DDbUserGui();
+                break;
+            case DModConsts.C_LOCK:
+                registry = new DDbLock();
                 break;
             default:
                 miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -589,6 +613,9 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
             }
             else if (menuItem == mjUsrUserBranchDpsSeries) {
                 showView(DModConsts.CU_USR_SER_BRA, DLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjUsrDeleteAllActiveLocks) {
+                actionPerformedDeleteAllActiveLocks();
             }
         }
     }
