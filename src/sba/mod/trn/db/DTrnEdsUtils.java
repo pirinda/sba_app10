@@ -1315,8 +1315,12 @@ public abstract class DTrnEdsUtils {
         cfd.ver3.DTimbreFiscal timbreFiscal = null;
         DDbConfigBranch configBranch = null;
         DDbXmlSignatureRequest xsr = null;
-        DDbLock lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
-
+        DDbLock lock;
+        
+        // Lock document:
+        
+        lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
+        
         // Create or obtain XML Signature Request for signature:
 
         switch (requestSubtype) {
@@ -1702,7 +1706,10 @@ public abstract class DTrnEdsUtils {
         DDbCertificate certificate = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDpsEds eds = null;
-        DDbLock lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
+        
+        // Lock document, if necesary:
+        
+        dps.assureLock(session);
         
         // Create or obtain XML Signature Request for cancellation:
 
@@ -2055,6 +2062,10 @@ public abstract class DTrnEdsUtils {
                         }
                         break;
 
+                    case DModSysConsts.CS_XSP_TST:  // testing
+                        xml = "";   // insert by hand for testint purposes 'Cancellation Aknowledge' into this local variable 'xml'!
+                        break;
+
                     default:
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " " + DTrnEmissionConsts.PAC);
                 }
@@ -2094,8 +2105,6 @@ public abstract class DTrnEdsUtils {
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
-        
-        DLockUtils.freeLock(session, lock, DLockConsts.LOCK_ST_FREED_UPDATE);
     }
     
     /**

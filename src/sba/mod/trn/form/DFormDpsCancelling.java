@@ -83,8 +83,8 @@ public class DFormDpsCancelling extends DBeanForm {
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         bgAnnulCancel.add(moRadDisable);
-        moRadDisable.setText("Anular documento");
-        moRadDisable.setPreferredSize(new java.awt.Dimension(200, 23));
+        moRadDisable.setText("Anular documento: en el sistema solamente");
+        moRadDisable.setPreferredSize(new java.awt.Dimension(500, 23));
         jPanel8.add(moRadDisable);
 
         jPanel5.add(jPanel8);
@@ -92,8 +92,8 @@ public class DFormDpsCancelling extends DBeanForm {
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         bgAnnulCancel.add(moRadDisableCancel);
-        moRadDisableCancel.setText("Anular y cancelar documento");
-        moRadDisableCancel.setPreferredSize(new java.awt.Dimension(200, 23));
+        moRadDisableCancel.setText("Anular y cancelar documento: en el sistema y ante la autoridad");
+        moRadDisableCancel.setPreferredSize(new java.awt.Dimension(500, 23));
         jPanel21.add(moRadDisableCancel);
 
         jPanel5.add(jPanel21);
