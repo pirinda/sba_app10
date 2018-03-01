@@ -1123,8 +1123,8 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public void computeTotal(final boolean isDiscDocApplying, final boolean isDiscDocPercentageApplying, final double discDocPercentage, final double exchangeRate) {
         double subtotal = 0;
         double correction = 0;
-        int decsAmt = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
-        int decsAmtUnt = DLibUtils.getDecimalFormatAmountUnitary().getMaximumFractionDigits();
+        int decsAmount = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
+        int decsAmountUnit = DLibUtils.getDecimalFormatAmountUnitary().getMaximumFractionDigits();
 
         /*
          * 1. Document currency
@@ -1133,64 +1133,64 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         // Subtotal:
 
         if (mbDiscountUnitaryPercentageApplying) {
-            mdDiscountUnitaryCy = mdPriceUnitaryCy * mdDiscountUnitaryPercentage;
+            mdDiscountUnitaryCy = DLibUtils.round(mdPriceUnitaryCy * mdDiscountUnitaryPercentage, decsAmountUnit);
         }
 
-        subtotal = (mdQuantity == 0 ? 1 : mdQuantity) * (mdPriceUnitaryCy - mdDiscountUnitaryCy);
+        subtotal = DLibUtils.round((mdQuantity == 0 ? 1 : mdQuantity) * DLibUtils.round(mdPriceUnitaryCy - mdDiscountUnitaryCy, decsAmountUnit), decsAmount);
 
         if (mbDiscountRowPercentageApplying) {
-            mdDiscountRowCy = subtotal * mdDiscountRowPercentage;
+            mdDiscountRowCy = DLibUtils.round(subtotal * mdDiscountRowPercentage, decsAmount);
         }
 
-        mdSubtotalProvCy_r = subtotal - mdDiscountRowCy;
+        mdSubtotalProvCy_r = DLibUtils.round(subtotal - mdDiscountRowCy, decsAmount);
 
         if (!mbDiscountDocApplying || !isDiscDocApplying) {
             mdDiscountDocCy = 0;
         }
         else if (isDiscDocPercentageApplying) {
-            mdDiscountDocCy = mdSubtotalProvCy_r * discDocPercentage;
+            mdDiscountDocCy = DLibUtils.round(mdSubtotalProvCy_r * discDocPercentage, decsAmount);
         }
 
-        mdSubtotalCy_r = mdSubtotalProvCy_r - mdDiscountDocCy;
+        mdSubtotalCy_r = DLibUtils.round(mdSubtotalProvCy_r - mdDiscountDocCy, decsAmount);
 
         // Taxes:
 
-        mdTaxCharged1Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate1, decsAmt);
-        mdTaxCharged2Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate2, decsAmt);
-        mdTaxCharged3Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate3, decsAmt);
-        mdTaxChargedCy_r = DLibUtils.round(mdTaxCharged1Cy + mdTaxCharged2Cy + mdTaxCharged3Cy, decsAmt);
+        mdTaxCharged1Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate1, decsAmount);
+        mdTaxCharged2Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate2, decsAmount);
+        mdTaxCharged3Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxChargedRate3, decsAmount);
+        mdTaxChargedCy_r = DLibUtils.round(mdTaxCharged1Cy + mdTaxCharged2Cy + mdTaxCharged3Cy, decsAmount);
 
-        mdTaxRetained1Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate1, decsAmt);
-        mdTaxRetained2Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate2, decsAmt);
-        mdTaxRetained3Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate3, decsAmt);
-        mdTaxRetainedCy_r = DLibUtils.round(mdTaxRetained1Cy + mdTaxRetained2Cy + mdTaxRetained3Cy, decsAmt);
+        mdTaxRetained1Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate1, decsAmount);
+        mdTaxRetained2Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate2, decsAmount);
+        mdTaxRetained3Cy = DLibUtils.round(mdSubtotalCy_r * mdTaxRetainedRate3, decsAmount);
+        mdTaxRetainedCy_r = DLibUtils.round(mdTaxRetained1Cy + mdTaxRetained2Cy + mdTaxRetained3Cy, decsAmount);
 
         // Total:
 
-        mdPriceUnitaryCy = DLibUtils.round(mdPriceUnitaryCy, decsAmtUnt);
-        mdDiscountUnitaryCy = DLibUtils.round(mdDiscountUnitaryCy, decsAmtUnt);
-        mdDiscountRowCy = DLibUtils.round(mdDiscountRowCy, decsAmt);
-        mdSubtotalProvCy_r = DLibUtils.round(mdSubtotalProvCy_r, decsAmt);
-        mdDiscountDocCy = DLibUtils.round(mdDiscountDocCy, decsAmt);
-        mdSubtotalCy_r = DLibUtils.round(mdSubtotalCy_r, decsAmt);
-        mdTotalCy_r = DLibUtils.round(mdSubtotalCy_r + mdTaxChargedCy_r - mdTaxRetainedCy_r, decsAmt);
+        mdPriceUnitaryCy = DLibUtils.round(mdPriceUnitaryCy, decsAmountUnit);
+        mdDiscountUnitaryCy = DLibUtils.round(mdDiscountUnitaryCy, decsAmountUnit);
+        mdDiscountRowCy = DLibUtils.round(mdDiscountRowCy, decsAmount);
+        mdSubtotalProvCy_r = DLibUtils.round(mdSubtotalProvCy_r, decsAmount);
+        mdDiscountDocCy = DLibUtils.round(mdDiscountDocCy, decsAmount);
+        mdSubtotalCy_r = DLibUtils.round(mdSubtotalCy_r, decsAmount);
+        mdTotalCy_r = DLibUtils.round(mdSubtotalCy_r + mdTaxChargedCy_r - mdTaxRetainedCy_r, decsAmount);
 
         // Correct total for DPS adjustments if needed:
 
         if (isDpsRowAdjustment() && mdAuxTotalAdjustedCy != 0) {
-            correction = DLibUtils.round(mdAuxTotalAdjustedCy, decsAmt) - DLibUtils.round(mdTotalCy_r, decsAmt);
+            correction = DLibUtils.round(mdAuxTotalAdjustedCy, decsAmount) - DLibUtils.round(mdTotalCy_r, decsAmount);
 
             if (correction != 0) {
-                mdPriceUnitaryCy = DLibUtils.round(mdPriceUnitaryCy + (correction / (mdQuantity == 0 ? 1 : mdQuantity)), decsAmtUnt);
-                mdSubtotalProvCy_r = DLibUtils.round(mdSubtotalProvCy_r + correction, decsAmt);
-                mdSubtotalCy_r = DLibUtils.round(mdSubtotalCy_r + correction, decsAmt);
-                mdTotalCy_r = DLibUtils.round(mdAuxTotalAdjustedCy, decsAmt);
+                mdPriceUnitaryCy = DLibUtils.round(mdPriceUnitaryCy + (correction / (mdQuantity == 0 ? 1 : mdQuantity)), decsAmountUnit);
+                mdSubtotalProvCy_r = DLibUtils.round(mdSubtotalProvCy_r + correction, decsAmount);
+                mdSubtotalCy_r = DLibUtils.round(mdSubtotalCy_r + correction, decsAmount);
+                mdTotalCy_r = DLibUtils.round(mdAuxTotalAdjustedCy, decsAmount);
             }
         }
 
         // Calculated unitary price:
 
-        mdPriceUnitaryCalculatedCy_r = DLibUtils.round(mdSubtotalCy_r / (mdQuantity == 0 ? 1 : mdQuantity), decsAmtUnt);
+        mdPriceUnitaryCalculatedCy_r = DLibUtils.round(mdSubtotalCy_r / (mdQuantity == 0 ? 1 : mdQuantity), decsAmountUnit);
 
         /*
          * 2. Domestic currency
@@ -1231,34 +1231,34 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         else {
             // Total:
 
-            mdTotal_r = DLibUtils.round(mdTotalCy_r * exchangeRate, decsAmt);
+            mdTotal_r = DLibUtils.round(mdTotalCy_r * exchangeRate, decsAmount);
 
             // Taxes:
 
-            mdTaxCharged1 = DLibUtils.round(mdTaxCharged1Cy * exchangeRate, decsAmt);
-            mdTaxCharged2 = DLibUtils.round(mdTaxCharged2Cy * exchangeRate, decsAmt);
-            mdTaxCharged3 = DLibUtils.round(mdTaxCharged3Cy * exchangeRate, decsAmt);
-            mdTaxCharged_r = DLibUtils.round(mdTaxCharged1 + mdTaxCharged2 + mdTaxCharged3, decsAmt);
+            mdTaxCharged1 = DLibUtils.round(mdTaxCharged1Cy * exchangeRate, decsAmount);
+            mdTaxCharged2 = DLibUtils.round(mdTaxCharged2Cy * exchangeRate, decsAmount);
+            mdTaxCharged3 = DLibUtils.round(mdTaxCharged3Cy * exchangeRate, decsAmount);
+            mdTaxCharged_r = DLibUtils.round(mdTaxCharged1 + mdTaxCharged2 + mdTaxCharged3, decsAmount);
 
-            mdTaxRetained1 = DLibUtils.round(mdTaxRetained1Cy * exchangeRate, decsAmt);
-            mdTaxRetained2 = DLibUtils.round(mdTaxRetained2Cy * exchangeRate, decsAmt);
-            mdTaxRetained3 = DLibUtils.round(mdTaxRetained3Cy * exchangeRate, decsAmt);
-            mdTaxRetained_r = DLibUtils.round(mdTaxRetained1 + mdTaxRetained2 + mdTaxRetained3, decsAmt);
+            mdTaxRetained1 = DLibUtils.round(mdTaxRetained1Cy * exchangeRate, decsAmount);
+            mdTaxRetained2 = DLibUtils.round(mdTaxRetained2Cy * exchangeRate, decsAmount);
+            mdTaxRetained3 = DLibUtils.round(mdTaxRetained3Cy * exchangeRate, decsAmount);
+            mdTaxRetained_r = DLibUtils.round(mdTaxRetained1 + mdTaxRetained2 + mdTaxRetained3, decsAmount);
 
             // Subtotal:
 
-            mdSubtotal_r = DLibUtils.round(mdTotal_r - mdTaxCharged_r + mdTaxRetained_r, decsAmt);
+            mdSubtotal_r = DLibUtils.round(mdTotal_r - mdTaxCharged_r + mdTaxRetained_r, decsAmount);
 
-            mdDiscountDoc = DLibUtils.round(mdDiscountDocCy * exchangeRate, decsAmt);
-            mdSubtotalProv_r = DLibUtils.round(mdSubtotal_r + mdDiscountDoc, decsAmt);
+            mdDiscountDoc = DLibUtils.round(mdDiscountDocCy * exchangeRate, decsAmount);
+            mdSubtotalProv_r = DLibUtils.round(mdSubtotal_r + mdDiscountDoc, decsAmount);
 
-            mdDiscountRow = DLibUtils.round(mdDiscountRowCy * exchangeRate, decsAmt);
-            mdDiscountUnitary = DLibUtils.round(mdDiscountUnitaryCy * exchangeRate, decsAmtUnt);
-            mdPriceUnitary = DLibUtils.round(mdPriceUnitaryCy * exchangeRate, decsAmtUnt);
+            mdDiscountRow = DLibUtils.round(mdDiscountRowCy * exchangeRate, decsAmount);
+            mdDiscountUnitary = DLibUtils.round(mdDiscountUnitaryCy * exchangeRate, decsAmountUnit);
+            mdPriceUnitary = DLibUtils.round(mdPriceUnitaryCy * exchangeRate, decsAmountUnit);
 
             // Calculated unitary price:
 
-            mdPriceUnitaryCalculated_r = DLibUtils.round(mdSubtotal_r / (mdQuantity == 0 ? 1 : mdQuantity), decsAmtUnt);
+            mdPriceUnitaryCalculated_r = DLibUtils.round(mdSubtotal_r / (mdQuantity == 0 ? 1 : mdQuantity), decsAmountUnit);
         }
     }
 }

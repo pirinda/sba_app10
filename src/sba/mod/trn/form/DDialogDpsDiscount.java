@@ -124,6 +124,7 @@ public class DDialogDpsDiscount extends DBeanFormDialog {
 
         if (moRegistry.isRegistryNew()) { } else { }
 
+        moCurDiscountDoc.setCurrencyKey(moRegistry.getCurrencyKey());
         moCurDiscountDoc.getField().setValue(moRegistry.getDiscountDocCy_r());
 
         if (moRegistry.isRegistryNew()) { } else { }

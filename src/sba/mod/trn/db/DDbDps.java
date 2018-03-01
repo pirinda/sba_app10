@@ -1890,7 +1890,8 @@ public class DDbDps extends DDbRegistryUser {
         double taxRetained = 0;
         double discountDoc = 0;
         double difference = 0;
-        int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
+        int decsAmount = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
+        int decsAmountUnit = DLibUtils.getDecimalFormatAmountUnitary().getMaximumFractionDigits();
         DDbDpsRow rowGreater = null;
 
         mdSubtotalProvCy_r = 0;
@@ -1911,30 +1912,30 @@ public class DDbDps extends DDbRegistryUser {
             else {
                 row.setSortingPos(++position);
 
-                mdSubtotalProvCy_r += row.getSubtotalProvCy_r();
-                mdDiscountDocCy_r += row.getDiscountDocCy();
-                mdSubtotalCy_r += row.getSubtotalCy_r();
-                mdTaxChargedCy_r += row.getTaxChargedCy_r();
-                mdTaxRetainedCy_r += row.getTaxRetainedCy_r();
-                mdTotalCy_r += row.getTotalCy_r();
+                mdSubtotalProvCy_r = DLibUtils.round(mdSubtotalProvCy_r + row.getSubtotalProvCy_r(), decsAmount);
+                mdDiscountDocCy_r = DLibUtils.round(mdDiscountDocCy_r + row.getDiscountDocCy(), decsAmount);
+                mdSubtotalCy_r = DLibUtils.round(mdSubtotalCy_r + row.getSubtotalCy_r(), decsAmount);
+                mdTaxChargedCy_r = DLibUtils.round(mdTaxChargedCy_r + row.getTaxChargedCy_r(), decsAmount);
+                mdTaxRetainedCy_r = DLibUtils.round(mdTaxRetainedCy_r + row.getTaxRetainedCy_r(), decsAmount);
+                mdTotalCy_r = DLibUtils.round(mdTotalCy_r + row.getTotalCy_r(), decsAmount);
 
-                mdAuxTotalQuantity += row.getQuantity();
+                mdAuxTotalQuantity = DLibUtils.round(mdAuxTotalQuantity + row.getQuantity(), decsAmountUnit);
 
-                subtotal += row.getSubtotal_r();
-                taxCharged += row.getTaxCharged_r();
-                taxRetained += row.getTaxRetained_r();
-                discountDoc += row.getDiscountDoc();
+                subtotal = DLibUtils.round(subtotal + row.getSubtotal_r(), decsAmount);
+                taxCharged = DLibUtils.round(taxCharged + row.getTaxCharged_r(), decsAmount);
+                taxRetained = DLibUtils.round(taxRetained + row.getTaxRetained_r(), decsAmount);
+                discountDoc = DLibUtils.round(discountDoc + row.getDiscountDoc(), decsAmount);
             }
         }
 
-        mdTotal_r = DLibUtils.round(mdTotalCy_r * mdExchangeRate, decs);
+        mdTotal_r = DLibUtils.round(mdTotalCy_r * mdExchangeRate, decsAmount);
         mdTaxCharged_r = taxCharged;
         mdTaxRetained_r = taxRetained;
-        mdSubtotal_r = DLibUtils.round(mdTotal_r - mdTaxCharged_r + mdTaxRetained_r, decs);
+        mdSubtotal_r = DLibUtils.round(mdTotal_r - mdTaxCharged_r + mdTaxRetained_r, decsAmount);
         mdDiscountDoc_r = discountDoc;
-        mdSubtotalProv_r = DLibUtils.round(mdSubtotal_r + mdDiscountDoc_r, decs);
+        mdSubtotalProv_r = DLibUtils.round(mdSubtotal_r + mdDiscountDoc_r, decsAmount);
 
-        difference = DLibUtils.round(mdSubtotal_r - subtotal, decs);
+        difference = DLibUtils.round(mdSubtotal_r - subtotal, decsAmount);
 
         if (difference != 0) {
             for (DDbDpsRow row : mvChildRows) {
@@ -1951,8 +1952,8 @@ public class DDbDps extends DDbRegistryUser {
             }
 
             if (rowGreater != null) {
-                rowGreater.setSubtotal_r(DLibUtils.round(rowGreater.getSubtotal_r() + difference, decs));
-                rowGreater.setSubtotalProv_r(DLibUtils.round(rowGreater.getSubtotalProv_r() + difference, decs));
+                rowGreater.setSubtotal_r(DLibUtils.round(rowGreater.getSubtotal_r() + difference, decsAmount));
+                rowGreater.setSubtotalProv_r(DLibUtils.round(rowGreater.getSubtotalProv_r() + difference, decsAmount));
             }
         }
     }

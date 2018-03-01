@@ -1024,7 +1024,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel11.add(moBoolDiscountDocPercentageApplying);
 
         jbDiscountDocSet.setText("...");
-        jbDiscountDocSet.setToolTipText("Fijar descuento en documento");
+        jbDiscountDocSet.setToolTipText("Establecer descuento del documento");
         jbDiscountDocSet.setPreferredSize(new java.awt.Dimension(23, 23));
         jPanel11.add(jbDiscountDocSet);
 

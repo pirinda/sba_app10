@@ -557,9 +557,9 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), lenCode == 0 || lenCode > 15 ? 15 : lenCode);
         moKeyIdentityType.setKeySettings(miClient, moKeyIdentityType.getToolTipText(), true);
-        moTextLastname.setTextSettings(DGuiUtils.getLabelName(jlLastname), 49);
-        moTextFirstname.setTextSettings(DGuiUtils.getLabelName(jlFirstname), 49);
-        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 100);
+        moTextLastname.setTextSettings(DGuiUtils.getLabelName(jlLastname), 99);
+        moTextFirstname.setTextSettings(DGuiUtils.getLabelName(jlFirstname), 99);
+        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 200);
         moTextNickname.setTextSettings(DGuiUtils.getLabelName(jlNickname), 100, 0);
         moTextFiscalId.setTextSettings(DGuiUtils.getLabelName(jlFiscalId), 20);
         moTextAlternativeId.setTextSettings(moTextAlternativeId.getToolTipText(), 25, 0);
