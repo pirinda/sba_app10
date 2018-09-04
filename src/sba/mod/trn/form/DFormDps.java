@@ -2244,7 +2244,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
                 moTextRowCode.setValue(moItem.getCode());
                 moTextRowName.setValue(moItem.getName());
-                jtfRowCfdItemKey.setText(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFact : moItem.getActualCfdItemKey());
+                jtfRowCfdItemKey.setText(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFacturacion : moItem.getActualCfdItemKey());
                 jtfRowCfdItemKey.setCaretPosition(0);
                 jtfRowUnitCode.setText(moUnit.getCode());
                 jtfRowUnitCode.setCaretPosition(0);
@@ -2441,7 +2441,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTsUserInsert(null);
         dpsRow.setTsUserUpdate(null);
 
-        dpsRow.setEdsItemKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFact : moItem.getActualCfdItemKey());
+        dpsRow.setEdsItemKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFacturacion : moItem.getActualCfdItemKey());
         dpsRow.setEdsUnitKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
         dpsRow.setEdsSourceUuid("");
         
