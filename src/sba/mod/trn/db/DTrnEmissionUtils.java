@@ -185,17 +185,17 @@ public abstract class DTrnEmissionUtils {
         return params;
     }
     
-    public static DDbXmlSignatureRequest getLastXmlSignatureRequest(final DGuiSession session, final int[] dpsKey) throws SQLException, Exception {
+    public static DDbXmlSignatureRequest getLastXmlSignatureRequest(final DGuiSession session, final int dfrId) throws SQLException, Exception {
         DDbXmlSignatureRequest xsr = null;
         String sql = "";
         ResultSet resultSet = null;
         
         sql = "SELECT COALESCE(MAX(id_req), 0) "
                 + "FROM " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " "
-                + "WHERE b_del = 0 AND id_dps = " + dpsKey[0] + " ";
+                + "WHERE b_del = 0 AND id_dfr = " + dfrId + " ";
         resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next() && resultSet.getInt(1) != DLibConsts.UNDEFINED) {
-            xsr = (DDbXmlSignatureRequest) session.readRegistry(DModConsts.T_XSR, new int[] { dpsKey[0], resultSet.getInt(1) });
+            xsr = (DDbXmlSignatureRequest) session.readRegistry(DModConsts.T_XSR, new int[] { dfrId, resultSet.getInt(1) });
         }
         
         return xsr;
@@ -254,7 +254,7 @@ public abstract class DTrnEmissionUtils {
         return fis;
     }
     
-    public static void consumeStamp(final DGuiSession session, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int[] xmlSignatureMoveKey, final int[] dpsKey) throws SQLException, Exception {
+    public static void consumeStamp(final DGuiSession session, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int[] xmlSignatureMoveKey, final int dfrId) throws SQLException, Exception {
         DDbXmlSignatureMove xsm = null;
         
         xsm = new DDbXmlSignatureMove();
@@ -269,13 +269,13 @@ public abstract class DTrnEmissionUtils {
         xsm.setFkXsmTypeId(xmlSignatureMoveKey[1]);
         xsm.setFkSignatureBizPartnerId_n(signatureCompanyBranchKey == null ? DLibConsts.UNDEFINED : signatureCompanyBranchKey[0]);
         xsm.setFkSignatureBranchId_n(signatureCompanyBranchKey == null ? DLibConsts.UNDEFINED : signatureCompanyBranchKey[1]);
-        xsm.setFkDpsId_n(dpsKey[0]);
+        xsm.setFkDfrId_n(dfrId);
         xsm.save(session);
     }
     
     public static void changeDpsType(final DGuiClient client, final DGridRowView gridRow) {
         DDbDps dps = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         DDbDpsTypeChange dpsTypeChange = null;
         DFormDpsTypeChange formDpsTypeChange = null;
 
@@ -285,9 +285,9 @@ public abstract class DTrnEmissionUtils {
         else {
             try {
                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                eds = dps.getChildEds();
+                dfr = dps.getChildDfr();
 
-                if (eds != null) {
+                if (dfr != null) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CHANGE + "El documento es electrónico.");
                 }
                 else {
@@ -314,7 +314,7 @@ public abstract class DTrnEmissionUtils {
         boolean print = true;
         boolean printed = false;
         DDbDps dps = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         DDbDpsPrinting dpsPrinting = null;
         DDbDpsSeries series = null;
         DDbDpsSeriesNumber seriesNumber = null;
@@ -330,12 +330,12 @@ public abstract class DTrnEmissionUtils {
         else {
             try {
                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                eds = dps.getChildEds();
+                dfr = dps.getChildDfr();
 
                 // Check if document number can be still changed:
 
                 if (DTrnUtils.isDpsNumberAutomatic(dps.getDpsClassKey()) && ((DDbConfigBranch) client.getSession().getConfigBranch()).isDpsPrintingDialog() &&
-                    (eds == null || (DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }) && eds.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
+                    (dfr == null || (DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }) && dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
                     formDpsPrinting = (DFormDpsPrinting) client.getSession().getModule(DModConsts.MOD_TRN).getForm(DModConsts.T_DPS_PRT, DLibConsts.UNDEFINED, null);
                     formDpsPrinting.setRegistry(dps);
                     formDpsPrinting.setVisible(true);
@@ -353,8 +353,8 @@ public abstract class DTrnEmissionUtils {
                             seriesNumber = DTrnUtils.getDpsSeriesNumber(client.getSession(), dps.getDpsTypeKey(), dps.getSeries(), dps.getNumber());
                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
-                                dps.updateEds(client.getSession(), eds);
+                                dfr = DTrnDfrUtils.createDfr(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
+                                dps.updateDfr(client.getSession(), dfr);
                             }
                         }
                     }
@@ -363,7 +363,7 @@ public abstract class DTrnEmissionUtils {
                 // Print document:
 
                 if (print) {
-                    if (eds == null || eds.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN) {
+                    if (dfr == null || dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN) {
                         // Print document as "document":
 
                         series = DTrnUtils.getDpsSeries(client.getSession(), dps.getDpsTypeKey(), dps.getSeries());
@@ -392,7 +392,7 @@ public abstract class DTrnEmissionUtils {
                     else {
                         // Print document as "electronic document":
 
-                        switch (eds.getFkXmlTypeId()) {
+                        switch (dfr.getFkXmlTypeId()) {
                             case DModSysConsts.TS_XML_TP_CFD:
                                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
                                 
@@ -430,6 +430,33 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    public static void printDfr(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbDfr dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey());
+
+                switch (dfr.getFkXmlTypeId()) {
+                    case DModSysConsts.TS_XML_TP_CFD:
+                    case DModSysConsts.TS_XML_TP_CFDI_32:
+                        throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
+
+                    case DModSysConsts.TS_XML_TP_CFDI_33:
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap(client.getSession(), dfr));
+                        break;
+
+                    default:
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+
     public static void signDps(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
         boolean sign = false;
         boolean signed = false;
@@ -437,7 +464,7 @@ public abstract class DTrnEmissionUtils {
         DDbSysXmlSignatureProvider xsp = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDps dps = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         DDbDpsSigning dpsSigning = null;
         DDbDpsSeriesNumber seriesNumber = null;
         DFormDpsSigning formDpsSigning = null;
@@ -461,8 +488,9 @@ public abstract class DTrnEmissionUtils {
                 try {
                     // Check that there are not pending transactions:
 
+                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                     xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
-                    xsr = getLastXmlSignatureRequest(client.getSession(), gridRow.getRowPrimaryKey());
+                    xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                         // Request signature:
@@ -486,23 +514,21 @@ public abstract class DTrnEmissionUtils {
 
                     // Check if document can be signed:
 
-                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
-
                     if (xsr == null) {
                         // Check and confirm document details before first signature request:
 
-                        eds = dps.getChildEds();
+                        dfr = dps.getChildDfr();
 
-                        if (eds == null || eds.isRegistryNew()) {
+                        if (dfr == null || dfr.isRegistryNew()) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (!DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
-                        else if (!DLibUtils.belongsTo(eds.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN })) {
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El estatus del registro XML del documento debe ser '" +
                                     client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
                         }
@@ -542,8 +568,8 @@ public abstract class DTrnEmissionUtils {
                                             seriesNumber = DTrnUtils.getDpsSeriesNumber(client.getSession(), dps.getDpsTypeKey(), dps.getSeries(), dps.getNumber());
                                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                                                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
-                                                eds = DTrnEdsUtils.createDpsEds(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
-                                                dps.updateEds(client.getSession(), eds);
+                                                dfr = DTrnDfrUtils.createDfr(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
+                                                dps.updateDfr(client.getSession(), dfr);
                                             }
                                         }
                                     }
@@ -559,7 +585,7 @@ public abstract class DTrnEmissionUtils {
                         try {
                             client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                            DTrnEdsUtils.signDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
+                            DTrnDfrUtils.signDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
                             signed = true;
                         }
                         catch (Exception e) {
@@ -597,7 +623,7 @@ public abstract class DTrnEmissionUtils {
         DDbSysXmlSignatureProvider xsp = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDps dps = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         DFormDpsCancelling formDpsCancelling = null;
 
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
@@ -623,8 +649,9 @@ public abstract class DTrnEmissionUtils {
                 try {
                     // Check that there are not pending transactions:
 
+                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                     xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
-                    xsr = getLastXmlSignatureRequest(client.getSession(), gridRow.getRowPrimaryKey());
+                    xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                         // Request signature:
@@ -651,23 +678,21 @@ public abstract class DTrnEmissionUtils {
 
                     // Check if document can be cancelled:
 
-                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
-
                     if (xsr == null) {
                         // Check and confirm document details before first signature request:
 
-                        eds = dps.getChildEds();
+                        dfr = dps.getChildDfr();
 
-                        if (eds == null || eds.isRegistryNew()) {
+                        if (dfr == null || dfr.isRegistryNew()) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (!DLibUtils.belongsTo(eds.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
-                        else if (!DLibUtils.belongsTo(eds.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN, DModSysConsts.TS_XML_ST_ISS })) {
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN, DModSysConsts.TS_XML_ST_ISS })) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El estatus del registro XML del documento debe ser '" +
                                     client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "' o '" +
                                     client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
@@ -710,7 +735,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnEdsUtils.cancelDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
                                 cancelled = true;
                             }
                             catch (Exception e) {
@@ -743,7 +768,7 @@ public abstract class DTrnEmissionUtils {
     public static void sendDps(final DGuiClient client, final DGridRowView gridRow) {
         boolean send = false;
         DDbDps dps = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         DDbDpsSending sending = null;
         DDbBizPartner bizPartner = null;
         DDbBranchAddress branchAddress = null;
@@ -761,19 +786,19 @@ public abstract class DTrnEmissionUtils {
         else {
 
             try {
-                eds = (DDbDpsEds) client.getSession().readRegistry(DModConsts.T_DPS_EDS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_STEALTH);
+                dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
+                dfr = dps.getChildDfr();
 
-                if (eds == null || eds.isRegistryNew()) {
+                if (dfr == null || dfr.isRegistryNew()) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\nEl registro XML del documento no existe.");
                 }
-                else if (eds.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
+                else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "El estatus del registro XML del documento debe ser '" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
-                else if (eds.getFkXmlAddendaTypeId() != DModSysConsts.TS_XML_ADD_TP_NA && eds.getDocXmlAddenda().isEmpty()) {
+                else if (dfr.getFkXmlAddendaTypeId() != DModSysConsts.TS_XML_ADD_TP_NA && dfr.getDocXmlAddenda().isEmpty()) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "La addenda del registro XML del documento no ha sido incorporada.");
                 }
                 else {
-                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
                     sending = dps.createDpsSending();
 
                     if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ISS) {
@@ -883,7 +908,7 @@ public abstract class DTrnEmissionUtils {
 
                                     // PDF file:
 
-                                    fileName = eds.getDocXmlName().replaceAll(".xml", ".pdf");
+                                    fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
                                     filePath = configBranch.getEdsDirectory() + fileName;
 
                                     dataSource = new FileDataSource(filePath);
@@ -894,7 +919,7 @@ public abstract class DTrnEmissionUtils {
 
                                     // XML file:
 
-                                    fileName = eds.getDocXmlName();
+                                    fileName = dfr.getDocXmlName();
                                     filePath = configBranch.getEdsDirectory() + fileName;
 
                                     dataSource = new FileDataSource(filePath);

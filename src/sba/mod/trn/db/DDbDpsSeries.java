@@ -52,7 +52,7 @@ public class DDbDpsSeries extends DDbRegistryUser {
 
     public DDbDpsSeries() {
         super(DModConsts.TU_SER);
-        mvChildBranches = new Vector<DDbDpsSeriesBranch>();
+        mvChildBranches = new Vector<>();
         initRegistry();
     }
 

@@ -25,10 +25,10 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
 
     /*
      * DDbBookkeepingMove created integrally by the following methods and classes:
-     * class DDbDps
-     * class DDbIog
-     * class DDbProcessBookkeepingOpening
-     * class DPanelPayment
+     * class sba.mod.trn.db.DDbDps
+     * class sba.mod.trn.db.DDbIog
+     * class sba.mod.fin.db.DDbProcessBookkeepingOpening
+     * class sba.mod.fin.form.DPanelPayment
      */
 
     public static final int LEN_TEXT = 100;
@@ -73,6 +73,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
     protected int mnFkBizPartnerBranchId_n;
     protected int mnFkDpsInvId_n;
     protected int mnFkDpsAdjId_n;
+    protected int mnFkDfrId_n;
     protected int mnFkIogId_n;
     protected int mnFkIomId_n;
     protected int mnFkPusId_n;
@@ -137,6 +138,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
     public void setFkBizPartnerBranchId_n(int n) { mnFkBizPartnerBranchId_n = n; }
     public void setFkDpsInvId_n(int n) { mnFkDpsInvId_n = n; }
     public void setFkDpsAdjId_n(int n) { mnFkDpsAdjId_n = n; }
+    public void setFkDfrId_n(int n) { mnFkDfrId_n = n; }
     public void setFkIogId_n(int n) { mnFkIogId_n = n; }
     public void setFkIomId_n(int n) { mnFkIomId_n = n; }
     public void setFkPusId_n(int n) { mnFkPusId_n = n; }
@@ -192,6 +194,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
     public int getFkBizPartnerBranchId_n() { return mnFkBizPartnerBranchId_n; }
     public int getFkDpsInvId_n() { return mnFkDpsInvId_n; }
     public int getFkDpsAdjId_n() { return mnFkDpsAdjId_n; }
+    public int getFkDfrId_n() { return mnFkDfrId_n; }
     public int getFkIogId_n() { return mnFkIogId_n; }
     public int getFkIomId_n() { return mnFkIomId_n; }
     public int getFkPusId_n() { return mnFkPusId_n; }
@@ -271,6 +274,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
         mnFkBizPartnerBranchId_n = 0;
         mnFkDpsInvId_n = 0;
         mnFkDpsAdjId_n = 0;
+        mnFkDfrId_n = 0;
         mnFkIogId_n = 0;
         mnFkIomId_n = 0;
         mnFkPusId_n = 0;
@@ -372,6 +376,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
             mnFkBizPartnerBranchId_n = resultSet.getInt("fk_bpr_bra_n");
             mnFkDpsInvId_n = resultSet.getInt("fk_dps_inv_n");
             mnFkDpsAdjId_n = resultSet.getInt("fk_dps_adj_n");
+            mnFkDfrId_n = resultSet.getInt("fk_dfr_n");
             mnFkIogId_n = resultSet.getInt("fk_iog_n");
             mnFkIomId_n = resultSet.getInt("fk_iom_n");
             mnFkPusId_n = resultSet.getInt("fk_pus_n");
@@ -446,6 +451,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
                     (mnFkBizPartnerBranchId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBizPartnerBranchId_n) + ", " +
                     (mnFkDpsInvId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsInvId_n) + ", " +
                     (mnFkDpsAdjId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsAdjId_n) + ", " +
+                    (mnFkDfrId_n == DLibConsts.UNDEFINED ? "NULL" : mnFkDfrId_n) + ", " +
                     (mnFkIogId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkIogId_n) + ", " +
                     (mnFkIomId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkIomId_n) + ", " +
                     (mnFkPusId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkPusId_n) + ", " +
@@ -508,6 +514,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
                     "fk_bpr_bra_n = " + (mnFkBizPartnerBranchId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBizPartnerBranchId_n) + ", " +
                     "fk_dps_inv_n = " + (mnFkDpsInvId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsInvId_n) + ", " +
                     "fk_dps_adj_n = " + (mnFkDpsAdjId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsAdjId_n) + ", " +
+                    "fk_dfr_n = " + (mnFkDfrId_n == DLibConsts.UNDEFINED ? "NULL" : mnFkDfrId_n) + ", " +
                     "fk_iog_n = " + (mnFkIogId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkIogId_n) + ", " +
                     "fk_iom_n = " + (mnFkIomId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkIomId_n) + ", " +
                     "fk_pus_n = " + (mnFkPusId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkPusId_n) + ", " +
@@ -574,6 +581,7 @@ public class DDbBookkeepingMove extends DDbRegistryUser {
         registry.setFkBizPartnerBranchId_n(this.getFkBizPartnerBranchId_n());
         registry.setFkDpsInvId_n(this.getFkDpsInvId_n());
         registry.setFkDpsAdjId_n(this.getFkDpsAdjId_n());
+        registry.setFkDfrId_n(this.getFkDfrId_n());
         registry.setFkIogId_n(this.getFkIogId_n());
         registry.setFkIomId_n(this.getFkIomId_n());
         registry.setFkPusId_n(this.getFkPusId_n());

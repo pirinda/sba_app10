@@ -325,6 +325,7 @@ public class DFormBookkeepingMoveCustomDpsClear extends DBeanForm {
         moBkkMoveBizPartner.setFkBizPartnerBranchId_n(moDps.getFkBizPartnerBranchId());
         moBkkMoveBizPartner.setFkDpsInvId_n(moDps.getPkDpsId());
         moBkkMoveBizPartner.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        moBkkMoveBizPartner.setFkDfrId_n(DLibConsts.UNDEFINED);
         moBkkMoveBizPartner.setFkIogId_n(DLibConsts.UNDEFINED);
         moBkkMoveBizPartner.setFkIomId_n(DLibConsts.UNDEFINED);
         moBkkMoveBizPartner.setFkPusId_n(DLibConsts.UNDEFINED);

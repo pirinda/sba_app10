@@ -125,24 +125,24 @@ public class DDbDps extends DDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    protected DDbDpsEds moChildEds;
+    protected DDbDfr moChildDfr; // digital fiscal receipt
     protected Vector<DDbDpsNote> mvChildNotes;
     protected Vector<DDbDpsRow> mvChildRows;
 
-    protected String msEdsUuid;
-    protected String msEdsMethodOfPayment;
-    protected String msEdsPaymentTerms;
-    protected String msEdsConfirmation;
-    protected String msEdsTaxRegime;
-    protected String msEdsUsage;
-    protected String msEdsRelationType;
-    protected ArrayList<String> maEdsCfdiRelated;
+    protected String msDfrUuid;
+    protected String msDfrMethodOfPayment;
+    protected String msDfrPaymentTerms;
+    protected String msDfrConfirmation;
+    protected String msDfrTaxRegime;
+    protected String msDfrCfdUsage;
+    protected String msDfrRelationType;
+    protected ArrayList<String> maDfrCfdiRelated;
 
     protected int mnXtaIogId;
 
     protected int mnAuxNewDpsSeriesId;
     protected int mnAuxXmlTypeId;
-    protected boolean mbAuxEdsRequired;
+    protected boolean mbAuxDfrRequired;
     protected double mdAuxTotalQuantity;
     protected DDbLock moAuxLock;
 
@@ -150,7 +150,7 @@ public class DDbDps extends DDbRegistryUser {
         super(DModConsts.T_DPS);
         mvChildNotes = new Vector<>();
         mvChildRows = new Vector<>();
-        maEdsCfdiRelated = new ArrayList<>();
+        maDfrCfdiRelated = new ArrayList<>();
         initRegistry();
     }
 
@@ -304,6 +304,7 @@ public class DDbDps extends DDbRegistryUser {
         bkkMove.setFkBizPartnerBranchId_n(mnFkBizPartnerBranchId);
         bkkMove.setFkDpsInvId_n(isDpsDocument() ? mnPkDpsId : DLibConsts.UNDEFINED);
         bkkMove.setFkDpsAdjId_n(isDpsAdjustment() ? mnPkDpsId : DLibConsts.UNDEFINED);
+        bkkMove.setFkDfrId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkIogId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkIomId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkPusId_n(DLibConsts.UNDEFINED);
@@ -520,45 +521,51 @@ public class DDbDps extends DDbRegistryUser {
         }
     }
 
-    private void computeEds(final DGuiSession session) throws Exception {
+    private void computeDfr(final DGuiSession session) throws Exception {
         boolean save = false;
 
         /*
-         * Auxiliar members "mbAuxEdsRequired" and "mnAuxXmlTypeId" are only set in DFormDps.
+         * Auxiliar members "mbAuxDfrRequired" and "mnAuxXmlTypeId" are only set in DFormDps.
          */
 
-        if ((mbAuxEdsRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildEds != null)) {
-            moChildEds = DTrnEdsUtils.createDpsEds(session, this, mbAuxEdsRequired ? mnAuxXmlTypeId : moChildEds.getFkXmlTypeId());
+        if ((mbAuxDfrRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildDfr != null)) {
+            moChildDfr = DTrnDfrUtils.createDfr(session, this, mbAuxDfrRequired ? mnAuxXmlTypeId : moChildDfr.getFkXmlTypeId());
             save = true;
         }
-        else if (!mbAuxEdsRequired && mnAuxXmlTypeId == DModSysConsts.TS_XML_TP_NA) {
-            moChildEds = null;  // clear e-document supporting only if it is requested from DFormDps
+        else if (!mbAuxDfrRequired && mnAuxXmlTypeId == DModSysConsts.TS_XML_TP_NA) {
+            moChildDfr = null; // clear DFR only when it is requested from DFormDps
             save = true;
         }
 
         if (save) {
-            saveEds(session, true);
+            saveDfr(session, true);
         }
     }
 
-    private void saveEds(final DGuiSession session, boolean issueEds) throws SQLException, Exception {
-        msSql = "DELETE FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " " + getSqlWhere();
-        session.getStatement().execute(msSql);
+    private void saveDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
+        if (moChildDfr == null) {
+            msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
+                    + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
+                    + "WHERE fk_dps_n = " + mnPkDpsId + ";";
+            session.getStatement().execute(msSql);
+        }
+        else {
+            moChildDfr.setFkOwnerBizPartnerId(mnFkOwnerBizPartnerId);
+            moChildDfr.setFkOwnerBranchId(mnFkOwnerBranchId);
+            moChildDfr.setFkBizPartnerId(mnFkBizPartnerBizPartnerId);
+            moChildDfr.setFkDpsId_n(mnPkDpsId);
+            moChildDfr.setDeleted(mbDeleted);
+            moChildDfr.save(session);
 
-        if (moChildEds != null) {
-            moChildEds.setPkDpsId(mnPkDpsId);
-            moChildEds.setRegistryNew(true);
-            moChildEds.save(session);
-
-            if (issueEds) {
-                issueEds(session);
+            if (issueDfr) {
+                issueDfr(session);
             }
         }
     }
 
-    private void readEds() throws Exception {
-        if (moChildEds != null) {
-            switch (moChildEds.getFkXmlTypeId()) {
+    private void readDfr() throws Exception {
+        if (moChildDfr != null) {
+            switch (moChildDfr.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFD:
                 case DModSysConsts.TS_XML_TP_CFDI_32:
                     break;
@@ -566,37 +573,37 @@ public class DDbDps extends DDbRegistryUser {
                 case DModSysConsts.TS_XML_TP_CFDI_33:
                     Node node;
                     NamedNodeMap namedNodeMap;
-                    Document doc = DXmlUtils.parseDocument(moChildEds.getSuitableDocXml());
+                    Document doc = DXmlUtils.parseDocument(moChildDfr.getSuitableDocXml());
                     
                     // comprobante:
                     node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
                     namedNodeMap = node.getAttributes();
-                    msEdsMethodOfPayment = DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true);
-                    msEdsPaymentTerms = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
-                    msEdsConfirmation = DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false);
+                    msDfrMethodOfPayment = DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true);
+                    msDfrPaymentTerms = DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false);
+                    msDfrConfirmation = DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false);
 
                     // CFDI relacionados:
                     if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
                         node = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados").get(0);
                         namedNodeMap = node.getAttributes();
-                        msEdsRelationType = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
+                        msDfrRelationType = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
                         
-                        maEdsCfdiRelated.clear();
+                        maDfrCfdiRelated.clear();
                         for (Node child : DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionado")) {
                             namedNodeMap = child.getAttributes();
-                            maEdsCfdiRelated.add(DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false));
+                            maDfrCfdiRelated.add(DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false));
                         }
                     }
 
                     // emisor:
                     node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
                     namedNodeMap = node.getAttributes();
-                    msEdsTaxRegime = DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true);
+                    msDfrTaxRegime = DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true);
 
                     // receptor:
                     node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
                     namedNodeMap = node.getAttributes();
-                    msEdsUsage = DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true);
+                    msDfrCfdUsage = DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true);
                     
                     // conceptos:
                     int row = 0;
@@ -610,8 +617,8 @@ public class DDbDps extends DDbRegistryUser {
                         } while (dpsRow.isDeleted());
                         
                         namedNodeMap = concepto.getAttributes();
-                        dpsRow.setEdsItemKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveProdServ", true));
-                        dpsRow.setEdsUnitKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveUnidad", true));
+                        dpsRow.setDfrItemKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveProdServ", true));
+                        dpsRow.setDfrUnitKey(DXmlUtils.extractAttributeValue(namedNodeMap, "ClaveUnidad", true));
                         
                         if (DXmlUtils.hasChildElement(concepto, "cfdi:CuentaPredial")) {
                             Vector<Node> cuentaPredial = DXmlUtils.extractChildElements(concepto, "cfdi:CuentaPredial");
@@ -627,7 +634,7 @@ public class DDbDps extends DDbRegistryUser {
                         if (DXmlUtils.hasChildElement(node, "tfd:TimbreFiscalDigital")) {
                             Vector<Node> timbreFiscalDigital = DXmlUtils.extractChildElements(node, "tfd:TimbreFiscalDigital");
                             namedNodeMap = timbreFiscalDigital.get(0).getAttributes();
-                            msEdsUuid = DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
+                            msDfrUuid = DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
                         }
                     }
                     break;
@@ -980,9 +987,9 @@ public class DDbDps extends DDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setChildEds(DDbDpsEds o) { moChildEds = o; }
+    public void setChildDfr(DDbDfr o) { moChildDfr = o; }
 
-    public DDbDpsEds getChildEds() { return moChildEds; }
+    public DDbDfr getChildDfr() { return moChildDfr; }
     public Vector<DDbDpsNote> getChildNotes() { return mvChildNotes; }
     public Vector<DDbDpsRow> getChildRows() { return mvChildRows; }
 
@@ -1012,36 +1019,36 @@ public class DDbDps extends DDbRegistryUser {
         return row;
     }
 
-    //public void setEdsUuid(String s) { msEdsUuid = s; } // read-only member!
-    public void setEdsMethodOfPayment(String s) { msEdsMethodOfPayment = s; }
-    public void setEdsPaymentTerms(String s) { msEdsPaymentTerms = s; }
-    public void setEdsConfirmation(String s) { msEdsConfirmation = s; }
-    public void setEdsTaxRegime(String s) { msEdsTaxRegime = s; }
-    public void setEdsUsage(String s) { msEdsUsage = s; }
-    public void setEdsRelationType(String s) { msEdsRelationType = s; }
+    //public void setDfrUuid(String s) { msDfrUuid = s; } // read-only member!
+    public void setDfrMethodOfPayment(String s) { msDfrMethodOfPayment = s; }
+    public void setDfrPaymentTerms(String s) { msDfrPaymentTerms = s; }
+    public void setDfrConfirmation(String s) { msDfrConfirmation = s; }
+    public void setDfrTaxRegime(String s) { msDfrTaxRegime = s; }
+    public void setDfrCfdUsage(String s) { msDfrCfdUsage = s; }
+    public void setDfrRelationType(String s) { msDfrRelationType = s; }
     
     public void setXtaIogId(int n) { mnXtaIogId = n; }
 
     public void setAuxNewDpsSeriesId(int n) { mnAuxNewDpsSeriesId = n; }
     public void setAuxXmlTypeId(int n) { mnAuxXmlTypeId = n; }
-    public void setAuxEdsRequired(boolean b) { mbAuxEdsRequired = b; }
+    public void setAuxDfrRequired(boolean b) { mbAuxDfrRequired = b; }
     public void setAuxTotalQuantity(double d) { mdAuxTotalQuantity = d; }
     public void setAuxLock(DDbLock o) { moAuxLock = o; }
 
-    public String getEdsUuid() { return msEdsUuid; }
-    public String getEdsMethodOfPayment() { return msEdsMethodOfPayment; }
-    public String getEdsPaymentTerms() { return msEdsPaymentTerms; }
-    public String getEdsConfirmation() { return msEdsConfirmation; }
-    public String getEdsTaxRegime() { return msEdsTaxRegime; }
-    public String getEdsUsage() { return msEdsUsage; }
-    public String getEdsRelationType() { return msEdsRelationType; }
-    public ArrayList<String> getEdsCfdiRelated() { return maEdsCfdiRelated; }
+    public String getDfrUuid() { return msDfrUuid; }
+    public String getDfrMethodOfPayment() { return msDfrMethodOfPayment; }
+    public String getDfrPaymentTerms() { return msDfrPaymentTerms; }
+    public String getDfrConfirmation() { return msDfrConfirmation; }
+    public String getDfrTaxRegime() { return msDfrTaxRegime; }
+    public String getDfrCfdUsage() { return msDfrCfdUsage; }
+    public String getDfrRelationType() { return msDfrRelationType; }
+    public ArrayList<String> getDfrCfdiRelated() { return maDfrCfdiRelated; }
     
     public int getXtaIogId() { return mnXtaIogId; }
 
     public int getAuxNewDpsSeriesId() { return mnAuxNewDpsSeriesId; }
     public int getAuxXmlTypeId() { return mnAuxXmlTypeId; }
-    public boolean isAuxEdsRequired() { return mbAuxEdsRequired; }
+    public boolean isAuxDfrRequired() { return mbAuxDfrRequired; }
     public double getAuxTotalQuantity() { return mdAuxTotalQuantity; }
     public DDbLock getAuxLock() { return moAuxLock; }
 
@@ -1158,24 +1165,24 @@ public class DDbDps extends DDbRegistryUser {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
-        moChildEds = null;
+        moChildDfr = null;
         mvChildNotes.clear();
         mvChildRows.clear();
 
-        msEdsUuid = "";
-        msEdsMethodOfPayment = "";
-        msEdsPaymentTerms = "";
-        msEdsConfirmation = "";
-        msEdsTaxRegime = "";
-        msEdsUsage = "";
-        msEdsRelationType = "";
-        maEdsCfdiRelated.clear();
+        msDfrUuid = "";
+        msDfrMethodOfPayment = "";
+        msDfrPaymentTerms = "";
+        msDfrConfirmation = "";
+        msDfrTaxRegime = "";
+        msDfrCfdUsage = "";
+        msDfrRelationType = "";
+        maDfrCfdiRelated.clear();
 
         mnXtaIogId = 0;
 
         mnAuxNewDpsSeriesId = 0;
         mnAuxXmlTypeId = 0;
-        mbAuxEdsRequired = false;
+        mbAuxDfrRequired = false;
         mdAuxTotalQuantity = 0;
         moAuxLock = null;
     }
@@ -1300,11 +1307,11 @@ public class DDbDps extends DDbRegistryUser {
             statement = session.getStatement().getConnection().createStatement();
             statementAux = session.getStatement().getConnection().createStatement();
 
-            msSql = "SELECT id_dps FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " " + getSqlWhere();
+            msSql = "SELECT id_dfr FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " WHERE fk_dps_n = " + mnPkDpsId + ";";
             resultSet = statement.executeQuery(msSql);
             if (resultSet.next()) {
-                moChildEds = new DDbDpsEds();
-                moChildEds.read(session, new int[] { resultSet.getInt(1) });
+                moChildDfr = new DDbDfr();
+                moChildDfr.read(session, new int[] { resultSet.getInt(1) });
             }
 
             msSql = "SELECT id_not FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_NOT) + " " + getSqlWhere() +
@@ -1359,8 +1366,8 @@ public class DDbDps extends DDbRegistryUser {
                 mnXtaIogId = resultSet.getInt(1);
             }
             
-            if (moChildEds != null) {
-                readEds();
+            if (moChildDfr != null) {
+                readDfr();
             }
 
             // Finish registry reading:
@@ -1567,7 +1574,7 @@ public class DDbDps extends DDbRegistryUser {
 
         computeBookkeeping(session);
         computeStock(session);
-        computeEds(session);
+        computeDfr(session);
 
         // Finish registry updating:
         
@@ -1653,7 +1660,7 @@ public class DDbDps extends DDbRegistryUser {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
-        registry.setChildEds(moChildEds == null ? null : moChildEds.clone());
+        registry.setChildDfr(moChildDfr == null ? null : moChildDfr.clone());
 
         for (DDbDpsNote child : mvChildNotes) {
             registry.getChildNotes().add(child.clone());
@@ -1663,20 +1670,20 @@ public class DDbDps extends DDbRegistryUser {
             registry.getChildRows().add(child.clone());
         }
 
-        //registry.setEdsUuid(this.getEdsUuid()); // read-only member!
-        registry.setEdsMethodOfPayment(this.getEdsMethodOfPayment());
-        registry.setEdsPaymentTerms(this.getEdsPaymentTerms());
-        registry.setEdsConfirmation(this.getEdsConfirmation());
-        registry.setEdsTaxRegime(this.getEdsTaxRegime());
-        registry.setEdsUsage(this.getEdsUsage());
-        registry.setEdsRelationType(this.getEdsRelationType());
-        registry.getEdsCfdiRelated().addAll(this.getEdsCfdiRelated());
+        //registry.setDfrUuid(this.getDfrUuid()); // read-only member!
+        registry.setDfrMethodOfPayment(this.getDfrMethodOfPayment());
+        registry.setDfrPaymentTerms(this.getDfrPaymentTerms());
+        registry.setDfrConfirmation(this.getDfrConfirmation());
+        registry.setDfrTaxRegime(this.getDfrTaxRegime());
+        registry.setDfrCfdUsage(this.getDfrCfdUsage());
+        registry.setDfrRelationType(this.getDfrRelationType());
+        registry.getDfrCfdiRelated().addAll(this.getDfrCfdiRelated());
 
         registry.setXtaIogId(this.getXtaIogId());
 
         registry.setAuxNewDpsSeriesId(this.getAuxNewDpsSeriesId());
         registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
-        registry.setAuxEdsRequired(this.isAuxEdsRequired());
+        registry.setAuxDfrRequired(this.isAuxDfrRequired());
         registry.setAuxTotalQuantity(this.getAuxTotalQuantity());
         registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
 
@@ -1694,8 +1701,8 @@ public class DDbDps extends DDbRegistryUser {
     public void setRegistryNew(boolean registryNew) {
         super.setRegistryNew(registryNew);
 
-        if (moChildEds != null) {
-            moChildEds.setRegistryNew(registryNew);
+        if (moChildDfr != null) {
+            moChildDfr.setRegistryNew(registryNew);
         }
 
         for (DDbDpsNote child : mvChildNotes) {
@@ -1964,33 +1971,36 @@ public class DDbDps extends DDbRegistryUser {
     }
 
     /**
-     * Updates Electronic Document Supporting (EDS).
+     * Updates Digital Fiscal Receipt (DFR).
      * VERY IMPORTANT NOTICE!: Check on each usage of this method that is covered by exclusive-access locks.
-     * By now, all current usages (one in DTrnEdsUtils, two in DTrnEmissionUtils) are covered properly by these locks.
+     * By now, all current usages (one in DTrnDfrUtils, two in DTrnEmissionUtils) are covered properly by these locks.
+     * @param session
+     * @param dfr
+     * @throws java.sql.SQLException
      */
-    public void updateEds(final DGuiSession session, final DDbDpsEds eds) throws SQLException, Exception {
+    public void updateDfr(final DGuiSession session, final DDbDfr dfr) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
-        moChildEds = eds;
-        saveEds(session, false);
+        moChildDfr = dfr;
+        saveDfr(session, false);
 
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
 
     /**
-     * Issues Electronic Document Supporting (EDS) as file of type Portable Document Format (PDF).
+     * Issues Digital Fiscal Receipt (DFR) as file of type Portable Document Format (PDF).
      */
-    public void issueEds(final DGuiSession session) throws JRException, Exception {
+    public void issueDfr(final DGuiSession session) throws JRException, Exception {
         String fileName = "";
         DDbConfigBranch configBranch = null;
         
-        if (moChildEds != null && moChildEds.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
+        if (moChildDfr != null && moChildDfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
             configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
             fileName += configBranch.getEdsDirectory();
-            fileName += moChildEds.getDocXmlName().replaceAll(".xml", ".pdf");
+            fileName += moChildDfr.getDocXmlName().replaceAll(".xml", ".pdf");
 
-            switch (moChildEds.getFkXmlTypeId()) {
+            switch (moChildDfr.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFD:
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 

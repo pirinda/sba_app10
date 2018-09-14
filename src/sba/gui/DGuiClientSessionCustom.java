@@ -143,7 +143,7 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-        Vector<DDbBranch> registries = new Vector<DDbBranch>();
+        Vector<DDbBranch> registries = new Vector<>();
 
         try {
             statement = miClient.getSession().getStatement().getConnection().createStatement();
@@ -173,7 +173,7 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-        Vector<DDbBranchCash> registries = new Vector<DDbBranchCash>();
+        Vector<DDbBranchCash> registries = new Vector<>();
 
         try {
             statement = miClient.getSession().getStatement().getConnection().createStatement();
@@ -204,7 +204,7 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-        Vector<DDbBranchWarehouse> registries = new Vector<DDbBranchWarehouse>();
+        Vector<DDbBranchWarehouse> registries = new Vector<>();
 
         try {
             statement = miClient.getSession().getStatement().getConnection().createStatement();
@@ -235,7 +235,7 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-        Vector<DDbDpsSeriesBranch> registries = new Vector<DDbDpsSeriesBranch>();
+        Vector<DDbDpsSeriesBranch> registries = new Vector<>();
 
         try {
             statement = miClient.getSession().getStatement().getConnection().createStatement();

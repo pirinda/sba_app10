@@ -312,7 +312,7 @@ public class DDialogFindBizPartner extends DBeanFormDialog implements DGridPaneF
 
     private void renderBizPartners() {
         String text = moTextFind.getValue().toUpperCase();
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         if (mvFindBizPartner != null && mvFindBizPartner.size() > 0) {
             if (text.length() == 0) {

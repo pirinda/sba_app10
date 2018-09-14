@@ -1,0 +1,30 @@
+================================================================================
+CFDI 3.3: catálogos SAT en formato XML e implementados en la base de datos
+================================================================================
+--------------------------------------------------------------------------------
+DDbDps (Document of Purchases and Sales)
+--------------------------------------------------------------------------------
+Los catálogos SAT utilizados por sba.mod.trn.db.DDbDps son:
+c_MetodoPago.xml
+c_TipoRelacion.xml
+c_UsoCFDI.xml
+
+Los catálogos SAT implementados en la base de datos de SBA, utilizados por sba.mod.trn.db.DDbDps, son:
+cs_cty: países		(la clave del catálogo del SAT está en la columna código)
+cs_cur: monedas		(la clave del catálogo del SAT está en la columna código)
+cs_tax_reg: régimen fiscal	(ID = clave del catálogo del SAT)
+fs_mop_tp: forma de pago	(ID <> clave del catálogo del SAT)
+
+--------------------------------------------------------------------------------
+DDbDfr (Digital Fiscal Receipt)
+--------------------------------------------------------------------------------
+Los catálogos SAT utilizados por sba.mod.trn.db.DDbDfr son:
+c_UsoCFDI.xml
+c_FormaPago.xml
+c_Moneda.xml
+
+Los catálogos SAT implementados en la base de datos de SBA, utilizados por sba.mod.trn.db.DDbDfr, son:
+cs_tax_reg: régimen fiscal	(ID = clave del catálogo del SAT)
+
+================================================================================
+#eof

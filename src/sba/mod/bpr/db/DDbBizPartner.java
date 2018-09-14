@@ -67,8 +67,8 @@ public class DDbBizPartner extends DDbRegistryUser {
 
     public DDbBizPartner() {
         super(DModConsts.BU_BPR);
-        mvChildConfigs = new Vector<DDbBizPartnerConfig>();
-        mvChildBranches = new Vector<DDbBranch>();
+        mvChildConfigs = new Vector<>();
+        mvChildBranches = new Vector<>();
         initRegistry();
     }
 

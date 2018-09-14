@@ -289,7 +289,7 @@ public class DFormItemNamePrices extends DBeanFormDialog implements ActionListen
         */
 
         createGridItemNamePrices();
-        moGridItemNamePrices.populateGrid(new Vector<DGridRow>());
+        moGridItemNamePrices.populateGrid(new Vector<>());
 
         jbSave.setEnabled(false);
         jbCancel.setText(DGuiConsts.TXT_BTN_CLOSE);
@@ -403,7 +403,7 @@ public class DFormItemNamePrices extends DBeanFormDialog implements ActionListen
         ResultSet resultSet = null;
         DRowItemPrices rowItem = null;
         DRowItemNamePrices rowItemName = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         try {
             setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -488,7 +488,7 @@ public class DFormItemNamePrices extends DBeanFormDialog implements ActionListen
         String sql = "";
         ResultSet resultSet = null;
         DRowItemNamePrices row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         try {
             setCursor(new Cursor(Cursor.WAIT_CURSOR));

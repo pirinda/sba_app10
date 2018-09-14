@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="51" code="EUR" name="Euro" term_start="2017-08-14" term_end=""/>
+<Entry id="104" code="MXN" name="Peso Mexicano" term_start="2017-08-14" term_end=""/>
+<Entry id="151" code="USD" name="Dolar americano" term_start="2017-08-14" term_end=""/>
+</Catalog>

@@ -36,7 +36,7 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
 
     public DDbBookkeepingMoveCustom() {
         super(DModConsts.FX_BKK_CTM);
-        mvChildMoves = new Vector<DDbBookkeepingMove>();
+        mvChildMoves = new Vector<>();
         initRegistry();
     }
 

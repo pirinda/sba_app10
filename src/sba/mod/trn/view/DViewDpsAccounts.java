@@ -194,7 +194,7 @@ public class DViewDpsAccounts extends DGridPaneView implements ActionListener {
                 "d.dt, d.cdt_day, ADDDATE(d.dt_cdt, d.cdt_day) AS f_dt_mat, " +
                 "d.tot_r, d.tot_cy_r, dt.code, b.name, bc.code, bb.name, cb.code, c.code, " + sum +
                 "FROM " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " AS bkk " +
-                "INNER JOIN  " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " AS d ON " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " AS d ON " +
                 "bkk.fk_dps_inv_n = d.id_dps AND bkk.id_yer = " + year + " AND bkk.b_del = 0 AND " +
                 "bkk.fk_sys_acc_tp = " + DFinUtils.getSysAccountTypeForBizPartnerClass(mnBizPartnerClass) + " " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_DPS_TP) + " AS dt ON " +

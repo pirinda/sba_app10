@@ -299,7 +299,7 @@ public class DFormXmlSignatureMove extends DBeanForm {
         registry.setFkXsmTypeId(moKeyMoveType.getValue()[1]);
         registry.setFkSignatureBizPartnerId_n(moKeySignatureBranch.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeySignatureBranch.getValue()[0]);
         registry.setFkSignatureBranchId_n(moKeySignatureBranch.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeySignatureBranch.getValue()[1]);
-        registry.setFkDpsId_n(DLibConsts.UNDEFINED);
+        registry.setFkDfrId_n(DLibConsts.UNDEFINED);
 
         return registry;
     }

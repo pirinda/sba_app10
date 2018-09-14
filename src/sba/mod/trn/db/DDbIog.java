@@ -334,6 +334,7 @@ public class DDbIog extends DDbRegistryUser {
         bkkMove.setFkBizPartnerBranchId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkDpsInvId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        bkkMove.setFkDfrId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkIogId_n(mnPkIogId);
         bkkMove.setFkIomId_n(DLibConsts.UNDEFINED);
         bkkMove.setFkPusId_n(DLibConsts.UNDEFINED);
@@ -362,7 +363,7 @@ public class DDbIog extends DDbRegistryUser {
         DDbAbpItem abpItem = null;
         DDbBookkeepingMove bkkMove = null;
         DDbBookkeepingNumber bkkNumber = null;
-        Vector<DDbBookkeepingMove> bkkMoves = new Vector<DDbBookkeepingMove>();
+        Vector<DDbBookkeepingMove> bkkMoves = new Vector<>();
 
         // Delete previous bookkeeping moves, if any:
 
@@ -659,7 +660,7 @@ public class DDbIog extends DDbRegistryUser {
         DDbItem itemOriginal = null;
         DDbItem itemConverted = null;
         DTrnStockMove tsmMoveConverted = null;
-        Vector<DTrnStockMove> tsmMovesConverted = new Vector<DTrnStockMove>();
+        Vector<DTrnStockMove> tsmMovesConverted = new Vector<>();
         DDbIog iogSibling = this.clone();
 
         iogSibling.setAuxComputeSiblingIog(false);  // a sibling document cannot have aswell a sibling

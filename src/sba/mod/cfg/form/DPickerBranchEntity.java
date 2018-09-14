@@ -264,7 +264,7 @@ public class DPickerBranchEntity extends javax.swing.JDialog {
 
     private void itemStateBranch() {
         int[] branchKey = null;
-        Vector<DGuiItem> items = new Vector<DGuiItem>();
+        Vector<DGuiItem> items = new Vector<>();
         DDbUser user = (DDbUser) miClient.getSession().getUser();
 
         if (jcbBranch.getSelectedIndex() <= 0) {

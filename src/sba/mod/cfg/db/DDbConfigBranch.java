@@ -27,6 +27,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
     protected String msEdsDirectory;
     protected String msEdsName;
     protected String msEdsPassword;
+    protected String msEdsCrpSeries;
     protected boolean mbDpsNumberAutomaticByUser;
     protected boolean mbDpsPrintingDialog;
     /*
@@ -62,6 +63,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
     public void setEdsDirectory(String s) { msEdsDirectory = s; }
     public void setEdsName(String s) { msEdsName = s; }
     public void setEdsPassword(String s) { msEdsPassword = s; }
+    public void setEdsCrpSeries(String s) { msEdsCrpSeries = s; }
     public void setDpsNumberAutomaticByUser(boolean b) { mbDpsNumberAutomaticByUser = b; }
     public void setDpsPrintingDialog(boolean b) { mbDpsPrintingDialog = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -88,6 +90,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
     public String getEdsDirectory() { return msEdsDirectory; }
     public String getEdsName() { return msEdsName; }
     public String getEdsPassword() { return msEdsPassword; }
+    public String getEdsCrpSeries() { return msEdsCrpSeries; }
     public boolean isDpsNumberAutomaticByUser() { return mbDpsNumberAutomaticByUser; }
     public boolean isDpsPrintingDialog() { return mbDpsPrintingDialog; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -129,6 +132,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
         msEdsDirectory = "";
         msEdsName = "";
         msEdsPassword = "";
+        msEdsCrpSeries = "";
         mbDpsNumberAutomaticByUser = false;
         mbDpsPrintingDialog = false;
         mbUpdatable = false;
@@ -190,6 +194,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
             msEdsDirectory = resultSet.getString("eds_dir");
             msEdsName = resultSet.getString("eds_name");
             msEdsPassword = resultSet.getString("eds_pswd");
+            msEdsCrpSeries = resultSet.getString("eds_crp_ser");
             mbDpsNumberAutomaticByUser = resultSet.getBoolean("b_dps_num_aut_usr");
             mbDpsPrintingDialog = resultSet.getBoolean("b_dps_prt_dlg");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -242,6 +247,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
                     "'" + msEdsDirectory + "', " +
                     "'" + msEdsName + "', " +
                     "'" + msEdsPassword + "', " +
+                    "'" + msEdsCrpSeries + "', " + 
                     (mbDpsNumberAutomaticByUser ? 1 : 0) + ", " +
                     (mbDpsPrintingDialog ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -275,6 +281,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
                     "eds_dir = '" + msEdsDirectory + "', " +
                     "eds_name = '" + msEdsName + "', " +
                     "eds_pswd = '" + msEdsPassword + "', " +
+                    "eds_crp_ser = '" + msEdsCrpSeries + "', " +
                     "b_dps_num_aut_usr = " + (mbDpsNumberAutomaticByUser ? 1 : 0) + ", " +
                     "b_dps_prt_dlg = " + (mbDpsPrintingDialog ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -312,6 +319,7 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
         registry.setEdsDirectory(this.getEdsDirectory());
         registry.setEdsName(this.getEdsName());
         registry.setEdsPassword(this.getEdsPassword());
+        registry.setEdsCrpSeries(this.getEdsCrpSeries());
         registry.setDpsNumberAutomaticByUser(this.isDpsNumberAutomaticByUser());
         registry.setDpsPrintingDialog(this.isDpsPrintingDialog());
         registry.setUpdatable(this.isUpdatable());

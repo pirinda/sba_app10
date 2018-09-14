@@ -362,7 +362,7 @@ public class DDialogLot extends DBeanFormDialog implements DGridPaneFormOwner, A
         moDecDiscountUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
         moDecDiscountRow.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountRow.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
 
-        mvLotsToAdjust = new Vector<DTrnStockMove>();
+        mvLotsToAdjust = new Vector<>();
         moDialogLotInStock = new DDialogLotInStock(miClient);
 
         if (DTrnUtils.isXTypeForDps(mnFormType)) {
@@ -447,7 +447,7 @@ public class DDialogLot extends DBeanFormDialog implements DGridPaneFormOwner, A
     }
 
     private Vector<DTrnStockMove> getLots() {
-        Vector<DTrnStockMove> lots = new Vector<DTrnStockMove>();
+        Vector<DTrnStockMove> lots = new Vector<>();
 
         for (DGridRow row : moGridLots.getModel().getGridRows()) {
             lots.add(((DRowLot) row).getStockMove());
@@ -897,7 +897,7 @@ public class DDialogLot extends DBeanFormDialog implements DGridPaneFormOwner, A
                 jbFind.setEnabled(mvLotsToAdjust.size() > 0);
                 break;
             case DModSysConsts.PARAM_VEC_STK_MOV:
-                rows = new Vector<DGridRow>();
+                rows = new Vector<>();
                 for (DTrnStockMove move : (Vector<DTrnStockMove>) value) {
                     rows.add(new DRowLot(move));
                 }

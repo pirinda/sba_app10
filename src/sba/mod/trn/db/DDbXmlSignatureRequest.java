@@ -20,7 +20,7 @@ import sba.mod.DModConsts;
  */
 public class DDbXmlSignatureRequest extends DDbRegistryUser {
 
-    protected int mnPkDpsId;
+    protected int mnPkDfrId;
     protected int mnPkRequestId;
     protected int mnRequestType;
     protected int mnRequestStatus;
@@ -49,7 +49,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
      * Public methods
      */
 
-    public void setPkDpsId(int n) { mnPkDpsId = n; }
+    public void setPkDfrId(int n) { mnPkDfrId = n; }
     public void setPkRequestId(int n) { mnPkRequestId = n; }
     public void setRequestType(int n) { mnRequestType = n; }
     public void setRequestStatus(int n) { mnRequestStatus = n; }
@@ -61,7 +61,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkDpsId() { return mnPkDpsId; }
+    public int getPkDfrId() { return mnPkDfrId; }
     public int getPkRequestId() { return mnPkRequestId; }
     public int getRequestType() { return mnRequestType; }
     public int getRequestStatus() { return mnRequestStatus; }
@@ -75,20 +75,20 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkDpsId = pk[0];
+        mnPkDfrId = pk[0];
         mnPkRequestId = pk[1];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkDpsId, mnPkRequestId };
+        return new int[] { mnPkDfrId, mnPkRequestId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkDpsId = 0;
+        mnPkDfrId = 0;
         mnPkRequestId = 0;
         mnRequestType = 0;
         mnRequestStatus = 0;
@@ -108,13 +108,13 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_dps = " + mnPkDpsId + " AND " +
+        return "WHERE id_dfr = " + mnPkDfrId + " AND " +
                 "id_req = " + mnPkRequestId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_dps = " + pk[0] + " AND " +
+        return "WHERE id_dfr = " + pk[0] + " AND " +
                 "id_req = " + pk[1] + " ";
     }
 
@@ -125,7 +125,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
         mnPkRequestId = 0;
 
         msSql = "SELECT COALESCE(MAX(id_req), 0) + 1 FROM " + getSqlTable() + " " +
-                "WHERE id_dps = " + mnPkDpsId + " ";
+                "WHERE id_dfr = " + mnPkDfrId + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
             mnPkRequestId = resultSet.getInt(1);
@@ -146,7 +146,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
             throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkDpsId = resultSet.getInt("id_dps");
+            mnPkDfrId = resultSet.getInt("id_dfr");
             mnPkRequestId = resultSet.getInt("id_req");
             mnRequestType = resultSet.getInt("req_tp");
             mnRequestStatus = resultSet.getInt("req_st");
@@ -177,7 +177,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
             mnFkUserUpdateId = DUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkDpsId + ", " + 
+                    mnPkDfrId + ", " + 
                     mnPkRequestId + ", " + 
                     mnRequestType + ", " + 
                     mnRequestStatus + ", " + 
@@ -195,7 +195,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     /*
-                    "id_dps = " + mnPkDpsId + ", " +
+                    "id_dfr = " + mnPkDfrId + ", " +
                     "id_req = " + mnPkRequestId + ", " +
                     */
                     "req_tp = " + mnRequestType + ", " +
@@ -219,7 +219,7 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
     public DDbXmlSignatureRequest clone() throws CloneNotSupportedException {
         DDbXmlSignatureRequest registry = new DDbXmlSignatureRequest();
 
-        registry.setPkDpsId(this.getPkDpsId());
+        registry.setPkDfrId(this.getPkDfrId());
         registry.setPkRequestId(this.getPkRequestId());
         registry.setRequestType(this.getRequestType());
         registry.setRequestStatus(this.getRequestStatus());

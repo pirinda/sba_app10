@@ -795,6 +795,7 @@ public class DFormBookkeepingMoveCustom extends DBeanForm implements ActionListe
         moBkkMoveCash.setFkBizPartnerBranchId_n(moKeyBizPartner.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : DUtilConsts.BPR_BRA_ID);
         moBkkMoveCash.setFkDpsInvId_n(moKeyDps.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyDps.getValue()[0]);
         moBkkMoveCash.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        moBkkMoveCash.setFkDfrId_n(DLibConsts.UNDEFINED);
         moBkkMoveCash.setFkIogId_n(DLibConsts.UNDEFINED);
         moBkkMoveCash.setFkIomId_n(DLibConsts.UNDEFINED);
         moBkkMoveCash.setFkPusId_n(DLibConsts.UNDEFINED);

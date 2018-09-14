@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="101" code="01" name="Efectivo" term_start="2017-01-01" term_end=""/>
+<Entry id="102" code="02" name="Cheque nominativo" term_start="2017-01-01" term_end=""/>
+<Entry id="103" code="03" name="Transferencia electrónica de fondos" term_start="2017-01-01" term_end=""/>
+<Entry id="104" code="04" name="Tarjeta de crédito" term_start="2017-01-01" term_end=""/>
+<Entry id="105" code="05" name="Monedero electrónico" term_start="2017-01-01" term_end=""/>
+<Entry id="106" code="06" name="Dinero electrónico" term_start="2017-01-01" term_end=""/>
+<Entry id="108" code="08" name="Vales de despensa" term_start="2017-01-01" term_end=""/>
+<Entry id="112" code="12" name="Dación en pago" term_start="2017-01-01" term_end=""/>
+<Entry id="113" code="13" name="Pago por subrogación" term_start="2017-01-01" term_end=""/>
+<Entry id="114" code="14" name="Pago por consignación" term_start="2017-01-01" term_end=""/>
+<Entry id="115" code="15" name="Condonación" term_start="2017-01-01" term_end=""/>
+<Entry id="117" code="17" name="Compensación" term_start="2017-01-01" term_end=""/>
+<Entry id="123" code="23" name="Novación" term_start="2017-01-01" term_end=""/>
+<Entry id="124" code="24" name="Confusión" term_start="2017-01-01" term_end=""/>
+<Entry id="125" code="25" name="Remisión de deuda" term_start="2017-01-01" term_end=""/>
+<Entry id="126" code="26" name="Prescripción o caducidad" term_start="2017-01-01" term_end=""/>
+<Entry id="127" code="27" name="A satisfacción del acreedor" term_start="2017-01-01" term_end=""/>
+<Entry id="128" code="28" name="Tarjeta de débito" term_start="2017-01-01" term_end=""/>
+<Entry id="129" code="29" name="Tarjeta de servicios" term_start="2017-01-01" term_end=""/>
+<Entry id="130" code="30" name="Aplicación de anticipos" term_start="2017-08-13" term_end=""/>
+<Entry id="199" code="99" name="Por definir" term_start="2017-01-01" term_end=""/>
+</Catalog>

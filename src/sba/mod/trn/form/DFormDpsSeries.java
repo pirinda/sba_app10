@@ -228,7 +228,7 @@ public class DFormDpsSeries extends DBeanForm {
     }
 
     private void populateBranches() {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             for (DDbBranch branch : mvBranches) {

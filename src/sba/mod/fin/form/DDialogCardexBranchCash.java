@@ -355,7 +355,7 @@ public class DDialogCardexBranchCash extends DBeanFormDialog {
         String sql = "";
         ResultSet resultSet = null;
         DRowCardexBookkeeping cardex = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         try {
             // Opening balance:

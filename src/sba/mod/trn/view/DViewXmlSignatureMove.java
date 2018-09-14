@@ -68,7 +68,7 @@ public class DViewXmlSignatureMove extends DGridPaneView {
                 "mt.code, " +
                 "mt.name, " +
                 "COALESCE(cb.code, '" + DUtilConsts.NON_APPLYING + "') AS f_bra, " +
-                "eds.uid, " +
+                "dfr.uid, " +
                 "p.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "p.name AS " + DDbConsts.FIELD_NAME + ", " +
                 "v.b_del AS " + DDbConsts.FIELD_IS_DEL + ", " +
@@ -92,8 +92,8 @@ public class DViewXmlSignatureMove extends DGridPaneView {
                 "v.fk_usr_upd = uu.id_usr " +
                 "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BRA) + " AS cb ON " +
                 "v.fk_sig_bpr_n = cb.id_bpr AND v.fk_sig_bra_n = cb.id_bra " +
-                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
-                "v.fk_dps_n = eds.id_dps " +
+                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON " +
+                "v.fk_dfr_n = dfr.id_dfr " +
                 (sql.length() == 0 ? "" : "WHERE " + sql) +
                 "ORDER BY f_bra, p.code, v.id_xsp, v.id_mov ";
     }
@@ -111,7 +111,7 @@ public class DViewXmlSignatureMove extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_4B, "v.mov_out", "Salida");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "mc.name", DGridConsts.COL_TITLE_CLASS + " movimiento");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "mt.name", DGridConsts.COL_TITLE_TYPE + " movimiento");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "eds.uid", "UUID");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "dfr.uid", "UUID");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_USR, DDbConsts.FIELD_USER_INS_NAME, DGridConsts.COL_TITLE_USER_INS_NAME);

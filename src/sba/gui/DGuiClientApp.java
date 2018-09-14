@@ -94,7 +94,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 022.02";
+    public static final String APP_RELEASE = "SBA 1.0 023.01";
     public static final String APP_COPYRIGHT = "Copyright © 2011-2018 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -634,9 +634,13 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             // Read XML catalogs:
             moXmlCatalogsMap = new HashMap<>();
             DXmlCatalog catalogMetodoPago = new DXmlCatalog(DCfdi33Catalogs.XML_MDP, "xml/" + DCfdi33Catalogs.XML_MDP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogFormaPago = new DXmlCatalog(DCfdi33Catalogs.XML_FDP, "xml/" + DCfdi33Catalogs.XML_FDP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogMoneda = new DXmlCatalog(DCfdi33Catalogs.XML_MON, "xml/" + DCfdi33Catalogs.XML_MON + DXmlCatalog.XmlFileExt, false);
             DXmlCatalog catalogTipoRelacion = new DXmlCatalog(DCfdi33Catalogs.XML_REL_TP, "xml/" + DCfdi33Catalogs.XML_REL_TP + DXmlCatalog.XmlFileExt, false);
             DXmlCatalog catalogUsoCfdi = new DXmlCatalog(DCfdi33Catalogs.XML_CFDI_USO, "xml/" + DCfdi33Catalogs.XML_CFDI_USO + DXmlCatalog.XmlFileExt, false);
             moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_MDP, catalogMetodoPago);
+            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_FDP, catalogFormaPago);
+            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_MON, catalogMoneda);
             moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_REL_TP, catalogTipoRelacion);
             moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_CFDI_USO, catalogUsoCfdi);
         }

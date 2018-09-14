@@ -577,12 +577,12 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         /* 2018-01-14 (Sergio Flores): It seems that ClaveProdServ and ClaveUnidad attributes are fixed in CFDI 3.3 credit notes.
         DDbItem item = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, new int[] { dpsRow.getFkRowItemId() });
         DDbUnit unit = (DDbUnit) miClient.getSession().readRegistry(DModConsts.IU_UNT, new int[] { dpsRow.getFkRowUnitId() });
-        dpsRowNew.setEdsItemKey(item.getActualCfdItemKey());
-        dpsRowNew.setEdsUnitKey(unit.getCfdUnitKey());
+        dpsRowNew.setDfrItemKey(item.getActualCfdItemKey());
+        dpsRowNew.setDfrUnitKey(unit.getCfdUnitKey());
         */
-        dpsRowNew.setEdsItemKey(DCfdi33Catalogs.ClaveProdServServsFacturacion); //fixed ClaveProdServ
-        dpsRowNew.setEdsUnitKey(DCfdi33Catalogs.ClaveUnidadAct);    //fixed ClaveUnidad
-        dpsRowNew.setEdsSourceUuid(moDps.getEdsUuid());
+        dpsRowNew.setDfrItemKey(DCfdi33Catalogs.ClaveProdServServsFacturacion); //fixed ClaveProdServ
+        dpsRowNew.setDfrUnitKey(DCfdi33Catalogs.ClaveUnidadAct);    //fixed ClaveUnidad
+        dpsRowNew.setDfrSourceUuid(moDps.getDfrUuid());
         
         dpsRowNew.setDbUnitCode(dpsRow.getDbUnitCode());
         dpsRowNew.setDbTaxRegimeId(dpsRow.getDbTaxRegimeId());
@@ -940,7 +940,7 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         try {
             if (moKeyDps.getSelectedIndex() <= 0) {
                 moDps = null;
-                gridRows = new Vector<DGridRow>();
+                gridRows = new Vector<>();
             }
             else {
                 // Read selected document to adjust and create its rows for adjustment:

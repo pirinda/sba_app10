@@ -514,6 +514,7 @@ public class DPanelPayment extends DBeanPanel implements ActionListener, ItemLis
         move.setFkBizPartnerBranchId_n(manBizPartnerBranchKey == null ? DLibConsts.UNDEFINED : manBizPartnerBranchKey[1]);
         move.setFkDpsInvId_n(moDps == null ? DLibConsts.UNDEFINED : moDps.getPkDpsId());
         move.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        move.setFkDfrId_n(DLibConsts.UNDEFINED);
         move.setFkIogId_n(DLibConsts.UNDEFINED);
         move.setFkIomId_n(DLibConsts.UNDEFINED);
         move.setFkPusId_n(DLibConsts.UNDEFINED);

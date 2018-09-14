@@ -81,7 +81,7 @@ public class DTrnDpsPrinting {
 
         // Comprobante:
 
-        doc = DXmlUtils.parseDocument(moDps.getChildEds().getDocXml());
+        doc = DXmlUtils.parseDocument(moDps.getChildDfr().getDocXml());
 
         node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
         namedNodeMap = node.getAttributes();
@@ -224,7 +224,7 @@ public class DTrnDpsPrinting {
         dbSysCurrency = (DDbSysCurrency) moSession.readRegistry(DModConsts.CS_CUR, moSession.getSessionCustom().getLocalCurrencyKey());
 
         hashMap.put("sDocTipoDoc", sTipoDoc);
-        hashMap.put("sDocCadenaOriginal", moDps.getChildEds().getSignedText());
+        hashMap.put("sDocCadenaOriginal", moDps.getChildDfr().getSignedText());
         hashMap.put("sDocTotalConLetra", DLibUtils.translateValueToText(
                 moDps.getTotalCy_r(), DLibUtils.DecimalFormatValue2D.getMinimumFractionDigits(), moSession.getSessionCustom().getLocalLanguage(),
                 dbSysCurrency.getCurrencySingular(), dbSysCurrency.getCurrencyPlural(), dbSysCurrency.getCurrencyPrefix(), dbSysCurrency.getCurrencySuffix()));
@@ -275,7 +275,7 @@ public class DTrnDpsPrinting {
         
         // XML parsing:
 
-        Document doc = DXmlUtils.parseDocument(moDps.getChildEds().getSuitableDocXml());
+        Document doc = DXmlUtils.parseDocument(moDps.getChildDfr().getSuitableDocXml());
 
         // Comprobante:
 
@@ -285,17 +285,17 @@ public class DTrnDpsPrinting {
         
         namedNodeMap = nodeComprobante.getAttributes();
         hashMap.put("sXmlVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
-        hashMap.put("sXmlTipoDeComprobante", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true)));
+        hashMap.put("sXmlTipoDeComprobante", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true)));
         hashMap.put("sXmlSerie", DXmlUtils.extractAttributeValue(namedNodeMap, "Serie", false));
         hashMap.put("sXmlFolio", DXmlUtils.extractAttributeValue(namedNodeMap, "Folio", true));
         hashMap.put("sXmlFecha", DXmlUtils.extractAttributeValue(namedNodeMap, "Fecha", true));
         hashMap.put("sXmlLugarExpedicion", DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
         hashMap.put("sXmlNoCertificado", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificado", true));
         hashMap.put("sXmlSello", DXmlUtils.extractAttributeValue(namedNodeMap, "Sello", true));
-        hashMap.put("sXmlMetodoPago", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MDP, DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true)));
-        hashMap.put("sXmlFormaPago", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_FDP, DXmlUtils.extractAttributeValue(namedNodeMap, "FormaPago", true)));
+        hashMap.put("sXmlMetodoPago", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MDP, DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true)));
+        hashMap.put("sXmlFormaPago", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_FDP, DXmlUtils.extractAttributeValue(namedNodeMap, "FormaPago", true)));
         hashMap.put("sXmlCondicionesDePago", DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
-        hashMap.put("sXmlMoneda", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MON, sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
+        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_MON, sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
         hashMap.put("sXmlTipoCambio", DXmlUtils.extractAttributeValue(namedNodeMap, "TipoCambio", false));
         hashMap.put("dXmlSubTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "SubTotal", true)));
         hashMap.put("dXmlDescuento", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Descuento", false)));
@@ -309,7 +309,7 @@ public class DTrnDpsPrinting {
             Node nodeCfdiRelacionados = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados").get(0);
 
             namedNodeMap = nodeCfdiRelacionados.getAttributes();
-            hashMap.put("sXmlTipoRelacion", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REL_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true)));
+            hashMap.put("sXmlTipoRelacion", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REL_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true)));
             
             for (Node nodeCfdiRelacionado : DXmlUtils.extractChildElements(nodeCfdiRelacionados, "cfdi:CfdiRelacionado")) {
                 namedNodeMap = nodeCfdiRelacionado.getAttributes();
@@ -328,7 +328,7 @@ public class DTrnDpsPrinting {
         namedNodeMap = nodeEmisor.getAttributes();
         hashMap.put("sXmlEmiRfc", sEmiRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
         hashMap.put("sXmlEmiNombre", sEmiNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
-        hashMap.put("sXmlEmiRegimenFiscal", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", false)));
+        hashMap.put("sXmlEmiRegimenFiscal", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", false)));
         
         DDbBranchAddress addressEmi = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), 1 });
         hashMap.put("sEmiDomCalle", addressEmi.getAddress1());
@@ -354,7 +354,7 @@ public class DTrnDpsPrinting {
         namedNodeMap = nodeReceptor.getAttributes();
         hashMap.put("sXmlRecRfc", sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
         hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
-        hashMap.put("sXmlRecUsoCFDI", DTrnEdsCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", false)));
+        hashMap.put("sXmlRecUsoCFDI", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", false)));
 
         DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkBizPartnerBizPartnerId(), moDps.getFkBizPartnerBranchId(), moDps.getFkBizPartnerAddressId() });
         hashMap.put("sRecDomCalle", addressRec.getAddress1());
@@ -409,7 +409,7 @@ public class DTrnDpsPrinting {
 
         hashMap.put("sDocTipoDoc", (String) moSession.readField(DModConsts.TS_DPS_TP, moDps.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         hashMap.put("sDocRef", moDps.getOrder());
-        hashMap.put("sDocCadenaOriginal", moDps.getChildEds().getSignedText());
+        hashMap.put("sDocCadenaOriginal", moDps.getChildDfr().getSignedText());
         hashMap.put("sDocTotalConLetra", DLibUtils.translateValueToText(
                 moDps.getTotalCy_r(), DLibUtils.DecimalFormatValue2D.getMinimumFractionDigits(), moSession.getSessionCustom().getLocalLanguage(),
                 dbCurrency.getCurrencySingular(), dbCurrency.getCurrencyPlural(), dbCurrency.getCurrencyPrefix(), dbCurrency.getCurrencySuffix()));

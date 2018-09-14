@@ -460,7 +460,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moPickerBranchEntity = new DPickerBranchEntity(miClient, DModConsts.CU_WAH);
         moDestinyWarehouse = null;
 
-        mvRowStockMoves = new Vector<DTrnStockMove>();
+        mvRowStockMoves = new Vector<>();
         mjButtonShowLot = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_LOT), "Ver lotes", this);
         mjButtonShowSerialNumber = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SER_NUM), "Ver números de serie", this);
 
@@ -1272,8 +1272,8 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
-        Vector<DGridRow> notes = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
+        Vector<DGridRow> notes = new Vector<>();
 
         moRegistry = (DDbIog) registry;
 

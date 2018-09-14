@@ -474,7 +474,7 @@ public class DDialogCardexStock extends DBeanFormDialog {
         String sql = "";
         ResultSet resultSet = null;
         DRowCardexStock row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         try {
             // Opening stock:

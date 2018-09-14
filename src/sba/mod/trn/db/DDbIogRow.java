@@ -61,7 +61,7 @@ public class DDbIogRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public DDbIogRow() {
         super(DModConsts.T_IOG_ROW);
         mvChildRowNotes = new Vector<DDbIogRowNote>();
-        mvAuxStockMoves = new Vector<DTrnStockMove>();
+        mvAuxStockMoves = new Vector<>();
         initRegistry();
     }
 

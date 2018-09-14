@@ -28,7 +28,7 @@ public class DDbUserCompany extends DDbRegistry {
 
     public DDbUserCompany() {
         super(DModConsts.CU_USR_CO);
-        mvChildBranches = new Vector<DDbUserBranch>();
+        mvChildBranches = new Vector<>();
         initRegistry();
     }
 

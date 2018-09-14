@@ -115,9 +115,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     protected Date mtTsUserUpdate;
     */
 
-    protected String msEdsItemKey;
-    protected String msEdsUnitKey;
-    protected String msEdsSourceUuid;
+    protected String msDfrItemKey;
+    protected String msDfrUnitKey;
+    protected String msDfrSourceUuid;
     
     protected String msDbUnitCode;
     protected int mnDbTaxRegimeId;
@@ -325,13 +325,13 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setEdsItemKey(String s) { msEdsItemKey = s; }
-    public void setEdsUnitKey(String s) { msEdsUnitKey = s; }
-    public void setEdsSourceUuid(String s) { msEdsSourceUuid = s; }
+    public void setDfrItemKey(String s) { msDfrItemKey = s; }
+    public void setDfrUnitKey(String s) { msDfrUnitKey = s; }
+    public void setDfrSourceUuid(String s) { msDfrSourceUuid = s; }
     
-    public String getEdsItemKey() { return msEdsItemKey; }
-    public String getEdsUnitKey() { return msEdsUnitKey; }
-    public String getEdsSourceUuid() { return msEdsSourceUuid; }
+    public String getDfrItemKey() { return msDfrItemKey; }
+    public String getDfrUnitKey() { return msDfrUnitKey; }
+    public String getDfrSourceUuid() { return msDfrSourceUuid; }
     
     public void setDbUnitCode(String s) { msDbUnitCode = s; }
     public void setDbTaxRegimeId(int n) { mnDbTaxRegimeId = n; }
@@ -458,9 +458,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
-        msEdsItemKey = "";
-        msEdsUnitKey = "";
-        msEdsSourceUuid = "";
+        msDfrItemKey = "";
+        msDfrUnitKey = "";
+        msDfrSourceUuid = "";
         
         msDbUnitCode = "";
         mnDbTaxRegimeId = 0;
@@ -957,9 +957,9 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
-        registry.setEdsItemKey(this.getEdsItemKey());
-        registry.setEdsUnitKey(this.getEdsUnitKey());
-        registry.setEdsSourceUuid(this.getEdsSourceUuid());
+        registry.setDfrItemKey(this.getDfrItemKey());
+        registry.setDfrUnitKey(this.getDfrUnitKey());
+        registry.setDfrSourceUuid(this.getDfrSourceUuid());
         
         registry.setDbUnitCode(this.getDbUnitCode());
         registry.setDbTaxRegimeId(this.getDbTaxRegimeId());
@@ -1042,7 +1042,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                 value = msName;
                 break;
             case 3:
-                value = msEdsItemKey;
+                value = msDfrItemKey;
                 break;
             case 4:
                 value = mdQuantity;
@@ -1051,7 +1051,7 @@ public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
                 value = msDbUnitCode;
                 break;
             case 6:
-                value = msEdsUnitKey;
+                value = msDfrUnitKey;
                 break;
             case 7:
                 value = mdPriceUnitaryCy;

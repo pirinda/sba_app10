@@ -622,6 +622,10 @@ public abstract class DModSysConsts {
     public static final int TS_XML_TP_CFDI_32 = 3;
     public static final int TS_XML_TP_CFDI_33 = 4;
 
+    public static final int TS_XML_STP_NA = 1;
+    public static final int TS_XML_STP_CFDI_FAC = 2;
+    public static final int TS_XML_STP_CFDI_CRP = 3;
+    
     public static final int TS_XML_ST_NA = 1;
     public static final int TS_XML_ST_PEN = 2;
     public static final int TS_XML_ST_ISS = 3;
@@ -712,6 +716,9 @@ public abstract class DModSysConsts {
     public static final int TX_XMS_REQ_ST_PRC = 2;  // processed (signed/cancelled)
     public static final int TX_XMS_REQ_ST_CMP = 3;  // computed (stamp consumed)
     public static final int TX_XMS_REQ_ST_FIN = 4;  // finished (PDF generated)
+    
+    public static final int TX_DFR_CRP_PAY = 1;
+    public static final int TX_DFR_CRP_PAY_DOC = 2;
 
     public static final int MS_PRC_TP_ITM = 1;
     public static final int MS_PRC_TP_LST = 2;

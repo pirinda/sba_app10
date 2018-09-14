@@ -344,25 +344,25 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
             DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
             
-            dps.setEdsMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID));
-            dps.setEdsPaymentTerms(DTrnEdsUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
-            dps.setEdsConfirmation("");
-            dps.setEdsTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
-            dps.setEdsUsage(bizPartnerConfig.getActualCfdUsage());
-            dps.setEdsRelationType("");
-            dps.getEdsCfdiRelated().clear();    // it is assumed that no UUID's are available
+            dps.setDfrMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID));
+            dps.setDfrPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
+            dps.setDfrConfirmation("");
+            dps.setDfrTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.setDfrCfdUsage(bizPartnerConfig.getActualCfdUsage());
+            dps.setDfrRelationType("");
+            dps.getDfrCfdiRelated().clear();    // it is assumed that no UUID's are available
             
             for (DDbDpsRow row : dps.getChildRows()) {
                 if (!row.isDeleted()) {
                     DDbItem item = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { row.getFkRowItemId() });
                     DDbUnit unit = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { row.getFkRowUnitId() });
                     
-                    row.setEdsItemKey(item.getActualCfdItemKey());
-                    row.setEdsUnitKey(unit.getCfdUnitKey());
+                    row.setDfrItemKey(item.getActualCfdItemKey());
+                    row.setDfrUnitKey(unit.getCfdUnitKey());
                 }
             }
             
-            dps.setChildEds(DTrnEdsUtils.createDpsEds(session, dps, mnAuxXmlTypeId));
+            dps.setChildDfr(DTrnDfrUtils.createDfr(session, dps, mnAuxXmlTypeId));
         }
 
         dps.save(session);

@@ -26,7 +26,7 @@ import sba.mod.trn.db.DTrnUtils;
  *
  * @author Sergio Flores
  */
-public class DViewDpsEdsAddenda extends DGridPaneView {
+public class DViewDfrAddenda extends DGridPaneView {
 
     private DGridFilterDatePeriod moFilterDatePeriod;
 
@@ -35,8 +35,8 @@ public class DViewDpsEdsAddenda extends DGridPaneView {
      * @param mode DPS emission type. Constant defined in DUtilConsts (EMT or EMT_PEND).
      * @param title View title.
      */
-    public DViewDpsEdsAddenda(DGuiClient client, int subtype, int mode, String title) {
-        super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.TX_XML_ADD, subtype, title, new DGuiParams(mode));
+    public DViewDfrAddenda(DGuiClient client, int subtype, int mode, String title) {
+        super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.TX_DFR_ADD, subtype, title, new DGuiParams(mode));
 
         jbRowNew.setEnabled(false);
         jbRowEdit.setEnabled(true);
@@ -87,9 +87,9 @@ public class DViewDpsEdsAddenda extends DGridPaneView {
         }
 
         sql += (sql.length() == 0 ? "" : "AND ") + "v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ISS + " AND " +
-                "eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + " AND " +
-                "eds.fk_xml_add_tp <> " + DModSysConsts.TS_XML_ADD_TP_NA + " AND " +
-                "eds.doc_xml_add " + (mnGridMode == DUtilConsts.EMT ? "<>" : "= ") + " ''";
+                "dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + " AND " +
+                "dfr.fk_xml_add_tp <> " + DModSysConsts.TS_XML_ADD_TP_NA + " AND " +
+                "dfr.doc_xml_add " + (mnGridMode == DUtilConsts.EMT ? "<>" : "= ") + " ''";
 
         msSql = "SELECT " +
                 "v.id_dps AS " + DDbConsts.FIELD_ID + "1, " +
@@ -113,9 +113,9 @@ public class DViewDpsEdsAddenda extends DGridPaneView {
                 "xat.code, " +
                 "xat.name, " +
                 "IF(v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
                 "v.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "v.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
                 "v.fk_dps_tp AS " + DDbConsts.FIELD_TYPE_ID + "3, " +
@@ -149,10 +149,10 @@ public class DViewDpsEdsAddenda extends DGridPaneView {
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "v.fk_usr_upd = uu.id_usr " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
-                "v.id_dps = eds.id_dps " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON " +
+                "v.id_dps = dfr.fk_dps_n " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ADD_TP) + " AS xat ON " +
-                "eds.fk_xml_add_tp = xat.id_xml_add_tp " +
+                "dfr.fk_xml_add_tp = xat.id_xml_add_tp " +
                 (sql.length() == 0 ? "" : "WHERE " + sql) +
                 "ORDER BY " + orderBy;
     }
@@ -210,6 +210,6 @@ public class DViewDpsEdsAddenda extends DGridPaneView {
         moSuscriptionsSet.add(DModConsts.BU_BRA);
         moSuscriptionsSet.add(DModConsts.CU_USR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
-        moSuscriptionsSet.add(DModConsts.T_DPS_EDS);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
     }
 }

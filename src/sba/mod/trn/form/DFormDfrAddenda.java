@@ -4,7 +4,7 @@
  */
 
 /*
- * DFormDpsEdsAddenda.java
+ * DFormDfrAddenda.java
  *
  * Created on 29/08/2011, 08:02:13 PM
  */
@@ -37,31 +37,31 @@ import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
-import sba.mod.trn.db.DDbDpsEds;
 import sba.mod.trn.db.DDbDpsRow;
 import sba.mod.trn.db.DRowDpsRow;
-import sba.mod.trn.db.DTrnEdsUtils;
+import sba.mod.trn.db.DTrnDfrUtils;
 
 /**
  *
  * @author Sergio Flores
  */
-public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, ListSelectionListener {
+public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSelectionListener {
     
     private static final String STATUS_PEND = "¡PENDIENTE!";
     private static final String STATUS_DONE = "¡LISTO!";
     private static final int DESCRIP_MAX_LEN = 50;
 
-    private DDbDpsEds moRegistry;
+    private DDbDfr moRegistry;
     private DDbDps moDps;
     private DGridPaneForm moGridDpsRows;
 
-    /** Creates new form DFormDpsEdsAddenda
+    /** Creates new form DFormDfrAddenda
      * @param client GUI client.
      */
-    public DFormDpsEdsAddenda(DGuiClient client, String title) {
-        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.TX_XML_ADD, DLibConsts.UNDEFINED, title);
+    public DFormDfrAddenda(DGuiClient client, String title) {
+        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.TX_DFR_ADD, DLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -336,7 +336,7 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
         moPanelDps.setPanelSettings(miClient);
         moPanelDps.enableShowCardex();
         
-        moGridDpsRows = new DGridPaneForm(miClient, DModConsts.TX_XML_ADD, mnFormType, "Partidas") {
+        moGridDpsRows = new DGridPaneForm(miClient, DModConsts.TX_DFR_ADD, mnFormType, "Partidas") {
 
             @Override
             public void initGrid() {
@@ -505,10 +505,10 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
         int row = 0;
         DSubelementAddenda extAddenda = null;
         DElementAddendaContinentalTire addendaContinentalTire = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
         
-        moRegistry = (DDbDpsEds) registry;
-        moDps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, moRegistry.getPrimaryKey());
+        moRegistry = (DDbDfr) registry;
+        moDps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, new int[] { moRegistry.getFkDpsId_n() });
 
         mnFormResult = DLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -528,7 +528,7 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
         jtfXmlAddendaType.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ADD_TP, new int[] { moRegistry.getFkXmlAddendaTypeId() }, DDbRegistry.FIELD_NAME));
         jtfXmlAddendaType.setCaretPosition(0);
         
-        extAddenda = DTrnEdsUtils.extractExtAddenda(moDps, moRegistry.getFkXmlAddendaTypeId());
+        extAddenda = DTrnDfrUtils.extractExtAddenda(moDps, moRegistry.getFkXmlAddendaTypeId());
         
         switch (moRegistry.getFkXmlAddendaTypeId()) {
             case DModSysConsts.TS_XML_ADD_TP_CON:
@@ -579,10 +579,10 @@ public class DFormDpsEdsAddenda extends DBeanForm implements ActionListener, Lis
     }
 
     @Override
-    public DDbDpsEds getRegistry() throws Exception {
+    public DDbDfr getRegistry() throws Exception {
         DSubelementAddenda extAddenda = null;
         DElementAddendaContinentalTire addendaContinentalTire = null;
-        DDbDpsEds registry = moRegistry.clone();
+        DDbDfr registry = moRegistry.clone();
 
         if (registry.isRegistryNew()) { }
         

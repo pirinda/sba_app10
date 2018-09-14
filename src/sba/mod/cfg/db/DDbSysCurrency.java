@@ -41,7 +41,7 @@ public class DDbSysCurrency extends DDbRegistrySys {
 
     public DDbSysCurrency() {
         super(DModConsts.CS_CUR);
-        mvChildDenominations = new Vector<DDbSysCurrencyDenomination>();
+        mvChildDenominations = new Vector<>();
         initRegistry();
     }
 

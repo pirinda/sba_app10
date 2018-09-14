@@ -35,7 +35,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
     protected int mnFkXsmTypeId;
     protected int mnFkSignatureBizPartnerId_n;
     protected int mnFkSignatureBranchId_n;
-    protected int mnFkDpsId_n;
+    protected int mnFkDfrId_n;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -67,7 +67,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
     public void setFkXsmTypeId(int n) { mnFkXsmTypeId = n; }
     public void setFkSignatureBizPartnerId_n(int n) { mnFkSignatureBizPartnerId_n = n; }
     public void setFkSignatureBranchId_n(int n) { mnFkSignatureBranchId_n = n; }
-    public void setFkDpsId_n(int n) { mnFkDpsId_n = n; }
+    public void setFkDfrId_n(int n) { mnFkDfrId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -84,7 +84,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
     public int getFkXsmTypeId() { return mnFkXsmTypeId; }
     public int getFkSignatureBizPartnerId_n() { return mnFkSignatureBizPartnerId_n; }
     public int getFkSignatureBranchId_n() { return mnFkSignatureBranchId_n; }
-    public int getFkDpsId_n() { return mnFkDpsId_n; }
+    public int getFkDfrId_n() { return mnFkDfrId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -118,7 +118,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
         mnFkXsmTypeId = 0;
         mnFkSignatureBizPartnerId_n = 0;
         mnFkSignatureBranchId_n = 0;
-        mnFkDpsId_n = 0;
+        mnFkDfrId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -181,7 +181,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
             mnFkXsmTypeId = resultSet.getInt("fk_xsm_tp");
             mnFkSignatureBizPartnerId_n = resultSet.getInt("fk_sig_bpr_n");
             mnFkSignatureBranchId_n = resultSet.getInt("fk_sig_bra_n");
-            mnFkDpsId_n = resultSet.getInt("fk_dps_n");
+            mnFkDfrId_n = resultSet.getInt("fk_dfr_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -217,7 +217,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
                     mnFkXsmTypeId + ", " +
                     (mnFkSignatureBizPartnerId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkSignatureBizPartnerId_n) + ", " + 
                     (mnFkSignatureBranchId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkSignatureBranchId_n) + ", " + 
-                    (mnFkDpsId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsId_n) + ", " +
+                    (mnFkDfrId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDfrId_n) + ", " +
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -241,7 +241,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
                     "fk_xsm_tp = " + mnFkXsmTypeId + ", " +
                     "fk_sig_bpr_n = " + (mnFkSignatureBizPartnerId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkSignatureBizPartnerId_n) + ", " +
                     "fk_sig_bra_n = " + (mnFkSignatureBranchId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkSignatureBranchId_n) + ", " +
-                    "fk_dps_n = " + (mnFkDpsId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDpsId_n) + ", " +
+                    "fk_dfr_n = " + (mnFkDfrId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkDfrId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -269,7 +269,7 @@ public class DDbXmlSignatureMove extends DDbRegistryUser {
         registry.setFkXsmTypeId(this.getFkXsmTypeId());
         registry.setFkSignatureBizPartnerId_n(this.getFkSignatureBizPartnerId_n());
         registry.setFkSignatureBranchId_n(this.getFkSignatureBranchId_n());
-        registry.setFkDpsId_n(this.getFkDpsId_n());
+        registry.setFkDfrId_n(this.getFkDfrId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

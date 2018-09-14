@@ -244,7 +244,7 @@ public class DDialogLotShow extends DBeanFormDialog {
             moUnit = (DDbUnit) miClient.getSession().readRegistry(DModConsts.IU_UNT, new int[] { unit });
             jtfQuantity.setText(DLibUtils.getDecimalFormatQuantity().format(quantity));
 
-            rows = new Vector<DGridRow>();
+            rows = new Vector<>();
             for (DTrnStockMove move : moves) {
                 rows.add(new DRowLot(move));
             }

@@ -375,7 +375,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
     }
     
     private void actionShowAllBrancWarehouses() {
-        Vector<DGuiItem> items = new Vector<DGuiItem>();
+        Vector<DGuiItem> items = new Vector<>();
         
         for (DDbBranchWarehouse entity : moRegistry.getAuxBranchWarehouses()) {
             items.add(new DGuiItem(entity.getPrimaryKey(), entity.getName()));
@@ -395,7 +395,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
         Vector<DGuiItem> items = null;
 
         if (jltBranches.getSelectedIndex() == -1) {
-            items = new Vector<DGuiItem>();
+            items = new Vector<>();
 
             jckUniversalCash.setSelected(false);
             jckUniversalWarehouse.setSelected(false);
@@ -414,7 +414,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
             jckUniversalWarehouse.setSelected(moRegistry.hasUniversalAccess() || moRegistry.hasUniversalAccessToBranchWarehouses(branchKey));
             jckUniversalDpsSeries.setSelected(moRegistry.hasUniversalAccess() || moRegistry.hasUniversalAccessToBranchDpsSeries(branchKey));
 
-            items = new Vector<DGuiItem>();
+            items = new Vector<>();
             for (DDbBranchCash entity : moRegistry.getAuxBranchCashes(branchKey)) {
                 items.add(new DGuiItem(entity.getPrimaryKey(), entity.getName()));
             }
@@ -424,7 +424,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
                 jltBranchCashes.setSelectedIndex(0);
             }
 
-            items = new Vector<DGuiItem>();
+            items = new Vector<>();
             for (DDbBranchWarehouse entity : moRegistry.getAuxBranchWarehouses(branchKey)) {
                 items.add(new DGuiItem(entity.getPrimaryKey(), entity.getName()));
             }
@@ -434,7 +434,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
                 jltBranchWarehouses.setSelectedIndex(0);
             }
 
-            items = new Vector<DGuiItem>();
+            items = new Vector<>();
             for (DDbDpsSeriesBranch entity : moRegistry.getAuxBranchDpsSeries(branchKey)) {
                 items.add(new DGuiItem(entity.getPrimaryKey(), entity.getDbDpsTypeName() + " (" + entity.getDbSeries() + ")"));
             }
@@ -521,7 +521,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        Vector<DGuiItem> itemBranches = new Vector<DGuiItem>();
+        Vector<DGuiItem> itemBranches = new Vector<>();
 
         moRegistry = (DDbUser) registry;
 

@@ -64,8 +64,8 @@ public class DRowDpsRowAdjusted implements DGridRow {
         mdTotalDecCy = 0;
         mdTotalDecCurrentCy = 0;
 
-        mvStockMovesAvailable = new Vector<DTrnStockMove>();
-        mvStockMovesAdjusted = new Vector<DTrnStockMove>();
+        mvStockMovesAvailable = new Vector<>();
+        mvStockMovesAdjusted = new Vector<>();
     }
 
     public void setPkDpsId(int n) { mnPkDpsId = n; }

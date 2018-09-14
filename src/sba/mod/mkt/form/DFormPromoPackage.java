@@ -227,7 +227,7 @@ public class DFormPromoPackage extends DBeanForm implements DGuiFormOwner {
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        Vector<DGridRow> promos = new Vector<DGridRow>();
+        Vector<DGridRow> promos = new Vector<>();
 
         moRegistry = (DDbPromoPackage) registry;
 

@@ -1,0 +1,491 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package sba.mod.trn.view;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import sba.gui.util.DUtilConsts;
+import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
+import sba.lib.db.DDbConsts;
+import sba.lib.grid.DGridColumnView;
+import sba.lib.grid.DGridConsts;
+import sba.lib.grid.DGridFilterDatePeriod;
+import sba.lib.grid.DGridPaneSettings;
+import sba.lib.grid.DGridPaneView;
+import sba.lib.grid.DGridRow;
+import sba.lib.grid.DGridRowView;
+import sba.lib.grid.DGridUtils;
+import sba.lib.gui.DGuiClient;
+import sba.lib.gui.DGuiConsts;
+import sba.lib.gui.DGuiDate;
+import sba.lib.gui.DGuiParams;
+import sba.lib.img.DImgConsts;
+import sba.mod.DModConsts;
+import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DBprUtils;
+import sba.mod.trn.db.DDbDfr;
+import sba.mod.trn.db.DDbDps;
+import sba.mod.trn.db.DTrnEmissionUtils;
+import sba.mod.trn.db.DTrnUtils;
+
+/**
+ *
+ * @author Sergio Flores
+ */
+public class DViewDfrPayment extends DGridPaneView implements ActionListener {
+
+    private static final int ACTION_DISABLE = 1;
+    private static final int ACTION_DELETE = 2;
+    
+    private DGridFilterDatePeriod moFilterDatePeriod;
+    private JButton mjButtonPrint;
+    private JButton mjButtonDfrSign;            // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrSignVerify;      // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrCancel;          // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrCancelVerify;    // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrSend;            // only for Digital Fiscal Receipt (DFR)
+
+    /**
+     * @param client GUI client.
+     * @param title View title.
+     */
+    public DViewDfrPayment(DGuiClient client, String title) {
+        super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.TX_DFR_PAY, 0, title);
+
+        moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
+        moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+
+        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
+
+        mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
+
+        mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSignVerify);
+
+        mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancel);
+
+        mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
+
+        mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
+    }
+
+    /*
+     * Private methods
+     */
+    
+    private boolean proceedAnnulment(final int[] keyDps, final int action) {
+        boolean proceed = false;
+        String msg = "";
+        DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
+        DDbDfr dfr = dps.getChildDfr();
+
+        if (dfr == null || !DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
+            proceed = true; // DPS without DFR or with DFR of type CFD can be annuled anytime!
+        }
+        else {
+            switch (dfr.getFkXmlStatusId()) {
+                case DModSysConsts.TS_XML_ST_ANN:
+                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.";
+                    miClient.showMsgBoxWarning(msg);
+                    break;
+                    
+                case DModSysConsts.TS_XML_ST_ISS:
+                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' permanece con estatus 'emitido'.\n";
+                    
+                    switch (action) {
+                        case ACTION_DISABLE:
+                            if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            }
+                            else {
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                            }
+                            break;
+                            
+                        case ACTION_DELETE:
+                            if (!dps.isDeleted()) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            }
+                            else {
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                            }
+                            break;
+                            
+                        default:
+                    }
+                    
+                    msg += DGuiConsts.MSG_CNF_CONT;
+                    
+                    proceed = miClient.showMsgBoxConfirm(msg) == JOptionPane.YES_OPTION;
+                    break;
+                    
+                default:
+                    proceed = true; // DPS has DFR of type CFDI not yet signed nor annuled!
+            }
+        }
+        
+        return proceed;
+    }
+
+    /*
+     * Public methods
+     */
+
+    @Override
+    public void prepareSqlQuery() {
+        String sql = "";
+        String num = "";
+        Object filter = null;
+
+        moPaneSettings = new DGridPaneSettings(1, 1);
+        moPaneSettings.setDeletedApplying(true);
+        moPaneSettings.setSystemApplying(true);
+        moPaneSettings.setUserInsertApplying(true);
+        moPaneSettings.setUserUpdateApplying(true);
+
+        filter = (Boolean) moFiltersMap.get(DGridConsts.FILTER_DELETED);
+        if ((Boolean) filter) {
+            sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
+        }
+
+        filter = (DGuiDate) moFiltersMap.get(DGridConsts.FILTER_DATE_PERIOD);
+        sql += (sql.isEmpty() ? "" : "AND ") + DGridUtils.getSqlFilterDate("v.doc_ts", (DGuiDate) filter);
+
+        msSql = "SELECT " +
+                "v.id_dfr AS " + DDbConsts.FIELD_ID + "1, " +
+                "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), v.num) AS " + DDbConsts.FIELD_CODE + ", " +
+                "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), v.num) AS " + DDbConsts.FIELD_NAME + ", " +
+                "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), v.num) AS f_num, " +
+                "v.doc_ts, " +
+                "v.uid, " +
+                "xtp.code, " +
+                "xtp.name, " +
+                "xstp.code, " +
+                "xstp.name, " +
+                "xst.code, " +
+                "xst.name, " +
+                "b.id_bpr, " +
+                "b.name, " +
+                "b.fis_id, " +
+                "bc.code, " +
+                "cb.code, " +
+                "IF(v.fk_xml_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
+                "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
+                "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
+                "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "v.fk_xml_tp AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
+                "xtp.name AS " + DDbConsts.FIELD_TYPE + ", " +
+                "v.b_del AS " + DDbConsts.FIELD_IS_DEL + ", " +
+                "v.b_sys AS " + DDbConsts.FIELD_IS_SYS + ", " +
+                "v.fk_usr_ins AS " + DDbConsts.FIELD_USER_INS_ID + ", " +
+                "v.fk_usr_upd AS " + DDbConsts.FIELD_USER_UPD_ID + ", " +
+                "v.ts_usr_ins AS " + DDbConsts.FIELD_USER_INS_TS + ", " +
+                "v.ts_usr_upd AS " + DDbConsts.FIELD_USER_UPD_TS + ", " +
+                "ui.name AS " + DDbConsts.FIELD_USER_INS_NAME + ", " +
+                "uu.name AS " + DDbConsts.FIELD_USER_UPD_NAME + " " +
+                "FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS v " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_TP) + " AS xtp ON v.fk_xml_tp = xtp.id_xml_tp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_STP) + " AS xstp ON v.fk_xml_stp = xstp.id_xml_stp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ST) + " AS xst ON v.fk_xml_st = xst.id_xml_st " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR) + " AS b ON " +
+                "v.fk_bpr = b.id_bpr " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_CFG) + " AS bc ON " +
+                "v.fk_bpr = bc.id_bpr AND bc.id_bpr_cl = " + DModSysConsts.BS_BPR_CL_CUS + " " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BRA) + " AS cb ON " +
+                "v.fk_own_bpr = cb.id_bpr AND v.fk_own_bra = cb.id_bra " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
+                "v.fk_usr_ins = ui.id_usr " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
+                "v.fk_usr_upd = uu.id_usr " +
+                "WHERE v.fk_xml_stp = " + DModSysConsts.TS_XML_STP_CFDI_CRP + " " + (sql.isEmpty() ? "" : "AND " + sql) +
+                "ORDER BY v.ser, v.num, v.id_dfr;";
+    }
+
+    @Override
+    public void createGridColumns() {
+        int col = 0;
+        DGridColumnView[] columns = new DGridColumnView[18];
+
+        String catetory = DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(DModSysConsts.BS_BPR_CL_CUS)).toLowerCase();
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, "v.doc_ts", DGridConsts.COL_TITLE_DATE + " docto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + catetory);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, "bc.code", DGridConsts.COL_TITLE_CODE + " " + catetory);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "b.fis_id", "RFC " + catetory);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.uid", "UUID");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xtp.name", "Tipo XML");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xstp.name", "Subtipo XML");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xst.name", "Estatus XML");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_USR, DDbConsts.FIELD_USER_INS_NAME, DGridConsts.COL_TITLE_USER_INS_NAME);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, DDbConsts.FIELD_USER_INS_TS, DGridConsts.COL_TITLE_USER_INS_TS);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_USR, DDbConsts.FIELD_USER_UPD_NAME, DGridConsts.COL_TITLE_USER_UPD_NAME);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, DDbConsts.FIELD_USER_UPD_TS, DGridConsts.COL_TITLE_USER_UPD_TS);
+
+        for (col = 0; col < columns.length; col++) {
+            moModel.getGridColumns().add(columns[col]);
+        }
+    }
+
+    @Override
+    public void defineSuscriptions() {
+        moSuscriptionsSet.add(mnGridType);
+        moSuscriptionsSet.add(DModConsts.CU_USR);
+        moSuscriptionsSet.add(DModConsts.BU_BPR);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
+    }
+
+    @Override
+    public void actionRowEdit() {
+        switch (mnGridType) {
+            case DModConsts.TX_MY_DPS_DOC:
+                if (jbRowEdit.isEnabled()) {
+                    if (jtTable.getSelectedRowCount() != 1) {
+                        miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+                    }
+                    else {
+                        DGridRowView gridRow = (DGridRowView) getSelectedGridRow();
+                        DGuiParams params = null;
+                        int type = DLibConsts.UNDEFINED;
+
+                        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                            miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                        }
+                        /* XXX Improve this, documents shoud be rendered in edit mode in form!
+                        else if (gridRow.isRowSystem()) {
+                            miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                        }
+                        */
+                        else {
+                            params = new DGuiParams();
+                            params.setKey(gridRow.getRowPrimaryKey());
+
+                            if (DLibUtils.belongsTo(gridRow.getRowRegistryTypeKey(), new int[][] {
+                                DModSysConsts.TS_DPS_TP_PUR_DOC_INV, DModSysConsts.TS_DPS_TP_SAL_DOC_INV })) {
+                                type = DModConsts.TX_DPS_DOC_INV;
+                            }
+                            else if (DLibUtils.belongsTo(gridRow.getRowRegistryTypeKey(), new int[][] {
+                                DModSysConsts.TS_DPS_TP_PUR_DOC_NOT, DModSysConsts.TS_DPS_TP_SAL_DOC_NOT })) {
+                                type = DModConsts.TX_DPS_DOC_NOT;
+                            }
+                            else if (DLibUtils.belongsTo(gridRow.getRowRegistryTypeKey(), new int[][] {
+                                DModSysConsts.TS_DPS_TP_PUR_DOC_TIC, DModSysConsts.TS_DPS_TP_SAL_DOC_TIC })) {
+                                type = DModConsts.TX_DPS_DOC_TIC;
+                            }
+
+                            if (type == DLibConsts.UNDEFINED) {
+                                miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                            }
+                            else {
+                                miClient.getSession().getModule(mnModuleType, mnModuleSubtype).showForm(type, mnGridSubtype, params);
+                            }
+                        }
+                    }
+                }
+                break;
+
+            default:
+                super.actionRowEdit(true);  // show also system registries
+        }
+    }
+    
+    @Override
+    public void actionRowDisable() {
+        if (jbRowDisable.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROWS);
+            }
+            else if (miClient.showMsgBoxConfirm(DGridConsts.MSG_CONFIRM_REG_DIS) == JOptionPane.YES_OPTION) {
+                boolean updates = false;
+                DGridRow[] gridRows = getSelectedGridRows();
+
+                for (DGridRow gridRow : gridRows) {
+                    if (((DGridRowView) gridRow).getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else if (((DGridRowView) gridRow).isRowSystem()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                    }
+                    else if (!((DGridRowView) gridRow).isDisableable()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DISABLEABLE);
+                    }
+                    else {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
+                            if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).disableRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
+                                updates = true;
+                            }
+                        }
+                    }
+                }
+
+                if (updates) {
+                    miClient.getSession().notifySuscriptors(mnGridType);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actionRowDelete() {
+        if (jbRowDelete.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROWS);
+            }
+            else if (miClient.showMsgBoxConfirm(DGridConsts.MSG_CONFIRM_REG_DEL) == JOptionPane.YES_OPTION) {
+                boolean updates = false;
+                DGridRow[] gridRows = getSelectedGridRows();
+
+                for (DGridRow gridRow : gridRows) {
+                    if (((DGridRowView) gridRow).getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else if (((DGridRowView) gridRow).isRowSystem()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                    }
+                    else if (!((DGridRowView) gridRow).isDeletable()) {
+                        miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DELETABLE);
+                    }
+                    else {
+                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
+                            if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).deleteRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
+                                updates = true;
+                            }
+                        }
+                    }
+                }
+
+                if (updates) {
+                    miClient.getSession().notifySuscriptors(mnGridType);
+                }
+            }
+        }
+    }
+    
+    private void actionPrint() {
+        if (mjButtonPrint.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                DTrnEmissionUtils.printDfr(miClient, (DGridRowView) getSelectedGridRow());
+            }
+        }
+    }
+
+    private void actionDfrSign(final int requestType) {
+        if (mjButtonDfrSign.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    private void actionDfrCancel(final int requestType) {
+        if (mjButtonDfrCancel.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                boolean enabled = jbRowDisable.isEnabled(); // preserve button enabled status
+                
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                    }
+                    else {
+                        if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            jbRowDisable.setEnabled(true);
+                            actionRowDisable();
+                        }
+                        else {
+                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+                finally {
+                    jbRowDisable.setEnabled(enabled);   // restore original button enable status
+                }
+            }
+        }
+    }
+
+    private void actionDfrSend() {
+        if (mjButtonDfrSend.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.sendDps(miClient, (DGridRowView) getSelectedGridRow());
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+
+            if (button == mjButtonPrint) {
+                actionPrint();
+            }
+            else if (button == mjButtonDfrSign) {
+                actionDfrSign(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            }
+            else if (button == mjButtonDfrSignVerify) {
+                actionDfrSign(DModSysConsts.TX_XMS_REQ_STP_VER);
+            }
+            else if (button == mjButtonDfrCancel) {
+                actionDfrCancel(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            }
+            else if (button == mjButtonDfrCancelVerify) {
+                actionDfrCancel(DModSysConsts.TX_XMS_REQ_STP_VER);
+            }
+            else if (button == mjButtonDfrSend) {
+                actionDfrSend();
+            }
+        }
+    }
+}

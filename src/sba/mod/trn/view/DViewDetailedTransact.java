@@ -175,9 +175,9 @@ public class DViewDetailedTransact extends DGridPaneView {
                 "ib.name AS f_ib_name, " +
                 (mnGridType != DModConsts.TX_DET_ITM_SNR ? "" : (mnGridSubtype == DModSysConsts.TS_DPS_CT_PUR ? "s.mov_in - s.mov_out" : "s.mov_out - s.mov_in") + " AS f_s_qty, s.snr AS f_s_snr, ") +
                 "IF(d.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
                 "d.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "d.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
                 "d.fk_dps_tp AS " + DDbConsts.FIELD_TYPE_ID + "3, " +
@@ -224,8 +224,8 @@ public class DViewDetailedTransact extends DGridPaneView {
                 (mnGridType != DModConsts.TX_DET_ITM_SNR ? "" : "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_STK) + " AS s ON " +
                 "s.snr <> '' AND ((s.fk_dps_inv_dps_n = dr.id_dps AND s.fk_dps_inv_row_n = dr.id_row AND s.fk_dps_adj_dps_n IS NULL AND s.fk_dps_adj_row_n IS NULL) OR " +
                 "(s.fk_dps_inv_dps_n IS NOT NULL AND s.fk_dps_inv_row_n IS NOT NULL AND s.fk_dps_adj_dps_n = dr.id_dps AND s.fk_dps_adj_row_n = dr.id_row)) ") +
-                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
-                "d.id_dps = eds.id_dps " +
+                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON " +
+                "d.id_dps = dfr.fk_dps_n " +
                 "WHERE d.b_del = 0 AND dr.b_del = 0 AND d.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ISS + " AND ";
 
         sql3 = (where.length() == 0 ? "" : "AND " + where);

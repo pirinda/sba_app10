@@ -263,7 +263,7 @@ public class DDialogHistoryPrices extends DBeanFormDialog implements ActionListe
         String sql = "";
         ResultSet resultSet = null;
         DRowHistoryPrices row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         if (moIntMoves.getValue() <= 0) {
             miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlMoves) + "'.");

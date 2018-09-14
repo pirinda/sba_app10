@@ -83,7 +83,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 import sba.mod.trn.db.DDbDpsSeriesBranch;
 import sba.mod.trn.db.DDbDpsSeriesNumber;
 import sba.mod.trn.db.DTrnConsts;
-import sba.mod.trn.db.DTrnEdsUtils;
+import sba.mod.trn.db.DTrnDfrUtils;
 import sba.mod.trn.db.DTrnItemsFound;
 import sba.mod.trn.db.DTrnStockMove;
 import sba.mod.trn.db.DTrnUtils;
@@ -144,7 +144,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private boolean mbQuantityAlreadySet;
     private boolean mbShowPricesOnFind;
     private boolean mbReloadItemsOnFind;
-    private boolean mbCheckEdsOnSaveOnlyOnce;
+    private boolean mbCheckDfrOnSaveOnlyOnce;
     private int mnNewDpsNumber;
     private int mnNewDpsSeriesId;
     private String msNewDpsSeries;
@@ -466,7 +466,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfCfdUuid.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
         jtfCfdUuid.setToolTipText("UUID del comprobante");
         jtfCfdUuid.setFocusable(false);
-        jtfCfdUuid.setPreferredSize(new java.awt.Dimension(225, 20));
+        jtfCfdUuid.setPreferredSize(new java.awt.Dimension(225, 23));
         jPanel21.add(jtfCfdUuid);
 
         jtfCfdType.setEditable(false);
@@ -1486,7 +1486,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         String paymentTerms = "";
         
         if (moKeyPaymentType.getSelectedIndex() > 0) {
-            paymentTerms = DTrnEdsUtils.composeCfdiPaymentTerms(moKeyPaymentType.getValue()[0], moIntCreditDays.getValue());
+            paymentTerms = DTrnDfrUtils.composeCfdiPaymentTerms(moKeyPaymentType.getValue()[0], moIntCreditDays.getValue());
         }
         
         jtfCfdPaymentTerms.setText(paymentTerms);
@@ -1770,7 +1770,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         boolean delete = true;
         
         for (DGridRow row : moGridDpsRows.getModel().getGridRows()) {
-            if (((DDbDpsRow) row).getEdsSourceUuid().compareToIgnoreCase(uuidToDelete) == 0) {
+            if (((DDbDpsRow) row).getDfrSourceUuid().compareToIgnoreCase(uuidToDelete) == 0) {
                 delete = false;
                 break;
             }
@@ -2441,9 +2441,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         dpsRow.setTsUserInsert(null);
         dpsRow.setTsUserUpdate(null);
 
-        dpsRow.setEdsItemKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFacturacion : moItem.getActualCfdItemKey());
-        dpsRow.setEdsUnitKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
-        dpsRow.setEdsSourceUuid("");
+        dpsRow.setDfrItemKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveProdServServsFacturacion : moItem.getActualCfdItemKey());
+        dpsRow.setDfrUnitKey(isSalesAdjustment() ? DCfdi33Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
+        dpsRow.setDfrSourceUuid("");
         
         dpsRow.setDbUnitCode(moUnit.getCode());
         dpsRow.setDbTaxRegimeId(moItem.getFkTaxRegimeId());
@@ -2878,7 +2878,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moRegistry.getChildRows().add(row);
                         moGridDpsRows.addGridRow(row);
                         
-                        computeCfdiRelatedAddition(row.getEdsSourceUuid());
+                        computeCfdiRelatedAddition(row.getDfrSourceUuid());
                     }
                 }
 
@@ -2918,7 +2918,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moRegistry.getChildRows().add(row);
                         moGridDpsRows.addGridRow(row);
                         
-                        computeCfdiRelatedAddition(row.getEdsSourceUuid());
+                        computeCfdiRelatedAddition(row.getDfrSourceUuid());
                     }
                 }
 
@@ -3577,8 +3577,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         int[] dpsClassKey = DTrnUtils.getDpsClassByDpsXType(mnFormType, mnFormSubtype);
         int[] dpsTypeKey = DTrnUtils.getDpsTypeByDpsXType(mnFormType, mnFormSubtype);
         boolean isDpsNumberAutomatic = DTrnUtils.isDpsNumberAutomatic(dpsClassKey);
-        Vector<DGridRow> rows = new Vector<DGridRow>();
-        Vector<DGridRow> notes = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
+        Vector<DGridRow> notes = new Vector<>();
 
         moRegistry = (DDbDps) registry;
 
@@ -3618,7 +3618,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         reloadCatalogues();
 
         mbIsPosModule = false;
-        mbCheckEdsOnSaveOnlyOnce = true;
+        mbCheckDfrOnSaveOnlyOnce = true;
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
@@ -3686,15 +3686,15 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         itemStateChangedCurrency();
         moDecExchangeRate.setValue(moRegistry.getExchangeRate());
         
-        moTextCfdConfirmation.setValue(moRegistry.getEdsConfirmation());
+        moTextCfdConfirmation.setValue(moRegistry.getDfrConfirmation());
 
         moKeyPaymentType.setValue(moRegistry.getPaymentTypeKey());
         itemStateChangedPaymentType();
-        moKeyCfdMethodOfPayment.setValue(new int[] { moXmlCatalogCfdMethodOfPayment.getId(moRegistry.getEdsMethodOfPayment()) });
+        moKeyCfdMethodOfPayment.setValue(new int[] { moXmlCatalogCfdMethodOfPayment.getId(moRegistry.getDfrMethodOfPayment()) });
         moKeyModeOfPaymentType.setValue(new int[] { moRegistry.getFkModeOfPaymentTypeId() });
         
-        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getEdsUsage()) });
-        moKeyCfdTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getEdsTaxRegime()) });
+        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getDfrCfdUsage()) });
+        moKeyCfdTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getDfrTaxRegime()) });
                 
         moIntCreditDays.setValue(moRegistry.getCreditDays());
         moDateCredit.setValue(moRegistry.getDateCredit());
@@ -3706,9 +3706,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moTextOrder.setValue(moRegistry.getOrder());
         moDateDelivery.setValue(moRegistry.getDateDelivery_n());
         
-        moKeyCfdRelationType.setValue(new int[] { moXmlCatalogCfdRelationType.getId(moRegistry.getEdsRelationType()) });
+        moKeyCfdRelationType.setValue(new int[] { moXmlCatalogCfdRelationType.getId(moRegistry.getDfrRelationType()) });
         maUuids.clear();
-        maUuids.addAll(moRegistry.getEdsCfdiRelated());
+        maUuids.addAll(moRegistry.getDfrCfdiRelated());
         showCfdiRelated();
         
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
@@ -3720,9 +3720,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         itemStateChangedDiscountDocPercentageApplying(false);
         moDecDiscountDocPercentage.setValue(moRegistry.getDiscountDocPercentage());
 
-        jtfCfdUuid.setText(moRegistry.getEdsUuid());
+        jtfCfdUuid.setText(moRegistry.getDfrUuid());
         jtfCfdType.setText("");
-        jtfCfdDate.setText(moRegistry.getChildEds() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getChildEds().getDocTs()));
+        jtfCfdDate.setText(moRegistry.getChildDfr() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getChildDfr().getDocTs()));
         jtfDocType.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_TP, moRegistry.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         jtfDocStatus.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_ST, moRegistry.getDpsStatusKey(), DDbRegistry.FIELD_NAME));
         jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moRegistry.getCompanyBranchKey(), DDbRegistry.FIELD_CODE));
@@ -3809,7 +3809,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             jbSave.setEnabled(true);
         }
         else {
-            jbSave.setEnabled(!moRegistry.isSystem() && (moRegistry.getChildEds() == null || moRegistry.getChildEds().getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS));
+            jbSave.setEnabled(!moRegistry.isSystem() && (moRegistry.getChildDfr() == null || moRegistry.getChildDfr().getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS));
         }
 
         computeTotal();
@@ -3921,32 +3921,32 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         if (moDpsSeriesNumber == null) {
             registry.setAuxXmlTypeId(DLibConsts.UNDEFINED);
-            registry.setAuxEdsRequired(false);
+            registry.setAuxDfrRequired(false);
         }
         else {
             if (moDpsSeriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                 if (moDpsSeriesNumber.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI_33) {
-                    registry.setEdsMethodOfPayment(moKeyCfdMethodOfPayment.getSelectedIndex() <= 0 ? "" : moKeyCfdMethodOfPayment.getSelectedItem().getCode());
-                    registry.setEdsPaymentTerms(jtfCfdPaymentTerms.getText());
-                    registry.setEdsConfirmation(moTextCfdConfirmation.getValue());
-                    registry.setEdsTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
-                    registry.setEdsUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
-                    registry.setEdsRelationType(moKeyCfdRelationType.getSelectedIndex() <= 0 ? "" : moKeyCfdRelationType.getSelectedItem().getCode());
-                    registry.getEdsCfdiRelated().clear();
-                    registry.getEdsCfdiRelated().addAll(maUuids);
+                    registry.setDfrMethodOfPayment(moKeyCfdMethodOfPayment.getSelectedIndex() <= 0 ? "" : moKeyCfdMethodOfPayment.getSelectedItem().getCode());
+                    registry.setDfrPaymentTerms(jtfCfdPaymentTerms.getText());
+                    registry.setDfrConfirmation(moTextCfdConfirmation.getValue());
+                    registry.setDfrTaxRegime(moKeyCfdTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyCfdTaxRegime.getValue()[0]);
+                    registry.setDfrCfdUsage(moKeyCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyCfdUsage.getSelectedItem().getCode());
+                    registry.setDfrRelationType(moKeyCfdRelationType.getSelectedIndex() <= 0 ? "" : moKeyCfdRelationType.getSelectedItem().getCode());
+                    registry.getDfrCfdiRelated().clear();
+                    registry.getDfrCfdiRelated().addAll(maUuids);
                 }
                 
-                // create dummy e-document only to verify if it can be processed:
-                if (mbCheckEdsOnSaveOnlyOnce) {
-                    DTrnEdsUtils.createDpsEds(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId());
-                    mbCheckEdsOnSaveOnlyOnce = false;
+                // create dummy DFR only to verify if it can be processed:
+                if (mbCheckDfrOnSaveOnlyOnce) {
+                    DTrnDfrUtils.createDfr(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId());
+                    mbCheckDfrOnSaveOnlyOnce = false;
                 }
             }
 
-            // Real e-document will be created in method DDbDps.save():
+            // Real DFR will be created in method DDbDps.save():
 
            registry.setAuxXmlTypeId(moDpsSeriesNumber.getFkXmlTypeId());
-           registry.setAuxEdsRequired(moDpsSeriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA);
+           registry.setAuxDfrRequired(moDpsSeriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA);
         }
 
         return registry;
@@ -4110,7 +4110,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             case DModConsts.T_DPS_ROW:
                 DDbDpsRow dpsRow = (DDbDpsRow) gridRow;
                 moRegistry.getChildRows().remove(dpsRow);
-                computeCfdiRelatedDeletion(dpsRow.getEdsSourceUuid());
+                computeCfdiRelatedDeletion(dpsRow.getDfrSourceUuid());
                 computeTotal();
                 break;
             default:

@@ -19,7 +19,7 @@ import sba.mod.DModConsts;
  *
  * @author Sergio Flores
  */
-public abstract class DTrnEdsCatalogs {
+public abstract class DTrnDfrCatalogs {
     
     private static String getCatalogEntry(final DGuiSession session, final int table, final String code) throws Exception {
         String entry = "";

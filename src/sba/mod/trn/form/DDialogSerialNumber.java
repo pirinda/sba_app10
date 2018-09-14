@@ -346,8 +346,8 @@ public class DDialogSerialNumber extends DBeanFormDialog implements ActionListen
         moDecDiscountUnitary.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountUnitary.getText()), DGuiConsts.GUI_TYPE_DEC_AMT_UNIT, false);
         moDecDiscountRow.setDecimalSettings(DGuiUtils.getLabelName(jlDiscountRow.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
 
-        mvSerialNumbersToAdjust = new Vector<DTrnStockMove>();
-        mvSerialNumbers = new Vector<DTrnStockMove>();
+        mvSerialNumbersToAdjust = new Vector<>();
+        mvSerialNumbers = new Vector<>();
         moDialogSerialNumberInStock = new DDialogSerialNumberInStock(miClient);
 
         if (DTrnUtils.isXTypeForDps(mnFormType)) {

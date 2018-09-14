@@ -74,10 +74,10 @@ public class DDbUser extends DDbRegistryUser implements DGuiUser {
         mvChildPrivileges = new Vector<DDbUserPrivilege>();
         moPrivilegesMap = new HashMap<Integer, Integer>();
         moModulesSet = new HashSet<Integer>();
-        mvAuxBranches = new Vector<DDbBranch>();
-        mvAuxBranchCashes = new Vector<DDbBranchCash>();
-        mvAuxBranchWarehouses = new Vector<DDbBranchWarehouse>();
-        mvAuxBranchDpsSeries = new Vector<DDbDpsSeriesBranch>();
+        mvAuxBranches = new Vector<>();
+        mvAuxBranchCashes = new Vector<>();
+        mvAuxBranchWarehouses = new Vector<>();
+        mvAuxBranchDpsSeries = new Vector<>();
         mvAuxBranchDpsSeriesNumbers = new Vector<DDbDpsSeriesNumber>();
         initRegistry();
     }
@@ -173,7 +173,7 @@ public class DDbUser extends DDbRegistryUser implements DGuiUser {
     }
 
     public Vector<DDbBranchCash> getAuxBranchCashes(int[] branchKey) {
-        Vector<DDbBranchCash> entities = new Vector<DDbBranchCash>();
+        Vector<DDbBranchCash> entities = new Vector<>();
 
         for (DDbBranchCash entity : mvAuxBranchCashes) {
             if (DLibUtils.compareKeys(branchKey, entity.getBranchKey())) {
@@ -185,7 +185,7 @@ public class DDbUser extends DDbRegistryUser implements DGuiUser {
     }
 
     public Vector<DDbBranchWarehouse> getAuxBranchWarehouses(int[] branchKey) {
-        Vector<DDbBranchWarehouse> entities = new Vector<DDbBranchWarehouse>();
+        Vector<DDbBranchWarehouse> entities = new Vector<>();
 
         for (DDbBranchWarehouse entity : mvAuxBranchWarehouses) {
             if (DLibUtils.compareKeys(branchKey, entity.getBranchKey())) {
@@ -197,7 +197,7 @@ public class DDbUser extends DDbRegistryUser implements DGuiUser {
     }
 
     public Vector<DDbDpsSeriesBranch> getAuxBranchDpsSeries(int[] branchKey) {
-        Vector<DDbDpsSeriesBranch> entities = new Vector<DDbDpsSeriesBranch>();
+        Vector<DDbDpsSeriesBranch> entities = new Vector<>();
 
         for (DDbDpsSeriesBranch entity : mvAuxBranchDpsSeries) {
             if (DLibUtils.compareKeys(branchKey, entity.getBranchKey())) {
@@ -209,7 +209,7 @@ public class DDbUser extends DDbRegistryUser implements DGuiUser {
     }
 
     public Vector<DDbDpsSeriesBranch> getAuxBranchDpsSeries(int[] branchKey, int[] dpsTypeKey) {
-        Vector<DDbDpsSeriesBranch> entities = new Vector<DDbDpsSeriesBranch>();
+        Vector<DDbDpsSeriesBranch> entities = new Vector<>();
 
         for (DDbDpsSeriesBranch entity : mvAuxBranchDpsSeries) {
             if (DLibUtils.compareKeys(branchKey, entity.getBranchKey()) && DLibUtils.compareKeys(dpsTypeKey, entity.getDbDpsTypeKey())) {

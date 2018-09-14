@@ -89,6 +89,7 @@ public class DDbProcessBookkeepingOpening extends DDbRegistryUser {
         move.setFkBizPartnerBranchId_n(DLibConsts.UNDEFINED);
         move.setFkDpsInvId_n(DLibConsts.UNDEFINED);
         move.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        move.setFkDfrId_n(DLibConsts.UNDEFINED);
         move.setFkIogId_n(DLibConsts.UNDEFINED);
         move.setFkIomId_n(DLibConsts.UNDEFINED);
         move.setFkPusId_n(DLibConsts.UNDEFINED);
@@ -126,7 +127,7 @@ public class DDbProcessBookkeepingOpening extends DDbRegistryUser {
         String innerOth = "AND b.fk_sys_acc_tp = " + DModSysConsts.FS_SYS_ACC_TP_NA + " ";
         DDbYear year = null;
         DDbBookkeepingMove bkkMove = null;
-        Vector<DDbBookkeepingMove> bkkMoves = new Vector<DDbBookkeepingMove>();
+        Vector<DDbBookkeepingMove> bkkMoves = new Vector<>();
 
         mtDate = DLibTimeUtils.createDate(mnPkOpeningYearId - 1, 12, 31);
         mnFkUserInsertId = session.getUser().getPkUserId();

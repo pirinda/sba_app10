@@ -173,8 +173,8 @@ public class DDialogLotInStock extends DBeanFormDialog implements DGridPaneFormO
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 640, 400);
 
-        mvStockMovesToAdjust = new Vector<DTrnStockMove>();
-        mvStockMoves = new Vector<DTrnStockMove>();
+        mvStockMovesToAdjust = new Vector<>();
+        mvStockMoves = new Vector<>();
 
         jbSave.setText(DGuiConsts.TXT_BTN_OK);
 
@@ -264,9 +264,9 @@ public class DDialogLotInStock extends DBeanFormDialog implements DGridPaneFormO
         double quantity = 0;
         String sql = "";
         ResultSet resultSet = null;
-        Vector<DTrnStockMove> moves = new Vector<DTrnStockMove>();
-        Vector<DTrnStockMove> movesFound = new Vector<DTrnStockMove>();
-        Vector<DGridRow> lots = new Vector<DGridRow>();
+        Vector<DTrnStockMove> moves = new Vector<>();
+        Vector<DTrnStockMove> movesFound = new Vector<>();
+        Vector<DGridRow> lots = new Vector<>();
 
         try {
             if (mvStockMovesToAdjust.size() > 0) {

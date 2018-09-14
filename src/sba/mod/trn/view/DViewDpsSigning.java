@@ -106,19 +106,21 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
         if (mnGridMode == DUtilConsts.EMT) {
             // Emited documents:
             sql += (sql.length() == 0 ? "" : "AND ") + "(" +
-                    "EXISTS (SELECT seds.id_dps FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS seds " +
-                    "WHERE seds.id_dps = v.id_dps AND seds.fk_xml_st >= " + DModSysConsts.TS_XML_ST_ISS + ") AND " +
-                    "EXISTS (SELECT sxsr.req_st FROM " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS sxsr " +
-                    "WHERE sxsr.b_del = 0 AND sxsr.id_dps = v.id_dps AND sxsr.req_tp = " + DModSysConsts.TX_XMS_REQ_TP_SIG + " AND sxsr.req_st = " + DModSysConsts.TX_XMS_REQ_ST_FIN + ")" +
+                    "EXISTS (SELECT sdfr.fk_dps_n FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS sdfr " +
+                    "WHERE sdfr.fk_dps_n = v.id_dps AND sdfr.fk_xml_st >= " + DModSysConsts.TS_XML_ST_ISS + ") AND " +
+                    "EXISTS (SELECT sxsr.req_st FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS sdfr " +
+                    "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS sxsr ON sdfr.id_dfr = sxsr.id_dfr " +
+                    "WHERE sxsr.b_del = 0 AND sdfr.fk_dps_n = v.id_dps AND sxsr.req_tp = " + DModSysConsts.TX_XMS_REQ_TP_SIG + " AND sxsr.req_st = " + DModSysConsts.TX_XMS_REQ_ST_FIN + ")" +
                     ") ";
         }
         else {
             // Pending documents:
             sql += (sql.length() == 0 ? "" : "AND ") + "(" +
-                    "EXISTS (SELECT seds.id_dps FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS seds " +
-                    "WHERE seds.id_dps = v.id_dps AND seds.fk_xml_st < " + DModSysConsts.TS_XML_ST_ISS + ") OR " +
-                    "EXISTS (SELECT sxsr.req_st FROM " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS sxsr " +
-                    "WHERE sxsr.b_del = 0 AND sxsr.id_dps = v.id_dps AND sxsr.req_tp = " + DModSysConsts.TX_XMS_REQ_TP_SIG + " AND sxsr.req_st < " + DModSysConsts.TX_XMS_REQ_ST_FIN + ")" +
+                    "EXISTS (SELECT sdfr.fk_dps_n FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS sdfr " +
+                    "WHERE sdfr.fk_dps_n = v.id_dps AND sdfr.fk_xml_st < " + DModSysConsts.TS_XML_ST_ISS + ") OR " +
+                    "EXISTS (SELECT sxsr.req_st FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS sdfr " +
+                    "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS sxsr ON sdfr.id_dfr = sxsr.id_dfr " +
+                    "WHERE sxsr.b_del = 0 AND sdfr.fk_dps_n = v.id_dps AND sxsr.req_tp = " + DModSysConsts.TX_XMS_REQ_TP_SIG + " AND sxsr.req_st < " + DModSysConsts.TX_XMS_REQ_ST_FIN + ")" +
                     ") ";
         }
         
@@ -149,11 +151,13 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
                 "edss.code, " +
                 "edss.name, " +
                 "IF(v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
                 "(SELECT COUNT(*) FROM " +DModConsts.TablesMap.get(DModConsts.T_DPS_SIG) + " AS dx WHERE dx.b_del = 0 AND dx.id_dps = v.id_dps) AS f_evt, " +
-                "(SELECT COALESCE(xsr.req_st, 0) FROM " +DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS xsr WHERE xsr.b_del = 0 AND xsr.id_dps = v.id_dps ORDER BY xsr.id_req DESC LIMIT 1) AS f_xsr_st, " +
+                "(SELECT COALESCE(xsr.req_st, 0) FROM " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " AS xsr " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON xsr.id_dfr = dfr.id_dfr " +
+                "WHERE xsr.b_del = 0 AND dfr.fk_dps_n = v.id_dps ORDER BY xsr.id_req DESC LIMIT 1) AS f_xsr_st, " +
                 "v.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "v.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
                 "v.fk_dps_tp AS " + DDbConsts.FIELD_TYPE_ID + "3, " +
@@ -191,10 +195,10 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "v.fk_usr_upd = uu.id_usr " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
-                "v.id_dps = eds.id_dps " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON " +
+                "v.id_dps = dfr.fk_dps_n " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ST) + " AS edss ON " +
-                "eds.fk_xml_st = edss.id_xml_st " +
+                "dfr.fk_xml_st = edss.id_xml_st " +
                 (sql.length() == 0 ? "" : "WHERE " + sql) +
                 "ORDER BY " + orderBy;
     }

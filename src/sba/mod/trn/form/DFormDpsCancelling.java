@@ -138,7 +138,7 @@ public class DFormDpsCancelling extends DBeanForm {
      */
     
     private void displayXmlSignatureProviderSettings() {
-        if (moRegistry.getChildEds() == null || moRegistry.getChildEds().getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_PEN || !moXmlSignatureProvider.isCancellation()) {
+        if (moRegistry.getChildDfr() == null || moRegistry.getChildDfr().getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_PEN || !moXmlSignatureProvider.isCancellation()) {
             moRadDisable.setSelected(true);
             moRadDisableCancel.setEnabled(false);
         }

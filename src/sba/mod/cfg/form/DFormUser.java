@@ -408,7 +408,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
         String sql = "";
         ResultSet resultSet = null;
         DRowUserPrivilege privilege = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             sql = "SELECT m.id_mod, m.name, p.id_prv, p.name, p.b_lev " +
@@ -441,7 +441,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void initBranches() {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridBranches.populateGrid(rows);
@@ -453,7 +453,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void initBranchCashes() {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridBranchCashes.populateGrid(rows);
@@ -465,7 +465,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void initBranchWarehouses() {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridBranchWarehouses.populateGrid(rows);
@@ -477,7 +477,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void initBranchDpsSeries() {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridBranchDpsSeries.populateGrid(rows);
@@ -634,7 +634,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void removeBranchCashes(int[] branchKey) {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         for (DGridRow row : moGridBranchCashes.getModel().getGridRows()) {
             DDbUserBranchCash userEntity = (DDbUserBranchCash) row;
@@ -652,7 +652,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void removeBranchWarehouses(int[] branchKey) {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         for (DGridRow row : moGridBranchWarehouses.getModel().getGridRows()) {
             DDbUserBranchWarehouse userEntity = (DDbUserBranchWarehouse) row;
@@ -670,7 +670,7 @@ public class DFormUser extends DBeanForm implements DGridPaneFormOwner, DGuiForm
     }
 
     private void removeBranchDpsSeries(int[] branchKey) {
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         for (DGridRow row : moGridBranchDpsSeries.getModel().getGridRows()) {
             DDbUserBranchDpsSeries userEntity = (DDbUserBranchDpsSeries) row;

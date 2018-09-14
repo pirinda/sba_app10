@@ -320,7 +320,7 @@ public class DFormItemPrices extends DBeanFormDialog implements ActionListener {
         String sql = "";
         ResultSet resultSet = null;
         DRowItemPrices row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
         DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
         removeAllListeners();

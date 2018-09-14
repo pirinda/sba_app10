@@ -155,7 +155,7 @@ public class DDialogSelectItemFound extends DBeanFormDialog {
     private void renderItemsFound() {
         DDbItem itemRegistry = null;
         DGuiItem item = null;
-        Vector<DGuiItem> items = new Vector<DGuiItem>();
+        Vector<DGuiItem> items = new Vector<>();
 
         if (moItemsFound == null) {
             jtfFoundBy.setText("");

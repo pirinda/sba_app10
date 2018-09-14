@@ -1516,10 +1516,24 @@ public abstract class DTrnUtils {
         return balance;
     }
 
+    /**
+     * Gets document balance.
+     * @param session
+     * @param year
+     * @param dpsKey
+     * @return 
+     */
     public static DTrnAmount getBalanceForDps(final DGuiSession session, final int year, final int[] dpsKey) {
         return getBalanceForDps(session, year, dpsKey, null);
     }
 
+    /**
+     * Gets document balance excluding provided bookkeeping number.
+     * @param session
+     * @param year
+     * @param dpsKey
+     * @return 
+     */
     public static DTrnAmount getBalanceForDps(final DGuiSession session, final int year, final int[] dpsKey, final int[] bkkNumberKey_n) {
         int cur = 0;
         int bizPartner = 0;
@@ -1664,7 +1678,7 @@ public abstract class DTrnUtils {
         ResultSet resultSetAdj = null;
         DDbDpsRow row = null;
         DRowDpsRowAdjusted rowAdjusted = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             statementDps = session.getStatement().getConnection().createStatement();
@@ -2139,11 +2153,11 @@ public abstract class DTrnUtils {
         return dpsClassKey[0] == DModSysConsts.TS_DPS_CT_SAL;
     }
 
-    public static boolean isDpsClassForEds(final int[] dpsClassKey) {
+    public static boolean isDpsClassForDfr(final int[] dpsClassKey) {
         return isDpsClassForSale(dpsClassKey) && (isDpsClassDocument(dpsClassKey) || isDpsClassAdjustment(dpsClassKey));
     }
 
-    public static boolean isDpsTypeForEds(final int[] dpsTypeKey) {
+    public static boolean isDpsTypeForDfr(final int[] dpsTypeKey) {
         return DLibUtils.belongsTo(dpsTypeKey, new int[][] { DModSysConsts.TS_DPS_TP_SAL_DOC_INV, DModSysConsts.TS_DPS_TP_SAL_ADJ_INC_DN, DModSysConsts.TS_DPS_TP_SAL_ADJ_DEC_CN });
     }
 
@@ -2308,5 +2322,17 @@ public abstract class DTrnUtils {
             DModConsts.TX_IOG_PUR, DModConsts.TX_IOG_SAL,
             DModConsts.TX_IOG_EXT, DModConsts.TX_IOG_INT,
             DModConsts.TX_IOG_MFG });
+    }
+    
+    public static DDbDps getDpsByUuid(final DGuiSession session, final String uuid) throws Exception {
+        DDbDps dps = null;
+        
+        String sql = "SELECT fk_dps_n FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " WHERE uid = '" + uuid + "';";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { resultSet.getInt(1) });
+        }
+        
+        return dps;
     }
 }

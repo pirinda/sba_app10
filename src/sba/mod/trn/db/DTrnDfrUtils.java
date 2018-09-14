@@ -68,7 +68,7 @@ import sba.mod.fin.db.DFinConsts;
  * 
  * @author Sergio Flores
  */
-public abstract class DTrnEdsUtils {
+public abstract class DTrnDfrUtils {
     
     /**
      * Extracts existing digital signature attributes from CFD's XML.
@@ -83,10 +83,10 @@ public abstract class DTrnEdsUtils {
         NamedNodeMap namedNodeMapChild = null;
         cfd.ver32.DSelloDigital selloDigital = null;
         
-        if (dps.getChildEds() != null) {
+        if (dps.getChildDfr() != null) {
             selloDigital = new cfd.ver32.DSelloDigital();
 
-            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
+            doc = DXmlUtils.parseDocument(dps.getChildDfr().getDocXml());
 
             node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
             namedNodeMapChild = node.getAttributes();
@@ -112,10 +112,10 @@ public abstract class DTrnEdsUtils {
         NamedNodeMap namedNodeMapChild = null;
         cfd.ver33.DSelloDigital selloDigital = null;
         
-        if (dps.getChildEds() != null) {
+        if (dps.getChildDfr() != null) {
             selloDigital = new cfd.ver33.DSelloDigital();
 
-            doc = DXmlUtils.parseDocument(dps.getChildEds().getDocXml());
+            doc = DXmlUtils.parseDocument(dps.getChildDfr().getDocXml());
 
             node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
             namedNodeMapChild = node.getAttributes();
@@ -258,7 +258,7 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttFolio().setString("" + dps.getNumber());
         comprobante.getAttFecha().setDatetime(tDate);
         
-        if (dps.getChildEds() != null) {
+        if (dps.getChildDfr() != null) {
             // If DPS's XML already exists, retrieve too the digital signature attributes:
             
             cfd.ver32.DSelloDigital selloDigital = extractSello32(dps);
@@ -746,7 +746,7 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttCertificado().setString(signature.getCertificateBase64());
 
         comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
-        comprobante.getAttCondicionesDePago().setString(dps.getEdsPaymentTerms());
+        comprobante.getAttCondicionesDePago().setString(dps.getDfrPaymentTerms());
         
         comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
 
@@ -762,19 +762,19 @@ public abstract class DTrnEdsUtils {
         comprobante.getAttTotal().setDouble(dps.getTotalCy_r());
 
         comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi33Catalogs.CFD_TP_I : DCfdi33Catalogs.CFD_TP_E);
-        comprobante.getAttMetodoPago().setString(dps.getEdsMethodOfPayment());
+        comprobante.getAttMetodoPago().setString(dps.getDfrMethodOfPayment());
         
-        braAddressEmisor = bprEmisor.getChildBranches().get(0).getChildAddresses().get(0);
+        braAddressEmisor = braEmisor.getChildAddresses().get(0);
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(dps.getEdsConfirmation());
+        comprobante.getAttConfirmacion().setString(dps.getDfrConfirmation());
         
         // element 'CfdiRelacionados':
-        if (!dps.getEdsRelationType().isEmpty() && !dps.getEdsCfdiRelated().isEmpty()) {
+        if (!dps.getDfrRelationType().isEmpty() && !dps.getDfrCfdiRelated().isEmpty()) {
             cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
-            cfdiRelacionados.getAttTipoRelacion().setString(dps.getEdsRelationType());
+            cfdiRelacionados.getAttTipoRelacion().setString(dps.getDfrRelationType());
             
-            for (String uuid : dps.getEdsCfdiRelated()) {
+            for (String uuid : dps.getDfrCfdiRelated()) {
                 cfd.ver33.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver33.DElementCfdiRelacionado();
                 cfdiRelacionado.getAttUuid().setString(uuid);
                 cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
@@ -786,14 +786,14 @@ public abstract class DTrnEdsUtils {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getEdsTaxRegime());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getDfrTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getProperName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getEdsUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getDfrCfdUsage());
 
         // element 'Conceptos':
         
@@ -807,11 +807,11 @@ public abstract class DTrnEdsUtils {
 
                 cfd.ver33.DElementConcepto concepto = new cfd.ver33.DElementConcepto();
 
-                concepto.getAttClaveProdServ().setString(dpsRow.getEdsItemKey());
+                concepto.getAttClaveProdServ().setString(dpsRow.getDfrItemKey());
                 concepto.getAttNoIdentificacion().setString(dpsRow.getCode());
                 concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
                 concepto.getAttCantidad().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity());
-                concepto.getAttClaveUnidad().setString(dpsRow.getEdsUnitKey());
+                concepto.getAttClaveUnidad().setString(dpsRow.getDfrUnitKey());
                 concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
                 concepto.getAttDescripcion().setString(dpsRow.getName());
                 concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary());
@@ -1093,7 +1093,7 @@ public abstract class DTrnEdsUtils {
     }
     
     /**
-     * Extracts EDS addenda.
+     * Extracts DFR addenda.
      * @param xmlAddenda
      * @param typeXmlAddenda
      * @return
@@ -1153,7 +1153,7 @@ public abstract class DTrnEdsUtils {
     }
     
     /**
-     * Extracts existing EDS addenda on DPS only if its addenda's type corresponds to that one defined on business partner.
+     * Extracts existing DFR addenda on DPS only if its addenda's type corresponds to that one defined on business partner.
      * @param dps
      * @param typeXmlAddenda
      * @return
@@ -1162,10 +1162,10 @@ public abstract class DTrnEdsUtils {
     public static DSubelementAddenda extractExtAddenda(final DDbDps dps, final int typeXmlAddenda) throws Exception {
         DSubelementAddenda extAddenda = null;
         
-        if (dps.getChildEds() != null && dps.getChildEds().getFkXmlAddendaTypeId() == typeXmlAddenda) {
+        if (dps.getChildDfr() != null && dps.getChildDfr().getFkXmlAddendaTypeId() == typeXmlAddenda) {
             switch (typeXmlAddenda) {
                 case DModSysConsts.TS_XML_ADD_TP_CON:
-                    extAddenda = (DElementAddendaContinentalTire) extractExtAddenda(dps.getChildEds().getDocXmlAddenda(), typeXmlAddenda);
+                    extAddenda = (DElementAddendaContinentalTire) extractExtAddenda(dps.getChildDfr().getDocXmlAddenda(), typeXmlAddenda);
                     break;
                     
                 default:
@@ -1177,18 +1177,18 @@ public abstract class DTrnEdsUtils {
     }
 
     /**
-     * Creates new Electronic Document Supporting for provided document and type.
+     * Creates new Digital Fiscal Receipt for provided document and type.
      * @param session Current GUI user session.
      * @param dps Document.
      * @param xmlType CFD type.
      * @return
      * @throws Exception 
      */
-    public static DDbDpsEds createDpsEds(final DGuiSession session, final DDbDps dps, final int xmlType) throws Exception {
+    public static DDbDfr createDfr(final DGuiSession session, final DDbDps dps, final int xmlType) throws Exception {
         int xmlStatus = DLibConsts.UNDEFINED;
         String textToSign;
         String textSigned;
-        DDbDpsEds eds;
+        DDbDfr dfr;
         DGuiEdsSignature signature;
         DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
@@ -1200,12 +1200,12 @@ public abstract class DTrnEdsUtils {
                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
             case DModSysConsts.TS_XML_TP_CFDI_32:
-                // Create EDS:
+                // Create DFR:
                 signature = session.getEdsSignature(dps.getCompanyBranchKey());
                 cfd.ver32.DElementComprobante comprobante32 = createCfdi32(session, dps);
                 
-                // Append to EDS the very addenda previously added to DPS if any:
-                if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
+                // Append to DFR the very addenda previously added to DPS if any:
+                if (dps.getChildDfr() != null && !dps.getChildDfr().getDocXmlAddenda().isEmpty()) {
                     extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
                         cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
@@ -1214,22 +1214,22 @@ public abstract class DTrnEdsUtils {
                     }
                 }
                 
-                // Sign EDS:
+                // Sign DFR:
                 textToSign = DCfdUtils.generateOriginalString(comprobante32);
                 textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
                 cfd.write(comprobante32, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
 
-                // Set EDS status:
+                // Set DFR status:
                 xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                 break;
 
             case DModSysConsts.TS_XML_TP_CFDI_33:
-                // Create EDS:
+                // Create DFR:
                 signature = session.getEdsSignature(dps.getCompanyBranchKey());
                 cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, dps, signature);
                 
-                // Append to EDS the very addenda previously added to DPS if any:
-                if (dps.getChildEds() != null && !dps.getChildEds().getDocXmlAddenda().isEmpty()) {
+                // Append to DFR the very addenda previously added to DPS if any:
+                if (dps.getChildDfr() != null && !dps.getChildDfr().getDocXmlAddenda().isEmpty()) {
                     extAddenda = extractExtAddenda(dps, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
                         cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
@@ -1238,12 +1238,12 @@ public abstract class DTrnEdsUtils {
                     }
                 }
                 
-                // Sign EDS:
+                // Sign DFR:
                 textToSign = comprobante33.getElementForOriginalString();
                 textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(dps.getDate())[0]);
                 cfd.write(comprobante33, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
 
-                // Set EDS status:
+                // Set DFR status:
                 xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                 break;
 
@@ -1251,52 +1251,54 @@ public abstract class DTrnEdsUtils {
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
 
-        // Create EDS:
-        eds = new DDbDpsEds();
-        eds.setPkDpsId(dps.getPkDpsId());
-        eds.setCertificateNumber(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber());
-        eds.setSignedText(cfd.getLastStringSigned());
-        eds.setSignature(cfd.getLastSignature());
-        eds.setUniqueId("");
-        eds.setDocTs(cfd.getLastTimestamp());
-        eds.setDocXml(cfd.getLastXml());
-        eds.setDocXmlRaw("");
-        eds.setDocXmlAddenda(extAddenda == null ? "" : extAddenda.getElementForXml());
-        eds.setDocXmlName(cfd.getLastXmlFileName());
-        eds.setCancelXml("");
-        eds.setCancelPdf_n(null);
-        eds.setFkXmlTypeId(xmlType);
-        eds.setFkXmlStatusId(xmlStatus);
-        eds.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
-        eds.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);
-        eds.setFkCertificateId(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateId());
-        //eds.setFkUserIssuedId(...);   // will be set as needed when saved!
-        //eds.setFkUserAnnulId(...);    // will be set as needed when saved!
-        eds.setAuxIssued(true);
+        // Create DFR:
+        dfr = new DDbDfr();
+        //dfr.setPkDfrId(...);
+        dfr.setCertificateNumber(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber());
+        dfr.setSignedText(cfd.getLastStringSigned());
+        dfr.setSignature(cfd.getLastSignature());
+        dfr.setUuid("");
+        dfr.setDocTs(cfd.getLastTimestamp());
+        dfr.setDocXml(cfd.getLastXml());
+        dfr.setDocXmlRaw("");
+        dfr.setDocXmlAddenda(extAddenda == null ? "" : extAddenda.getElementForXml());
+        dfr.setDocXmlName(cfd.getLastXmlFileName());
+        dfr.setCancelStatus("");
+        dfr.setCancelXml("");
+        dfr.setCancelPdf_n(null);
+        dfr.setFkXmlTypeId(xmlType);
+        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_CFDI_FAC); // invoice
+        dfr.setFkXmlStatusId(xmlStatus);
+        dfr.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
+        dfr.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);
+        dfr.setFkCertificateId(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateId());
+        dfr.setFkOwnerBizPartnerId(dps.getFkOwnerBizPartnerId());
+        dfr.setFkOwnerBranchId(dps.getFkOwnerBranchId());
+        dfr.setFkBizPartnerId(dps.getFkBizPartnerBizPartnerId());
+        dfr.setFkDpsId_n(dps.getPkDpsId());
+        //dfr.setFkUserIssuedId(...);   // will be set as needed when saved!
+        //dfr.setFkUserAnnulledId(...); // will be set as needed when saved!
+        dfr.setAuxIssued(true);
 
-        return eds;
+        return dfr;
     }
 
     /**
-     * Validates that CFDI's XML corresponds to CFD registry.
+     * Validates that CFDI's XML corresponds to DFR registry.
      * @param xml CFDI's XML.
-     * @param eds EDS registry.
+     * @param dfr DFR registry.
      * @return true if is correct.
      */
-    public static boolean belongsXmlToEds(final String xml, final DDbDpsEds eds) throws Exception {
-        cfd.ver32.DElementComprobante comprobanteXml = null;
-        cfd.ver32.DElementComprobante comprobanteEds = null;
-        boolean valid = false;
+    public static boolean belongsXmlToDfr(final String xml, final DDbDfr dfr) throws Exception {
+        cfd.ver32.DElementComprobante comprobanteXml = DCfdUtils.getCfdi32(xml);
+        cfd.ver32.DElementComprobante comprobanteDfr = DCfdUtils.getCfdi32(dfr.getDocXml());
 
-        comprobanteXml = DCfdUtils.getCfdi32(xml);
-        comprobanteEds = DCfdUtils.getCfdi32(eds.getDocXml());
-
-        valid = comprobanteXml.getEltEmisor().getAttRfc().getString().compareTo(comprobanteEds.getEltEmisor().getAttRfc().getString()) == 0 &&
-                comprobanteXml.getEltReceptor().getAttRfc().getString().compareTo(comprobanteEds.getEltReceptor().getAttRfc().getString()) == 0 &&
-                comprobanteXml.getAttSerie().getString().compareTo(comprobanteEds.getAttSerie().getString()) == 0 &&
-                comprobanteXml.getAttFolio().getString().compareTo(comprobanteEds.getAttFolio().getString()) == 0 &&
-                comprobanteXml.getAttFecha().getDatetime().compareTo(comprobanteEds.getAttFecha().getDatetime()) == 0 &&
-                comprobanteXml.getAttTotal().getDouble() == comprobanteEds.getAttTotal().getDouble();
+        boolean valid = comprobanteXml.getEltEmisor().getAttRfc().getString().compareTo(comprobanteDfr.getEltEmisor().getAttRfc().getString()) == 0 &&
+                comprobanteXml.getEltReceptor().getAttRfc().getString().compareTo(comprobanteDfr.getEltReceptor().getAttRfc().getString()) == 0 &&
+                comprobanteXml.getAttSerie().getString().compareTo(comprobanteDfr.getAttSerie().getString()) == 0 &&
+                comprobanteXml.getAttFolio().getString().compareTo(comprobanteDfr.getAttFolio().getString()) == 0 &&
+                comprobanteXml.getAttFecha().getDatetime().compareTo(comprobanteDfr.getAttFecha().getDatetime()) == 0 &&
+                comprobanteXml.getAttTotal().getDouble() == comprobanteDfr.getAttTotal().getDouble();
 
         return valid;
     }
@@ -1326,7 +1328,7 @@ public abstract class DTrnEdsUtils {
         switch (requestSubtype) {
             case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
                 xsr = new DDbXmlSignatureRequest();
-                xsr.setPkDpsId(dps.getPkDpsId());
+                xsr.setPkDfrId(dps.getChildDfr().getPkDfrId());
                 //xsr.setPkRequestId(0);
                 xsr.setRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG);
                 xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_STA);
@@ -1337,7 +1339,7 @@ public abstract class DTrnEdsUtils {
                 break;
                 
             case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
-                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getPrimaryKey());
+                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getChildDfr().getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
                 }
@@ -1392,7 +1394,7 @@ public abstract class DTrnEdsUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
                             
                             // Process response:
 
@@ -1425,7 +1427,7 @@ public abstract class DTrnEdsUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
 
                             // Process response:
 
@@ -1457,7 +1459,7 @@ public abstract class DTrnEdsUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
 
                             // Process response:
 
@@ -1481,7 +1483,7 @@ public abstract class DTrnEdsUtils {
                         if (cfdi.isEmpty()) {
                             throw new Exception(DUtilConsts.FILE_EXT_XML.toUpperCase() + " " + DLibConsts.ERR_MSG_UNKNOWN.toLowerCase());
                         }
-                        else if (!belongsXmlToEds(cfdi, dps.getChildEds())) {
+                        else if (!belongsXmlToDfr(cfdi, dps.getChildDfr())) {
                             throw new Exception(DLibConsts.ERR_MSG_WRONG_TYPE + " (" + DUtilConsts.FILE_EXT_XML.toUpperCase() + ")");
                         }
                     }
@@ -1501,12 +1503,12 @@ public abstract class DTrnEdsUtils {
                         if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                             // Sign request:
                             
-                            acuseRecepcionCfdi = port.stamp(dps.getChildEds().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamp(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         else {
                             // Sign verification:
                             
-                            acuseRecepcionCfdi = port.stamped(dps.getChildEds().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamped(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         
                         // Process response:
@@ -1538,12 +1540,12 @@ public abstract class DTrnEdsUtils {
                         if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                             // Request:
                             
-                            acuseRecepcionCfdi = port.stamp(dps.getChildEds().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamp(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         else {
                             // Verification:
                             
-                            acuseRecepcionCfdi = port.stamped(dps.getChildEds().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamped(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
 
                         // Process response:
@@ -1566,7 +1568,7 @@ public abstract class DTrnEdsUtils {
                     break;
 
                 case DModSysConsts.CS_XSP_TST:  // testing
-                    cfdi = dps.getChildEds().getDocXml();   // insert by hand for testint purposes 'Complemento' node into this local variable 'cfdi'!
+                    cfdi = dps.getChildDfr().getDocXml();   // insert by hand for testint purposes 'Complemento' node into this local variable 'cfdi'!
                     break;
                     
                 default:
@@ -1600,12 +1602,12 @@ public abstract class DTrnEdsUtils {
                 }
             }
             
-            // Preserve signed XML into EDS:
+            // Preserve signed XML into DFR:
 
             timbreFiscal = new cfd.ver3.DTimbreFiscal();
             namedNodeMapTimbreFiscal = nodeChildTimbreFiscal.getAttributes();
             
-            switch (dps.getChildEds().getFkXmlTypeId()) {
+            switch (dps.getChildDfr().getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFDI_32:
                     node = namedNodeMapTimbreFiscal.getNamedItem("Version");
                     timbreFiscal.setVersion(node.getNodeValue());
@@ -1661,14 +1663,14 @@ public abstract class DTrnEdsUtils {
                 default:
             }
 
-            dps.getChildEds().setUniqueId(timbreFiscal.getUuid());
-            dps.getChildEds().setDocXml(cfdi);
-            dps.getChildEds().setDocXmlRaw(cfdi);
-            dps.getChildEds().setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
-            dps.getChildEds().setFkXmlSignatureProviderId(timbreFiscal.getPacId());
-            dps.getChildEds().setAuxIssued(true);
-            dps.getChildEds().setAuxRewriteXmlOnSave(true);
-            dps.getChildEds().save(session);
+            dps.getChildDfr().setUuid(timbreFiscal.getUuid());
+            dps.getChildDfr().setDocXml(cfdi);
+            dps.getChildDfr().setDocXmlRaw(cfdi);
+            dps.getChildDfr().setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
+            dps.getChildDfr().setFkXmlSignatureProviderId(timbreFiscal.getPacId());
+            dps.getChildDfr().setAuxIssued(true);
+            dps.getChildDfr().setAuxRewriteXmlOnSave(true);
+            dps.getChildDfr().save(session);
 
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
             xsr.save(session);
@@ -1677,15 +1679,15 @@ public abstract class DTrnEdsUtils {
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_CMP) {
             // Consume stamp:
 
-            DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_SIG, dps.getPrimaryKey());
+            DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_SIG, dps.getChildDfr().getPkDfrId());
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_CMP);
             xsr.save(session);
         }
         
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
-            // Issue EDS:
+            // Issue DFR:
 
-            dps.issueEds(session);
+            dps.issueDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
@@ -1705,7 +1707,7 @@ public abstract class DTrnEdsUtils {
         DDbConfigBranch configBranch = null;
         DDbCertificate certificate = null;
         DDbXmlSignatureRequest xsr = null;
-        DDbDpsEds eds = null;
+        DDbDfr dfr = null;
         
         // Lock document, if necesary:
         
@@ -1716,7 +1718,7 @@ public abstract class DTrnEdsUtils {
         switch (requestSubtype) {
             case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
                 xsr = new DDbXmlSignatureRequest();
-                xsr.setPkDpsId(dps.getPkDpsId());
+                xsr.setPkDfrId(dps.getChildDfr().getPkDfrId());
                 //xsr.setPkRequestId(0);
                 xsr.setRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN);
                 xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_STA);
@@ -1727,7 +1729,7 @@ public abstract class DTrnEdsUtils {
                 break;
 
             case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
-                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getPrimaryKey());
+                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getChildDfr().getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
                 }
@@ -1773,11 +1775,11 @@ public abstract class DTrnEdsUtils {
 
                                 // Web service autentication:
 
-                                autenticarResponse = fcgPort.autenticar(sEdsName, sEdsPassword);
+                                autenticarResponse = fcgPort.autenticar(edsName, edsPassword);
 
                                 // Web service request:
 
-                                timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+                                timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
@@ -1802,11 +1804,11 @@ public abstract class DTrnEdsUtils {
 
                                 // Web Service Autentication:
 
-                                autenticarResponse = fcgPort.autenticar(sEdsName, sEdsPassword);
+                                autenticarResponse = fcgPort.autenticar(edsName, edsPassword);
 
                                 // Document stamp:
 
-                                timbradoResponse = fcgPort.timbrar(dps.getChildEds().getDocXml(), autenticarResponse.getToken());
+                                timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
@@ -1828,7 +1830,7 @@ public abstract class DTrnEdsUtils {
                             if (cfdi.isEmpty()) {
                                 throw new Exception(DUtilConsts.FILE_EXT_XML.toUpperCase() + " " + DLibConsts.ERR_MSG_UNKNOWN.toLowerCase());
                             }
-                            else if (!belongsXmlToEds(cfdi, dps.getChildEds())) {
+                            else if (!belongsXmlToDfr(cfdi, dps.getChildDfr())) {
                                 throw new Exception(DLibConsts.ERR_MSG_WRONG_TYPE + " (" + DUtilConsts.FILE_EXT_XML.toUpperCase() + ")");
                             }
                         }
@@ -1858,7 +1860,7 @@ public abstract class DTrnEdsUtils {
                                 // Cancel request:
                                 
                                 alUuids = new ArrayList<String>();
-                                alUuids.add(dps.getChildEds().getUniqueId());
+                                alUuids.add(dps.getChildDfr().getUuid());
                                 
                                 aUuids = new cancel_demo.StringArray();
                                 aUuids.getString().addAll(alUuids);
@@ -1869,7 +1871,7 @@ public abstract class DTrnEdsUtils {
                                 uuids = new cancel_demo.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
-                                if (dps.getChildEds().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
+                                if (dps.getChildDfr().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
                                     // Cancel own signed document:
                                     
                                     cancelaCFDResult = port.cancel(uuids, edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
@@ -1877,13 +1879,13 @@ public abstract class DTrnEdsUtils {
                                 else {
                                     // Cancel third party signed document:
                                     
-                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildEds().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
+                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildDfr().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
                                 }
                             }
                             else {
                                 // Cancel verification:
                                 
-                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildEds().getUniqueId(), "C");
+                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildDfr().getUuid(), "C");
                             }
                             
                             // Process response:
@@ -1971,7 +1973,7 @@ public abstract class DTrnEdsUtils {
                                 // Cancel request:
                                 
                                 alUuids = new ArrayList<String>();
-                                alUuids.add(dps.getChildEds().getUniqueId());
+                                alUuids.add(dps.getChildDfr().getUuid());
                                 
                                 aUuids = new cancel.StringArray();
                                 aUuids.getString().addAll(alUuids);
@@ -1982,7 +1984,7 @@ public abstract class DTrnEdsUtils {
                                 uuids = new cancel.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
-                                if (dps.getChildEds().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
+                                if (dps.getChildDfr().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
                                     // Cancel own signed document:
                                     
                                     cancelaCFDResult = port.cancel(uuids, edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
@@ -1990,13 +1992,13 @@ public abstract class DTrnEdsUtils {
                                 else {
                                     // Cancel third party signed document:
                                     
-                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildEds().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
+                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildDfr().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
                                 }
                             }
                             else {
                                 // Cancel verification:
                                 
-                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildEds().getUniqueId(), "C");
+                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildDfr().getUuid(), "C");
                             }
                             
                             // Process response:
@@ -2070,14 +2072,15 @@ public abstract class DTrnEdsUtils {
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " " + DTrnEmissionConsts.PAC);
                 }
 
-                // Preserve aknowledgment of cancellation on XML format into EDS:
+                // Preserve aknowledgment of cancellation on XML format into DFR:
 
-                eds = dps.getChildEds();
-                eds.setCancelXml(xml);
-                eds.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
-                eds.setAuxAnnulled(true);
+                dfr = dps.getChildDfr();
+                dfr.setCancelStatus(""); // TODO: implement new 2018 cancellation scheme!
+                dfr.setCancelXml(xml);
+                dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
+                dfr.setAuxAnnulled(true);
 
-                dps.updateEds(session, eds);
+                dps.updateDfr(session, dfr);
             }
             
             if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
@@ -2092,16 +2095,16 @@ public abstract class DTrnEdsUtils {
             // Consume stamp:
 
             if (action == DTrnEmissionConsts.ANNUL_CANCEL) {
-                DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_ANN, dps.getPrimaryKey());
+                DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_ANN, dps.getChildDfr().getPkDfrId());
             }
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_CMP);
             xsr.save(session);
         }
 
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
-            // Issue EDS:
+            // Issue DFR:
 
-            dps.issueEds(session);
+            dps.issueDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }

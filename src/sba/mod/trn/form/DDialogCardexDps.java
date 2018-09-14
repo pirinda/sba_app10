@@ -200,7 +200,7 @@ public class DDialogCardexDps extends DBeanFormDialog {
         String sql = "";
         ResultSet resultSet = null;
         DRowCardexBookkeeping row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         try {
             // Opening balance:

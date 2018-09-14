@@ -316,7 +316,7 @@ public class DFormCommissionCalc extends DBeanForm implements ActionListener {
     private void actionViewCalc() {
         String sql = "";
         ResultSet resultSet = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridCalc.clearGridRows();
@@ -376,7 +376,7 @@ public class DFormCommissionCalc extends DBeanForm implements ActionListener {
     private void actionViewCalcDetail() {
         String sql = "";
         ResultSet resultSet = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         try {
             moGridCalcDetail.clearGridRows();

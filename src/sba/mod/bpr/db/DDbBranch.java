@@ -54,8 +54,8 @@ public class DDbBranch extends DDbRegistryUser {
 
     public DDbBranch() {
         super(DModConsts.BU_BRA);
-        mvChildAddresses = new Vector<DDbBranchAddress>();
-        mvChildBankAccounts = new Vector<DDbBranchBankAccount>();
+        mvChildAddresses = new Vector<>();
+        mvChildBankAccounts = new Vector<>();
         initRegistry();
     }
 

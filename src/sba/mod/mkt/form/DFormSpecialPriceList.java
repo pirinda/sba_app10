@@ -209,7 +209,7 @@ public class DFormSpecialPriceList extends DBeanForm implements DGuiFormOwner {
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        Vector<DGridRow> prices = new Vector<DGridRow>();
+        Vector<DGridRow> prices = new Vector<>();
 
         moRegistry = (DDbSpecialPriceList) registry;
 

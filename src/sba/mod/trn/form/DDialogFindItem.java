@@ -770,7 +770,7 @@ public class DDialogFindItem extends DBeanFormDialog implements DGridPaneFormOwn
         double taxRate = 0;
         String text = moTextFind.getValue().toUpperCase();
         DRowFindItem rowFindItem = null;
-        Vector<DGridRow> rows = new Vector<DGridRow>();
+        Vector<DGridRow> rows = new Vector<>();
 
         if (mvFindItems != null && mvFindItems.size() > 0) {
             if (text.length() == 0) {

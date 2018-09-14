@@ -157,7 +157,7 @@ public class DDialogTraceSerialNumber extends DBeanFormDialog implements ActionL
         String snr = DLibUtils.textTrim(jtfSerialNumber.getText());
         ResultSet resultSet = null;
         DRowTraceSerialNumber row = null;
-        Vector<DGridRow> gridRows = new Vector<DGridRow>();
+        Vector<DGridRow> gridRows = new Vector<>();
 
         if (snr.length() == 0) {
             miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlSerialNumber.getText()) + "'.");

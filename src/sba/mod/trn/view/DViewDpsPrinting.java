@@ -125,9 +125,9 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
                 "emit.code, " +
                 "emit.name, " +
                 "IF(v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
-                "IF(eds.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
+                "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
                 "(SELECT COUNT(*) FROM " +DModConsts.TablesMap.get(DModConsts.T_DPS_PRT) + " AS dx WHERE dx.id_dps = v.id_dps AND dx.b_del = 0) AS f_evt, " +
                 "v.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "v.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
@@ -166,8 +166,8 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "v.fk_usr_upd = uu.id_usr " +
-                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS_EDS) + " AS eds ON " +
-                "v.id_dps = eds.id_dps " +
+                "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS dfr ON " +
+                "v.id_dps = dfr.fk_dps_n " +
                 (sql.length() == 0 ? "" : "WHERE " + sql) +
                 "ORDER BY " + orderBy;
     }
@@ -236,7 +236,7 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         actionPrint();
     }
 
-    public void actionPrint() {
+    private void actionPrint() {
         if (mjButtonPrint.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);

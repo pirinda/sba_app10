@@ -26,8 +26,8 @@ import sba.lib.gui.DGuiUserForm;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.fin.db.DFinUtils;
+import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
-import sba.mod.trn.db.DDbDpsEds;
 import sba.mod.trn.db.DDbDpsNote;
 import sba.mod.trn.db.DDbDpsPrinting;
 import sba.mod.trn.db.DDbDpsRow;
@@ -51,9 +51,10 @@ import sba.mod.trn.db.DDbXmlSignatureMove;
 import sba.mod.trn.db.DDbXmlSignatureRequest;
 import sba.mod.trn.db.DTrnUtils;
 import sba.mod.trn.form.DDialogTraceSerialNumber;
+import sba.mod.trn.form.DFormDfrAddenda;
+import sba.mod.trn.form.DFormDfrPayment;
 import sba.mod.trn.form.DFormDps;
 import sba.mod.trn.form.DFormDpsCancelling;
-import sba.mod.trn.form.DFormDpsEdsAddenda;
 import sba.mod.trn.form.DFormDpsPrinting;
 import sba.mod.trn.form.DFormDpsSeries;
 import sba.mod.trn.form.DFormDpsSeriesNumber;
@@ -64,11 +65,12 @@ import sba.mod.trn.form.DFormSchedule;
 import sba.mod.trn.form.DFormSerialNumberFix;
 import sba.mod.trn.form.DFormXmlSignatureMove;
 import sba.mod.trn.view.DViewDetailedTransact;
+import sba.mod.trn.view.DViewDfrAddenda;
+import sba.mod.trn.view.DViewDfrPayment;
 import sba.mod.trn.view.DViewDps;
 import sba.mod.trn.view.DViewDpsAccounts;
 import sba.mod.trn.view.DViewDpsAccountsCollected;
 import sba.mod.trn.view.DViewDpsDay;
-import sba.mod.trn.view.DViewDpsEdsAddenda;
 import sba.mod.trn.view.DViewDpsPrinting;
 import sba.mod.trn.view.DViewDpsSending;
 import sba.mod.trn.view.DViewDpsSeries;
@@ -153,8 +155,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private JMenuItem mjDocSigning;
     private JMenuItem mjDocSendingPend;
     private JMenuItem mjDocSending;
-    private JMenuItem mjDocEdsAddendaPend;
-    private JMenuItem mjDocEdsAddenda;
+    private JMenuItem mjDocDfrAddendaPend;
+    private JMenuItem mjDocDfrAddenda;
 
     private JMenu mjAcc;
     private JMenuItem mjAccBizPartner;
@@ -165,6 +167,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private JMenuItem mjAccBranchRef;
     private JMenuItem mjAccDocPayable;
     private JMenuItem mjAccDocPayableCollected;
+    private JMenuItem mjAccDfrPayment;
 
     private JMenu mjSup;
     private JMenuItem mjSupOrderPending;
@@ -259,7 +262,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private DFormDpsSigning moFormDpsSigning;
     private DFormDpsCancelling moFormDpsCancelling;
     private DFormDpsTypeChange moFormDpsTypeChange;
-    private DFormDpsEdsAddenda moFormDpsEdsAddenda;
+    private DFormDfrPayment moFormDfrPayment;
+    private DFormDfrAddenda moFormDfrAddenda;
     private DFormIog moFormIogExternalIn;
     private DFormIog moFormIogExternalOut;
     private DFormSerialNumberFix moFormSerialNumberFix;
@@ -382,8 +386,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning = new JMenuItem("Documentos timbrados");
                 mjDocSendingPend = new JMenuItem("Documentos por enviar");
                 mjDocSending = new JMenuItem("Documentos enviados");
-                mjDocEdsAddendaPend= new JMenuItem("Addendas por incorporar");
-                mjDocEdsAddenda = new JMenuItem("Addendas incorporadas");
+                mjDocDfrAddendaPend= new JMenuItem("Addendas por incorporar");
+                mjDocDfrAddenda = new JMenuItem("Addendas incorporadas");
                 */
 
                 mjDoc.add(mjDocDocInvoice);
@@ -407,8 +411,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDoc.add(mjDocSendingPend);
                 mjDoc.add(mjDocSending);
                 mjDoc.addSeparator();
-                mjDoc.add(mjDocEdsAddendaPend);
-                mjDoc.add(mjDocEdsAddenda);
+                mjDoc.add(mjDocDfrAddendaPend);
+                mjDoc.add(mjDocDfrAddenda);
                 */
 
                 mjDocDocInvoice.addActionListener(this);
@@ -425,8 +429,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning.addActionListener(this);
                 mjDocSendingPend.addActionListener(this);
                 mjDocSending.addActionListener(this);
-                mjDocEdsAddendaPend.addActionListener(this);
-                mjDocEdsAddenda.addActionListener(this);
+                mjDocDfrAddendaPend.addActionListener(this);
+                mjDocDfrAddenda.addActionListener(this);
                 */
 
                 mjAcc = new JMenu("Cuentas pendientes compras");
@@ -438,7 +442,10 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAccBranchRef = new JMenuItem("Saldos sucursales proveedores por referencia");
                 mjAccDocPayable = new JMenuItem("Documentos por liquidar");
                 mjAccDocPayableCollected = new JMenuItem("Documentos liquidados");
-
+                /* available only for sales:
+                mjAccDfrPayment = new JMenuItem("CFDI recepción pagos");
+                */
+                
                 mjAcc.add(mjAccBizPartner);
                 mjAcc.add(mjAccBizPartnerCur);
                 mjAcc.add(mjAccBizPartnerRef);
@@ -449,7 +456,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAcc.addSeparator();
                 mjAcc.add(mjAccDocPayable);
                 mjAcc.add(mjAccDocPayableCollected);
-
+                /* available only for sales:
+                mjAcc.addSeparator();
+                mjAcc.add(mjAccDfrPayment);
+                */
+                
                 mjAccBizPartner.addActionListener(this);
                 mjAccBizPartnerCur.addActionListener(this);
                 mjAccBizPartnerRef.addActionListener(this);
@@ -458,6 +469,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAccBranchRef.addActionListener(this);
                 mjAccDocPayable.addActionListener(this);
                 mjAccDocPayableCollected.addActionListener(this);
+                /* available only for sales:
+                mjAccDfrPayment.addActionListener(this);
+                */
 
                 mjRep = new JMenu("Reportes");
 
@@ -660,8 +674,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning = new JMenuItem("Documentos timbrados");
                 mjDocSendingPend = new JMenuItem("Documentos por enviar");
                 mjDocSending = new JMenuItem("Documentos enviados");
-                mjDocEdsAddendaPend= new JMenuItem("Addendas por incorporar");
-                mjDocEdsAddenda = new JMenuItem("Addendas incorporadas");
+                mjDocDfrAddendaPend= new JMenuItem("Addendas por incorporar");
+                mjDocDfrAddenda = new JMenuItem("Addendas incorporadas");
 
                 mjDoc.add(mjDocDocInvoice);
                 mjDoc.add(mjDocDocNote);
@@ -683,8 +697,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDoc.add(mjDocSendingPend);
                 mjDoc.add(mjDocSending);
                 mjDoc.addSeparator();
-                mjDoc.add(mjDocEdsAddendaPend);
-                mjDoc.add(mjDocEdsAddenda);
+                mjDoc.add(mjDocDfrAddendaPend);
+                mjDoc.add(mjDocDfrAddenda);
 
                 mjDocDocInvoice.addActionListener(this);
                 mjDocDocNote.addActionListener(this);
@@ -699,8 +713,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjDocSigning.addActionListener(this);
                 mjDocSendingPend.addActionListener(this);
                 mjDocSending.addActionListener(this);
-                mjDocEdsAddendaPend.addActionListener(this);
-                mjDocEdsAddenda.addActionListener(this);
+                mjDocDfrAddendaPend.addActionListener(this);
+                mjDocDfrAddenda.addActionListener(this);
 
                 mjAcc = new JMenu("Cuentas pendientes ventas");
                 mjAccBizPartner = new JMenuItem("Saldos clientes");
@@ -711,6 +725,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAccBranchRef = new JMenuItem("Saldos sucursales clientes por referencia");
                 mjAccDocPayable = new JMenuItem("Documentos por liquidar");
                 mjAccDocPayableCollected = new JMenuItem("Documentos liquidados");
+                mjAccDfrPayment = new JMenuItem("CFDI recepción pagos");
 
                 mjAcc.add(mjAccBizPartner);
                 mjAcc.add(mjAccBizPartnerCur);
@@ -722,6 +737,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAcc.addSeparator();
                 mjAcc.add(mjAccDocPayable);
                 mjAcc.add(mjAccDocPayableCollected);
+                mjAcc.addSeparator();
+                mjAcc.add(mjAccDfrPayment);
 
                 mjAccBizPartner.addActionListener(this);
                 mjAccBizPartnerCur.addActionListener(this);
@@ -731,6 +748,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjAccBranchRef.addActionListener(this);
                 mjAccDocPayable.addActionListener(this);
                 mjAccDocPayableCollected.addActionListener(this);
+                mjAccDfrPayment.addActionListener(this);
 
                 mjRep = new JMenu("Reportes");
 
@@ -1050,6 +1068,12 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                     public String getSqlWhere(int[] pk) { return "WHERE id_xml_tp = " + pk[0] + " "; }
                 };
                 break;
+            case DModConsts.TS_XML_STP:
+                registry = new DDbRegistrySysFly(type) {
+                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
+                    public String getSqlWhere(int[] pk) { return "WHERE id_xml_stp = " + pk[0] + " "; }
+                };
+                break;
             case DModConsts.TS_XML_ST:
                 registry = new DDbRegistrySysFly(type) {
                     public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
@@ -1144,10 +1168,6 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             case DModConsts.T_DPS_SND:
                 registry = new DDbDpsSending();
                 break;
-            case DModConsts.T_DPS_EDS:
-            case DModConsts.TX_XML_ADD:
-                registry = new DDbDpsEds();
-                break;
             case DModConsts.T_DPS_NOT:
                 registry = new DDbDpsNote();
                 break;
@@ -1159,6 +1179,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 break;
             case DModConsts.T_DPS_CHG:
                 registry = new DDbDpsTypeChange();
+                break;
+            case DModConsts.T_DFR:
+            case DModConsts.TX_DFR_PAY:
+            case DModConsts.TX_DFR_ADD:
+                registry = new DDbDfr();
                 break;
             case DModConsts.T_IOG:
             case DModConsts.TX_IOG_PUR:
@@ -1282,6 +1307,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             case DModConsts.TS_XML_TP:
                 settings = new DGuiCatalogueSettings("Tipo XML", 1);
                 sql = "SELECT id_xml_tp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " " +
+                        "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
+                break;
+            case DModConsts.TS_XML_STP:
+                settings = new DGuiCatalogueSettings("Subtipo XML", 1);
+                sql = "SELECT id_xml_stp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case DModConsts.TS_XML_ST:
@@ -1490,12 +1520,16 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             case DModConsts.T_DPS_SND:
                 view = new DViewDpsSending(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Doctos " + (params.getType() == DUtilConsts.EMT_PEND ? "x enviar" : "enviados"));
                 break;
-            case DModConsts.T_DPS_EDS:
-            case DModConsts.TX_XML_ADD:
-                view = new DViewDpsEdsAddenda(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Addendas " + (params.getType() == DUtilConsts.EMT_PEND ? "x incorporar" : "Addendas incorporadas"));
-                break;
             case DModConsts.T_DPS_CHG:
                 view = new DViewDpsTypeChange(miClient, subtype, DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Cambios tipo docto");
+                break;
+            case DModConsts.T_DFR:
+                break;
+            case DModConsts.TX_DFR_PAY:
+                view = new DViewDfrPayment(miClient, DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - CFDI recepción pagos");
+                break;
+            case DModConsts.TX_DFR_ADD:
+                view = new DViewDfrAddenda(miClient, subtype, params.getType(), DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - Addendas " + (params.getType() == DUtilConsts.EMT_PEND ? "x incorporar" : "Addendas incorporadas"));
                 break;
             case DModConsts.TX_DPS_ORD:
             case DModConsts.TX_DPS_DOC_INV:
@@ -1719,10 +1753,15 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 if (moFormDpsTypeChange == null) moFormDpsTypeChange = new DFormDpsTypeChange(miClient, "Cambio tipo de documento");
                 form = moFormDpsTypeChange;
                 break;
-            case DModConsts.T_DPS_EDS:
-            case DModConsts.TX_XML_ADD:
-                if (moFormDpsEdsAddenda == null) moFormDpsEdsAddenda = new DFormDpsEdsAddenda(miClient, "Addenda");
-                form = moFormDpsEdsAddenda;
+            case DModConsts.T_DFR:
+                break;
+            case DModConsts.TX_DFR_PAY:
+                if (moFormDfrPayment == null) moFormDfrPayment = new DFormDfrPayment(miClient, "CFDI recepción pagos");
+                form = moFormDfrPayment;
+                break;
+            case DModConsts.TX_DFR_ADD:
+                if (moFormDfrAddenda == null) moFormDfrAddenda = new DFormDfrAddenda(miClient, "Addenda");
+                form = moFormDfrAddenda;
                 break;
             case DModConsts.TX_DPS_ORD:
             case DModConsts.TX_MY_DPS_ORD:
@@ -1925,11 +1964,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             else if (menuItem == mjDocSending) {
                 showView(DModConsts.T_DPS_SND, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT));
             }
-            else if (menuItem == mjDocEdsAddendaPend) {
-                showView(DModConsts.TX_XML_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT_PEND));
+            else if (menuItem == mjDocDfrAddendaPend) {
+                showView(DModConsts.TX_DFR_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT_PEND));
             }
-            else if (menuItem == mjDocEdsAddenda) {
-                showView(DModConsts.TX_XML_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT));
+            else if (menuItem == mjDocDfrAddenda) {
+                showView(DModConsts.TX_DFR_ADD, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.EMT));
             }
             else if (menuItem == mjAccBizPartner) {
                 miClient.getSession().showView(DModConsts.FX_BAL_BPR, DTrnUtils.getBizPartnerClassByModuleSubtype(mnModuleSubtype), new DGuiParams(DUtilConsts.PER_BPR, DUtilConsts.PER_BPR));
@@ -1954,6 +1993,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             }
             else if (menuItem == mjAccDocPayableCollected) {
                 showView(DModConsts.TX_ACC_PAY_COL, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), null);
+            }
+            else if (menuItem == mjAccDfrPayment) {
+                showView(DModConsts.TX_DFR_PAY, 0, null);
             }
             else if (menuItem == mjStkStock) {
                 showView(DModConsts.TX_STK, DUtilConsts.PER_ITM, null);
