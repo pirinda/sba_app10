@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
-import net.sf.jasperreports.engine.JRException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -42,12 +41,12 @@ import sba.mod.fin.db.DFinUtils;
  *
  * @author Sergio Flores
  */
-public class DDbDps extends DDbRegistryUser {
+public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
     public static final int FIELD_CLOSED_DPS = 1;
     public static final int FIELD_CLOSED_IOG = 2;
     public static final int FIELD_AUDITED = 3;
-    public static final int TIMEOUT = 15; //15 min.
+    public static final int TIMEOUT = 3; // 3 min.
 
     protected int mnPkDpsId;
     protected String msSeries;
@@ -563,7 +562,7 @@ public class DDbDps extends DDbRegistryUser {
         }
     }
 
-    private void readDfr() throws Exception {
+    private void parseDfr() throws Exception {
         if (moChildDfr != null) {
             switch (moChildDfr.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFD:
@@ -1366,8 +1365,10 @@ public class DDbDps extends DDbRegistryUser {
                 mnXtaIogId = resultSet.getInt(1);
             }
             
+            // Aditional processing:
+
             if (moChildDfr != null) {
-                readDfr();
+                parseDfr();
             }
 
             // Finish registry reading:
@@ -1990,8 +1991,11 @@ public class DDbDps extends DDbRegistryUser {
 
     /**
      * Issues Digital Fiscal Receipt (DFR) as file of type Portable Document Format (PDF).
+     * @param session
+     * @throws net.sf.jasperreports.engine.JRException
      */
-    public void issueDfr(final DGuiSession session) throws JRException, Exception {
+    @Override
+    public void issueDfr(final DGuiSession session) throws Exception {
         String fileName = "";
         DDbConfigBranch configBranch = null;
         

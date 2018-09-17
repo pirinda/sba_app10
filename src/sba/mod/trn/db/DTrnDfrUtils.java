@@ -1188,7 +1188,6 @@ public abstract class DTrnDfrUtils {
         int xmlStatus = DLibConsts.UNDEFINED;
         String textToSign;
         String textSigned;
-        DDbDfr dfr;
         DGuiEdsSignature signature;
         DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
@@ -1251,8 +1250,16 @@ public abstract class DTrnDfrUtils {
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
 
-        // Create DFR:
-        dfr = new DDbDfr();
+        // Create or update DFR:
+        DDbDfr dfr;
+        
+        if (dps.getChildDfr() == null) {
+            dfr = new DDbDfr();
+        }
+        else {
+            dfr = dps.getChildDfr();
+        }
+        
         //dfr.setPkDfrId(...);
         dfr.setCertificateNumber(session.getEdsSignature(dps.getCompanyBranchKey()).getCertificateNumber());
         dfr.setSignedText(cfd.getLastStringSigned());
@@ -1303,7 +1310,7 @@ public abstract class DTrnDfrUtils {
         return valid;
     }
 
-    public static void signDps(final DGuiSession session, final DDbDps dps, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype) throws TransformerConfigurationException, TransformerException, Exception {
+    public static void signDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype) throws TransformerConfigurationException, TransformerException, Exception {
         String cfdi = "";
         String message = "";
         String edsName = "";
@@ -1321,14 +1328,31 @@ public abstract class DTrnDfrUtils {
         
         // Lock document:
         
-        lock = DLockUtils.createLock(session, dps.getRegistryType(), dps.getPkDpsId(), DDbDps.TIMEOUT);
+        int registryType;
+        int registryId;
+        
+        switch (dfr.getFkXmlSubtypeId()) {
+            case DModSysConsts.TS_XML_STP_CFDI_FAC:
+                registryType = ((DDbDps) trnDfr).getRegistryType();
+                registryId = ((DDbDps) trnDfr).getPkDpsId();
+                break;
+            case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                registryType = dfr.getRegistryType();
+                registryId = dfr.getPkDfrId();
+                break;
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
+        
+        lock = DLockUtils.createLock(session, registryType, registryId, DDbDps.TIMEOUT);
         
         // Create or obtain XML Signature Request for signature:
 
         switch (requestSubtype) {
             case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
                 xsr = new DDbXmlSignatureRequest();
-                xsr.setPkDfrId(dps.getChildDfr().getPkDfrId());
+                xsr.setPkDfrId(dfr.getPkDfrId());
                 //xsr.setPkRequestId(0);
                 xsr.setRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG);
                 xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_STA);
@@ -1339,7 +1363,7 @@ public abstract class DTrnDfrUtils {
                 break;
                 
             case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
-                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getChildDfr().getPkDfrId());
+                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dfr.getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
                 }
@@ -1364,7 +1388,7 @@ public abstract class DTrnDfrUtils {
             sCfdi = xmlProcess.generaTextoXML();
             */
 
-            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
             
             edsName = configBranch.getEdsName();
             edsPassword = configBranch.getEdsPassword();
@@ -1377,6 +1401,7 @@ public abstract class DTrnDfrUtils {
                         
                         if (((DDbConfigCompany) session.getConfigCompany()).isDevelopment()) {
                             // Development environment:
+                            /* Simulate stamping:
                             
                             // WARNING: Works only with CFDI 3.2!
 
@@ -1394,7 +1419,7 @@ public abstract class DTrnDfrUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
                             
                             // Process response:
 
@@ -1405,8 +1430,10 @@ public abstract class DTrnDfrUtils {
                                 System.err.println(message);
                                 throw new Exception(message);
                             }
-
+                            
                             cfdi = timbradoResponse.getCfdi();
+                            */
+                            cfdi = new String(dfr.getDocXml().getBytes("UTF-8")); // simulate stamping, returning the same XML, please add in a break point XML stamping complement!
                         }
                         else {
                             // Production environment:
@@ -1427,7 +1454,7 @@ public abstract class DTrnDfrUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                             // Process response:
 
@@ -1459,7 +1486,7 @@ public abstract class DTrnDfrUtils {
 
                             // Web service request:
 
-                            timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
+                            timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                             // Process response:
 
@@ -1483,7 +1510,7 @@ public abstract class DTrnDfrUtils {
                         if (cfdi.isEmpty()) {
                             throw new Exception(DUtilConsts.FILE_EXT_XML.toUpperCase() + " " + DLibConsts.ERR_MSG_UNKNOWN.toLowerCase());
                         }
-                        else if (!belongsXmlToDfr(cfdi, dps.getChildDfr())) {
+                        else if (!belongsXmlToDfr(cfdi, dfr)) {
                             throw new Exception(DLibConsts.ERR_MSG_WRONG_TYPE + " (" + DUtilConsts.FILE_EXT_XML.toUpperCase() + ")");
                         }
                     }
@@ -1493,7 +1520,7 @@ public abstract class DTrnDfrUtils {
                 case DModSysConsts.CS_XSP_FNK:  // Finkok
                     if (((DDbConfigCompany) session.getConfigCompany()).isDevelopment()) {
                         // Development environment:
-
+                        /* Simulate stamping:
                         stamp_demo.AcuseRecepcionCFDI acuseRecepcionCfdi = null;
                         JAXBElement<stamp_demo.IncidenciaArray> incidencias = null;
                         stamp_demo.Application port = new stamp_demo.StampSOAP().getApplication();
@@ -1503,12 +1530,12 @@ public abstract class DTrnDfrUtils {
                         if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                             // Sign request:
                             
-                            acuseRecepcionCfdi = port.stamp(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamp(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         else {
                             // Sign verification:
                             
-                            acuseRecepcionCfdi = port.stamped(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamped(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         
                         // Process response:
@@ -1525,8 +1552,10 @@ public abstract class DTrnDfrUtils {
                             System.err.println(message);
                             throw new Exception(message);
                         }
-
                         cfdi = acuseRecepcionCfdi.getXml().getValue();
+                        */
+                        
+                        cfdi = new String(dfr.getDocXml().getBytes("UTF-8")); // simulate stamping, returning the same XML, please add in a break point XML stamping complement!
                     }
                     else {
                         // Production environment:
@@ -1540,12 +1569,12 @@ public abstract class DTrnDfrUtils {
                         if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                             // Request:
                             
-                            acuseRecepcionCfdi = port.stamp(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamp(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         else {
                             // Verification:
                             
-                            acuseRecepcionCfdi = port.stamped(dps.getChildDfr().getDocXml().getBytes("UTF-8"), edsName, edsPassword);
+                            acuseRecepcionCfdi = port.stamped(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
 
                         // Process response:
@@ -1568,7 +1597,7 @@ public abstract class DTrnDfrUtils {
                     break;
 
                 case DModSysConsts.CS_XSP_TST:  // testing
-                    cfdi = dps.getChildDfr().getDocXml();   // insert by hand for testint purposes 'Complemento' node into this local variable 'cfdi'!
+                    cfdi = dfr.getDocXml();   // insert by hand for testint purposes 'Complemento' node into this local variable 'cfdi'!
                     break;
                     
                 default:
@@ -1607,7 +1636,7 @@ public abstract class DTrnDfrUtils {
             timbreFiscal = new cfd.ver3.DTimbreFiscal();
             namedNodeMapTimbreFiscal = nodeChildTimbreFiscal.getAttributes();
             
-            switch (dps.getChildDfr().getFkXmlTypeId()) {
+            switch (dfr.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFDI_32:
                     node = namedNodeMapTimbreFiscal.getNamedItem("Version");
                     timbreFiscal.setVersion(node.getNodeValue());
@@ -1663,14 +1692,14 @@ public abstract class DTrnDfrUtils {
                 default:
             }
 
-            dps.getChildDfr().setUuid(timbreFiscal.getUuid());
-            dps.getChildDfr().setDocXml(cfdi);
-            dps.getChildDfr().setDocXmlRaw(cfdi);
-            dps.getChildDfr().setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
-            dps.getChildDfr().setFkXmlSignatureProviderId(timbreFiscal.getPacId());
-            dps.getChildDfr().setAuxIssued(true);
-            dps.getChildDfr().setAuxRewriteXmlOnSave(true);
-            dps.getChildDfr().save(session);
+            dfr.setUuid(timbreFiscal.getUuid());
+            dfr.setDocXml(cfdi);
+            dfr.setDocXmlRaw(cfdi);
+            dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
+            dfr.setFkXmlSignatureProviderId(timbreFiscal.getPacId());
+            dfr.setAuxIssued(true);
+            dfr.setAuxRewriteXmlOnSave(true);
+            dfr.save(session);
 
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
             xsr.save(session);
@@ -1679,7 +1708,7 @@ public abstract class DTrnDfrUtils {
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_CMP) {
             // Consume stamp:
 
-            DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_SIG, dps.getChildDfr().getPkDfrId());
+            DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_SIG, dfr.getPkDfrId());
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_CMP);
             xsr.save(session);
         }
@@ -1687,7 +1716,7 @@ public abstract class DTrnDfrUtils {
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
             // Issue DFR:
 
-            dps.issueDfr(session);
+            trnDfr.issueDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
@@ -1695,7 +1724,7 @@ public abstract class DTrnDfrUtils {
         DLockUtils.freeLock(session, lock, DLockConsts.LOCK_ST_FREED_UPDATE);
     }
 
-    public static void cancelDps(final DGuiSession session, final DDbDps dps, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action) throws TransformerConfigurationException, TransformerException, Exception {
+    public static void cancelDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action) throws TransformerConfigurationException, TransformerException, Exception {
         String xml = "";
         String value = "";
         String message = "";
@@ -1707,18 +1736,26 @@ public abstract class DTrnDfrUtils {
         DDbConfigBranch configBranch = null;
         DDbCertificate certificate = null;
         DDbXmlSignatureRequest xsr = null;
-        DDbDfr dfr = null;
         
         // Lock document, if necesary:
         
-        dps.assureLock(session);
+        switch (dfr.getFkXmlSubtypeId()) {
+            case DModSysConsts.TS_XML_STP_CFDI_FAC:
+                ((DDbDps) trnDfr).assureLock(session);
+                break;
+            case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                ((DDbDfr) trnDfr).assureLock(session);
+                break;
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
         
         // Create or obtain XML Signature Request for cancellation:
 
         switch (requestSubtype) {
             case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
                 xsr = new DDbXmlSignatureRequest();
-                xsr.setPkDfrId(dps.getChildDfr().getPkDfrId());
+                xsr.setPkDfrId(dfr.getPkDfrId());
                 //xsr.setPkRequestId(0);
                 xsr.setRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN);
                 xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_STA);
@@ -1729,7 +1766,7 @@ public abstract class DTrnDfrUtils {
                 break;
 
             case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
-                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dps.getChildDfr().getPkDfrId());
+                xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dfr.getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
                 }
@@ -1748,8 +1785,8 @@ public abstract class DTrnDfrUtils {
 
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_PRC) {
             if (action == DTrnEmissionConsts.ANNUL_CANCEL) {
-                company = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getCompanyKey());
-                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+                company = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dfr.getCompanyKey());
+                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
                 certificate = (DDbCertificate) session.readRegistry(DModConsts.CU_CER, new int[] { configBranch.getFkCertificateId_n() });
                 
                 fiscalId = company.getFiscalId();
@@ -1779,7 +1816,7 @@ public abstract class DTrnDfrUtils {
 
                                 // Web service request:
 
-                                timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
+                                timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
@@ -1808,7 +1845,7 @@ public abstract class DTrnDfrUtils {
 
                                 // Document stamp:
 
-                                timbradoResponse = fcgPort.timbrar(dps.getChildDfr().getDocXml(), autenticarResponse.getToken());
+                                timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
@@ -1830,7 +1867,7 @@ public abstract class DTrnDfrUtils {
                             if (cfdi.isEmpty()) {
                                 throw new Exception(DUtilConsts.FILE_EXT_XML.toUpperCase() + " " + DLibConsts.ERR_MSG_UNKNOWN.toLowerCase());
                             }
-                            else if (!belongsXmlToDfr(cfdi, dps.getChildDfr())) {
+                            else if (!belongsXmlToDfr(cfdi, dfr)) {
                                 throw new Exception(DLibConsts.ERR_MSG_WRONG_TYPE + " (" + DUtilConsts.FILE_EXT_XML.toUpperCase() + ")");
                             }
                         }
@@ -1860,7 +1897,7 @@ public abstract class DTrnDfrUtils {
                                 // Cancel request:
                                 
                                 alUuids = new ArrayList<String>();
-                                alUuids.add(dps.getChildDfr().getUuid());
+                                alUuids.add(dfr.getUuid());
                                 
                                 aUuids = new cancel_demo.StringArray();
                                 aUuids.getString().addAll(alUuids);
@@ -1871,7 +1908,7 @@ public abstract class DTrnDfrUtils {
                                 uuids = new cancel_demo.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
-                                if (dps.getChildDfr().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
+                                if (dfr.getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
                                     // Cancel own signed document:
                                     
                                     cancelaCFDResult = port.cancel(uuids, edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
@@ -1879,13 +1916,13 @@ public abstract class DTrnDfrUtils {
                                 else {
                                     // Cancel third party signed document:
                                     
-                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildDfr().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
+                                    cancelaCFDResult = port.outCancel(Base64.encode(dfr.getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
                                 }
                             }
                             else {
                                 // Cancel verification:
                                 
-                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildDfr().getUuid(), "C");
+                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dfr.getUuid(), "C");
                             }
                             
                             // Process response:
@@ -1973,7 +2010,7 @@ public abstract class DTrnDfrUtils {
                                 // Cancel request:
                                 
                                 alUuids = new ArrayList<String>();
-                                alUuids.add(dps.getChildDfr().getUuid());
+                                alUuids.add(dfr.getUuid());
                                 
                                 aUuids = new cancel.StringArray();
                                 aUuids.getString().addAll(alUuids);
@@ -1984,7 +2021,7 @@ public abstract class DTrnDfrUtils {
                                 uuids = new cancel.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
-                                if (dps.getChildDfr().getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
+                                if (dfr.getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
                                     // Cancel own signed document:
                                     
                                     cancelaCFDResult = port.cancel(uuids, edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
@@ -1992,13 +2029,13 @@ public abstract class DTrnDfrUtils {
                                 else {
                                     // Cancel third party signed document:
                                     
-                                    cancelaCFDResult = port.outCancel(Base64.encode(dps.getChildDfr().getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
+                                    cancelaCFDResult = port.outCancel(Base64.encode(dfr.getDocXml().getBytes()), edsName, edsPassword, fiscalId, certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n(), true);
                                 }
                             }
                             else {
                                 // Cancel verification:
                                 
-                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dps.getChildDfr().getUuid(), "C");
+                                receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dfr.getUuid(), "C");
                             }
                             
                             // Process response:
@@ -2074,17 +2111,26 @@ public abstract class DTrnDfrUtils {
 
                 // Preserve aknowledgment of cancellation on XML format into DFR:
 
-                dfr = dps.getChildDfr();
                 dfr.setCancelStatus(""); // TODO: implement new 2018 cancellation scheme!
                 dfr.setCancelXml(xml);
                 dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
                 dfr.setAuxAnnulled(true);
 
-                dps.updateDfr(session, dfr);
+                switch (dfr.getFkXmlSubtypeId()) {
+                    case DModSysConsts.TS_XML_STP_CFDI_FAC:
+                        ((DDbDps) trnDfr).updateDfr(session, dfr);
+                        break;
+                    case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                        dfr.save(session);
+                        break;
+                    default:
+                }
             }
             
-            if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
-                dps.disable(session);
+            if (dfr.getFkXmlSubtypeId() == DModSysConsts.TS_XML_STP_CFDI_FAC) {
+                if (((DDbDps) trnDfr).getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
+                    ((DDbDps) trnDfr).disable(session);
+                }
             }
             
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
@@ -2095,7 +2141,7 @@ public abstract class DTrnDfrUtils {
             // Consume stamp:
 
             if (action == DTrnEmissionConsts.ANNUL_CANCEL) {
-                DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_ANN, dps.getChildDfr().getPkDfrId());
+                DTrnEmissionUtils.consumeStamp(session, xsr.getFkXmlSignatureProviderId(), signatureCompanyBranchKey, DModSysConsts.TS_XSM_TP_OUT_ANN, dfr.getPkDfrId());
             }
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_CMP);
             xsr.save(session);
@@ -2104,7 +2150,7 @@ public abstract class DTrnDfrUtils {
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
             // Issue DFR:
 
-            dps.issueDfr(session);
+            dfr.issueDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }

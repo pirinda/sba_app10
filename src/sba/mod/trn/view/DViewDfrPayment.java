@@ -397,7 +397,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             else {
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                        DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                     }
                     else {
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -420,7 +420,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                        DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                     }
                     else {
                         if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
@@ -450,7 +450,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             else {
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.sendDps(miClient, (DGridRowView) getSelectedGridRow());
+                        DTrnEmissionUtils.sendDfr(miClient, (DGridRowView) getSelectedGridRow());
                     }
                     else {
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);

@@ -1407,7 +1407,16 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moIntDocNumber.setValue(moDoc.getNumber());
             moTextDocUuid.setValue(moDoc.getChildDfr() == null ? "" : moDoc.getChildDfr().getUuid());
             moKeyDocCurrency.setValue(new int[] { moDoc.getFkCurrencyId() });
-            moIntDocInstallment.setValue(1);
+            
+            int installment = 0;
+            try {
+                installment = DTrnUtils.getDpsPaymentsCount(miClient.getSession(), DModSysConsts.BS_BPR_CL_CUS, moDoc.getPkDpsId(), moRegistry.getBookkeepingNumberKey_n());
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+            moIntDocInstallment.setValue(installment + 1);
+            
             DTrnAmount amount = DTrnUtils.getBalanceForDps(miClient.getSession(), miClient.getSession().getSystemYear(), moDoc.getPrimaryKey());
             moCurDocBalancePrevDoc.getField().setValue(amount.getAmountCy());
             
@@ -2279,8 +2288,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                 jtfCfdRelationType.setText("");
             }
             else {
-                moTextCfdRelated.setText(cfdiRelacionados.getAttTipoRelacion().getString());
-                jtfCfdRelationType.setText(cfdiRelacionados.getEltCfdiRelacionados().get(0).getAttUuid().getString());
+                moTextCfdRelated.setText(cfdiRelacionados.getEltCfdiRelacionados().get(0).getAttUuid().getString());
+                jtfCfdRelationType.setText(cfdiRelacionados.getAttTipoRelacion().getString());
             }
         }
         
@@ -2332,7 +2341,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             registry.setSeries(moConfigBranch.getEdsCrpSeries());
         }
         else {
-            
+            registry.setAuxLock(moRegistryLock);
         }
 
         /* will be set in method DDbDfr.prepareDfr()

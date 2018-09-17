@@ -6,6 +6,7 @@
 package sba.mod.trn.form;
 
 import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -38,6 +39,7 @@ import sba.mod.trn.db.DDbDps;
  */
 public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPaneFormOwner {
     
+    private int mnBizPartner;
     private DGridPaneForm moGridDps;
 
     /**
@@ -59,6 +61,7 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgDocs = new javax.swing.ButtonGroup();
         jpDps = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jlBizPartner = new javax.swing.JLabel();
@@ -67,6 +70,9 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
         jtfBizPartnerCodeRo = new javax.swing.JTextField();
         jlYear = new javax.swing.JLabel();
         jtfYearRo = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jrDocsPending = new javax.swing.JRadioButton();
+        jrDocsAll = new javax.swing.JRadioButton();
 
         jpDps.setBorder(javax.swing.BorderFactory.createTitledBorder("Facturas con saldo:"));
         jpDps.setLayout(new java.awt.BorderLayout());
@@ -105,10 +111,42 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
         jtfYearRo.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel1.add(jtfYearRo);
 
+        jLabel1.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel1.add(jLabel1);
+
+        bgDocs.add(jrDocsPending);
+        jrDocsPending.setSelected(true);
+        jrDocsPending.setText("Facturas con saldo");
+        jrDocsPending.setPreferredSize(new java.awt.Dimension(125, 23));
+        jrDocsPending.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jrDocsPendingItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(jrDocsPending);
+
+        bgDocs.add(jrDocsAll);
+        jrDocsAll.setText("Todas las facturas");
+        jrDocsAll.setPreferredSize(new java.awt.Dimension(125, 23));
+        jrDocsAll.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jrDocsAllItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(jrDocsAll);
+
         jpDps.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jpDps, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jrDocsPendingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jrDocsPendingItemStateChanged
+        itemStateChanged(evt);
+    }//GEN-LAST:event_jrDocsPendingItemStateChanged
+
+    private void jrDocsAllItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jrDocsAllItemStateChanged
+        itemStateChanged(evt);
+    }//GEN-LAST:event_jrDocsAllItemStateChanged
 
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 960, 600);
@@ -157,13 +195,22 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
         mvFormGrids.add(moGridDps);
     }
     
-    private void populateGrid(final int bizPartner) {
-        DDbBizPartner customer = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { bizPartner });
+    private void itemStateChanged(ItemEvent evt) {
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            populateGrid();
+            moGridDps.getTable().requestFocusInWindow();
+        }
+    }
+    
+    private void renderBizPartner() {
+        DDbBizPartner customer = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { mnBizPartner });
         jtfBizPartnerRo.setText(customer.getName());
         jtfBizPartnerCodeRo.setText(customer.getChildConfig(DModSysConsts.BS_BPR_CL_CUS).getCode());
         jtfBizPartnerRo.setCaretPosition(0);
         jtfBizPartnerCodeRo.setCaretPosition(0);
-        
+    }
+    
+    private void populateGrid() {
         try {
             String sql = "SELECT " +
                     "d.id_dps, CONCAT(d.ser, IF(LENGTH(d.ser) = 0, '', '-'), d.num) AS f_num, " +
@@ -175,7 +222,7 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
                     "FROM " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " AS bkk " +
                     "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " AS d ON " +
                     "bkk.fk_dps_inv_n = d.id_dps AND bkk.id_yer = " + miClient.getSession().getSystemYear() + " AND bkk.b_del = 0 AND " +
-                    "bkk.fk_sys_acc_tp = " + DFinUtils.getSysAccountTypeForBizPartnerClass(DModSysConsts.BS_BPR_CL_CUS) + " AND d.fk_bpr_bpr = " + bizPartner + " " +
+                    "bkk.fk_sys_acc_tp = " + DFinUtils.getSysAccountTypeForBizPartnerClass(DModSysConsts.BS_BPR_CL_CUS) + " AND d.fk_bpr_bpr = " + mnBizPartner + " " +
                     "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_DPS_TP) + " AS dt ON " +
                     "d.fk_dps_ct = dt.id_dps_ct AND d.fk_dps_cl = dt.id_dps_cl AND d.fk_dps_tp = dt.id_dps_tp " +
                     "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR) + " AS b ON " +
@@ -197,8 +244,8 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
                     "LEFT OUTER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ST) + " AS xst ON " +
                     "dfr.fk_xml_st = xst.id_xml_st " +
                     "GROUP BY d.id_dps, d.ser, d.num, d.dt, d.tot_r, d.tot_cy_r, dt.code, b.id_bpr, b.name, bc.code, bb.name, cb.code, c.code " +
-                    "HAVING NOT f_bal = 0 " +
-                    "ORDER BY dt.code, d.fk_dps_ct, d.fk_dps_cl, d.fk_dps_tp, d.ser, d.num, d.id_dps ";
+                    (jrDocsPending.isSelected() ? "HAVING NOT f_bal = 0 " : "") +
+                    "ORDER BY dt.code, d.fk_dps_ct, d.fk_dps_cl, d.fk_dps_tp, d.ser, d.num DESC, d.id_dps ";
             Vector<DGridRow> rows = new Vector<>();
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
             while (resultSet.next()) {
@@ -232,11 +279,15 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgDocs;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel jlBizPartner;
     private javax.swing.JLabel jlBizPartnerCode;
     private javax.swing.JLabel jlYear;
     private javax.swing.JPanel jpDps;
+    private javax.swing.JRadioButton jrDocsAll;
+    private javax.swing.JRadioButton jrDocsPending;
     private javax.swing.JTextField jtfBizPartnerCodeRo;
     private javax.swing.JTextField jtfBizPartnerRo;
     private javax.swing.JTextField jtfYearRo;
@@ -260,7 +311,9 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
     public void setValue(final int type, final Object value) {
         switch (type) {
             case DModConsts.BU_BPR:
-                populateGrid((Integer) value);
+                mnBizPartner = (Integer) value;
+                renderBizPartner();
+                populateGrid();
                 break;
             default:
                 miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);

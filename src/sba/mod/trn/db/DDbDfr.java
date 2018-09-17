@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibTimeUtils;
@@ -35,14 +36,18 @@ import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
-import static sba.mod.trn.db.DTrnDfrUtils.extractExtAddenda;
+import sba.mod.cfg.db.DDbLock;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 
 /**
  * Digital Fiscal Receipt (DFR)
  * @author Sergio Flores
  */
-public class DDbDfr extends DDbRegistryUser {
+public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
 
+    public static final int TIMEOUT = 3; // 3 min.
+    
     protected int mnPkDfrId;
     protected String msSeries;
     protected int mnNumber;
@@ -84,18 +89,19 @@ public class DDbDfr extends DDbRegistryUser {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     
-    protected boolean mbAuxIssued;
-    protected boolean mbAuxAnnulled;
-    protected boolean mbAuxRewriteXmlOnSave;
-    protected boolean mbAuxRegenerateXmlOnSave;
-    protected int[] manAuxXmlSignatureRequestKey;
-    
     protected String msDfrConfirmacion;
     protected String msDfrCfdiRelacionado;
     protected String msDfrTaxRegime;
     protected String msDfrCfdUsage;
     protected DElementPagos moDfrPagos;
 
+    protected boolean mbAuxIssued;
+    protected boolean mbAuxAnnulled;
+    protected boolean mbAuxRewriteXmlOnSave;
+    protected boolean mbAuxRegenerateXmlOnSave;
+    protected int[] manAuxXmlSignatureRequestKey;
+    protected DDbLock moAuxLock;
+    
     public DDbDfr() {
         super(DModConsts.T_DFR);
         initRegistry();
@@ -120,6 +126,34 @@ public class DDbDfr extends DDbRegistryUser {
     /*
      * Public methods:
      */
+
+    /**
+     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @throws Exception 
+     */
+    public void assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDfrId, TIMEOUT);
+            }
+            else {
+                DLockUtils.validateLock(session, moAuxLock);
+            }
+        }
+    }
+
+    /**
+     * Frees current lock, if any, with by-update status.
+     * @param session GUI session.
+     * @throws Exception 
+     */
+    public void freeLockByUpdate(final DGuiSession session) throws Exception {
+        if (moAuxLock != null) {
+            DLockUtils.freeLock(session, moAuxLock, DLockConsts.LOCK_ST_FREED_UPDATE);
+            moAuxLock = null;
+        }
+    }
 
     public void setPkDfrId(int n) { mnPkDfrId = n; }
     public void setSeries(String s) { msSeries = s; }
@@ -199,18 +233,6 @@ public class DDbDfr extends DDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setAuxIssued(boolean b) { mbAuxIssued = b; }
-    public void setAuxAnnulled(boolean b) { mbAuxAnnulled = b; }
-    public void setAuxRewriteXmlOnSave(boolean b) { mbAuxRewriteXmlOnSave = b; }
-    public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
-    public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
-
-    public boolean isAuxIssued() { return mbAuxIssued; }
-    public boolean isAuxAnnulled() { return mbAuxAnnulled; }
-    public boolean isAuxRewriteXmlOnSave() { return mbAuxRewriteXmlOnSave; }
-    public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
-    public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
-    
     public void setDfrConfirmacion(String s) { msDfrConfirmacion = s; }
     public void setDfrCfdiRelacionado(String s) { msDfrCfdiRelacionado = s; }
     public void setDfrTaxRegime(String s) { msDfrTaxRegime = s; }
@@ -223,10 +245,25 @@ public class DDbDfr extends DDbRegistryUser {
     public String getDfrCfdUsage() { return msDfrCfdUsage; }
     public DElementPagos getDfrPagos() { return moDfrPagos; }
     
+    public void setAuxIssued(boolean b) { mbAuxIssued = b; }
+    public void setAuxAnnulled(boolean b) { mbAuxAnnulled = b; }
+    public void setAuxRewriteXmlOnSave(boolean b) { mbAuxRewriteXmlOnSave = b; }
+    public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
+    public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
+    public void setAuxLock(DDbLock o) { moAuxLock = o; }
+
+    public boolean isAuxIssued() { return mbAuxIssued; }
+    public boolean isAuxAnnulled() { return mbAuxAnnulled; }
+    public boolean isAuxRewriteXmlOnSave() { return mbAuxRewriteXmlOnSave; }
+    public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
+    public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
+    public DDbLock getAuxLock() { return moAuxLock; }
+    
     public int[] getCompanyKey() { return new int[] { mnFkOwnerBizPartnerId }; }
     public int[] getCompanyBranchKey() { return new int[] { mnFkOwnerBizPartnerId, mnFkOwnerBranchId }; }
     public int[] getBizPartnerKey() { return new int[] { mnFkBizPartnerId }; }
-    
+    public int[] getBookkeepingNumberKey_n() { return !(mnFkBookkeepingYearId_n != DLibConsts.UNDEFINED && mnFkBookkeepingNumberId_n != DLibConsts.UNDEFINED) ? null : new int[] { mnFkBookkeepingYearId_n, mnFkBookkeepingNumberId_n }; }
+    public String getDfrNumber() { return DTrnUtils.composeDpsNumber(msSeries, mnNumber); }
     /**
      * Get XML raw (just as fetched from web service) if available and its status is at least 'issued', otherwise own generated XML.
      * @return Suitable XML.
@@ -293,16 +330,18 @@ public class DDbDfr extends DDbRegistryUser {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
         
+        msDfrConfirmacion = "";
+        msDfrCfdiRelacionado = "";
+        msDfrTaxRegime = "";
+        msDfrCfdUsage = "";
+        moDfrPagos = null;
+        
         mbAuxIssued = false;
         mbAuxAnnulled = false;
         mbAuxRewriteXmlOnSave = false;
         mbAuxRegenerateXmlOnSave = false;
         manAuxXmlSignatureRequestKey = null;
-        
-        msDfrConfirmacion = "";
-        msDfrCfdiRelacionado = "";
-        msDfrTaxRegime = "";
-        msDfrCfdUsage = "";
+        moAuxLock = null;
     }
 
     @Override
@@ -429,7 +468,7 @@ public class DDbDfr extends DDbRegistryUser {
 
                     // Append to DFR the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
                         if (extAddenda != null) {
                             cfd.ver3.DElementAddenda addenda = null;
                             
@@ -462,7 +501,7 @@ public class DDbDfr extends DDbRegistryUser {
 
                     // Append to DFR the very addenda previously added to DPS if any:
                     if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
                         if (extAddenda != null) {
                             cfd.ver3.DElementAddenda addenda = null;
                             
@@ -554,6 +593,8 @@ public class DDbDfr extends DDbRegistryUser {
                     ")";
         }
         else {
+            assureLock(session);
+            
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " +
@@ -580,7 +621,7 @@ public class DDbDfr extends DDbRegistryUser {
                     "fk_xml_st = " + mnFkXmlStatusId + ", " +
                     "fk_xml_add_tp = " + mnFkXmlAddendaTypeId + ", " +
                     "fk_xsp = " + mnFkXmlSignatureProviderId + ", " +
-                    "fk_cer = " + mnFkCertificateId + " " +
+                    "fk_cer = " + mnFkCertificateId + ", " +
                     "fk_own_bpr = " + mnFkOwnerBizPartnerId + ", " +
                     "fk_own_bra = " + mnFkOwnerBranchId + ", " +
                     "fk_bpr = " + mnFkBizPartnerId + ", " +
@@ -616,6 +657,11 @@ public class DDbDfr extends DDbRegistryUser {
             DXmlUtils.writeXml(mbAuxRegenerateXmlOnSave ? msDocXml : getSuitableDocXml(), configBranch.getEdsDirectory() + msDocXmlName);
         }
         
+        // Finish registry updating:
+        
+        if (!mbRegistryNew) {
+            freeLockByUpdate(session);
+        }
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
@@ -662,12 +708,6 @@ public class DDbDfr extends DDbRegistryUser {
         registry.setTsUserAnnulled(this.getTsUserAnnulled());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
-
-        registry.setAuxIssued(this.isAuxIssued());
-        registry.setAuxAnnulled(this.isAuxAnnulled());
-        registry.setAuxRewriteXmlOnSave(this.isAuxRewriteXmlOnSave());
-        registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
-        registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
         
         registry.setDfrConfirmacion(this.getDfrConfirmacion());
         registry.setDfrCfdiRelacionado(this.getDfrCfdiRelacionado());
@@ -675,10 +715,53 @@ public class DDbDfr extends DDbRegistryUser {
         registry.setDfrCfdUsage(this.getDfrCfdUsage());
         registry.setDfrPagos(this.getDfrPagos() == null ? null : this.getDfrPagos()); // not cloned!, because clone is not supported for this class!
 
+        registry.setAuxIssued(this.isAuxIssued());
+        registry.setAuxAnnulled(this.isAuxAnnulled());
+        registry.setAuxRewriteXmlOnSave(this.isAuxRewriteXmlOnSave());
+        registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
+        registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
+        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
+
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }
     
+    @Override
+    public boolean canSave(final DGuiSession session) throws SQLException, Exception {
+        boolean canSave = super.canSave(session);
+
+        if (canSave) {
+            assureLock(session);
+        }
+
+        return canSave;
+    }
+
+    @Override
+    public boolean canDisable(final DGuiSession session) throws SQLException, Exception {
+        boolean can = super.canDisable(session);
+
+        if (can) {
+            assureLock(session);
+        }
+
+        return can;
+    }
+
+    @Override
+    public boolean canDelete(final DGuiSession session) throws SQLException, Exception {
+        /*
+        boolean can = super.canDelete(session);
+
+        if (can) {
+            assureLock(session);
+        }
+
+        return can;
+        */
+        return false; // by now, no deletions allowed!
+    }
+
     /**
      * By now supports only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0.
      * @param session
@@ -869,7 +952,7 @@ public class DDbDfr extends DDbRegistryUser {
                 
                 // Append to DFR the very addenda previously added to DPS if any:
                 if (!msDocXmlAddenda.isEmpty()) {
-                    extAddenda = extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
+                    extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
                     if (extAddenda != null) {
                         cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
                         addenda.getElements().add(extAddenda);
@@ -942,5 +1025,34 @@ public class DDbDfr extends DDbRegistryUser {
         mbAuxRegenerateXmlOnSave;
         manAuxXmlSignatureRequestKey;
         */
+    }
+    /**
+     * Issues Digital Fiscal Receipt (DFR) as file of type Portable Document Format (PDF).
+     * @param session
+     * @throws net.sf.jasperreports.engine.JRException
+     */
+    @Override
+    public void issueDfr(final DGuiSession session) throws Exception {
+        String fileName = "";
+        DDbConfigBranch configBranch = null;
+        
+        if (mnFkXmlStatusId == DModSysConsts.TS_XML_ST_ISS) {
+            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+            fileName += configBranch.getEdsDirectory();
+            fileName += msDocXmlName.replaceAll(".xml", ".pdf");
+
+            switch (mnFkXmlTypeId) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, DTrnDfrPrinting.createPrintingMap(session, this), fileName);
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
     }
 }

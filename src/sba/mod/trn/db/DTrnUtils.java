@@ -2324,6 +2324,13 @@ public abstract class DTrnUtils {
             DModConsts.TX_IOG_MFG });
     }
     
+    /** 
+     * Get DPS by its UUID.
+     * @param session
+     * @param uuid
+     * @return
+     * @throws Exception 
+     */
     public static DDbDps getDpsByUuid(final DGuiSession session, final String uuid) throws Exception {
         DDbDps dps = null;
         
@@ -2334,5 +2341,31 @@ public abstract class DTrnUtils {
         }
         
         return dps;
+    }
+    
+    /**
+     * Get DPS paymentes count. Bookkeepig number can be excluded if one provided.
+     * @param session
+     * @param bizPartnerClass
+     * @param dpsId
+     * @param bkkNumKey
+     * @return 
+     * @throws java.lang.Exception 
+     */
+    public static int getDpsPaymentsCount(final DGuiSession session, final int bizPartnerClass, final int dpsId, final int[] bkkNumKey) throws Exception {
+        int count = 0;
+        int[] moveType = DFinUtils.getSysMoveTypeForCashPaymentInForBizPartnerClass(bizPartnerClass);
+        String sql = "SELECT COUNT(*) "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " "
+                + "WHERE fk_dps_inv_n = " + dpsId + " AND NOT b_del AND "
+                + "fk_sys_acc_tp = " + DFinUtils.getSysAccountTypeForBizPartnerClass(bizPartnerClass) + " AND "
+                + "fk_sys_mov_cl = " + moveType[0] + " AND fk_sys_mov_tp = " + moveType[1] + " "
+                + (bkkNumKey == null ? "" : "AND NOT(fk_bkk_yer_n = " + bkkNumKey[0] + " AND fk_bkk_num_n = " + bkkNumKey[1] + ") ");
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            count = resultSet.getInt(1);
+        }
+                
+        return count;
     }
 }

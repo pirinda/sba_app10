@@ -108,14 +108,13 @@ public abstract class DTrnEmissionUtils {
      * @param session GUI session.
      * @param requestType Signature request type: sign or cancel; constants defined in DModSysConsts.TX_XMS_REQ_TP_.
      * @param requestSubtype Signature request subtype: stamp request or stamp verification; constants defined in DModSysConsts.TX_XMS_REQ_STP_.
-     * @param dpsKey DPS primary key.
+     * @param dfr DFR.
      * @return Emission parameters.
      */
-    private static DTrnEmissionParams checkXmlSignatureRequestAllowed(final DGuiSession session, final int requestType, final int requestSubtype, final int[] dpsKey) throws Exception {
-        int[] companyBranchKey = getDpsOwnCompanyBranchKey(session, dpsKey);
-        DTrnEmissionParams params = new DTrnEmissionParams(dpsKey[0]);
+    private static DTrnEmissionParams checkXmlSignatureRequestAllowed(final DGuiSession session, final int requestType, final int requestSubtype, final DDbDfr dfr) throws Exception {
+        DTrnEmissionParams params = new DTrnEmissionParams();
         DDbConfigCompany configCompany = (DDbConfigCompany) session.getConfigCompany();
-        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, companyBranchKey);
+        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
         DDbSysXmlSignatureProvider xsp = null;
 
         if (!configCompany.isEdsApplying()) {
@@ -164,9 +163,9 @@ public abstract class DTrnEmissionUtils {
             else {
                 // Check stamps available with DPS's company branch ones:
                 
-                params.StampsAvailable = getStampsAvailable(session, params.SignatureProviderId, companyBranchKey);
+                params.StampsAvailable = getStampsAvailable(session, params.SignatureProviderId, dfr.getCompanyBranchKey());
                 if (params.StampsAvailable > 0) {
-                    params.SignatureCompanyBranchKey = companyBranchKey;
+                    params.SignatureCompanyBranchKey = dfr.getCompanyBranchKey();
                 }
                 else {
                     // Check stamps available with company ones:
@@ -474,9 +473,11 @@ public abstract class DTrnEmissionUtils {
         }
         else {
             try {
+                dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                
                 // Check if XML signature is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, gridRow.getRowPrimaryKey());
+                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dps.getChildDfr());
                 sign = params.RequestAllowed;
             }
             catch (Exception e) {
@@ -488,7 +489,6 @@ public abstract class DTrnEmissionUtils {
                 try {
                     // Check that there are not pending transactions:
 
-                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                     xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
                     xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
@@ -585,7 +585,7 @@ public abstract class DTrnEmissionUtils {
                         try {
                             client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                            DTrnDfrUtils.signDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
+                            DTrnDfrUtils.signDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
                             signed = true;
                         }
                         catch (Exception e) {
@@ -599,6 +599,125 @@ public abstract class DTrnEmissionUtils {
                             }
                             else {
                                 client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido timbrado.\n" +
+                                        "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                            }
+
+                            client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                }
+            }
+        }
+    }
+
+    public static void signDfr(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
+        boolean sign = false;
+        boolean signed = false;
+        DTrnEmissionParams params = null;
+        DDbSysXmlSignatureProvider xsp = null;
+        DDbXmlSignatureRequest xsr = null;
+        DDbDfr dfr = null;
+
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                
+                // Check if XML signature is allowed:
+                
+                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dfr);
+                sign = params.RequestAllowed;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+            
+            if (sign) {
+                try {
+                    // Check that there are not pending transactions:
+
+                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
+
+                    if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                        // Request signature:
+
+                        if (xsr != null && xsr.getRequestStatus() != DModSysConsts.TX_XMS_REQ_ST_FIN) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN +
+                                    "\nHay una transacción pendiente para el comprobante.");
+                        }
+                        else {
+                            xsr = null; // new request about to be created
+                        }
+                    }
+                    else {
+                        // Verify signature:
+
+                        if (xsr == null || xsr.getRequestStatus() == DModSysConsts.TX_XMS_REQ_ST_FIN) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN +
+                                    "\nNo hay una transacción pendiente para el comprobante.");
+                        }
+                    }
+
+                    // Check if document can be signed:
+
+                    if (xsr == null) {
+                        // Check and confirm document details before first signature request:
+
+                        if (dfr.isRegistryNew()) { // really needed?
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + DDbConsts.ERR_MSG_REG_NOT_FOUND +
+                                    "\nEl registro XML del comprobante no existe.");
+                        }
+                        else if (dfr.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI_33) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del comprobante debe ser " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
+                        }
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN })) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El estatus del registro XML del comprobante debe ser '" +
+                                    client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
+                        }
+                        else if (DLibTimeUtils.convertToDateOnly(dfr.getDocTs()).before(DLibTimeUtils.convertToDateOnly(client.getSession().getSystemDate()))) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "La fecha del comprobante '" + DLibUtils.DateFormatDate.format(dfr.getDocTs()) +
+                                    "' no puede ser anterior al día de hoy '" + DLibUtils.DateFormatDate.format(client.getSession().getSystemDate()) + "'.");
+                        }
+                        else {
+                            if (!DLibTimeUtils.isSameDate(dfr.getDocTs(), client.getSession().getSystemDate())) {
+                                sign = client.showMsgBoxConfirm("La fecha del comprobante '" + DLibUtils.DateFormatDate.format(dfr.getDocTs()) +
+                                        "' es posterior al día de hoy '" + DLibUtils.DateFormatDate.format(client.getSession().getSystemDate()) + "'.\n" +
+                                        "¿Está seguro que desea timbrar el comprobante '" + dfr.getDfrNumber() + "'?") == JOptionPane.YES_OPTION;
+                            }
+
+                            if (sign) {
+                                sign = client.showMsgBoxConfirm("¿Está seguro que desea timbrar el comprobante '" + dfr.getDfrNumber() + "'?") == JOptionPane.YES_OPTION;
+                            }
+                        }
+                    }
+
+                    if (sign) {
+                        try {
+                            client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
+
+                            DTrnDfrUtils.signDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
+                            signed = true;
+                        }
+                        catch (Exception e) {
+                            DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                        }
+                        finally {
+                            client.getSession().notifySuscriptors(DModConsts.T_DPS_SIG);
+
+                            if (!signed) {
+                                client.showMsgBoxWarning("El comprobante '" + dfr.getDfrNumber() + "' no ha sido timbrado.");
+                            }
+                            else {
+                                client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido timbrado.\n" +
                                         "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
                             }
 
@@ -631,9 +750,11 @@ public abstract class DTrnEmissionUtils {
         }
         else {
             try {
+                dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                
                 // Check if XML cancellation is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, gridRow.getRowPrimaryKey());
+                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dps.getChildDfr());
                 cancel = params.RequestAllowed;
             }
             catch (Exception e) {
@@ -649,7 +770,6 @@ public abstract class DTrnEmissionUtils {
                 try {
                     // Check that there are not pending transactions:
 
-                    dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                     xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
                     xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
@@ -735,7 +855,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnDfrUtils.cancelDps(client.getSession(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
                                 cancelled = true;
                             }
                             catch (Exception e) {
@@ -765,6 +885,133 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    public static void cancelDfr(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
+        int action = DTrnEmissionConsts.ANNUL_CANCEL;
+        int lastRequestStatus = DLibConsts.UNDEFINED;
+        boolean cancel = false;
+        boolean cancelled = false;
+        DTrnEmissionParams params = null;
+        DDbSysXmlSignatureProvider xsp = null;
+        DDbXmlSignatureRequest xsr = null;
+        DDbDfr dfr = null;
+
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                
+                // Check if XML cancellation is allowed:
+                
+                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dfr);
+                cancel = params.RequestAllowed;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            
+                if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                    cancel = client.showMsgBoxConfirm(DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
+                }
+            }
+            
+            if (cancel) {
+                try {
+                    // Check that there are not pending transactions:
+
+                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
+
+                    if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                        // Request signature:
+
+                        if (xsr != null && xsr.getRequestStatus() != DModSysConsts.TX_XMS_REQ_ST_FIN) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL +
+                                    "\nHay una transacción pendiente para el comprobante.");
+                        }
+                        else {
+                            if (xsr != null) {
+                                lastRequestStatus = xsr.getRequestStatus();
+                            }
+                            xsr = null; // new request about to be created
+                        }
+                    }
+                    else {
+                        // Verify signature:
+
+                        if (xsr == null || xsr.getRequestStatus() == DModSysConsts.TX_XMS_REQ_ST_FIN) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL +
+                                    "\nNo hay una transacción pendiente para el comprobante.");
+                        }
+                    }
+
+                    // Check if document can be cancelled:
+
+                    if (xsr == null) {
+                        // Check and confirm document details before first signature request:
+
+                        if (dfr.isRegistryNew()) { // really needed?
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + DDbConsts.ERR_MSG_REG_NOT_FOUND +
+                                    "\nEl registro XML del comprobante no existe.");
+                        }
+                        else if (dfr.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_CFDI_33) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del comprobante debe ser " +
+                                    "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
+                        }
+                        else if (!DLibUtils.belongsTo(dfr.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_PEN, DModSysConsts.TS_XML_ST_ISS })) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El estatus del registro XML del comprobante debe ser '" +
+                                    client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "' o '" +
+                                    client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                        }
+                        else if (DLibTimeUtils.convertToDateOnly(dfr.getDocTs()).after(DLibTimeUtils.convertToDateOnly(client.getSession().getSystemDate()))) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "La fecha del comprobante '" + DLibUtils.DateFormatDate.format(dfr.getDocTs()) +
+                                    "' no puede ser posterior al día de hoy '" + DLibUtils.DateFormatDate.format(client.getSession().getSystemDate()) + "'.");
+                        }
+                        else {
+                            // Check if document can be disabled:
+
+                            cancel = dfr.canDisable(client.getSession());
+                        }
+                    }
+
+                    if (cancel) {
+                        cancel = client.showMsgBoxConfirm("¿Está seguro que desea cancelar el comprobante '" + dfr.getDfrNumber() + "'?") == JOptionPane.YES_OPTION;
+
+                        if (cancel) {
+                            try {
+                                client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
+
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
+                                cancelled = true;
+                            }
+                            catch (Exception e) {
+                                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                            }
+                            finally {
+                                client.getSession().notifySuscriptors(DModConsts.T_DPS_SIG);
+
+                                if (!cancelled) {
+                                    client.showMsgBoxWarning("El comprobante '" + dfr.getDfrNumber() + "' no ha sido cancelado.");
+                                }
+                                else {
+                                    client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido cancelado.\n" +
+                                            "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                }
+
+                                client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
+                            }
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                }
+            }
+        }
+    }
+
     public static void sendDps(final DGuiClient client, final DGridRowView gridRow) {
         boolean send = false;
         DDbDps dps = null;
@@ -775,7 +1022,7 @@ public abstract class DTrnEmissionUtils {
         DDbConfigCompany configCompany = (DDbConfigCompany) client.getSession().getConfigCompany();
         final String name = configCompany.getEdsEmsName();
         final String password = configCompany.getEdsEmsPassword();
-        Vector<String> emails = new Vector<String>();
+        Vector<String> emails = new Vector<>();
 
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
@@ -948,6 +1195,185 @@ public abstract class DTrnEmissionUtils {
                                 finally {
                                     client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+
+    public static void sendDfr(final DGuiClient client, final DGridRowView gridRow) {
+        boolean send = false;
+        DDbDfr dfr = null;
+        DDbBizPartner bizPartner = null;
+        DDbBranchAddress branchAddress = null;
+        DDbConfigCompany configCompany = (DDbConfigCompany) client.getSession().getConfigCompany();
+        final String name = configCompany.getEdsEmsName();
+        final String password = configCompany.getEdsEmsPassword();
+        Vector<String> emails = new Vector<>();
+
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else if (configCompany.getFkEdsEmsTypeId() == DModSysConsts.CS_EMS_TP_NA) {
+            client.showMsgBoxWarning("No está configurado el envío de comprobantes electrónicos vía e-mail.");
+        }
+        else {
+
+            try {
+                dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey());
+
+                if (dfr == null || dfr.isRegistryNew()) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\nEl registro XML del comprobante no existe.");
+                }
+                else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "El estatus del registro XML del comprobante debe ser '" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                }
+                else if (dfr.getFkXmlAddendaTypeId() != DModSysConsts.TS_XML_ADD_TP_NA && dfr.getDocXmlAddenda().isEmpty()) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "La addenda del registro XML del comprobante no ha sido incorporada.");
+                }
+                else {
+                    branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, new int[] { dfr.getFkBizPartnerId(), 1, 1 }, DDbConsts.MODE_STEALTH);
+
+                    if (branchAddress.getFkTelecommElectronic1TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
+                        if (branchAddress.getContact1().isEmpty()) {
+                            emails.add(branchAddress.getTelecommElectronic1());
+                        }
+                        else {
+                            emails.add("\"" + branchAddress.getContact1() + "\" <" + branchAddress.getTelecommElectronic1() + ">");
+                        }
+                    }
+
+                    if (branchAddress.getFkTelecommElectronic2TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
+                        if (branchAddress.getContact2().isEmpty()) {
+                            emails.add(branchAddress.getTelecommElectronic2());
+                        }
+                        else {
+                            emails.add("\"" + branchAddress.getContact2() + "\" <" + branchAddress.getTelecommElectronic2() + ">");
+                        }
+                    }
+
+                    if (emails.isEmpty()) {
+                        bizPartner = (DDbBizPartner) client.getSession().readRegistry(DModConsts.BU_BPR, dfr.getBizPartnerKey(), DDbConsts.MODE_STEALTH);
+                        client.showMsgBoxWarning("No se han definido correos electrónicos para '" + bizPartner.getName() + "',\nreceptor del comprobante '" + dfr.getDfrNumber() + "'.");
+                    }
+                    else {
+                        send = client.showMsgBoxConfirm("El comprobante '" + dfr.getDfrNumber() + "' será enviado a:" +
+                                (emails.size() <= 0 ? "" : "\n" + emails.get(0)) +
+                                (emails.size() <= 1 ? "" : "\n" + emails.get(1)) +
+                                "\n¿Está seguro que desea enviar el comprobante?") == JOptionPane.YES_OPTION;
+
+                        if (send) {
+                            try {
+                                client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
+
+                                Properties properties = System.getProperties();
+
+                                String from = configCompany.getEdsEmsFrom();
+
+                                switch (configCompany.getFkEdsEmsTypeId()) {
+                                    case DModSysConsts.CS_EMS_TP_OWN:
+                                        properties.setProperty("mail.smtp.host", configCompany.getEdsEmsSmtpHost());
+                                        properties.setProperty("mail.smtp.port", "" + configCompany.getEdsEmsSmtpPort());
+                                        if (configCompany.isEdsEmsSmtpSslEnabled()) {
+                                            properties.setProperty("mail.smtp.ssl.enable", "true");
+                                        }
+                                        break;
+                                    case DModSysConsts.CS_EMS_TP_LIVE:
+                                        properties.setProperty("mail.smtp.host", "smtp.live.com");
+                                        properties.setProperty("mail.smtp.port", "587");
+                                        properties.setProperty("mail.smtp.auth", "true");
+                                        properties.setProperty("mail.smtp.starttls.enable", "true");
+                                        properties.setProperty("mail.smtp.ssl.trust", "smtp.live.com");
+                                        break;
+                                    case DModSysConsts.CS_EMS_TP_GMAIL:
+                                        properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+                                        properties.setProperty("mail.smtp.port", "587");
+                                        properties.setProperty("mail.smtp.auth", "true");
+                                        properties.setProperty("mail.smtp.starttls.enable", "true");
+                                        properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
+                                        break;
+                                    default:
+                                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                                }
+
+                                Session session = Session.getInstance(properties,
+                                        new Authenticator() {
+                                            protected PasswordAuthentication getPasswordAuthentication() {
+                                                return new javax.mail.PasswordAuthentication(name, password);
+                                            }
+                                        });
+
+                                MimeMessage mimeMessage = new MimeMessage(session);
+                                mimeMessage.setFrom(new InternetAddress(from));
+
+                                if (emails.size() > 0) {
+                                    mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(0)));
+                                }
+                                if (emails.size() > 1) {
+                                    mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(1)));
+                                }
+
+                                mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(from));
+
+                                mimeMessage.setSubject(configCompany.getEdsEmsSubject() + " " + dfr.getDfrNumber());
+
+                                Multipart multipart = new MimeMultipart();
+                                BodyPart bodyPart = null;
+
+                                bodyPart = new MimeBodyPart();
+                                bodyPart.setText(configCompany.getEdsEmsBody());
+                                multipart.addBodyPart(bodyPart);
+
+                                String filePath = "";
+                                String fileName = "";
+                                DataSource dataSource = null;
+                                DDbConfigBranch configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
+
+                                // PDF file:
+
+                                fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
+                                filePath = configBranch.getEdsDirectory() + fileName;
+
+                                dataSource = new FileDataSource(filePath);
+                                bodyPart = new MimeBodyPart();
+                                bodyPart.setDataHandler(new DataHandler(dataSource));
+                                bodyPart.setFileName(fileName);
+                                multipart.addBodyPart(bodyPart);
+
+                                // XML file:
+
+                                fileName = dfr.getDocXmlName();
+                                filePath = configBranch.getEdsDirectory() + fileName;
+
+                                dataSource = new FileDataSource(filePath);
+                                bodyPart = new MimeBodyPart();
+                                bodyPart.setDataHandler(new DataHandler(dataSource));
+                                bodyPart.setFileName(fileName);
+                                multipart.addBodyPart(bodyPart);
+
+                                mimeMessage.setContent(multipart);
+
+                                Transport.send(mimeMessage);
+
+                                client.getSession().notifySuscriptors(DModConsts.T_DPS_SND);
+
+                                client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido enviado.");
+                            }
+                            catch (MessagingException e) {
+                                e.printStackTrace();
+                                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                            }
+                            finally {
+                                client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                             }
                         }
                     }

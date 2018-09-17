@@ -392,6 +392,32 @@ public abstract class DFinUtils {
         return type;
     }
 
+    /**
+     * @param bizPartnerClass Constants defined in DModSysConsts (BS_BPR_CL_...).
+     * @return Constant defined in DModSysConsts (FS_SYS_MOV_TP_MI_...).
+     */
+    public static int[] getSysMoveTypeForCashPaymentInForBizPartnerClass(final int bizPartnerClass) {
+        int[] type = null;
+
+        switch (bizPartnerClass) {
+            case DModSysConsts.BS_BPR_CL_VEN:
+                type = DModSysConsts.FS_SYS_MOV_TP_MI_VEN_PAY;
+                break;
+            case DModSysConsts.BS_BPR_CL_CUS:
+                type = DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY;
+                break;
+            case DModSysConsts.BS_BPR_CL_CDR:
+                type = DModSysConsts.FS_SYS_MOV_TP_MI_CDR_PAY;
+                break;
+            case DModSysConsts.BS_BPR_CL_DBR:
+                type = DModSysConsts.FS_SYS_MOV_TP_MI_DBR_PAY;
+                break;
+            default:
+        }
+
+        return type;
+    }
+
     public static int getBizPartnerClassForSysMoveType(final int[] typeKey) {
         int bizPartnerClass = DLibConsts.UNDEFINED;
 

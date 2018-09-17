@@ -11,14 +11,12 @@ package sba.mod.trn.db;
  */
 public class DTrnEmissionParams {
     
-    public int DpsId;
     public int SignatureProviderId;
     public boolean RequestAllowed;
     public int[] SignatureCompanyBranchKey;
     public int StampsAvailable;
     
-    public DTrnEmissionParams(int dpsId) {
-        DpsId = dpsId;
+    public DTrnEmissionParams() {
         SignatureProviderId = 0;
         RequestAllowed = false;
         SignatureCompanyBranchKey = null;
