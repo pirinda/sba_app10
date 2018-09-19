@@ -4,7 +4,7 @@
  */
 
 /*
- * DFormDps.java
+ * DFormDfrPayment.java
  *
  * Created on 29/08/2011, 08:02:13 PM
  */
@@ -65,6 +65,7 @@ import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBizPartnerConfig;
 import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
+import sba.mod.cfg.db.DDbBranchCash;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
@@ -92,9 +93,9 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DDbBizPartnerConfig moBizPartnerConfig;
     private DDbBranch moBizPartnerBranch;
     private DDbBranchAddress moBizPartnerBranchAddress;
-    private DGuiClientSessionCustom moSessionCustom;
     private DDbConfigCompany moConfigCompany;
     private DDbConfigBranch moConfigBranch;
+    private DDbBranchCash moBranchCash;
     private DDialogFindBizPartner moDialogFindBizPartner;
     private DDialogDpsInvoicePicker moDialogDpsInvoicePicker;
     private DGridPaneForm moGridPayments;
@@ -113,7 +114,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DElementDoctoRelacionado moDoctoRelacionado; // current edited DoctoRelacionado, if new, then it is null
     private double mdDocTotalPayment;
 
-    /** Creates new form DFormDps
+    /** Creates new form DFormDfrPayment
      * @param client GUI client.
      */
     public DFormDfrPayment(DGuiClient client, String title) {
@@ -222,10 +223,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jPanel12 = new javax.swing.JPanel();
         jbPayOk = new javax.swing.JButton();
         jbPayCancel = new javax.swing.JButton();
+        jPanel15 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jlTotalCfd = new javax.swing.JLabel();
         moCurTotalCfdPay = new sba.lib.gui.bean.DBeanCompoundFieldCurrency();
         moCurTotalCfdLoc = new sba.lib.gui.bean.DBeanCompoundFieldCurrency();
+        jPanel16 = new javax.swing.JPanel();
+        jtfOwnBranch = new javax.swing.JTextField();
+        jtfBranchCash = new javax.swing.JTextField();
         jpPaymentDocs = new javax.swing.JPanel();
         jpPaymentDocs1 = new javax.swing.JPanel();
         jPanel54 = new javax.swing.JPanel();
@@ -669,6 +674,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         jpPayments.add(jpPayments1, java.awt.BorderLayout.PAGE_START);
 
+        jPanel15.setLayout(new java.awt.BorderLayout());
+
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jlTotalCfd.setText("Total pagos:");
@@ -681,7 +688,25 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moCurTotalCfdLoc.setEditable(false);
         jPanel1.add(moCurTotalCfdLoc);
 
-        jpPayments.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        jPanel15.add(jPanel1, java.awt.BorderLayout.WEST);
+
+        jtfOwnBranch.setEditable(false);
+        jtfOwnBranch.setText("TEXT");
+        jtfOwnBranch.setToolTipText(DUtilConsts.TXT_BRANCH);
+        jtfOwnBranch.setFocusable(false);
+        jtfOwnBranch.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel16.add(jtfOwnBranch);
+
+        jtfBranchCash.setEditable(false);
+        jtfBranchCash.setText("TEXT");
+        jtfBranchCash.setToolTipText(DUtilConsts.TXT_BRANCH_CSH);
+        jtfBranchCash.setFocusable(false);
+        jtfBranchCash.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel16.add(jtfBranchCash);
+
+        jPanel15.add(jPanel16, java.awt.BorderLayout.EAST);
+
+        jpPayments.add(jPanel15, java.awt.BorderLayout.SOUTH);
 
         jpDfrRows.add(jpPayments, java.awt.BorderLayout.WEST);
 
@@ -1127,7 +1152,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private void updateEnabledFieldsCfd() {
         boolean enable = moGridPayments.getTable().getRowCount() == 0;
         enableFieldsCfdReceptor(enable);
-        enableFieldsCfd(enable);
+        enableFieldsCfd(enable && moKeyCfdReceptor.getSelectedIndex() > 0);
     }
     
     private void enableFieldsCfdReceptor(final boolean enable) {
@@ -1137,14 +1162,15 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     }
     
     private void enableFieldsCfd(final boolean enable) {
-        moDateCfdDate.setEditable(enable);
-        moRadModeEmit.setEnabled(enable);
-        moRadModeEmitPay.setEnabled(enable);
-        moTextCfdConfirmation.setEditable(enable);
-        moKeyCfdUsage.setEnabled(enable);
-        moKeyCfdTaxRegime.setEnabled(enable);
-        moTextCfdRelated.setEditable(enable);
-        jbCfdRelatedPick.setEnabled(/*enable*/false); // should be enabled when needed, but until implemented!
+        boolean paymentsAvailable = moGridPayments.getTable().getRowCount() > 0;
+        moDateCfdDate.setEditable(enable || paymentsAvailable);
+        moRadModeEmit.setEnabled(enable || paymentsAvailable);
+        moRadModeEmitPay.setEnabled(enable || paymentsAvailable);
+        moTextCfdConfirmation.setEditable(enable || paymentsAvailable);
+        moKeyCfdUsage.setEnabled(enable || paymentsAvailable);
+        moKeyCfdTaxRegime.setEnabled(enable || paymentsAvailable);
+        moTextCfdRelated.setEditable(enable || paymentsAvailable);
+        jbCfdRelatedPick.setEnabled(/*enable || paymentsAvailable*/false); // should be enabled when needed, but until implemented!
     }
     
     private void enableFieldsPayments(final boolean enable) {
@@ -1237,9 +1263,22 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         fields.add(moTextPayRecipientsBankFiscalId);
         fields.add(moTextPayRecipientsAccount);
         
-        DGuiValidation validation;
+        DGuiValidation validation = null;
         for (DGuiField field : fields) {
             validation = field.validateField();
+            if (!validation.isValid()) {
+                break;
+            }
+        }
+        
+        if (validation != null) {
+            if (validation.isValid()) {
+                if (moKeyPayModeOfPaymentType.getSelectedItem().getCode().equals(DCfdi33Catalogs.FDP_POR_DEF)) {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyPayModeOfPaymentType.getFieldName() + "'.");
+                    validation.setComponent(moKeyPayModeOfPaymentType);
+                }
+            }
+            
             if (!validation.isValid()) {
                 DGuiUtils.computeValidation(miClient, validation);
                 return false;
@@ -1750,12 +1789,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         else if (miClient.showMsgBoxConfirm(DGridConsts.MSG_CONFIRM_REG_DEL) == JOptionPane.YES_OPTION) {
             // update form grid:
             int index = moGridPaymentDocs.getTable().getSelectedRow();
-            moGridPaymentDocs.removeGridRow(index);
+            DGridRow removedRow = moGridPaymentDocs.removeGridRow(index);
             moGridPaymentDocs.renderGridRows();
             moGridPaymentDocs.setSelectedGridRow(index < moGridPaymentDocs.getTable().getRowCount() ? index : index - 1);
             
             // update array of DoctoRelacionados of current payment:
-            ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().remove(((DRowDfrPaymentDoc) moGridPaymentDocs.getSelectedGridRow()).getDoctoRelacionado());
+            ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().remove(((DRowDfrPaymentDoc) removedRow).getDoctoRelacionado());
             
             // update GUI totals:
             computeTotalPayment();
@@ -2004,6 +2043,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
@@ -2089,6 +2130,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private javax.swing.JPanel jpPayments1;
     private javax.swing.JScrollPane jspHeadquartersAddress;
     private javax.swing.JTextArea jtaHeadquartersAddress;
+    private javax.swing.JTextField jtfBranchCash;
     private javax.swing.JTextField jtfCfdDatetime;
     private javax.swing.JTextField jtfCfdDocStatus;
     private javax.swing.JTextField jtfCfdDocType;
@@ -2096,6 +2138,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private javax.swing.JTextField jtfCfdType;
     private javax.swing.JTextField jtfCfdUuid;
     private javax.swing.JTextField jtfDocExchangeRate;
+    private javax.swing.JTextField jtfOwnBranch;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDocBalancePendDoc;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDocBalancePendPay;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDocBalancePrevDoc;
@@ -2218,36 +2261,48 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         mnFormResult = DLibConsts.UNDEFINED;
         mbFirstActivation = true;
 
-        moSessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();
-
-        if (moRegistry.isRegistryNew()) {
-            // Validate if new registry can be created:
-
-            if (moSessionCustom.getBranchKey() == null) {
-                mbCanShowForm = false;
-                msCanShowFormMessage = DUtilConsts.ERR_MSG_USR_SES_BRA;
-                return;
-            }
-        }
-
         // Set registry:
 
         removeAllListeners();
         reloadCatalogues();
 
-        moConfigCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
-        moConfigBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
+        jbSave.setEnabled(false);
         
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
+            
+            moConfigCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+            moConfigBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
+
+            DGuiClientSessionCustom sessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();
+            if (sessionCustom.getBranchKey() == null) {
+                mbCanShowForm = false;
+                msCanShowFormMessage = DUtilConsts.ERR_MSG_USR_SES_BRA;
+                return;
+            }
+            else if (sessionCustom.getBranchCashKey() == null) {
+                mbCanShowForm = false;
+                msCanShowFormMessage = DUtilConsts.ERR_MSG_USR_SES_BRA_CSH;
+                return;
+            }
+            else {
+                moBranchCash = (DDbBranchCash) miClient.getSession().readRegistry(DModConsts.CU_CSH, sessionCustom.getBranchCashKey());
+            }
             
             jtfRegistryKey.setText("");
             moRegistryLock = null;
         }
         else {
+            moConfigCompany = (DDbConfigCompany) miClient.getSession().readRegistry(DModConsts.CU_CFG_CO, moRegistry.getCompanyKey());
+            moConfigBranch = (DDbConfigBranch) miClient.getSession().readRegistry(DModConsts.CU_CFG_BRA, moRegistry.getCompanyBranchKey());
+            moBranchCash = (DDbBranchCash) miClient.getSession().readRegistry(DModConsts.CU_CSH, moRegistry.getBranchCashKey_n());
+
             jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
             moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDfrId(), DDbDps.TIMEOUT);
         }
+        
+        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moConfigBranch.getPrimaryKey(), DDbRegistry.FIELD_CODE));
+        jtfBranchCash.setText((String) miClient.getSession().readField(DModConsts.CU_CSH, moBranchCash.getPrimaryKey(), DDbRegistry.FIELD_CODE));
         
         DElementComprobante comprobante33 = moRegistry.getElementComprobante33();
         
@@ -2267,7 +2322,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jtfCfdDatetime.setText(moRegistry.getDocTs() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getDocTs()));
         jtfCfdDocType.setText(moRegistry.getFkXmlSubtypeId() == 0 ? "" : miClient.getSession().readField(DModConsts.TS_XML_STP, new int[] { moRegistry.getFkXmlSubtypeId() }, DDbRegistry.FIELD_NAME).toString());
         jtfCfdDocStatus.setText(moRegistry.getFkXmlStatusId() == 0 ? "" : miClient.getSession().readField(DModConsts.TS_XML_ST, new int[] { moRegistry.getFkXmlStatusId() }, DDbRegistry.FIELD_NAME).toString());
-        moRadModeEmitPay.setSelected(moRegistry.isBookeept());
+        if (moRegistry.isBookeept()) {
+            moRadModeEmitPay.setSelected(true);
+        }
+        else {
+            moRadModeEmit.setSelected(true);
+        }
         
         if (comprobante33 == null) {
             moTextCfdConfirmation.setValue("");
@@ -2312,7 +2372,11 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         if (payments.isEmpty()) {
             renderPayment(null);
         }
+        else {
+            activateInputPayment(0);
+        }
         
+        updateEnabledFieldsCfd();
         itemStateChangedPayCurrency();
         itemStateChangedDocCurrency();
         
@@ -2379,6 +2443,11 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         registry.setFkBizPartnerId(moBizPartner.getPkBizPartnerId());
         /*
         registry.setFkDpsId_n();
+        */
+        registry.setFkCashBizPartnerId_n(moBranchCash.getPkBizPartnerId());
+        registry.setFkCashBranchId_n(moBranchCash.getPkBranchId());
+        registry.setFkCashCashId_n(moBranchCash.getPkCashId());
+        /*
         registry.setFkBookkeepingYearId_n();
         registry.setFkBookkeepingNumberId_n();
         registry.setFkUserIssuedId();
@@ -2392,8 +2461,11 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         */
         
         /*
-        registry.setAuxIssued();
-        registry.setAuxAnnulled();
+        registry.setAuxJustIssued();
+        registry.setAuxJustAnnulled();
+        */
+        registry.setAuxComputeBookkeeping(true);
+        /*
         registry.setAuxRewriteXmlOnSave();
         registry.setAuxRegenerateXmlOnSave();
         registry.setAuxXmlSignatureRequestKey();
@@ -2461,6 +2533,13 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                         }
                     }
                 }
+            }
+        }
+        
+        if (validation.isValid()) {
+            if (moRadModeEmit.isSelected() && miClient.showMsgBoxConfirm("¿Sólo emitir CFDI sin aplicar pagos?") != JOptionPane.YES_OPTION) {
+                validation.setMessage("Indicar que se desea emitir CFDI y aplicar pagos.");
+                validation.setComponent(moRadModeEmitPay);
             }
         }
 

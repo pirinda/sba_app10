@@ -323,7 +323,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    private boolean proceedAnnulment(final int[] keyDps, final int action) {
+    private boolean proceedDisableDelete(final int[] keyDps, final int action) {
         boolean proceed = false;
         String msg = "";
         DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
@@ -335,7 +335,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         else {
             switch (dfr.getFkXmlStatusId()) {
                 case DModSysConsts.TS_XML_ST_ANN:
-                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.";
+                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya tiene estatus 'cancelado'.";
                     miClient.showMsgBoxWarning(msg);
                     break;
                     
@@ -345,19 +345,19 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                     switch (action) {
                         case ACTION_DISABLE:
                             if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
                             }
                             else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
                             }
                             break;
                             
                         case ACTION_DELETE:
                             if (!dps.isDeleted()) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
                             }
                             else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
                             }
                             break;
                             
@@ -663,7 +663,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DISABLEABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
+                        if (proceedDisableDelete(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).disableRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }
@@ -699,7 +699,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DELETABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
+                        if (proceedDisableDelete(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).deleteRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }

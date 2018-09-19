@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import sba.gui.util.DUtilConsts;
-import sba.lib.DLibConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.grid.DGridColumnView;
@@ -199,6 +198,7 @@ public class DViewDpsAccountsCollected extends DGridPaneView implements ActionLi
         moSuscriptionsSet.add(DModConsts.F_BKK);
         moSuscriptionsSet.add(DModConsts.F_BKK_REC);
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
     }
 

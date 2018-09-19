@@ -3592,6 +3592,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         mnNewDpsSeriesId = DLibConsts.UNDEFINED;
         msNewDpsSeries = "";
 
+        jbSave.setEnabled(false);
+        
         if (moRegistry.isRegistryNew()) {
             // Validate if new registry can be created:
 

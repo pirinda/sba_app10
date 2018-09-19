@@ -13,6 +13,7 @@ import java.util.Vector;
 import sba.lib.DLibConsts;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistryUser;
+import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 
@@ -30,9 +31,11 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
     protected int mnFkOwnerBizPartnerId;
     protected int mnFkOwnerBranchId;
 
-    protected DDbBookkeepingNumber moRegNumber;
-
     protected Vector<DDbBookkeepingMove> mvChildMoves;
+    
+    protected DDbBookkeepingNumber moRegBkkNumber;
+
+    protected boolean mbAuxRenewBkkNumber;
 
     public DDbBookkeepingMoveCustom() {
         super(DModConsts.FX_BKK_CTM);
@@ -55,12 +58,16 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
     public int getFkSystemMoveTypeId() { return mnFkSystemMoveTypeId; }
     public int getFkOwnerBizPartnerId() { return mnFkOwnerBizPartnerId; }
     public int getFkOwnerBranchId() { return mnFkOwnerBranchId; }
-
-    public void setRegNumber(DDbBookkeepingNumber o) { moRegNumber = o; }
-
-    public DDbBookkeepingNumber getRegNumber() { return moRegNumber; }
-
+    
     public Vector<DDbBookkeepingMove> getChildMoves() { return mvChildMoves; }
+
+    public void setAuxRenewBkkNumber(boolean b) { mbAuxRenewBkkNumber = b; }
+
+    public boolean isAuxRenewBkkNumber() { return mbAuxRenewBkkNumber; }
+
+    public void setRegBkkNumber(DDbBookkeepingNumber o) { moRegBkkNumber = o; }
+
+    public DDbBookkeepingNumber getRegBkkNumber() { return moRegBkkNumber; }
 
     public DDbBookkeepingMove getChildMoveBySortingPos(int pos) {
         DDbBookkeepingMove move = null;
@@ -102,9 +109,11 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
         mnFkOwnerBizPartnerId = 0;
         mnFkOwnerBranchId = 0;
 
-        moRegNumber = null;
-
         mvChildMoves.clear();
+
+        moRegBkkNumber = null;
+        
+        mbAuxRenewBkkNumber = true; // by default renew bookkeeping number each time this registry is saved
     }
 
     @Override
@@ -124,18 +133,26 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
 
     @Override
     public void computePrimaryKey(DGuiSession session) throws SQLException, Exception {
-        if (mnPkBookkeepingYearId != DLibConsts.UNDEFINED && mnPkBookkeepingNumberId != DLibConsts.UNDEFINED) {
-            moRegNumber = new DDbBookkeepingNumber();
-            moRegNumber.read(session, getPrimaryKey());
-            moRegNumber.setDeleted(true);
-            moRegNumber.save(session);
+        if (mnPkBookkeepingYearId == DLibConsts.UNDEFINED) {
+            throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'año'.");
+        }
+        
+        if (mbAuxRenewBkkNumber && mnPkBookkeepingNumberId != DLibConsts.UNDEFINED) {
+            moRegBkkNumber = new DDbBookkeepingNumber();
+            moRegBkkNumber.read(session, getPrimaryKey());
+            moRegBkkNumber.setDeleted(true);
+            moRegBkkNumber.save(session);
+            
+            mnPkBookkeepingNumberId = DLibConsts.UNDEFINED;
         }
 
-        moRegNumber = new DDbBookkeepingNumber();
-        moRegNumber.setPkYearId(mnPkBookkeepingYearId);
-        moRegNumber.save(session);
+        if (mnPkBookkeepingNumberId == DLibConsts.UNDEFINED) {
+            moRegBkkNumber = new DDbBookkeepingNumber();
+            moRegBkkNumber.setPkYearId(mnPkBookkeepingYearId);
+            moRegBkkNumber.save(session);
 
-        mnPkBookkeepingNumberId = moRegNumber.getPkNumberId();
+            mnPkBookkeepingNumberId = moRegBkkNumber.getPkNumberId();
+        }
     }
 
     @Override
@@ -166,8 +183,8 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
             mnFkOwnerBranchId = resultSet.getInt("fk_own_bra");
         }
 
-        moRegNumber = new DDbBookkeepingNumber();
-        moRegNumber.read(session, getPrimaryKey());
+        moRegBkkNumber = new DDbBookkeepingNumber();
+        moRegBkkNumber.read(session, getPrimaryKey());
 
         msSql = "SELECT id_yer, id_mov " +
                 "FROM " + getSqlTable() + " " +
@@ -243,16 +260,19 @@ public class DDbBookkeepingMoveCustom extends DDbRegistryUser {
 
         registry.setPkBookkeepingYearId(this.getPkBookkeepingYearId());
         registry.setPkBookkeepingNumberId(this.getPkBookkeepingNumberId());
+        registry.setDate(this.getDate());
         registry.setFkSystemMoveClassId(this.getFkSystemMoveClassId());
         registry.setFkSystemMoveTypeId(this.getFkSystemMoveTypeId());
         registry.setFkOwnerBizPartnerId(this.getFkOwnerBizPartnerId());
         registry.setFkOwnerBranchId(this.getFkOwnerBranchId());
 
-        registry.setRegNumber(this.getRegNumber() == null ? null : this.getRegNumber().clone());
-
         for (DDbBookkeepingMove child : mvChildMoves) {
             registry.getChildMoves().add(child.clone());
         }
+
+        registry.setRegBkkNumber(this.getRegBkkNumber() == null ? null : this.getRegBkkNumber().clone());
+        
+        registry.setAuxRenewBkkNumber(this.isAuxRenewBkkNumber());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

@@ -1273,6 +1273,11 @@ public abstract class DTrnDfrUtils {
         dfr.setCancelStatus("");
         dfr.setCancelXml("");
         dfr.setCancelPdf_n(null);
+        /*
+        dfr.setBookeept();
+        registry.setDeleted();
+        registry.setSystem();
+        */
         dfr.setFkXmlTypeId(xmlType);
         dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_CFDI_FAC); // invoice
         dfr.setFkXmlStatusId(xmlStatus);
@@ -1283,9 +1288,15 @@ public abstract class DTrnDfrUtils {
         dfr.setFkOwnerBranchId(dps.getFkOwnerBranchId());
         dfr.setFkBizPartnerId(dps.getFkBizPartnerBizPartnerId());
         dfr.setFkDpsId_n(dps.getPkDpsId());
-        //dfr.setFkUserIssuedId(...);   // will be set as needed when saved!
-        //dfr.setFkUserAnnulledId(...); // will be set as needed when saved!
-        dfr.setAuxIssued(true);
+        /*
+        dfr.setFkBookkeepingYearId_n();
+        dfr.setFkBookkeepingNumberId_n();
+        dfr.setFkUserIssuedId();    // will be set as needed when saved!
+        dfr.setFkUserAnnulledId();  // will be set as needed when saved!
+        dfr.setFkUserInsertId();    // will be set as needed when saved!
+        dfr.setFkUserUpdateId();    // will be set as needed when saved!
+        */
+        dfr.setAuxJustIssued(true);
 
         return dfr;
     }
@@ -1330,22 +1341,24 @@ public abstract class DTrnDfrUtils {
         
         int registryType;
         int registryId;
+        int timeout;
         
         switch (dfr.getFkXmlSubtypeId()) {
             case DModSysConsts.TS_XML_STP_CFDI_FAC:
                 registryType = ((DDbDps) trnDfr).getRegistryType();
                 registryId = ((DDbDps) trnDfr).getPkDpsId();
+                timeout = DDbDps.TIMEOUT;
                 break;
             case DModSysConsts.TS_XML_STP_CFDI_CRP:
                 registryType = dfr.getRegistryType();
                 registryId = dfr.getPkDfrId();
+                timeout = DDbDfr.TIMEOUT;
                 break;
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
         
-        
-        lock = DLockUtils.createLock(session, registryType, registryId, DDbDps.TIMEOUT);
+        lock = DLockUtils.createLock(session, registryType, registryId, timeout);
         
         // Create or obtain XML Signature Request for signature:
 
@@ -1697,8 +1710,13 @@ public abstract class DTrnDfrUtils {
             dfr.setDocXmlRaw(cfdi);
             dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
             dfr.setFkXmlSignatureProviderId(timbreFiscal.getPacId());
-            dfr.setAuxIssued(true);
+            dfr.setAuxJustIssued(true);
             dfr.setAuxRewriteXmlOnSave(true);
+            
+            if (dfr.getFkXmlSubtypeId() == DModSysConsts.TS_XML_STP_CFDI_CRP) {
+                dfr.setAuxLock(lock);
+            }
+            
             dfr.save(session);
 
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
@@ -2114,7 +2132,7 @@ public abstract class DTrnDfrUtils {
                 dfr.setCancelStatus(""); // TODO: implement new 2018 cancellation scheme!
                 dfr.setCancelXml(xml);
                 dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
-                dfr.setAuxAnnulled(true);
+                dfr.setAuxJustAnnulled(true);
 
                 switch (dfr.getFkXmlSubtypeId()) {
                     case DModSysConsts.TS_XML_STP_CFDI_FAC:

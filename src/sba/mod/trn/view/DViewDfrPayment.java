@@ -30,7 +30,6 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.trn.db.DDbDfr;
-import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
@@ -57,28 +56,31 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
      */
     public DViewDfrPayment(DGuiClient client, String title) {
         super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.TX_DFR_PAY, 0, title);
+        
+        setRowButtonsEnabled(true, true, false, true, false);
+        jtbFilterDeleted.setEnabled(false);
 
         moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
         moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
 
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
 
-        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
 
-        mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
 
-        mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSignVerify);
 
-        mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancel);
 
-        mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
 
-        mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
     }
 
@@ -86,11 +88,10 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
      * Private methods
      */
     
-    private boolean proceedAnnulment(final int[] keyDps, final int action) {
+    private boolean proceedDisableDelete(final int[] keyDfr, final int action) {
         boolean proceed = false;
         String msg = "";
-        DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
-        DDbDfr dfr = dps.getChildDfr();
+        DDbDfr dfr = (DDbDfr) miClient.getSession().readRegistry(DModConsts.T_DFR, keyDfr);
 
         if (dfr == null || !DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
             proceed = true; // DPS without DFR or with DFR of type CFD can be annuled anytime!
@@ -98,29 +99,29 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         else {
             switch (dfr.getFkXmlStatusId()) {
                 case DModSysConsts.TS_XML_ST_ANN:
-                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya está con estatus 'cancelado'.";
+                    msg = "El registro XML del documento '" + dfr.getDfrNumber() + "' ya tiene estatus 'cancelado'.";
                     miClient.showMsgBoxWarning(msg);
                     break;
                     
                 case DModSysConsts.TS_XML_ST_ISS:
-                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' permanece con estatus 'emitido'.\n";
+                    msg = "El registro XML del documento '" + dfr.getDfrNumber() + "' permanecerá con estatus 'emitido'.\n";
                     
                     switch (action) {
                         case ACTION_DISABLE:
-                            if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ANN) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
                             }
                             else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
                             }
                             break;
                             
                         case ACTION_DELETE:
-                            if (!dps.isDeleted()) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual.\n";
+                            if (!dfr.isDeleted()) {
+                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
                             }
                             else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual.\n";
+                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
                             }
                             break;
                             
@@ -147,7 +148,6 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
     @Override
     public void prepareSqlQuery() {
         String sql = "";
-        String num = "";
         Object filter = null;
 
         moPaneSettings = new DGridPaneSettings(1, 1);
@@ -171,6 +171,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), v.num) AS f_num, " +
                 "v.doc_ts, " +
                 "v.uid, " +
+                "v.b_bkk, " +
                 "xtp.code, " +
                 "xtp.name, " +
                 "xstp.code, " +
@@ -182,7 +183,8 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "b.fis_id, " +
                 "bc.code, " +
                 "cb.code, " +
-                "IF(v.fk_xml_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
+                "csh.code, " +
+                "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
@@ -206,6 +208,8 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "v.fk_bpr = bc.id_bpr AND bc.id_bpr_cl = " + DModSysConsts.BS_BPR_CL_CUS + " " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BRA) + " AS cb ON " +
                 "v.fk_own_bpr = cb.id_bpr AND v.fk_own_bra = cb.id_bra " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_CSH) + " AS csh ON " +
+                "v.fk_csh_bpr_n = csh.id_bpr AND v.fk_csh_bra_n = csh.id_bra AND v.fk_csh_csh_n = csh.id_csh " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
@@ -217,17 +221,19 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[18];
+        DGridColumnView[] columns = new DGridColumnView[20];
 
         String catetory = DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(DModSysConsts.BS_BPR_CL_CUS)).toLowerCase();
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, "v.doc_ts", DGridConsts.COL_TITLE_DATE + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "csh.code", DUtilConsts.TXT_BRANCH_CSH + " empresa");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + catetory);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, "bc.code", DGridConsts.COL_TITLE_CODE + " " + catetory);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "b.fis_id", "RFC " + catetory);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_bkk", "Aplicación pagos");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.uid", "UUID");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xtp.name", "Tipo XML");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xstp.name", "Subtipo XML");
@@ -327,7 +333,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DISABLEABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
+                        if (proceedDisableDelete(gridRow.getRowPrimaryKey(), ACTION_DISABLE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).disableRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }
@@ -342,6 +348,9 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         }
     }
 
+    /**
+     * By now, DFR deletions is not implemented. This method is preserved just for consistence.
+     */
     @Override
     public void actionRowDelete() {
         if (jbRowDelete.isEnabled()) {
@@ -363,7 +372,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                         miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_NON_DELETABLE);
                     }
                     else {
-                        if (proceedAnnulment(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
+                        if (proceedDisableDelete(gridRow.getRowPrimaryKey(), ACTION_DELETE)) {
                             if (miClient.getSession().getModule(mnModuleType, mnModuleSubtype).deleteRegistry(mnGridType, gridRow.getRowPrimaryKey()) == DDbConsts.SAVE_OK) {
                                 updates = true;
                             }
@@ -396,12 +405,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
-                    }
-                    else {
-                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-                    }
+                    DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                 }
                 catch (Exception e) {
                     DLibUtils.showException(this, e);
@@ -416,27 +420,11 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                boolean enabled = jbRowDisable.isEnabled(); // preserve button enabled status
-                
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
-                    }
-                    else {
-                        if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
-                            jbRowDisable.setEnabled(true);
-                            actionRowDisable();
-                        }
-                        else {
-                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-                        }
-                    }
+                    DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                 }
                 catch (Exception e) {
                     DLibUtils.showException(this, e);
-                }
-                finally {
-                    jbRowDisable.setEnabled(enabled);   // restore original button enable status
                 }
             }
         }
@@ -449,12 +437,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.sendDfr(miClient, (DGridRowView) getSelectedGridRow());
-                    }
-                    else {
-                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-                    }
+                    DTrnEmissionUtils.sendDfr(miClient, (DGridRowView) getSelectedGridRow());
                 }
                 catch (Exception e) {
                     DLibUtils.showException(this, e);

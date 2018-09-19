@@ -578,7 +578,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             moYearMonthPicker = new DGuiYearMonthPicker(this);
             moDialogUserSession = new DDialogUserSession(this, "Sesión del usuario actual");
             moFileChooser = new JFileChooser();
-            moUserFormsMap = new HashMap<Integer, DGuiForm>();
+            moUserFormsMap = new HashMap<>();
             moIcon = new ImageIcon(getClass().getResource("/sba/gui/img/sba.gif"));
             moIconGuiClose = new ImageIcon(getClass().getResource("/sba/lib/img/gui_close.png"));
             moIconGuiCloseIna = new ImageIcon(getClass().getResource("/sba/lib/img/gui_close_ina.png"));

@@ -325,6 +325,7 @@ public class DViewBalanceBizPartner extends DGridPaneView implements ActionListe
         moSuscriptionsSet.add(DModConsts.F_BKK);
         moSuscriptionsSet.add(DModConsts.F_BKK_REC);
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
     }
 

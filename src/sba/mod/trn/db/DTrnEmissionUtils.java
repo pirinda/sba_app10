@@ -457,7 +457,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void signDps(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
-        boolean sign = false;
+        boolean sign = true;
         boolean signed = false;
         DTrnEmissionParams params = null;
         DDbSysXmlSignatureProvider xsp = null;
@@ -478,14 +478,13 @@ public abstract class DTrnEmissionUtils {
                 // Check if XML signature is allowed:
                 
                 params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dps.getChildDfr());
-                sign = params.RequestAllowed;
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (sign) {
+            if (params != null && params.RequestAllowed) {
                 try {
                     // Check that there are not pending transactions:
 
@@ -615,36 +614,33 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void signDfr(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
-        boolean sign = false;
-        boolean signed = false;
-        DTrnEmissionParams params = null;
-        DDbSysXmlSignatureProvider xsp = null;
-        DDbXmlSignatureRequest xsr = null;
-        DDbDfr dfr = null;
-
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
         }
         else {
+            DDbDfr dfr = null;
+            DTrnEmissionParams params = null;
+            
             try {
                 dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                 
                 // Check if XML signature is allowed:
                 
                 params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dfr);
-                sign = params.RequestAllowed;
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (sign) {
+            if (params != null && params.RequestAllowed) {
+                boolean sign = true;
+                
                 try {
                     // Check that there are not pending transactions:
 
-                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
-                    xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
+                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    DDbXmlSignatureRequest xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                         // Request signature:
@@ -701,6 +697,8 @@ public abstract class DTrnEmissionUtils {
                     }
 
                     if (sign) {
+                        boolean signed = false;
+                        
                         try {
                             client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
@@ -711,7 +709,7 @@ public abstract class DTrnEmissionUtils {
                             DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
                         }
                         finally {
-                            client.getSession().notifySuscriptors(DModConsts.T_DPS_SIG);
+                            client.getSession().notifySuscriptors(DModConsts.T_DFR);
 
                             if (!signed) {
                                 client.showMsgBoxWarning("El comprobante '" + dfr.getDfrNumber() + "' no ha sido timbrado.");
@@ -734,9 +732,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void cancelDps(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
-        int action = DTrnEmissionConsts.ANNUL_CANCEL;
-        int lastRequestStatus = DLibConsts.UNDEFINED;
-        boolean cancel = false;
+        boolean cancel = true;
         boolean cancelled = false;
         DTrnEmissionParams params = null;
         DDbSysXmlSignatureProvider xsp = null;
@@ -744,6 +740,8 @@ public abstract class DTrnEmissionUtils {
         DDbDps dps = null;
         DDbDfr dfr = null;
         DFormDpsCancelling formDpsCancelling = null;
+        int action = DTrnEmissionConsts.ANNUL_CANCEL;
+        int lastRequestStatus = DLibConsts.UNDEFINED;
 
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
@@ -755,18 +753,13 @@ public abstract class DTrnEmissionUtils {
                 // Check if XML cancellation is allowed:
                 
                 params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dps.getChildDfr());
-                cancel = params.RequestAllowed;
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-            
-                if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
-                    cancel = client.showMsgBoxConfirm(DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
-                }
             }
             
-            if (cancel) {
+            if (params != null && params.RequestAllowed) {
                 try {
                     // Check that there are not pending transactions:
 
@@ -886,42 +879,33 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void cancelDfr(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
-        int action = DTrnEmissionConsts.ANNUL_CANCEL;
-        int lastRequestStatus = DLibConsts.UNDEFINED;
-        boolean cancel = false;
-        boolean cancelled = false;
-        DTrnEmissionParams params = null;
-        DDbSysXmlSignatureProvider xsp = null;
-        DDbXmlSignatureRequest xsr = null;
-        DDbDfr dfr = null;
-
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
         }
         else {
+            DDbDfr dfr = null;
+            DTrnEmissionParams params = null;
+            
             try {
                 dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                 
                 // Check if XML cancellation is allowed:
                 
                 params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dfr);
-                cancel = params.RequestAllowed;
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-            
-                if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
-                    cancel = client.showMsgBoxConfirm(DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
-                }
             }
             
-            if (cancel) {
+            if (params != null && params.RequestAllowed) {
+                boolean cancel = true;
+                
                 try {
                     // Check that there are not pending transactions:
 
-                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
-                    xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
+                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    DDbXmlSignatureRequest xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                         // Request signature:
@@ -931,9 +915,6 @@ public abstract class DTrnEmissionUtils {
                                     "\nHay una transacción pendiente para el comprobante.");
                         }
                         else {
-                            if (xsr != null) {
-                                lastRequestStatus = xsr.getRequestStatus();
-                            }
                             xsr = null; // new request about to be created
                         }
                     }
@@ -976,9 +957,12 @@ public abstract class DTrnEmissionUtils {
                     }
 
                     if (cancel) {
+                        int action = DTrnEmissionConsts.ANNUL_CANCEL;
                         cancel = client.showMsgBoxConfirm("¿Está seguro que desea cancelar el comprobante '" + dfr.getDfrNumber() + "'?") == JOptionPane.YES_OPTION;
 
                         if (cancel) {
+                            boolean cancelled = false;
+                            
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 

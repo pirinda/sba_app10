@@ -300,11 +300,12 @@ public class DViewBalanceBranchCash extends DGridPaneView implements ActionListe
     @Override
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
-        moSuscriptionsSet.add(DModConsts.CU_CSH);
+        moSuscriptionsSet.add(DModConsts.BU_BPR);
         moSuscriptionsSet.add(DModConsts.BU_BRA);
         moSuscriptionsSet.add(DModConsts.F_BKK);
         moSuscriptionsSet.add(DModConsts.F_BKK_REC);
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
         moSuscriptionsSet.add(DModConsts.T_IOM);
     }
 
