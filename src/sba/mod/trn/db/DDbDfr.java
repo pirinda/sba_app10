@@ -40,7 +40,6 @@ import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
-import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
@@ -1124,8 +1123,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         concepto.getAttClaveProdServ().setString(DCfdi33Catalogs.ClaveProdServServsFacturacion);
         //concepto.getAttNoIdentificacion().setString();
         concepto.getAttCantidad().setDouble(1);
-        concepto.getAttCantidad().setDecimals(1);
-        concepto.getAttCantidad().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity());
+        concepto.getAttCantidad().setDecimals(0);
         concepto.getAttClaveUnidad().setString(DCfdi33Catalogs.ClaveUnidadAct);
         //concepto.getAttUnidad().setString();
         concepto.getAttDescripcion().setString(DCfdi33Catalogs.ConceptoPago);
