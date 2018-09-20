@@ -1128,7 +1128,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         if (moKeyCfdReceptor.getSelectedIndex() > 0) {
             moTextCfdSeries.setValue(moConfigBranch.getEdsCrpSeries());
             moDateCfdDate.setValue(miClient.getSession().getWorkingDate());
-            moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moBizPartnerConfig.getCfdUsage()) });
+            moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(DCfdi33Catalogs.CFDI_USO_POR_DEF) });
             moKeyCfdTaxRegime.setValue(new int[] { moConfigCompany.getFkTaxRegimeId() });
             
             moRadModeEmitPay.setSelected(true);
@@ -1140,7 +1140,13 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moTextPayTime.setValue("12:00:00");
         
         if (moKeyCfdReceptor.getSelectedIndex() > 0) {
-            moKeyPayModeOfPaymentType.setValue(new int[] { moBizPartnerConfig.getActualFkModeOfPaymentTypeId() });
+            String mop = moXmlCatalogModeOfPayment.getCode(moBizPartnerConfig.getActualFkModeOfPaymentTypeId());
+            if (mop.equals(DCfdi33Catalogs.FDP_POR_DEF)) {
+                moKeyPayModeOfPaymentType.resetField();
+            }
+            else {
+                moKeyPayModeOfPaymentType.setValue(new int[] { moBizPartnerConfig.getActualFkModeOfPaymentTypeId() });
+            }
             moKeyPayCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
         }
     }
@@ -1167,7 +1173,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moRadModeEmit.setEnabled(enable || paymentsAvailable);
         moRadModeEmitPay.setEnabled(enable || paymentsAvailable);
         moTextCfdConfirmation.setEditable(enable || paymentsAvailable);
-        moKeyCfdUsage.setEnabled(enable || paymentsAvailable);
+        moKeyCfdUsage.setEnabled(false); // allways disabled
         moKeyCfdTaxRegime.setEnabled(enable || paymentsAvailable);
         moTextCfdRelated.setEditable(enable || paymentsAvailable);
         jbCfdRelatedPick.setEnabled(/*enable || paymentsAvailable*/false); // should be enabled when needed, but until implemented!
