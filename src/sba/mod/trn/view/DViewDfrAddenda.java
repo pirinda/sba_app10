@@ -92,7 +92,7 @@ public class DViewDfrAddenda extends DGridPaneView {
                 "dfr.doc_xml_add " + (mnGridMode == DUtilConsts.EMT ? "<>" : "= ") + " ''";
 
         msSql = "SELECT " +
-                "v.id_dps AS " + DDbConsts.FIELD_ID + "1, " +
+                "dfr.id_dfr AS " + DDbConsts.FIELD_ID + "1, " +
                 "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), " + num + ") AS " + DDbConsts.FIELD_CODE + ", " +
                 "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), " + num + ") AS " + DDbConsts.FIELD_NAME + ", " +
                 "CONCAT(v.ser, IF(LENGTH(v.ser) = 0, '', '-'), " + num + ") AS f_num, " +

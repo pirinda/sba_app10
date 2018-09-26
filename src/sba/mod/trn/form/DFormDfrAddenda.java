@@ -37,6 +37,9 @@ import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.cfg.db.DDbLock;
+import sba.mod.cfg.db.DLockConsts;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DDbDpsRow;
@@ -55,6 +58,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
 
     private DDbDfr moRegistry;
     private DDbDps moDps;
+    private DDbLock moRegistryLock;
     private DGridPaneForm moGridDpsRows;
 
     /** Creates new form DFormDfrAddenda
@@ -114,6 +118,12 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         jPanel21 = new javax.swing.JPanel();
         jbContEntryEdit = new javax.swing.JButton();
         jbContEntrySave = new javax.swing.JButton();
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jpContainer.setLayout(new java.awt.BorderLayout());
 
@@ -276,6 +286,10 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         getContentPane().add(jpContainer, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        freeLockByCancel();
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
@@ -370,6 +384,20 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         moGridDpsRows.setPaneFormOwner(null);
         
         mvFormGrids.add(moGridDpsRows);
+    }
+    
+    private void freeLockByCancel() {
+        if (moRegistryLock != null) {
+            try {
+                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+            finally {
+                moRegistryLock = null;
+            }
+        }
     }
     
     private void actionPerformedContEntryEdit() {
@@ -523,6 +551,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         }
         else {
             jtfRegistryKey.setText("");
+            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDfrId(), DDbDps.TIMEOUT);
         }
         
         jtfXmlAddendaType.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ADD_TP, new int[] { moRegistry.getFkXmlAddendaTypeId() }, DDbRegistry.FIELD_NAME));
@@ -584,7 +613,11 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         DElementAddendaContinentalTire addendaContinentalTire = null;
         DDbDfr registry = moRegistry.clone();
 
-        if (registry.isRegistryNew()) { }
+        if (registry.isRegistryNew()) {
+        }
+        else {
+            registry.setAuxLock(moRegistryLock);
+        }
         
         switch (moRegistry.getFkXmlAddendaTypeId()) {
             case DModSysConsts.TS_XML_ADD_TP_CON:
