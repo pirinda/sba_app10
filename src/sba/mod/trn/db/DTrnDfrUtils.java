@@ -2139,6 +2139,7 @@ public abstract class DTrnDfrUtils {
                         ((DDbDps) trnDfr).updateDfr(session, dfr);
                         break;
                     case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                        dfr.setAuxComputeBookkeeping(true);
                         dfr.save(session);
                         break;
                     default:

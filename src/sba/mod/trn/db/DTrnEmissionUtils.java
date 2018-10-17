@@ -973,7 +973,7 @@ public abstract class DTrnEmissionUtils {
                                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
                             }
                             finally {
-                                client.getSession().notifySuscriptors(DModConsts.T_DPS_SIG);
+                                client.getSession().notifySuscriptors(DModConsts.T_DFR);
 
                                 if (!cancelled) {
                                     client.showMsgBoxWarning("El comprobante '" + dfr.getDfrNumber() + "' no ha sido cancelado.");
@@ -1344,7 +1344,7 @@ public abstract class DTrnEmissionUtils {
 
                                 Transport.send(mimeMessage);
 
-                                client.getSession().notifySuscriptors(DModConsts.T_DPS_SND);
+                                client.getSession().notifySuscriptors(DModConsts.T_DFR);
 
                                 client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido enviado.");
                             }

@@ -231,7 +231,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         if (mbAuxComputeBookkeeping) {
             mbAuxComputeBookkeeping = false;
             
-            DDbBookkeepingNumber bkkNumber = null;
+            DDbBookkeepingNumber bkkNumber;
 
             // delete previous bookkeeping moves, if any:
             

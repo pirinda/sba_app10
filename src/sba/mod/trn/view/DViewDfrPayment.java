@@ -134,7 +134,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                     break;
                     
                 default:
-                    proceed = true; // DPS has DFR of type CFDI not yet signed nor annuled!
+                    proceed = true;
             }
         }
         
