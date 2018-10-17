@@ -2395,7 +2395,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             jbSave.setEnabled(true);
         }
         else {
-            jbSave.setEnabled(!moRegistry.isSystem() && moRegistry.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS);
+            jbSave.setEnabled(!moRegistry.isSystem() && !DLibUtils.belongsTo(moRegistry.getFkXmlStatusId(), new int[] { DModSysConsts.TS_XML_ST_ISS, DModSysConsts.TS_XML_ST_ANN }));
         }
 
         addAllListeners();
