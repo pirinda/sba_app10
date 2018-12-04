@@ -9,14 +9,14 @@ package sba.mod.trn.db;
  *
  * @author Sergio Flores
  */
-public class DTrnEmissionParams {
+public class DTrnEmissionSettings {
     
     public int SignatureProviderId;
     public boolean RequestAllowed;
     public int[] SignatureCompanyBranchKey;
     public int StampsAvailable;
     
-    public DTrnEmissionParams() {
+    public DTrnEmissionSettings() {
         SignatureProviderId = 0;
         RequestAllowed = false;
         SignatureCompanyBranchKey = null;

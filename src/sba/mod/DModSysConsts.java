@@ -712,10 +712,14 @@ public abstract class DModSysConsts {
     public static final int TX_XMS_REQ_STP_REQ = 1;
     public static final int TX_XMS_REQ_STP_VER = 2;
     
-    public static final int TX_XMS_REQ_ST_STA = 1;  // started
-    public static final int TX_XMS_REQ_ST_PRC = 2;  // processed (signed/cancelled)
-    public static final int TX_XMS_REQ_ST_CMP = 3;  // computed (stamp consumed)
-    public static final int TX_XMS_REQ_ST_FIN = 4;  // finished (PDF generated)
+    /** Request started. */
+    public static final int TX_XMS_REQ_ST_STA = 1;
+    /** Request processed (CFDI signed/cancelled). */
+    public static final int TX_XMS_REQ_ST_PRC = 2;
+    /** Request computed (stamp consumed). */
+    public static final int TX_XMS_REQ_ST_CMP = 3;
+    /** Request finished (PDF generated). */
+    public static final int TX_XMS_REQ_ST_FIN = 4;
     
     public static final int TX_DFR_CRP_PAY = 1;
     public static final int TX_DFR_CRP_PAY_DOC = 2;

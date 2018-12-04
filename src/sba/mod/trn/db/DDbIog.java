@@ -84,8 +84,8 @@ public class DDbIog extends DDbRegistryUser {
 
     public DDbIog() {
         super(DModConsts.T_IOG);
-        mvChildNotes = new Vector<DDbIogNote>();
-        mvChildRows = new Vector<DDbIogRow>();
+        mvChildNotes = new Vector<>();
+        mvChildRows = new Vector<>();
         initRegistry();
     }
 

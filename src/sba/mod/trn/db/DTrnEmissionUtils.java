@@ -109,10 +109,10 @@ public abstract class DTrnEmissionUtils {
      * @param requestType Signature request type: sign or cancel; constants defined in DModSysConsts.TX_XMS_REQ_TP_.
      * @param requestSubtype Signature request subtype: stamp request or stamp verification; constants defined in DModSysConsts.TX_XMS_REQ_STP_.
      * @param dfr DFR.
-     * @return Emission parameters.
+     * @return Emission settings.
      */
-    private static DTrnEmissionParams checkXmlSignatureRequestAllowed(final DGuiSession session, final int requestType, final int requestSubtype, final DDbDfr dfr) throws Exception {
-        DTrnEmissionParams params = new DTrnEmissionParams();
+    private static DTrnEmissionSettings checkXmlSignatureRequestAllowed(final DGuiSession session, final int requestType, final int requestSubtype, final DDbDfr dfr) throws Exception {
+        DTrnEmissionSettings settings = new DTrnEmissionSettings();
         DDbConfigCompany configCompany = (DDbConfigCompany) session.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
         DDbSysXmlSignatureProvider xsp = null;
@@ -124,18 +124,18 @@ public abstract class DTrnEmissionUtils {
             throw new Exception("No se ha definido el " + DTrnEmissionConsts.PAC + " en la configuración de la " + DUtilConsts.TXT_BRANCH.toLowerCase() + ".");
         }
         else {
-            params.SignatureProviderId = configBranch.getFkXmlSignatureProviderId();
+            settings.SignatureProviderId = configBranch.getFkXmlSignatureProviderId();
             
-            xsp = (DDbSysXmlSignatureProvider) session.readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+            xsp = (DDbSysXmlSignatureProvider) session.readRegistry(DModConsts.CS_XSP, new int[] { settings.SignatureProviderId });
 
             switch (requestType) {
                 case DModSysConsts.TX_XMS_REQ_TP_SIG:
                     switch (requestSubtype) {
                         case DModSysConsts.TX_XMS_REQ_STP_REQ:
-                            params.RequestAllowed = xsp.isSignature();
+                            settings.RequestAllowed = xsp.isSignature();
                             break;
                         case DModSysConsts.TX_XMS_REQ_STP_VER:
-                            params.RequestAllowed = xsp.isSignatureVerification();
+                            settings.RequestAllowed = xsp.isSignatureVerification();
                             break;
                         default:
                             throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -144,10 +144,10 @@ public abstract class DTrnEmissionUtils {
                 case DModSysConsts.TX_XMS_REQ_TP_CAN:
                     switch (requestSubtype) {
                         case DModSysConsts.TX_XMS_REQ_STP_REQ:
-                            params.RequestAllowed = xsp.isCancellation();
+                            settings.RequestAllowed = xsp.isCancellation();
                             break;
                         case DModSysConsts.TX_XMS_REQ_STP_VER:
-                            params.RequestAllowed = xsp.isCancellationVerification();
+                            settings.RequestAllowed = xsp.isCancellationVerification();
                             break;
                         default:
                             throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -157,22 +157,22 @@ public abstract class DTrnEmissionUtils {
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
             
-            if (!params.RequestAllowed) {
+            if (!settings.RequestAllowed) {
                 throw new Exception("El " + DTrnEmissionConsts.PAC + " no permite la operación solicitada.\nSerá necesario realizar la acción de forma manual por otros medios.");
             }
             else {
                 // Check stamps available with DPS's company branch ones:
                 
-                params.StampsAvailable = getStampsAvailable(session, params.SignatureProviderId, dfr.getCompanyBranchKey());
-                if (params.StampsAvailable > 0) {
-                    params.SignatureCompanyBranchKey = dfr.getCompanyBranchKey();
+                settings.StampsAvailable = getStampsAvailable(session, settings.SignatureProviderId, dfr.getCompanyBranchKey());
+                if (settings.StampsAvailable > 0) {
+                    settings.SignatureCompanyBranchKey = dfr.getCompanyBranchKey();
                 }
                 else {
                     // Check stamps available with company ones:
                 
-                    params.StampsAvailable = getStampsAvailable(session, params.SignatureProviderId, null);
-                    if (params.StampsAvailable > 0) {
-                        params.SignatureCompanyBranchKey = null;    // value already set, just for consistence
+                    settings.StampsAvailable = getStampsAvailable(session, settings.SignatureProviderId, null);
+                    if (settings.StampsAvailable > 0) {
+                        settings.SignatureCompanyBranchKey = null;    // value already set, just for consistence
                     }
                     else {
                         throw new Exception("El " + DTrnEmissionConsts.PAC + " no tiene timbres disponibles para completar la solicitud.");
@@ -181,7 +181,7 @@ public abstract class DTrnEmissionUtils {
             }
         }
         
-        return params;
+        return settings;
     }
     
     public static DDbXmlSignatureRequest getLastXmlSignatureRequest(final DGuiSession session, final int dfrId) throws SQLException, Exception {
@@ -459,7 +459,7 @@ public abstract class DTrnEmissionUtils {
     public static void signDps(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
         boolean sign = true;
         boolean signed = false;
-        DTrnEmissionParams params = null;
+        DTrnEmissionSettings settings = null;
         DDbSysXmlSignatureProvider xsp = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDps dps = null;
@@ -477,18 +477,18 @@ public abstract class DTrnEmissionUtils {
                 
                 // Check if XML signature is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dps.getChildDfr());
+                settings = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dps.getChildDfr());
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (params != null && params.RequestAllowed) {
+            if (settings != null && settings.RequestAllowed) {
                 try {
                     // Check that there are not pending transactions:
 
-                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { settings.SignatureProviderId });
                     xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
@@ -584,7 +584,7 @@ public abstract class DTrnEmissionUtils {
                         try {
                             client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                            DTrnDfrUtils.signDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
+                            DTrnDfrUtils.signDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType);
                             signed = true;
                         }
                         catch (Exception e) {
@@ -598,7 +598,7 @@ public abstract class DTrnEmissionUtils {
                             }
                             else {
                                 client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido timbrado.\n" +
-                                        "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                        "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
                             }
 
                             client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -619,27 +619,27 @@ public abstract class DTrnEmissionUtils {
         }
         else {
             DDbDfr dfr = null;
-            DTrnEmissionParams params = null;
+            DTrnEmissionSettings settings = null;
             
             try {
                 dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                 
                 // Check if XML signature is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dfr);
+                settings = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_SIG, requestType, dfr);
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (params != null && params.RequestAllowed) {
+            if (settings != null && settings.RequestAllowed) {
                 boolean sign = true;
                 
                 try {
                     // Check that there are not pending transactions:
 
-                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { settings.SignatureProviderId });
                     DDbXmlSignatureRequest xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
@@ -702,7 +702,7 @@ public abstract class DTrnEmissionUtils {
                         try {
                             client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                            DTrnDfrUtils.signDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType);
+                            DTrnDfrUtils.signDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType);
                             signed = true;
                         }
                         catch (Exception e) {
@@ -716,7 +716,7 @@ public abstract class DTrnEmissionUtils {
                             }
                             else {
                                 client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido timbrado.\n" +
-                                        "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                        "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
                             }
 
                             client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -734,7 +734,7 @@ public abstract class DTrnEmissionUtils {
     public static void cancelDps(final DGuiClient client, final DGridRowView gridRow, final int requestType) {
         boolean cancel = true;
         boolean cancelled = false;
-        DTrnEmissionParams params = null;
+        DTrnEmissionSettings settings = null;
         DDbSysXmlSignatureProvider xsp = null;
         DDbXmlSignatureRequest xsr = null;
         DDbDps dps = null;
@@ -752,18 +752,18 @@ public abstract class DTrnEmissionUtils {
                 
                 // Check if XML cancellation is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dps.getChildDfr());
+                settings = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dps.getChildDfr());
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (params != null && params.RequestAllowed) {
+            if (settings != null && settings.RequestAllowed) {
                 try {
                     // Check that there are not pending transactions:
 
-                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { settings.SignatureProviderId });
                     xsr = getLastXmlSignatureRequest(client.getSession(), dps.getChildDfr().getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
@@ -848,7 +848,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnDfrUtils.cancelDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action);
                                 cancelled = true;
                             }
                             catch (Exception e) {
@@ -862,7 +862,7 @@ public abstract class DTrnEmissionUtils {
                                 }
                                 else {
                                     client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido cancelado.\n" +
-                                            "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                            "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
                                 }
 
                                 client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -884,27 +884,27 @@ public abstract class DTrnEmissionUtils {
         }
         else {
             DDbDfr dfr = null;
-            DTrnEmissionParams params = null;
+            DTrnEmissionSettings settings = null;
             
             try {
                 dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
                 
                 // Check if XML cancellation is allowed:
                 
-                params = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dfr);
+                settings = checkXmlSignatureRequestAllowed(client.getSession(), DModSysConsts.TX_XMS_REQ_TP_CAN, requestType, dfr);
             }
             catch (Exception e) {
                 e.printStackTrace();
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
             }
             
-            if (params != null && params.RequestAllowed) {
+            if (settings != null && settings.RequestAllowed) {
                 boolean cancel = true;
                 
                 try {
                     // Check that there are not pending transactions:
 
-                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { params.SignatureProviderId });
+                    DDbSysXmlSignatureProvider xsp = (DDbSysXmlSignatureProvider) client.getSession().readRegistry(DModConsts.CS_XSP, new int[] { settings.SignatureProviderId });
                     DDbXmlSignatureRequest xsr = getLastXmlSignatureRequest(client.getSession(), dfr.getPkDfrId());
 
                     if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
@@ -966,7 +966,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnDfrUtils.cancelDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action);
                                 cancelled = true;
                             }
                             catch (Exception e) {
@@ -980,7 +980,7 @@ public abstract class DTrnEmissionUtils {
                                 }
                                 else {
                                     client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido cancelado.\n" +
-                                            "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), params.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                            "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
                                 }
 
                                 client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -1362,6 +1362,45 @@ public abstract class DTrnEmissionUtils {
                         }
                     }
                 }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+    
+    public static void checkDps(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbDps dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                DDbDfr dfr = dps.getChildDfr();
+                
+                DTrnDfrUtilsHandler dfrUtilsHandler = new DTrnDfrUtilsHandler(client.getSession());
+                DTrnDfrUtilsHandler.CfdiAckQuery ackQuery = dfrUtilsHandler.getCfdiSatStatus(dfr);
+                
+                client.showMsgBoxInformation(ackQuery.composeMessage());
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+    
+    public static void checkDfr(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbDfr dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                
+                DTrnDfrUtilsHandler dfrUtilsHandler = new DTrnDfrUtilsHandler(client.getSession());
+                DTrnDfrUtilsHandler.CfdiAckQuery ackQuery = dfrUtilsHandler.getCfdiSatStatus(dfr);
+                
+                client.showMsgBoxInformation(ackQuery.composeMessage());
             }
             catch (Exception e) {
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);

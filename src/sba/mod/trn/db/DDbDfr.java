@@ -18,6 +18,7 @@ import cfd.ver33.crp10.DElementPagos;
 import cfd.ver33.crp10.DElementPagosPago;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -54,7 +55,10 @@ import sba.mod.fin.db.DFinUtils;
  * @author Sergio Flores
  */
 public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
+    
+    public static final int FIELD_CAN_ST = 1;
 
+    /** Timeout in minutes.  */
     public static final int TIMEOUT = 3; // 3 min.
     
     protected int mnPkDfrId;
@@ -469,7 +473,23 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         String xml = getSuitableDocXml();
         return xml.isEmpty() ? null : DCfdUtils.getCfdi33(xml);
     }
-
+    
+    public double getDfrTotal(DGuiSession session) throws Exception {
+        double total = 0;
+        
+        switch (mnFkXmlSubtypeId) {
+            case DModSysConsts.TS_XML_STP_CFDI_FAC:
+                total = ((DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnFkDpsId_n })).getTotalCy_r();
+                break;
+            case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                break;
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
+        return total;
+    }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkDfrId = pk[0];
@@ -939,6 +959,26 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+    
+    @Override
+    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
+        initQueryMembers();
+        mnQueryResultId = DDbConsts.SAVE_ERROR;
+
+        msSql = "UPDATE " + getSqlTable() + " SET ";
+
+        switch (field) {
+            case FIELD_CAN_ST:
+                msSql += "can_st = '" + (String) value + "' ";
+                break;
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+
+        msSql += getSqlWhere(pk);
+        statement.execute(msSql);
+        mnQueryResultId = DDbConsts.SAVE_OK;
     }
     
     @Override

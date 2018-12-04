@@ -22,6 +22,7 @@ import cfd.ext.continental.DElementPosicionesPo;
 import cfd.ext.continental.DElementTipoProv;
 import cfd.ver32.DCfdiVer32Consts;
 import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver33.DCfdi33Consts;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1323,7 +1324,6 @@ public abstract class DTrnDfrUtils {
 
     public static void signDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype) throws TransformerConfigurationException, TransformerException, Exception {
         String cfdi = "";
-        String message = "";
         String edsName = "";
         String edsPassword = "";
         DocumentBuilder docBuilder = null;
@@ -1349,11 +1349,13 @@ public abstract class DTrnDfrUtils {
                 registryId = ((DDbDps) trnDfr).getPkDpsId();
                 timeout = DDbDps.TIMEOUT;
                 break;
+                
             case DModSysConsts.TS_XML_STP_CFDI_CRP:
                 registryType = dfr.getRegistryType();
                 registryId = dfr.getPkDfrId();
                 timeout = DDbDfr.TIMEOUT;
                 break;
+                
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -1361,9 +1363,17 @@ public abstract class DTrnDfrUtils {
         lock = DLockUtils.createLock(session, registryType, registryId, timeout);
         
         // Create or obtain XML Signature Request for signature:
-
+        
+        /*
+        Status of XML Signature Request:
+        DModSysConsts.TX_XMS_REQ_ST_STA: Request started.
+        DModSysConsts.TX_XMS_REQ_ST_PRC: Request processed (CFDI signed/cancelled).
+        DModSysConsts.TX_XMS_REQ_ST_CMP: Request computed (stamp consumed).
+        DModSysConsts.TX_XMS_REQ_ST_FIN: Request finished (PDF generated).
+        */
+        
         switch (requestSubtype) {
-            case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
+            case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log a sign request
                 xsr = new DDbXmlSignatureRequest();
                 xsr.setPkDfrId(dfr.getPkDfrId());
                 //xsr.setPkRequestId(0);
@@ -1375,7 +1385,7 @@ public abstract class DTrnDfrUtils {
                 xsr.save(session);
                 break;
                 
-            case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
+            case DModSysConsts.TX_XMS_REQ_STP_VER:  // log a sign verification
                 xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dfr.getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
@@ -1438,10 +1448,7 @@ public abstract class DTrnDfrUtils {
 
                             if (timbradoResponse.getMensaje() != null) {
                                 xsr.delete(session);    // delete request log
-
-                                message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
-                                System.err.println(message);
-                                throw new Exception(message);
+                                throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
                             
                             cfdi = timbradoResponse.getCfdi();
@@ -1473,11 +1480,7 @@ public abstract class DTrnDfrUtils {
 
                             if (timbradoResponse.getMensaje() != null) {
                                 xsr.delete(session);    // delete request log
-
-                                message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
-
-                                System.err.println(message);
-                                throw new Exception(message);
+                                throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
 
                             cfdi = timbradoResponse.getCfdi();
@@ -1505,18 +1508,14 @@ public abstract class DTrnDfrUtils {
 
                             if (timbradoResponse.getMensaje() != null) {
                                 xsr.delete(session);    // delete request log
-
-                                message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
-
-                                System.err.println(message);
-                                throw new Exception(message);
+                                throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
 
                             cfdi = timbradoResponse.getCfdi();
                         }
                     }
                     else {
-                        // Sign verification:
+                        // Sign verification request:
                         
                         cfdi = DTrnEmissionUtils.getFileXml(session.getClient());
                         
@@ -1546,7 +1545,7 @@ public abstract class DTrnDfrUtils {
                             acuseRecepcionCfdi = port.stamp(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
                         else {
-                            // Sign verification:
+                            // Sign verification request:
                             
                             acuseRecepcionCfdi = port.stamped(dfr.getDocXml().getBytes("UTF-8"), edsName, edsPassword);
                         }
@@ -1557,12 +1556,12 @@ public abstract class DTrnDfrUtils {
 
                         if (!incidencias.getValue().getIncidencia().isEmpty()) {
                             xsr.delete(session);    // delete request log
-
+                            
+                            String message = "";
                             for (stamp_demo.Incidencia incidencia : incidencias.getValue().getIncidencia()) {
                                 message += (message.isEmpty() ? "" : "\n") + "WsAcuseRecepcionCFDI code: [" + incidencia.getCodigoError().getValue() + "]" + " msg: [" + incidencia.getMensajeIncidencia().getValue() + "]";
                             }
 
-                            System.err.println(message);
                             throw new Exception(message);
                         }
                         cfdi = acuseRecepcionCfdi.getXml().getValue();
@@ -1573,9 +1572,9 @@ public abstract class DTrnDfrUtils {
                     else {
                         // Production environment:
                         
-                        stamp.AcuseRecepcionCFDI acuseRecepcionCfdi = null;
-                        JAXBElement<stamp.IncidenciaArray> incidencias = null;
-                        stamp.Application port = new stamp.StampSOAP().getApplication();
+                        com.finkok.stamp.AcuseRecepcionCFDI acuseRecepcionCfdi = null;
+                        JAXBElement<com.finkok.stamp.IncidenciaArray> incidencias = null;
+                        com.finkok.stamp.Application port = new com.finkok.stamp.StampSOAP().getApplication();
 
                         // Web service request:
 
@@ -1597,11 +1596,11 @@ public abstract class DTrnDfrUtils {
                         if (!incidencias.getValue().getIncidencia().isEmpty()) {
                             xsr.delete(session);    // delete request log
 
-                            for (stamp.Incidencia incidencia : incidencias.getValue().getIncidencia()) {
+                            String message = "";
+                            for (com.finkok.stamp.Incidencia incidencia : incidencias.getValue().getIncidencia()) {
                                 message += (message.isEmpty() ? "" : "\n") + "WsAcuseRecepcionCFDI code: [" + incidencia.getCodigoError().getValue() + "]" + " msg: [" + incidencia.getMensajeIncidencia().getValue() + "]";
                             }
 
-                            System.err.println(message);
                             throw new Exception(message);
                         }
 
@@ -1745,25 +1744,27 @@ public abstract class DTrnDfrUtils {
     public static void cancelDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action) throws TransformerConfigurationException, TransformerException, Exception {
         String xml = "";
         String value = "";
-        String message = "";
         String fiscalId = "";
         String edsName = "";
         String edsPassword = "";
+        String cancelStatus = "?";
         ArrayList<String> alUuids = null;
         DDbBizPartner company = null;
         DDbConfigBranch configBranch = null;
         DDbCertificate certificate = null;
         DDbXmlSignatureRequest xsr = null;
         
-        // Lock document, if necesary:
+        // Lock document, if necessary:
         
         switch (dfr.getFkXmlSubtypeId()) {
             case DModSysConsts.TS_XML_STP_CFDI_FAC:
                 ((DDbDps) trnDfr).assureLock(session);
                 break;
+                
             case DModSysConsts.TS_XML_STP_CFDI_CRP:
                 ((DDbDfr) trnDfr).assureLock(session);
                 break;
+                
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -1771,7 +1772,7 @@ public abstract class DTrnDfrUtils {
         // Create or obtain XML Signature Request for cancellation:
 
         switch (requestSubtype) {
-            case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log sign request
+            case DModSysConsts.TX_XMS_REQ_STP_REQ:  // log a cancel request
                 xsr = new DDbXmlSignatureRequest();
                 xsr.setPkDfrId(dfr.getPkDfrId());
                 //xsr.setPkRequestId(0);
@@ -1783,7 +1784,7 @@ public abstract class DTrnDfrUtils {
                 xsr.save(session);
                 break;
 
-            case DModSysConsts.TX_XMS_REQ_STP_VER:  // log sign verification
+            case DModSysConsts.TX_XMS_REQ_STP_VER:  // log a cancel verification
                 xsr = DTrnEmissionUtils.getLastXmlSignatureRequest(session, dfr.getPkDfrId());
                 if (xsr == null) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND + " (" + DUtilConsts.TXT_LOG + ")");
@@ -1795,6 +1796,7 @@ public abstract class DTrnDfrUtils {
                     throw new Exception(DLibConsts.ERR_MSG_WRONG_TYPE + " (" + DUtilConsts.TXT_ST + ")");
                 }
                 break;
+                
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -1815,7 +1817,7 @@ public abstract class DTrnDfrUtils {
                     case DModSysConsts.CS_XSP_FCG:  // FORCOGSA
                         /*
                         if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
-                            // Sign request:
+                            // Cancel request:
 
                             if (((DDbConfigCompany) session.getConfigCompany()).isDevelopment()) {
                                 // Development environment:
@@ -1838,10 +1840,7 @@ public abstract class DTrnDfrUtils {
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                                 }
 
                                 cfdi = timbradoResponse.getCfdi();
@@ -1867,18 +1866,14 @@ public abstract class DTrnDfrUtils {
 
                                 if (timbradoResponse.getMensaje() != null) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = "WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                                 }
 
                                 cfdi = timbradoResponse.getCfdi();
                             }
                         }
                         else {
-                            // Sign verification:
+                            // Cancel verification request:
 
                             cfdi = DTrnEmissionUtils.getFileXml(session.getClient());
 
@@ -1893,20 +1888,31 @@ public abstract class DTrnDfrUtils {
                         break;
                         */
                     case DModSysConsts.CS_XSP_FNK:  // Finkok
+                        /*
+                        2018-11-29, Sergio Flores:
+                        Please note that Finkok cancellation and cancellation-demo web services cannot be used at the same time:
+                        Java classes automatically generated are the same for both web services,
+                        and cannot be customized because of conflicts in class canonical names!
+                        */
+                        
                         if (((DDbConfigCompany) session.getConfigCompany()).isDevelopment()) {
                             // Development environment:
                             
+                            /*
+                            TODO: By now, cancellation in development environment with Finkok is not going to be implemented yet.
+                            */
+                            
                             QName uuidQName = null;
-                            JAXBElement<cancel_demo.StringArray> uuidValue = null;
-                            JAXBElement<cancel_demo.FolioArray> folios = null;
-                            cancel_demo.StringArray aUuids = null;
-                            cancel_demo.UUIDS uuids = null;
-                            cancel_demo.CancelaCFDResult cancelaCFDResult = null;
-                            cancel_demo.ReceiptResult receiptResult = null;
-                            cancel_demo.CancelSOAP service = null;
-                            cancel_demo.Application port = null;
+                            JAXBElement<com.finkok.facturacion.cancellation.StringArray> uuidValue = null;
+                            JAXBElement<views.core.soap.services.apps.FolioArray> folios = null;
+                            com.finkok.facturacion.cancellation.StringArray aUuids = null;
+                            views.core.soap.services.apps.UUIDS uuids = null;
+                            views.core.soap.services.apps.CancelaCFDResult cancelaCFDResult = null;
+                            views.core.soap.services.apps.ReceiptResult receiptResult = null;
+                            com.finkok.facturacion.cancel.CancelSOAP service = null;
+                            com.finkok.facturacion.cancel.Application port = null;
 
-                            service = new cancel_demo.CancelSOAP();
+                            service = new com.finkok.facturacion.cancel.CancelSOAP();
                             port = service.getApplication();
 
                             // Web service request:
@@ -1914,16 +1920,16 @@ public abstract class DTrnDfrUtils {
                             if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                                 // Cancel request:
                                 
-                                alUuids = new ArrayList<String>();
+                                alUuids = new ArrayList<>();
                                 alUuids.add(dfr.getUuid());
                                 
-                                aUuids = new cancel_demo.StringArray();
+                                aUuids = new com.finkok.facturacion.cancellation.StringArray();
                                 aUuids.getString().addAll(alUuids);
                                 
                                 uuidQName = new QName("uuids");
-                                uuidValue = new JAXBElement<cancel_demo.StringArray>(uuidQName, cancel_demo.StringArray.class, aUuids);
+                                uuidValue = new JAXBElement<>(uuidQName, com.finkok.facturacion.cancellation.StringArray.class, aUuids);
                                 
-                                uuids = new cancel_demo.UUIDS();
+                                uuids = new views.core.soap.services.apps.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
                                 if (dfr.getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
@@ -1938,7 +1944,7 @@ public abstract class DTrnDfrUtils {
                                 }
                             }
                             else {
-                                // Cancel verification:
+                                // Cancel verification request:
                                 
                                 receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dfr.getUuid(), "C");
                             }
@@ -1952,29 +1958,17 @@ public abstract class DTrnDfrUtils {
 
                                 if (folios == null) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().isEmpty()) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().get(0).getEstatusUUID().getValue().compareTo(DTrnEmissionConsts.UUID_ANNUL) != 0) {
-                                    xsr.delete(session);    // delete request log
-                                    
                                     value = folios.getValue().getFolio().get(0).getEstatusUUID().getValue();
 
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios.folio.estatus != 201: [" + value + (value.compareTo(DTrnEmissionConsts.UUID_ANNUL_UUID_UNEXIST) != 0 ? "" : " (UUID does not exist!)") + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    xsr.delete(session);    // delete request log
+                                    throw new Exception("CancelaCFDResult msg: folios.folio.estatus != 201: [" + value + (value.compareTo(DTrnEmissionConsts.UUID_ANNUL_UUID_UNEXIST) != 0 ? "" : " (UUID does not exist!)") + "]");
                                 }
                                 else {
                                     xml = cancelaCFDResult.getAcuse().getValue();
@@ -1986,22 +1980,20 @@ public abstract class DTrnDfrUtils {
                                 if (receiptResult != null) {
                                     if (receiptResult.getSuccess() == null) {
                                         xsr.delete(session);    // delete request log
-
-                                        message = (message.isEmpty() ? "" : "\n") + "ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]";
-
-                                        System.err.println(message);
-                                        throw new Exception(message);
+                                        throw new Exception("ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else if (!receiptResult.getSuccess().getValue()) {
                                         xsr.delete(session);    // delete request log
-
-                                        message = (message.isEmpty() ? "" : "\n") + "ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]";
-
-                                        System.err.println(message);
-                                        throw new Exception(message);
+                                        throw new Exception("ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else {
                                         xml = receiptResult.getReceipt().getValue();
+                                        /*
+                                        Cancellation cknowledgment comes wraped in another XML (SOAP response),
+                                        so '<' and '>' must be represented with its correspondign character entity references.
+                                        */
+                                        xml = xml.replace("&lt;", "<");
+                                        xml = xml.replace("&gt;", ">");
                                     }
                                 }
                             }
@@ -2009,34 +2001,116 @@ public abstract class DTrnDfrUtils {
                         else {
                             // Production environment:
                             
+                            // Check CFDI cancellable status:
+
+                            boolean getAckCancellation = false;
+                            DTrnDfrUtilsHandler dfrUtilsHandler = new DTrnDfrUtilsHandler(session);
+                            DTrnDfrUtilsHandler.CfdiAckQuery ackQuery = dfrUtilsHandler.getCfdiSatStatus(dfr);
+
+                            switch (ackQuery.CfdiStatus) {
+                                case DCfdi33Consts.CFDI_ESTATUS_CAN:
+                                    // CFDI is 'cancelled' before fiscal authority, but is still active in system:
+
+                                    getAckCancellation = true;
+                                    break;
+
+                                case DCfdi33Consts.CFDI_ESTATUS_VIG:
+                                    // CFDI is 'active' before fiscal authority:
+
+                                    if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_VER) {
+                                        // cancel verification request:
+                                        dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "");
+                                        session.notifySuscriptors(dfr.getRegistryType());
+                                        
+                                        xsr.delete(session);    // delete request log
+                                        throw new Exception("El CFDI está vigente.");
+                                    }
+
+                                    // check cancellable status:
+                                    switch (ackQuery.CancellableInfo) {
+                                        case DCfdi33Consts.CANCELABLE_SIN_ACEPT:
+                                        case DCfdi33Consts.CANCELABLE_CON_ACEPT:
+                                            // CFDI is cancellable, go through...
+                                            break;
+
+                                        case DCfdi33Consts.CANCELABLE_NO:
+                                            // CFDI is not cancellable:
+                                            xsr.delete(session);    // delete request log
+                                            throw new Exception("El CFDI es no cancelable.\n " + ackQuery.composeCfdiRelated());
+                                    }
+
+                                    // check cancellation status:
+                                    switch (ackQuery.CancelStatus) {
+                                        case DCfdi33Consts.ESTATUS_CANCEL_PROC: // CFDI cancellation is in process
+                                            dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
+                                            session.notifySuscriptors(dfr.getRegistryType());
+                                            
+                                            // do not delete XSR, preserve it!
+                                            throw new Exception("La solicitud de cancelación del CFDI está pendiente de ser aceptada o rechazada por el receptor.");
+
+                                        case DCfdi33Consts.ESTATUS_CANCEL_RECH: // CFDI cancellation was rejected by receptor
+                                            dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                            session.notifySuscriptors(dfr.getRegistryType());
+                                            
+                                            xsr.delete(session);    // delete request log
+                                            throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
+
+                                        case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                        case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
+                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                            xsr.delete(session);    // delete request log
+                                            throw new Exception("El estatus de cancelación del CFDI es inconsistente.");
+
+                                        case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
+                                            // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer)!
+                                            break;
+
+                                        default:
+                                            xsr.delete(session);    // delete request log
+                                            throw new Exception("El estatus de cancelación del CFDI es desconocido.");
+                                    }
+                                    break;
+
+                                case DCfdi33Consts.CFDI_ESTATUS_NO_ENC:
+                                    // CFDI was 'not found' before fiscal authority:
+                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "");
+                                    session.notifySuscriptors(dfr.getRegistryType());
+
+                                    xsr.delete(session);    // delete request log
+                                    throw new Exception("El CFDI no fue encontrado ante el SAT.");
+                                    
+                                default:
+                            }
+
                             QName uuidQName = null;
-                            JAXBElement<cancel.StringArray> uuidValue = null;
-                            JAXBElement<cancel.FolioArray> folios = null;
-                            cancel.StringArray aUuids = null;
-                            cancel.UUIDS uuids = null;
-                            cancel.CancelaCFDResult cancelaCFDResult = null;
-                            cancel.ReceiptResult receiptResult = null;
-                            cancel.CancelSOAP service = null;
-                            cancel.Application port = null;
+                            JAXBElement<com.finkok.facturacion.cancellation.StringArray> uuidValue = null;
+                            JAXBElement<views.core.soap.services.apps.FolioArray> folios = null;
+                            com.finkok.facturacion.cancellation.StringArray aUuids = null;
+                            views.core.soap.services.apps.UUIDS uuids = null;
+                            views.core.soap.services.apps.CancelaCFDResult cancelaCFDResult = null;
+                            views.core.soap.services.apps.ReceiptResult receiptResult = null;
+                            com.finkok.facturacion.cancel.CancelSOAP service = null;
+                            com.finkok.facturacion.cancel.Application port = null;
 
-                            service = new cancel.CancelSOAP();
+                            service = new com.finkok.facturacion.cancel.CancelSOAP();
                             port = service.getApplication();
-
+                            
                             // Web service request:
 
-                            if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ && !getAckCancellation) {
                                 // Cancel request:
                                 
-                                alUuids = new ArrayList<String>();
+                                alUuids = new ArrayList<>();
                                 alUuids.add(dfr.getUuid());
                                 
-                                aUuids = new cancel.StringArray();
+                                aUuids = new com.finkok.facturacion.cancellation.StringArray();
                                 aUuids.getString().addAll(alUuids);
                                 
                                 uuidQName = new QName("uuids");
-                                uuidValue = new JAXBElement<cancel.StringArray>(uuidQName, cancel.StringArray.class, aUuids);
+                                uuidValue = new JAXBElement<>(uuidQName, com.finkok.facturacion.cancellation.StringArray.class, aUuids);
                                 
-                                uuids = new cancel.UUIDS();
+                                uuids = new views.core.soap.services.apps.UUIDS();
                                 uuids.setUuids(uuidValue);
                                 
                                 if (dfr.getFkXmlSignatureProviderId() == xmlSignatureProviderId) {
@@ -2051,44 +2125,103 @@ public abstract class DTrnDfrUtils {
                                 }
                             }
                             else {
-                                // Cancel verification:
+                                // Cancel verification request:
                                 
                                 receiptResult = port.getReceipt(edsName, edsPassword, fiscalId, dfr.getUuid(), "C");
                             }
                             
                             // Process response:
 
-                            if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ && !getAckCancellation) {
                                 // Cancel request response:
                                 
                                 folios = cancelaCFDResult.getFolios();
 
                                 if (folios == null) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().isEmpty()) {
                                     xsr.delete(session);    // delete request log
-
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
-                                }
-                                else if (folios.getValue().getFolio().get(0).getEstatusUUID().getValue().compareTo(DTrnEmissionConsts.UUID_ANNUL) != 0) {
-                                    xsr.delete(session);    // delete request log
-
-                                    message = (message.isEmpty() ? "" : "\n") + "CancelaCFDResult msg: folios.folio.estatus != 201: [" + folios.getValue().getFolio().get(0).getEstatusUUID().getValue() + "]";
-
-                                    System.err.println(message);
-                                    throw new Exception(message);
+                                    throw new Exception("CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else {
-                                    xml = cancelaCFDResult.getAcuse().getValue();
+                                    String estatusUuid = folios.getValue().getFolio().get(0).getEstatusUUID().getValue();
+                                    switch (estatusUuid) {
+                                        case DTrnEmissionConsts.UUID_ANNUL:
+                                        case DTrnEmissionConsts.UUID_ANNUL_PREV:
+                                            // CFDI is cancelled, or a cancellation request is in process:
+
+                                            String estatusCancelacion = folios.getValue().getFolio().get(0).getEstatusCancelacion().getValue();
+                                            switch (estatusCancelacion) {
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PROC:
+                                                    // CFDI cancellation is in process:
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
+                                                    session.notifySuscriptors(dfr.getRegistryType());
+                                                    
+                                                    // do not delete XSR, preserve it!
+                                                    throw new Exception("La solicitud de cancelación del CFDI ha sido enviada al receptor.");
+
+                                                case DCfdi33Consts.ESTATUS_CANCEL_RECH:
+                                                    // CFDI cancellation was rejected by receptor:
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                                    session.notifySuscriptors(dfr.getRegistryType());
+                                                    
+                                                    xsr.delete(session);    // delete request log
+                                                    throw new Exception("La solicitud de cancelación del CFDI ha sido rechazada por el receptor.");
+
+                                                case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                                    // CFDI was canceled!:
+                                                    switch (estatusCancelacion) {
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                                            cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                                                            break;
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                                            cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
+                                                            break;
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                                            cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
+                                                            break;
+                                                        default:
+                                                    }
+
+                                                    xml = cancelaCFDResult.getAcuse().getValue();
+                                                    /*
+                                                    Cancellation cknowledgment comes wraped in another XML (SOAP response),
+                                                    so '<' and '>' must be represented with its correspondign character entity references.
+                                                    */
+                                                    xml = xml.replace("&lt;", "<");
+                                                    xml = xml.replace("&gt;", ">");
+                                                    break;
+
+                                                case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
+                                                    // CFDI in pending buffer:
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PEND_BUFF_CODE);
+                                                    session.notifySuscriptors(dfr.getRegistryType());
+
+                                                    // do not delete XSR, preserve it!
+                                                    throw new Exception("El CFDI ya está en el controlador de espera (pending buffer), en proceso de ser cancelado.");
+
+                                                default:
+                                                    // unexpected cancellation code status:
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "?");
+                                                    session.notifySuscriptors(dfr.getRegistryType());
+
+                                                    xsr.delete(session);    // delete request log
+                                                    throw new Exception("El estatus de cancelación del CFDI es desconocido: [" + estatusCancelacion + "].");
+                                            }
+                                            break;
+
+                                        default:
+                                            // unexpected response code:
+
+                                            xsr.delete(session);    // delete request log
+                                            throw new Exception("CancelaCFDResult msg: folios.folio.estatus different to 201 and 202: [" + folios.getValue().getFolio().get(0).getEstatusUUID().getValue() + "]");
+                                    }
                                 }
                             }
                             else {
@@ -2097,22 +2230,35 @@ public abstract class DTrnDfrUtils {
                                 if (receiptResult != null) {
                                     if (receiptResult.getSuccess() == null) {
                                         xsr.delete(session);    // delete request log
-
-                                        message = (message.isEmpty() ? "" : "\n") + "ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]";
-
-                                        System.err.println(message);
-                                        throw new Exception(message);
+                                        throw new Exception("ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else if (!receiptResult.getSuccess().getValue()) {
                                         xsr.delete(session);    // delete request log
-
-                                        message = (message.isEmpty() ? "" : "\n") + "ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]";
-
-                                        System.err.println(message);
-                                        throw new Exception(message);
+                                        throw new Exception("ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else {
+                                        // CFDI was canceled!:
+                                        switch (ackQuery.CancelStatus) {
+                                            case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                                cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                                                break;
+                                            case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                                cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
+                                                break;
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                                cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
+                                                break;
+                                            default:
+                                        }
+                                        
                                         xml = receiptResult.getReceipt().getValue();
+                                        /*
+                                        Cancellation cknowledgment comes wraped in another XML (SOAP response),
+                                        so '<' and '>' must be represented with its correspondign character entity references.
+                                        */
+                                        xml = xml.replace("&lt;", "<");
+                                        xml = xml.replace("&gt;", ">");
                                     }
                                 }
                             }
@@ -2126,10 +2272,14 @@ public abstract class DTrnDfrUtils {
                     default:
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " " + DTrnEmissionConsts.PAC);
                 }
+                
+                /*
+                If this point is reached, it means that CFDI needs to be cancelled!
+                */
 
                 // Preserve aknowledgment of cancellation on XML format into DFR:
 
-                dfr.setCancelStatus(""); // TODO: implement new 2018 cancellation scheme!
+                dfr.setCancelStatus(cancelStatus);
                 dfr.setCancelXml(xml);
                 dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
                 dfr.setAuxJustAnnulled(true);

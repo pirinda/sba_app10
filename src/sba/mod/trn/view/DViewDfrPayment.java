@@ -48,6 +48,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
     private JButton mjButtonDfrSignVerify;      // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCancel;          // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCancelVerify;    // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrCheckStatus;     // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrSend;            // only for Digital Fiscal Receipt (DFR)
 
     /**
@@ -79,6 +80,9 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
 
         mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
+
+        mjButtonDfrCheckStatus = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Consultar estatus comprobante", this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCheckStatus);
 
         mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
@@ -430,6 +434,22 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         }
     }
 
+    private void actionDfrCheckStatus() {
+        if (mjButtonDfrCheckStatus.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    DTrnEmissionUtils.checkDfr(miClient, (DGridRowView) getSelectedGridRow());
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
     private void actionDfrSend() {
         if (mjButtonDfrSend.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
@@ -465,6 +485,9 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             }
             else if (button == mjButtonDfrCancelVerify) {
                 actionDfrCancel(DModSysConsts.TX_XMS_REQ_STP_VER);
+            }
+            else if (button == mjButtonDfrCheckStatus) {
+                actionDfrCheckStatus();
             }
             else if (button == mjButtonDfrSend) {
                 actionDfrSend();

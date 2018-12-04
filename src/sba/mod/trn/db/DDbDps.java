@@ -46,6 +46,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     public static final int FIELD_CLOSED_DPS = 1;
     public static final int FIELD_CLOSED_IOG = 2;
     public static final int FIELD_AUDITED = 3;
+    /** Timeout in minutes.  */
     public static final int TIMEOUT = 3; // 3 min.
 
     protected int mnPkDpsId;
