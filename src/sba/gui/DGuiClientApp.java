@@ -94,7 +94,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 023.05";
+    public static final String APP_RELEASE = "SBA 1.0 023.6"; // release date: 2019-02-28
     public static final String APP_COPYRIGHT = "Copyright © 2011-2019 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -184,6 +184,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleSrv = new javax.swing.JToggleButton();
         jtpTabbedPane = new javax.swing.JTabbedPane();
         jpStatusBar = new javax.swing.JPanel();
+        jpStatusBar1 = new javax.swing.JPanel();
         jtfSystemDate = new javax.swing.JTextField();
         jtfWorkingDate = new javax.swing.JTextField();
         jbWorkingDate = new javax.swing.JButton();
@@ -195,6 +196,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtfUser = new javax.swing.JTextField();
         jtfUserTs = new javax.swing.JTextField();
         jtfTerminal = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
         jlAppRelease = new javax.swing.JLabel();
         jmbMenu = new javax.swing.JMenuBar();
         jmFile = new javax.swing.JMenu();
@@ -344,89 +346,122 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         getContentPane().add(jtbToolBar, java.awt.BorderLayout.NORTH);
         getContentPane().add(jtpTabbedPane, java.awt.BorderLayout.CENTER);
 
-        jpStatusBar.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jpStatusBar.setLayout(new java.awt.BorderLayout());
+
+        jpStatusBar1.setBackground(java.awt.Color.black);
+        jpStatusBar1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 3));
 
         jtfSystemDate.setEditable(false);
+        jtfSystemDate.setForeground(java.awt.Color.white);
         jtfSystemDate.setText("01/01/2000");
         jtfSystemDate.setToolTipText("Fecha de sistema");
         jtfSystemDate.setFocusable(false);
+        jtfSystemDate.setOpaque(false);
         jtfSystemDate.setPreferredSize(new java.awt.Dimension(65, 20));
-        jpStatusBar.add(jtfSystemDate);
+        jpStatusBar1.add(jtfSystemDate);
 
         jtfWorkingDate.setEditable(false);
+        jtfWorkingDate.setForeground(java.awt.Color.white);
         jtfWorkingDate.setText("01/01/2000");
         jtfWorkingDate.setToolTipText("Fecha de trabajo");
         jtfWorkingDate.setFocusable(false);
+        jtfWorkingDate.setOpaque(false);
         jtfWorkingDate.setPreferredSize(new java.awt.Dimension(65, 20));
-        jpStatusBar.add(jtfWorkingDate);
+        jpStatusBar1.add(jtfWorkingDate);
 
         jbWorkingDate.setText("...");
         jbWorkingDate.setToolTipText("Cambiar fecha de trabajo");
+        jbWorkingDate.setOpaque(false);
         jbWorkingDate.setPreferredSize(new java.awt.Dimension(23, 23));
-        jpStatusBar.add(jbWorkingDate);
+        jpStatusBar1.add(jbWorkingDate);
 
         jtfSessionBranch.setEditable(false);
+        jtfSessionBranch.setForeground(java.awt.Color.white);
         jtfSessionBranch.setText("TEXT");
         jtfSessionBranch.setToolTipText("Sucursal actual");
         jtfSessionBranch.setFocusable(false);
+        jtfSessionBranch.setOpaque(false);
         jtfSessionBranch.setPreferredSize(new java.awt.Dimension(50, 20));
-        jpStatusBar.add(jtfSessionBranch);
+        jpStatusBar1.add(jtfSessionBranch);
 
         jtfSessionBranchCash.setEditable(false);
+        jtfSessionBranchCash.setForeground(java.awt.Color.white);
         jtfSessionBranchCash.setText("TEXT");
         jtfSessionBranchCash.setToolTipText("Cuenta de dinero actual");
         jtfSessionBranchCash.setFocusable(false);
+        jtfSessionBranchCash.setOpaque(false);
         jtfSessionBranchCash.setPreferredSize(new java.awt.Dimension(50, 20));
-        jpStatusBar.add(jtfSessionBranchCash);
+        jpStatusBar1.add(jtfSessionBranchCash);
 
         jtfSessionBranchWarehouse.setEditable(false);
+        jtfSessionBranchWarehouse.setForeground(java.awt.Color.white);
         jtfSessionBranchWarehouse.setText("TEXT");
         jtfSessionBranchWarehouse.setToolTipText("Almacén de bienes actual");
         jtfSessionBranchWarehouse.setFocusable(false);
+        jtfSessionBranchWarehouse.setOpaque(false);
         jtfSessionBranchWarehouse.setPreferredSize(new java.awt.Dimension(50, 20));
-        jpStatusBar.add(jtfSessionBranchWarehouse);
+        jpStatusBar1.add(jtfSessionBranchWarehouse);
 
         jtfSessionBranchDpsSeries.setEditable(false);
+        jtfSessionBranchDpsSeries.setForeground(java.awt.Color.white);
         jtfSessionBranchDpsSeries.setText("TEXT");
         jtfSessionBranchDpsSeries.setToolTipText("Serie de documentos actual");
         jtfSessionBranchDpsSeries.setFocusable(false);
+        jtfSessionBranchDpsSeries.setOpaque(false);
         jtfSessionBranchDpsSeries.setPreferredSize(new java.awt.Dimension(75, 20));
-        jpStatusBar.add(jtfSessionBranchDpsSeries);
+        jpStatusBar1.add(jtfSessionBranchDpsSeries);
 
         jbSessionSettings.setText("...");
         jbSessionSettings.setToolTipText("Cambiar sesión de usuario");
+        jbSessionSettings.setOpaque(false);
         jbSessionSettings.setPreferredSize(new java.awt.Dimension(23, 23));
-        jpStatusBar.add(jbSessionSettings);
+        jpStatusBar1.add(jbSessionSettings);
 
         jtfUser.setEditable(false);
+        jtfUser.setForeground(java.awt.Color.white);
         jtfUser.setText("TEXT");
         jtfUser.setToolTipText("Usuario");
         jtfUser.setFocusable(false);
+        jtfUser.setOpaque(false);
         jtfUser.setPreferredSize(new java.awt.Dimension(100, 20));
         jtfUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtfUserMouseClicked(evt);
             }
         });
-        jpStatusBar.add(jtfUser);
+        jpStatusBar1.add(jtfUser);
 
         jtfUserTs.setEditable(false);
+        jtfUserTs.setForeground(java.awt.Color.white);
         jtfUserTs.setText("01/01/2000 00:00:00 +0000");
         jtfUserTs.setToolTipText("Marca de tiempo de acceso");
         jtfUserTs.setFocusable(false);
+        jtfUserTs.setOpaque(false);
         jtfUserTs.setPreferredSize(new java.awt.Dimension(150, 20));
-        jpStatusBar.add(jtfUserTs);
+        jpStatusBar1.add(jtfUserTs);
 
         jtfTerminal.setEditable(false);
+        jtfTerminal.setForeground(java.awt.Color.white);
         jtfTerminal.setText("TEXT");
         jtfTerminal.setToolTipText("Terminal");
         jtfTerminal.setFocusable(false);
+        jtfTerminal.setOpaque(false);
         jtfTerminal.setPreferredSize(new java.awt.Dimension(50, 20));
-        jpStatusBar.add(jtfTerminal);
+        jpStatusBar1.add(jtfTerminal);
 
+        jpStatusBar.add(jpStatusBar1, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setBackground(java.awt.Color.black);
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 3));
+
+        jlAppRelease.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jlAppRelease.setForeground(new java.awt.Color(153, 204, 255));
+        jlAppRelease.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jlAppRelease.setText("RELEASE");
         jlAppRelease.setPreferredSize(new java.awt.Dimension(100, 20));
-        jpStatusBar.add(jlAppRelease);
+        jPanel1.add(jlAppRelease);
+
+        jpStatusBar.add(jPanel1, java.awt.BorderLayout.EAST);
 
         getContentPane().add(jpStatusBar, java.awt.BorderLayout.SOUTH);
 
@@ -1229,6 +1264,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton jbSessionSettings;
     private javax.swing.JButton jbWorkingDate;
     private javax.swing.ButtonGroup jbgModules;
@@ -1256,6 +1292,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiViewModuleSal;
     private javax.swing.JMenuItem jmiViewModuleSrv;
     private javax.swing.JPanel jpStatusBar;
+    private javax.swing.JPanel jpStatusBar1;
     private javax.swing.JPopupMenu.Separator jsFile1;
     private javax.swing.JPopupMenu.Separator jsFile2;
     private javax.swing.JPopupMenu.Separator jsFile3;

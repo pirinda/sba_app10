@@ -45,6 +45,7 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbBranchWarehouse;
 import sba.mod.cfg.db.DDbConfigBranch;
+import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.form.DPickerBranchEntity;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
@@ -74,6 +75,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private DDialogSerialNumberInStock moDialogSerialNumberInStock;
     private DDialogSerialNumberShow moDialogSerialNumberShow;
     private DPickerBranchEntity moPickerBranchEntity;
+    private DDbConfigCompany moConfigCompany;
     private DDbBranchWarehouse moDestinyWarehouse;
     private DGridPaneForm moGridDpsNotes;
     private DGridPaneForm moGridDpsRows;
@@ -83,9 +85,11 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private int mnNewIogNumber;
     private int[] manIogTypeKey;
     private boolean mbQuantityAlreadySet;
+    private boolean mbIsImportDeclaration;  // indicates if import declaration is enabled
     private Vector<DTrnStockMove> mvRowStockMoves;
     private JButton mjButtonShowLot;
     private JButton mjButtonShowSerialNumber;
+    private JButton mjButtonShowImportDeclaration;
 
     /** Creates new form DFormDps
      * @param client GUI client.
@@ -157,6 +161,10 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel5 = new javax.swing.JPanel();
         moTextRowNote = new sba.lib.gui.bean.DBeanFieldText();
         moBoolRowNotePrintable = new sba.lib.gui.bean.DBeanFieldBoolean();
+        jlRowImportDeclaration = new javax.swing.JLabel();
+        moTextRowImportDeclaration = new sba.lib.gui.bean.DBeanFieldText();
+        jlRowImportDeclarationDate = new javax.swing.JLabel();
+        moDateRowImportDeclarationDate = new sba.lib.gui.bean.DBeanFieldDate();
         jpRows2 = new javax.swing.JPanel();
         jpDocInfo = new javax.swing.JPanel();
         jpDocInfo1 = new javax.swing.JPanel();
@@ -374,6 +382,22 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(110, 23));
         jPanel5.add(moBoolRowNotePrintable);
 
+        jlRowImportDeclaration.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlRowImportDeclaration.setText("Pedimento:");
+        jlRowImportDeclaration.setPreferredSize(new java.awt.Dimension(70, 23));
+        jPanel5.add(jlRowImportDeclaration);
+
+        moTextRowImportDeclaration.setText("TEXT");
+        jPanel5.add(moTextRowImportDeclaration);
+
+        jlRowImportDeclarationDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlRowImportDeclarationDate.setText("Importación:");
+        jlRowImportDeclarationDate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(jlRowImportDeclarationDate);
+
+        moDateRowImportDeclarationDate.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel5.add(moDateRowImportDeclarationDate);
+
         jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
 
         jPanel48.add(jPanel2);
@@ -432,6 +456,8 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDecRowSubtotal.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moTextRowNote.setTextSettings(DGuiUtils.getLabelName(moTextRowNote.getToolTipText()), 255, 0);
         moBoolRowNotePrintable.setBooleanSettings(moBoolRowNotePrintable.getText(), true);
+        moTextRowImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlRowImportDeclaration), 15, 0);
+        moDateRowImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlRowImportDeclarationDate), false);
         moCurTotal.setCompoundFieldSettings(miClient);
         moCurTotal.getField().setDecimalSettings(DGuiUtils.getLabelName(jlTotal.getText()), DGuiConsts.GUI_TYPE_DEC_AMT, false);
 
@@ -442,10 +468,13 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moDecRowSubtotal);
         moFields.addField(moTextRowNote);
         moFields.addField(moBoolRowNotePrintable);
+        moFields.addField(moTextRowImportDeclaration);
+        moFields.addField(moDateRowImportDeclarationDate);
         moFields.addField(moCurTotal.getField());
 
         moDecRowSubtotal.setNextButton(jbRowAdd);
         moBoolRowNotePrintable.setNextButton(jbRowAdd);
+        moDateRowImportDeclarationDate.setNextButton(jbRowAdd);
 
         moFields.setFormButton(jbSave);
 
@@ -463,6 +492,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         mvRowStockMoves = new Vector<>();
         mjButtonShowLot = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_LOT), "Ver lotes", this);
         mjButtonShowSerialNumber = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SER_NUM), "Ver números de serie", this);
+        mjButtonShowImportDeclaration = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CARDEX), "Ver pedimento de importación", this);
 
         switch (mnFormSubtype) {
             case DModSysConsts.TS_IOG_CT_IN:
@@ -542,6 +572,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moGridDpsRows.setPaneFormOwner(this);
         moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowLot);
         moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowSerialNumber);
+        moGridDpsRows.getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonShowImportDeclaration);
 
         jpRows1.add(moGridDpsRows, BorderLayout.CENTER);
 
@@ -555,6 +586,8 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moTextFind.resetField();
         moTextRowNote.resetField();
         moBoolRowNotePrintable.resetField();
+        moTextRowImportDeclaration.resetField();
+        moDateRowImportDeclarationDate.resetField();
 
         mvRowStockMoves.clear();
     }
@@ -1049,51 +1082,74 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         if (moItem == null) {
             miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_UNDEF_REG);
-            moTextFind.requestFocus();
+            moTextFind.requestFocusInWindow();
         }
         else if (moDecRowQuantity.getValue() == 0) {
             miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + jlRowQuantity.getText() + "'.");
-            moDecRowQuantity.requestFocus();
+            moDecRowQuantity.requestFocusInWindow();
         }
         else {
             if (moDecRowSubtotal.getValue() == 0) {
                 if (miClient.showMsgBoxConfirm(DTrnConsts.MSG_CNF_ROW_VALUELESS) != JOptionPane.YES_OPTION) {
                     add = false;
-                    moDecRowPriceUnitary.requestFocus();
+                    moDecRowPriceUnitary.requestFocusInWindow();
                 }
             }
-
+            
             if (add) {
-                for (DTrnStockMove move : mvRowStockMoves) {
-                    quantity += move.getQuantity();
+                if (mbIsImportDeclaration && moTextRowImportDeclaration.getValue().isEmpty() && moDateRowImportDeclarationDate.getValue() != null) {
+                    miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlRowImportDeclaration.getText()) + "'.");
+                    moTextRowImportDeclaration.requestFocusInWindow();
                 }
-
-                if (quantity != moDecRowQuantity.getValue()) {
-                    // Redefine row stock moves (lots, serial numbers, etc.):
-
-                    add = defineRowStockMoves(moDecRowQuantity.getValue());
+                else if (mbIsImportDeclaration && !moTextRowImportDeclaration.getValue().isEmpty() && moDateRowImportDeclarationDate.getValue() == null) {
+                    miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlRowImportDeclarationDate.getText()) + "'.");
+                    moDateRowImportDeclarationDate.requestFocusInWindow();
                 }
+                else if (mbIsImportDeclaration && !moTextRowImportDeclaration.getValue().isEmpty() && moTextRowImportDeclaration.getValue().length() != 15) {
+                    miClient.showMsgBoxWarning("La longitud del campo '" + DGuiUtils.getLabelName(jlRowImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " 15.");
+                    moTextRowImportDeclaration.requestFocusInWindow();
+                }
+                else {
+                    for (DTrnStockMove move : mvRowStockMoves) {
+                        quantity += move.getQuantity();
 
-                if (add) {
-                    iogRow = createIogRow();
-                    iogRow.getAuxStockMoves().addAll(mvRowStockMoves);
-
-                    if (moTextRowNote.getValue().length() > 0) {
-                        iogRowNote = new DDbIogRowNote();
-                        iogRowNote.setText(moTextRowNote.getValue());
-                        iogRowNote.setPrintable(moBoolRowNotePrintable.getValue());
-                        iogRow.getChildRowNotes().add(iogRowNote);
+                        if (mbIsImportDeclaration && !moTextRowImportDeclaration.getValue().isEmpty()) {
+                            move.setImportDeclaration(moTextRowImportDeclaration.getValue());
+                            move.setImportDeclarationDate(moDateRowImportDeclarationDate.getValue());
+                        }
+                        else {
+                            move.setImportDeclaration("");
+                            move.setImportDeclarationDate(null);
+                        }
                     }
 
-                    moRegistry.getChildRows().add(iogRow);
-                    computeTotal();
+                    if (quantity != moDecRowQuantity.getValue()) {
+                        // Redefine row stock moves (lots, serial numbers, etc.):
 
-                    moGridDpsRows.addGridRow(iogRow);
-                    moGridDpsRows.renderGridRows();
-                    moGridDpsRows.setSelectedGridRow(moGridDpsRows.getTable().getRowCount() - 1);
+                        add = defineRowStockMoves(moDecRowQuantity.getValue());
+                    }
+
+                    if (add) {
+                        iogRow = createIogRow();
+                        iogRow.getAuxStockMoves().addAll(mvRowStockMoves);
+
+                        if (!moTextRowNote.getValue().isEmpty()) {
+                            iogRowNote = new DDbIogRowNote();
+                            iogRowNote.setText(moTextRowNote.getValue());
+                            iogRowNote.setPrintable(moBoolRowNotePrintable.getValue());
+                            iogRow.getChildRowNotes().add(iogRowNote);
+                        }
+
+                        moRegistry.getChildRows().add(iogRow);
+                        computeTotal();
+
+                        moGridDpsRows.addGridRow(iogRow);
+                        moGridDpsRows.renderGridRows();
+                        moGridDpsRows.setSelectedGridRow(moGridDpsRows.getTable().getRowCount() - 1);
+                    }
+
+                    actionRowClear();
                 }
-
-                actionRowClear();
             }
         }
     }
@@ -1136,6 +1192,27 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 moDialogSerialNumberShow.resetForm();
                 moDialogSerialNumberShow.setValue(DModSysConsts.PARAM_OBJ_IOG_ROW, row);
                 moDialogSerialNumberShow.setVisible(true);
+            }
+        }
+    }
+
+    private void actionShowImportDeclaration() {
+        DDbIogRow row = (DDbIogRow) moGridDpsRows.getSelectedGridRow();
+
+        if (row == null) {
+            miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+        }
+        else {
+            if (!row.isInventoriable()) {
+                miClient.showMsgBoxInformation("La partida del documento no es inventariable.");
+            }
+            else if (row.getAuxStockMoves().isEmpty() || row.getAuxStockMoves().get(0).getImportDeclaration().isEmpty()) {
+                miClient.showMsgBoxInformation("La partida del documento no tiene pedimento de importación.");
+            }
+            else {
+                String msg = jlRowImportDeclaration.getText() + " " + row.getAuxStockMoves().get(0).getImportDeclaration() + "\n" +
+                        jlRowImportDeclarationDate.getText() + " " + DLibUtils.DateFormatDate.format(row.getAuxStockMoves().get(0).getImportDeclarationDate());
+                miClient.showMsgBoxInformation(msg);
             }
         }
     }
@@ -1203,6 +1280,8 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JLabel jlDocType;
     private javax.swing.JLabel jlDummy;
     private javax.swing.JLabel jlNumber;
+    private javax.swing.JLabel jlRowImportDeclaration;
+    private javax.swing.JLabel jlRowImportDeclarationDate;
     private javax.swing.JLabel jlRowPriceUnitary;
     private javax.swing.JLabel jlRowQuantity;
     private javax.swing.JLabel jlRowSubtotal;
@@ -1232,10 +1311,12 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNotePrintable;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurTotal;
     private sba.lib.gui.bean.DBeanFieldDate moDateDate;
+    private sba.lib.gui.bean.DBeanFieldDate moDateRowImportDeclarationDate;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowPriceUnitary;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowQuantity;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecRowSubtotal;
     private sba.lib.gui.bean.DBeanFieldText moTextFind;
+    private sba.lib.gui.bean.DBeanFieldText moTextRowImportDeclaration;
     private sba.lib.gui.bean.DBeanFieldText moTextRowNote;
     // End of variables declaration//GEN-END:variables
 
@@ -1247,6 +1328,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbRowAdd.addActionListener(this);
         mjButtonShowLot.addActionListener(this);
         mjButtonShowSerialNumber.addActionListener(this);
+        mjButtonShowImportDeclaration.addActionListener(this);
         moDecRowQuantity.addFocusListener(this);
         moDecRowPriceUnitary.addFocusListener(this);
         moDecRowSubtotal.addFocusListener(this);
@@ -1260,6 +1342,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbRowAdd.removeActionListener(this);
         mjButtonShowLot.removeActionListener(this);
         mjButtonShowSerialNumber.removeActionListener(this);
+        mjButtonShowImportDeclaration.removeActionListener(this);
         moDecRowQuantity.removeFocusListener(this);
         moDecRowPriceUnitary.removeFocusListener(this);
         moDecRowSubtotal.removeFocusListener(this);
@@ -1374,13 +1457,15 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         moGridDpsRows.populateGrid(rows);
 
-        moCurTotal.getField().setEditable(false);
-
+        moConfigCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+        
         switch (mnFormSubtype) {
             case DModSysConsts.TS_IOG_CT_IN:
+                mbIsImportDeclaration = moConfigCompany.isImportDeclaration();
                 moDialogFindItem.setValue(DModSysConsts.PARAM_ITM_CT_KEY, new int[] { DModSysConsts.IS_ITM_CT_PUR });
                 break;
             case DModSysConsts.TS_IOG_CT_OUT:
+                mbIsImportDeclaration = false;
                 moDialogFindItem.setValue(DModSysConsts.PARAM_ITM_CT_KEY, new int[] { DModSysConsts.IS_ITM_CT_SAL });
                 break;
             default:
@@ -1391,7 +1476,12 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDialogFindItem.setValue(DModSysConsts.FLAG_ONLY_INVENTORIABLE, true);
         moDialogFindItem.setValue(DModSysConsts.FLAG_ONLY_CONVERTIBLE, DTrnUtils.isIogTypeForConversion(moRegistry.getIogTypeKey()));
         moDialogFindItem.initForm();
-
+        
+        mjButtonShowImportDeclaration.setEnabled(mbIsImportDeclaration);
+        moTextRowImportDeclaration.setEnabled(mbIsImportDeclaration);
+        moDateRowImportDeclarationDate.setEnabled(mbIsImportDeclaration);
+        moCurTotal.getField().setEditable(false);
+        
         computeTotal();
         clearRow();
 
@@ -1579,6 +1669,9 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
             else if (button == mjButtonShowSerialNumber) {
                 actionShowSerialNumber();
+            }
+            else if (button == mjButtonShowImportDeclaration) {
+                actionShowImportDeclaration();
             }
         }
     }

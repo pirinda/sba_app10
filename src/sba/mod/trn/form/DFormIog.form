@@ -493,6 +493,36 @@
                                     </Property>
                                   </Properties>
                                 </Component>
+                                <Component class="javax.swing.JLabel" name="jlRowImportDeclaration">
+                                  <Properties>
+                                    <Property name="horizontalAlignment" type="int" value="0"/>
+                                    <Property name="text" type="java.lang.String" value="Pedimento:"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[70, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextRowImportDeclaration">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="TEXT"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jlRowImportDeclarationDate">
+                                  <Properties>
+                                    <Property name="horizontalAlignment" type="int" value="0"/>
+                                    <Property name="text" type="java.lang.String" value="Importaci&#xf3;n:"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[75, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldDate" name="moDateRowImportDeclarationDate">
+                                  <Properties>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[100, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
                               </SubComponents>
                             </Container>
                           </SubComponents>

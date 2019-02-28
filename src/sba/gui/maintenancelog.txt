@@ -1,0 +1,6 @@
+================================================================================
+SBA 1.0 023.6
+2019-02-28/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de captura de pedimento de importación en entradas de almacén.
+
+#eof
