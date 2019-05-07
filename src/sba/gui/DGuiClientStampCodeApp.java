@@ -85,7 +85,6 @@ public class DGuiClientStampCodeApp extends javax.swing.JFrame {
 
         jtfStampCode.setEditable(false);
         jtfStampCode.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
-        jtfStampCode.setFocusable(false);
         jtfStampCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel6.add(jtfStampCode);
 
