@@ -228,6 +228,7 @@ public abstract class DModConsts {
     public static final int TX_IOG_INT = 640124;
     public static final int TX_IOG_MFG = 640125;
     public static final int TX_STK = 640131;
+    public static final int TX_STK_WAH = 640139;
     public static final int TX_STK_MOV = 640132;
     public static final int TX_STK_INV = 640133;
     public static final int TX_STK_BAL = 640134;
@@ -250,6 +251,7 @@ public abstract class DModConsts {
     public static final int TX_TRN_USR = 640153;
     public static final int TX_TRN_USR_TP = 640154;
     public static final int TX_TRN_USR_ITM = 640155;
+    public static final int TX_TRN_SNR = 640156;
     public static final int TX_PMO_CO = 640161;
     public static final int TX_PMO_CO_BRA = 640162;
     public static final int TX_PMO_ITM = 640163;

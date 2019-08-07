@@ -378,7 +378,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY den ";
                 break;
             case DModConsts.CS_EMS_TP:
-                settings = new DGuiCatalogueSettings("Tipo configuración e-mail", 1);
+                settings = new DGuiCatalogueSettings("Tipo configuración correo-e", 1);
                 settings.setCodeApplying(true);
                 sql = "SELECT id_ems_tp AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";

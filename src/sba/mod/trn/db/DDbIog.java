@@ -450,7 +450,8 @@ public class DDbIog extends DDbRegistryUser {
         }
     }
 
-    private DDbStockMove createStockMove(final DDbIogRow iogRow, final int[] lotKey, final double quantity, final String serialNumber, final String importDeclaration, final Date importDeclarationDate_n, final String lot, final Date dateExpiration_n) {
+    private DDbStockMove createStockMove(final DDbIogRow iogRow, final int[] lotKey, final double quantity, final String serialNumber, 
+            final String importDeclaration, final Date importDeclarationDate_n, final String lot, final Date dateExpiration_n) {
         DDbStockMove stockMove = new DDbStockMove();
 
         stockMove.setPkYearId(DLibTimeUtils.digestYear(mtDate)[0]);
@@ -501,33 +502,23 @@ public class DDbIog extends DDbRegistryUser {
     }
 
     private void computeStock(final DGuiSession session) throws SQLException, Exception {
-        int year = 0;
-        boolean isProcessed = false;
-        boolean isImportDeclaration = false;
-        double quantityRow = 0;
-        double quantityIogRow = 0;
-        String sql = "";
-        ResultSet resultSet = null;
-        DTrnStockMove auxMoveNew = null;
-        DTrnStockMove auxMoveUsed = null;
-        ArrayList<DTrnStockMove> tsmMovesRow = new ArrayList<DTrnStockMove>();
-        ArrayList<DTrnStockMove> tsmMovesNew = new ArrayList<DTrnStockMove>();
-        ArrayList<DTrnStockMove> tsmMovesUsed = new ArrayList<DTrnStockMove>();
-        ArrayList<DDbStockMove> dbStockMoves = new ArrayList<DDbStockMove>();
-
         // Delete previous stock moves, if any:
 
-        sql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_STK) + " " +
+        String sql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_STK) + " " +
                 "SET b_del = 1 " +
                 "WHERE b_del = 0 AND fk_iog_iog = " + mnPkIogId + " ";
         session.getStatement().execute(sql);
 
         if (isStockRequired()) {
+            int year = 0;
+            boolean isImportDeclarationSet = false;
+            ArrayList<DDbStockMove> stockMoves = new ArrayList<>();
+            
             // Save stock moves:
 
             if (isIogForOut()) {
                 year = DLibTimeUtils.digestYear(mtDate)[0];
-                isImportDeclaration = ((DDbConfigCompany) session.getConfigCompany()).isImportDeclaration();
+                isImportDeclarationSet = ((DDbConfigCompany) session.getConfigCompany()).isImportDeclaration();
             }
 
             for (DDbIogRow iogRow : mvChildRows) {
@@ -544,33 +535,37 @@ public class DDbIog extends DDbRegistryUser {
                      * If document is being reactivated, it is pretty posible that picked import declarations will be different to the original ones.
                      */
 
-                    if (isIogForOut() && isImportDeclaration) {
-                        quantityIogRow = 0;
-                        tsmMovesRow.clear();
-                        tsmMovesNew.clear();
+                    ArrayList<DTrnStockMove> auxStockMovesUsed = new ArrayList<>();
+                    
+                    if (isIogForOut() && isImportDeclarationSet) {
+                        double quantityIogRow = 0;
+                        ArrayList<DTrnStockMove> auxStockMovesRow = new ArrayList<>();
+                        ArrayList<DTrnStockMove> auxStockMovesNew = new ArrayList<>();
 
                         // Process IOG row auxiliar stock moves to consolidate them (note that former information of import declarations will be lost):
 
-                        for (DTrnStockMove tsmIogRow : iogRow.getAuxStockMoves()) {
-                            isProcessed = false;
+                        for (DTrnStockMove auxStockMoveIogRow : iogRow.getAuxStockMoves()) {
+                            boolean isProcessed = false;
 
-                            for (DTrnStockMove tsmRow : tsmMovesRow) {
-                                if (DLibUtils.compareKeys(tsmRow.getStockMoveKey(), tsmIogRow.getStockMoveKey()) &&
-                                        tsmRow.getSerialNumber().compareTo(tsmIogRow.getSerialNumber()) == 0) {
-                                    tsmRow.setQuantity(tsmRow.getQuantity() + tsmIogRow.getQuantity());
+                            for (DTrnStockMove auxStockMoveRow : auxStockMovesRow) {
+                                if (DLibUtils.compareKeys(auxStockMoveRow.getStockMoveKey(), auxStockMoveIogRow.getStockMoveKey()) &&
+                                        auxStockMoveRow.getSerialNumber().compareTo(auxStockMoveIogRow.getSerialNumber()) == 0) {
+                                    auxStockMoveRow.setQuantity(auxStockMoveRow.getQuantity() + auxStockMoveIogRow.getQuantity());
                                     isProcessed = true;
                                     break;
                                 }
                             }
 
                             if (!isProcessed) {
-                                tsmMovesRow.add(tsmIogRow.clone());
+                                auxStockMovesRow.add(auxStockMoveIogRow.clone());
                             }
                         }
 
                         // Process consolidated IOG row auxiliar stock moves:
 
-                        for (DTrnStockMove tsmRow : tsmMovesRow) {
+                        double quantityRow = 0;
+                        
+                        for (DTrnStockMove auxStockMoveRow : auxStockMovesRow) {
                             quantityRow = 0;
 
                             // Consume available imported stocks:
@@ -578,53 +573,54 @@ public class DDbIog extends DDbRegistryUser {
                             sql = "SELECT imp_dec_dt_n IS NULL AS f_dt_n, imp_dec_dt_n, imp_dec, SUM(mov_in - mov_out) AS f_stk " +
                                     "FROM " + DModConsts.TablesMap.get(DModConsts.T_STK) + " " +
                                     "WHERE b_del = 0 AND id_yer = " + year + " AND " +
-                                    "id_itm = " + tsmRow.getPkItemId() + " AND id_unt = " + tsmRow.getPkUnitId() + " AND id_lot = " + tsmRow.getPkLotId() + " AND " +
-                                    "id_bpr = " + tsmRow.getPkBizPartnerId() + " AND id_bra = " + tsmRow.getPkBranchId() + " AND id_wah = " + tsmRow.getPkWarehouseId() + " AND " +
-                                    "snr = '" + tsmRow.getSerialNumber() + "' " +
+                                    "id_itm = " + auxStockMoveRow.getPkItemId() + " AND id_unt = " + auxStockMoveRow.getPkUnitId() + " AND id_lot = " + auxStockMoveRow.getPkLotId() + " AND " +
+                                    "id_bpr = " + auxStockMoveRow.getPkBizPartnerId() + " AND id_bra = " + auxStockMoveRow.getPkBranchId() + " AND id_wah = " + auxStockMoveRow.getPkWarehouseId() + " AND " +
+                                    "snr = '" + auxStockMoveRow.getSerialNumber() + "' " +
                                     "GROUP BY imp_dec_dt_n, imp_dec " +
                                     "HAVING f_stk > 0 " +
                                     "ORDER BY f_dt_n, imp_dec_dt_n, imp_dec ";
-                            resultSet = session.getStatement().executeQuery(sql);
-                            while (resultSet.next() && quantityRow < tsmRow.getQuantity()) {
-                                auxMoveUsed = null;
+                            ResultSet resultSet = session.getStatement().executeQuery(sql);
+                            
+                            while (resultSet.next() && quantityRow < auxStockMoveRow.getQuantity()) {
+                                DTrnStockMove auxStockMoveUsed = null;
 
-                                for (DTrnStockMove tsmUsed : tsmMovesUsed) {
-                                    if (DLibUtils.compareKeys(tsmUsed.getStockMoveKey(), tsmRow.getStockMoveKey()) &&
-                                            tsmUsed.getSerialNumber().compareTo(tsmRow.getSerialNumber()) == 0 &&
-                                            tsmUsed.getImportDeclaration().compareTo(resultSet.getString("imp_dec")) == 0 &&
-                                            ((tsmUsed.getImportDeclarationDate() == null && resultSet.getDate("imp_dec_dt_n") == null) ||
-                                            (tsmUsed.getImportDeclarationDate() != null && resultSet.getDate("imp_dec_dt_n") != null &&
-                                            tsmUsed.getImportDeclarationDate().compareTo(resultSet.getDate("imp_dec_dt_n")) == 0))) {
-                                        auxMoveUsed = tsmUsed;
+                                for (DTrnStockMove auxStockMove : auxStockMovesUsed) {
+                                    if (DLibUtils.compareKeys(auxStockMove.getStockMoveKey(), auxStockMoveRow.getStockMoveKey()) &&
+                                            auxStockMove.getSerialNumber().compareTo(auxStockMoveRow.getSerialNumber()) == 0 &&
+                                            auxStockMove.getImportDeclaration().compareTo(resultSet.getString("imp_dec")) == 0 &&
+                                            ((auxStockMove.getImportDeclarationDate() == null && resultSet.getDate("imp_dec_dt_n") == null) ||
+                                            (auxStockMove.getImportDeclarationDate() != null && resultSet.getDate("imp_dec_dt_n") != null &&
+                                            auxStockMove.getImportDeclarationDate().compareTo(resultSet.getDate("imp_dec_dt_n")) == 0))) {
+                                        auxStockMoveUsed = auxStockMove;
                                         break;
                                     }
                                 }
 
-                                if (auxMoveUsed == null) {
-                                    auxMoveUsed = tsmRow.clone();
-                                    auxMoveUsed.setQuantity(0);
-                                    auxMoveUsed.setImportDeclaration(resultSet.getString("imp_dec"));
-                                    auxMoveUsed.setImportDeclarationDate(resultSet.getDate("imp_dec_dt_n"));
-                                    tsmMovesUsed.add(auxMoveUsed);
+                                if (auxStockMoveUsed == null) {
+                                    auxStockMoveUsed = auxStockMoveRow.clone();
+                                    auxStockMoveUsed.setQuantity(0);
+                                    auxStockMoveUsed.setImportDeclaration(resultSet.getString("imp_dec"));
+                                    auxStockMoveUsed.setImportDeclarationDate(resultSet.getDate("imp_dec_dt_n"));
+                                    auxStockMovesUsed.add(auxStockMoveUsed);
                                 }
 
-                                auxMoveNew = tsmRow.clone();
-                                auxMoveNew.setQuantity(0);
-                                auxMoveNew.setImportDeclaration(resultSet.getString("imp_dec"));
-                                auxMoveNew.setImportDeclarationDate(resultSet.getDate("imp_dec_dt_n"));
+                                DTrnStockMove auxStockMoveNew = auxStockMoveRow.clone();
+                                auxStockMoveNew.setQuantity(0);
+                                auxStockMoveNew.setImportDeclaration(resultSet.getString("imp_dec"));
+                                auxStockMoveNew.setImportDeclarationDate(resultSet.getDate("imp_dec_dt_n"));
 
-                                if (resultSet.getDouble("f_stk") - auxMoveUsed.getQuantity() > 0) {
-                                    if ((resultSet.getDouble("f_stk") - auxMoveUsed.getQuantity()) <= (tsmRow.getQuantity() - quantityRow)) {
-                                        auxMoveNew.setQuantity(resultSet.getDouble("f_stk") - auxMoveUsed.getQuantity());
+                                if (resultSet.getDouble("f_stk") - auxStockMoveUsed.getQuantity() > 0) {
+                                    if ((resultSet.getDouble("f_stk") - auxStockMoveUsed.getQuantity()) <= (auxStockMoveRow.getQuantity() - quantityRow)) {
+                                        auxStockMoveNew.setQuantity(resultSet.getDouble("f_stk") - auxStockMoveUsed.getQuantity());
                                     }
                                     else {
-                                        auxMoveNew.setQuantity(tsmRow.getQuantity() - quantityRow);
+                                        auxStockMoveNew.setQuantity(auxStockMoveRow.getQuantity() - quantityRow);
                                     }
 
-                                    quantityRow += auxMoveNew.getQuantity();
-                                    quantityIogRow += auxMoveNew.getQuantity();
-                                    auxMoveUsed.setQuantity(auxMoveUsed.getQuantity() + auxMoveNew.getQuantity());
-                                    tsmMovesNew.add(auxMoveNew);
+                                    quantityRow += auxStockMoveNew.getQuantity();
+                                    quantityIogRow += auxStockMoveNew.getQuantity();
+                                    auxStockMoveUsed.setQuantity(auxStockMoveUsed.getQuantity() + auxStockMoveNew.getQuantity());
+                                    auxStockMovesNew.add(auxStockMoveNew);
                                 }
                             }
                         }
@@ -638,116 +634,136 @@ public class DDbIog extends DDbRegistryUser {
                         }
 
                         iogRow.getAuxStockMoves().clear();
-                        iogRow.getAuxStockMoves().addAll(tsmMovesNew);
+                        iogRow.getAuxStockMoves().addAll(auxStockMovesNew);
                     }
 
-                    for (DTrnStockMove tsmIogRow : iogRow.getAuxStockMoves()) {
-                        dbStockMoves.add(createStockMove(iogRow, tsmIogRow.getLotKey(), tsmIogRow.getQuantity(), tsmIogRow.getSerialNumber(), tsmIogRow.getImportDeclaration(), tsmIogRow.getImportDeclarationDate(), tsmIogRow.getLot(), tsmIogRow.getDateExpiration()));
+                    for (DTrnStockMove auxStockMove : iogRow.getAuxStockMoves()) {
+                        stockMoves.add(createStockMove(iogRow, auxStockMove.getLotKey(), auxStockMove.getQuantity(), auxStockMove.getSerialNumber(), 
+                                auxStockMove.getImportDeclaration(), auxStockMove.getImportDeclarationDate(), auxStockMove.getLot(), auxStockMove.getDateExpiration()));
                     }
                 }
             }
 
-            for (DDbStockMove move : dbStockMoves) {
-                move.save(session);
+            for (DDbStockMove stockMove : stockMoves) {
+                stockMove.save(session);
             }
         }
     }
 
-    private DDbIog createSiblingIog(final DGuiSession session, final int[] siblingIogWarehouseKey) throws Exception {
-        int[] key = null;
-        double quantity = 0;
-        long serialNumber = 0;
-        DDbItem itemOriginal = null;
-        DDbItem itemConverted = null;
-        DTrnStockMove tsmMoveConverted = null;
-        Vector<DTrnStockMove> tsmMovesConverted = new Vector<>();
-        DDbIog iogSibling = this.clone();
+    private void createSiblingIog(final DGuiSession session) throws Exception {
+        DDbIog siblingIog = this.clone();
+        
+        // a sibling document cannot compute another sibling:
+        
+        siblingIog.setAuxComputeSiblingIog(false);
+        siblingIog.setAuxSiblingIogWarehouseKey(null);
+        siblingIog.setSiblingIog(null);
+        
+        // prepare this sibling document:
 
-        iogSibling.setAuxComputeSiblingIog(false);  // a sibling document cannot have aswell a sibling
+        int[] iogTypeKey = DTrnUtils.getIogTypeForSibling(this.getIogTypeKey());
+        siblingIog.setFkIogCategoryId(iogTypeKey[0]);
+        siblingIog.setFkIogClassId(iogTypeKey[1]);
+        siblingIog.setFkIogTypeId(iogTypeKey[2]);
 
-        key = DTrnUtils.getIogTypeForSibling(this.getIogTypeKey());
-        iogSibling.setFkIogCategoryId(key[0]);
-        iogSibling.setFkIogClassId(key[1]);
-        iogSibling.setFkIogTypeId(key[2]);
+        siblingIog.setSystem(true);
+        siblingIog.setFkWarehouseBizPartnerId(manAuxSiblingIogWarehouseKey[0]);
+        siblingIog.setFkWarehouseBranchId(manAuxSiblingIogWarehouseKey[1]);
+        siblingIog.setFkWarehouseWarehouseId(manAuxSiblingIogWarehouseKey[2]);
 
-        iogSibling.setSystem(true);
-        iogSibling.setFkWarehouseBizPartnerId(siblingIogWarehouseKey[0]);
-        iogSibling.setFkWarehouseBranchId(siblingIogWarehouseKey[1]);
-        iogSibling.setFkWarehouseWarehouseId(siblingIogWarehouseKey[2]);
+        if (moSiblingIog != null) {
+            siblingIog.setPkIogId(moSiblingIog.getPkIogId());
+            siblingIog.setNumber(moSiblingIog.getNumber()); // reuse number
+            
+            for (DDbIogNote iogNote : siblingIog.getChildNotes()) {
+                iogNote.setPkIogId(moSiblingIog.getPkIogId());
+            }
+            
+            for (DDbIogRow iogRow : siblingIog.getChildRows()) {
+                iogRow.setPkIogId(moSiblingIog.getPkIogId());
+                
+                for (DDbIogRowNote iogRowNote : iogRow.getChildRowNotes()) {
+                    iogRowNote.setPkIogId(moSiblingIog.getPkIogId());
+                }
 
-        if (this.isRegistryNew()) {
-            iogSibling.setNumber(DTrnUtils.getNextNumberForIog(session, iogSibling.getFkIogCategoryId(), iogSibling.getBranchWarehouseKey()));
+                for (DTrnStockMove aux : iogRow.getAuxStockMoves()) {
+                    // nothing to do already
+                }
+            }
         }
         else {
-            iogSibling.setNumber(moSiblingIog.getNumber());
+            //siblingIog.setPkIogId(...);
+            siblingIog.setNumber(DTrnUtils.getNextNumberForIog(session, siblingIog.getFkIogCategoryId(), siblingIog.getBranchWarehouseKey()));
         }
 
         if (DTrnUtils.isIogTypeForTransfer(this.getIogTypeKey())) {
-            /*
+            /* XXX
              * TRANSFER MOVE
              * Note: information of import declaration is preserved.
              */
-
-            throw new UnsupportedOperationException("Not supported yet.");
         }
         else if (DTrnUtils.isIogTypeForConversion(this.getIogTypeKey())) {
-            /*
+            /* XXX
              * CONVERSION MOVE
              * Note: information of import declaration is extingued.
              */
 
-            for (DDbIogRow iogRowSibling : iogSibling.getChildRows()) {
-                itemOriginal = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { iogRowSibling.getFkItemId() });
-                itemConverted = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { itemOriginal.getFkItemPackageId_n() });
+            for (DDbIogRow siblingIogRow : siblingIog.getChildRows()) {
+                double quantity = 0;
+                DDbItem itemOriginal = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { siblingIogRow.getFkItemId() });
+                DDbItem itemConverted = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { itemOriginal.getFkItemPackageId_n() });
 
                 if (itemConverted == null) {
                     throw new Exception("El ítem '" + itemOriginal.getName() + "' no está configurado para conversión.");
                 }
                 else {
-                    tsmMovesConverted.clear();
+                    Vector<DTrnStockMove> tsmMovesConverted = new Vector<>();
 
-                    for (DTrnStockMove moveSibling : iogRowSibling.getAuxStockMoves()) {
-                        serialNumber = DLibUtils.parseLong(moveSibling.getSerialNumber());
+                    for (DTrnStockMove moveSibling : siblingIogRow.getAuxStockMoves()) {
+                        DTrnStockMove auxStockMoveConverted = null;
+                        long serialNumber = DLibUtils.parseLong(moveSibling.getSerialNumber());
 
                         if (itemOriginal.getUnitsPackage() == 0 && serialNumber != 0) {
                             for (int i = 0; i < moveSibling.getQuantity(); i++) {
-                                tsmMoveConverted = moveSibling.clone();
-                                tsmMoveConverted.setPkItemId(itemConverted.getPkItemId());
-                                tsmMoveConverted.setPkUnitId(itemConverted.getFkUnitId());
-                                tsmMoveConverted.setPkLotId(moveSibling.getPkLotId());
-                                tsmMoveConverted.setQuantity(1);
-                                tsmMoveConverted.setSerialNumber("" + (serialNumber + i));
-                                tsmMovesConverted.add(tsmMoveConverted);
-
-                                quantity += tsmMoveConverted.getQuantity();
+                                auxStockMoveConverted = moveSibling.clone();
+                                auxStockMoveConverted.setPkItemId(itemConverted.getPkItemId());
+                                auxStockMoveConverted.setPkUnitId(itemConverted.getFkUnitId());
+                                auxStockMoveConverted.setPkLotId(moveSibling.getPkLotId());
+                                
+                                auxStockMoveConverted.setQuantity(1);
+                                auxStockMoveConverted.setSerialNumber("" + (serialNumber + i));
+                                
+                                tsmMovesConverted.add(auxStockMoveConverted);
+                                quantity += auxStockMoveConverted.getQuantity();
                             }
                         }
                         else {
-                            tsmMoveConverted = moveSibling.clone();
-                            tsmMoveConverted.setPkItemId(itemConverted.getPkItemId());
-                            tsmMoveConverted.setPkUnitId(itemConverted.getFkUnitId());
-                            tsmMoveConverted.setPkLotId(moveSibling.getPkLotId());
-                            tsmMoveConverted.setQuantity(moveSibling.getQuantity() * itemConverted.getUnitsPackage());
-                            tsmMovesConverted.add(tsmMoveConverted);
-
-                            quantity += tsmMoveConverted.getQuantity();
+                            auxStockMoveConverted = moveSibling.clone();
+                            auxStockMoveConverted.setPkItemId(itemConverted.getPkItemId());
+                            auxStockMoveConverted.setPkUnitId(itemConverted.getFkUnitId());
+                            auxStockMoveConverted.setPkLotId(moveSibling.getPkLotId());
+                            
+                            auxStockMoveConverted.setQuantity(moveSibling.getQuantity() * itemConverted.getUnitsPackage());
+                            
+                            tsmMovesConverted.add(auxStockMoveConverted);
+                            quantity += auxStockMoveConverted.getQuantity();
                         }
                     }
 
                     // Redefine quantity:
 
-                    iogRowSibling.setQuantity(quantity);
-                    iogRowSibling.setValueUnitary(quantity == 0 ? 0 : iogRowSibling.getValue_r() / quantity);
+                    siblingIogRow.setQuantity(quantity);
+                    siblingIogRow.setValueUnitary(quantity == 0 ? 0 : siblingIogRow.getValue_r() / quantity);
 
                     // Incorporate stock moves:
 
-                    iogRowSibling.getAuxStockMoves().clear();
-                    iogRowSibling.getAuxStockMoves().addAll(tsmMovesConverted);
+                    siblingIogRow.getAuxStockMoves().clear();
+                    siblingIogRow.getAuxStockMoves().addAll(tsmMovesConverted);
                 }
             }
         }
-
-        return iogSibling;
+        
+        moSiblingIog = siblingIog;
     }
 
     private boolean canChangeStatus(final DGuiSession session, final boolean activate, final boolean isSibling) throws SQLException, Exception {
@@ -1173,6 +1189,18 @@ public class DDbIog extends DDbRegistryUser {
             if (child.isRegistryNew() || child.isRegistryEdited()) {
                 child.setPkIogId(mnPkIogId);
                 child.save(session);
+                
+                // delete row-sibling counterparts when necessary:
+                if (child.isDeleted() && moSiblingIog != null) {
+                    for (DDbIogRow childSibling : moSiblingIog.getChildRows()) {
+                        if (child.getPkRowId() == childSibling.getPkRowId()) {
+                            childSibling.setDeleted(true);
+                            childSibling.setRegistryEdited(true);
+                            childSibling.save(session);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -1184,8 +1212,9 @@ public class DDbIog extends DDbRegistryUser {
         // Save siblign document if required:
 
         if (mbAuxComputeSiblingIog) {
-            moSiblingIog = createSiblingIog(session, manAuxSiblingIogWarehouseKey);
+            createSiblingIog(session);
             mbAuxComputeSiblingIog = false;
+            manAuxSiblingIogWarehouseKey = null;
         }
 
         if (moSiblingIog != null) {
@@ -1239,7 +1268,7 @@ public class DDbIog extends DDbRegistryUser {
         }
 
         registry.setAuxComputeSiblingIog(this.isAuxComputeSiblingIog());
-        registry.setAuxSiblingIogWarehouseKey(this.getAuxSiblingIogWarehouseKey());
+        registry.setAuxSiblingIogWarehouseKey(DLibUtils.cloneKey(this.getAuxSiblingIogWarehouseKey()));
 
         if (moSiblingIog != null) {
             registry.setSiblingIog(moSiblingIog.clone());

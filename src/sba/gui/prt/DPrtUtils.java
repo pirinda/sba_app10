@@ -25,7 +25,7 @@ import sba.mod.DModConsts;
  */
 public class DPrtUtils {
 
-    private static String getReportFileName(final int type) {
+    private static String getReportFileName(final int type, final int printMode) {
         String fileName = "";
 
         switch (type) {
@@ -39,7 +39,15 @@ public class DPrtUtils {
                 fileName = "reps/cfdi.jasper";
                 break;
             case DModConsts.TR_DPS_CFDI_33:
-                fileName = "reps/cfdi33.jasper";
+                switch (printMode) {
+                    case DPrtConsts.PRINT_MODE_STD:
+                        fileName = "reps/cfdi33.jasper";
+                        break;
+                    case DPrtConsts.PRINT_MODE_ALT:
+                        fileName = "reps/cfdi33_alt.jasper";
+                        break;
+                    default:
+                }
                 break;
             case DModConsts.TR_DPS_CFDI_33_CRP_10:
                 fileName = "reps/trn_cfdi_33_crp_10.jasper";
@@ -73,13 +81,17 @@ public class DPrtUtils {
     }
 
     public static void printReport(final DGuiSession session, final int type, final HashMap<String, Object> hashMap) throws Exception, JRException {
+        printReport(session, type, DPrtConsts.PRINT_MODE_STD, hashMap);
+    }
+
+    public static void printReport(final DGuiSession session, final int type, final int printMode, final HashMap<String, Object> hashMap) throws Exception, JRException {
         File file = null;
         JasperReport jasperReport = null;
         JasperPrint jasperPrint = null;
         JasperViewer jasperViewer = null;
 
         try {
-            file = new File(getReportFileName(type));
+            file = new File(getReportFileName(type, printMode));
 
             jasperReport = (JasperReport) JRLoader.loadObject(file);
             jasperPrint = JasperFillManager.fillReport(jasperReport, hashMap, session.getStatement().getConnection());
@@ -94,12 +106,16 @@ public class DPrtUtils {
     }
 
     public static void exportReportToPdfFile(final DGuiSession session, final int type, final HashMap<String, Object> hashMap, String destFileName) throws Exception, JRException {
+        exportReportToPdfFile(session, type, DPrtConsts.PRINT_MODE_STD, hashMap, destFileName);
+    }
+
+    public static void exportReportToPdfFile(final DGuiSession session, final int type, final int printMode, final HashMap<String, Object> hashMap, String destFileName) throws Exception, JRException {
         File file = null;
         JasperReport jasperReport = null;
         JasperPrint jasperPrint = null;
 
         try {
-            file = new File(getReportFileName(type));
+            file = new File(getReportFileName(type, printMode));
 
             jasperReport = (JasperReport) JRLoader.loadObject(file);
             jasperPrint = JasperFillManager.fillReport(jasperReport, hashMap, session.getStatement().getConnection());

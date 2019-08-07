@@ -35,8 +35,8 @@ public class DTrnDfrUtilsHandler {
         DDbCertificate certificate = (DDbCertificate) moSession.readRegistry(DModConsts.CU_CER, new int[] { configBranch.getFkCertificateId_n() });
         
         String fiscalId = company.getFiscalId();
-        String edsName = configBranch.getEdsName();
-        String edsPswd = configBranch.getEdsPassword();
+        String edsName = configBranch.getDfrName();
+        String edsPswd = configBranch.getDfrPassword();
 
         if (!((DDbConfigCompany) moSession.getConfigCompany()).isDevelopment()) {
             // environment for production is set:
@@ -105,8 +105,8 @@ public class DTrnDfrUtilsHandler {
         DDbBizPartner bizPartner = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, dfr.getBizPartnerKey());
         
         String fiscalId = company.getFiscalId();
-        String edsName = configBranch.getEdsName();
-        String edsPswd = configBranch.getEdsPassword();
+        String edsName = configBranch.getDfrName();
+        String edsPswd = configBranch.getDfrPassword();
 
         if (!((DDbConfigCompany) moSession.getConfigCompany()).isDevelopment()) {
             // environment for production is set:

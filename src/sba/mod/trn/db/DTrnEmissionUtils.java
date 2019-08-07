@@ -10,9 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.Vector;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -47,12 +47,14 @@ import sba.lib.gui.DGuiSession;
 import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DBprEmail;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysXmlSignatureProvider;
+import sba.mod.trn.form.DDialogEmailSending;
 import sba.mod.trn.form.DFormDpsCancelling;
 import sba.mod.trn.form.DFormDpsPrinting;
 import sba.mod.trn.form.DFormDpsSigning;
@@ -309,7 +311,7 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
-    public static void printDps(final DGuiClient client, final DGridRowView gridRow) {
+    public static void printDps(final DGuiClient client, final DGridRowView gridRow, final int printMode) {
         boolean print = true;
         boolean printed = false;
         DDbDps dps = null;
@@ -383,9 +385,9 @@ public abstract class DTrnEmissionUtils {
                         }
                         
                         configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
-                        map.put("sEdsDir", configBranch.getEdsDirectory());
+                        map.put("sEdsDir", configBranch.getDfrDirectory());
 
-                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS, map);
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS, printMode, map);
                         printed = true;
                     }
                     else {
@@ -396,12 +398,12 @@ public abstract class DTrnEmissionUtils {
                                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_32:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
                                 printed = true;
                                 break;
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_33:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
                                 printed = true;
                                 break;
                                 
@@ -599,6 +601,8 @@ public abstract class DTrnEmissionUtils {
                             else {
                                 client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido timbrado.\n" +
                                         "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                
+                                sendDps(client, gridRow);
                             }
 
                             client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -717,6 +721,8 @@ public abstract class DTrnEmissionUtils {
                             else {
                                 client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido timbrado.\n" +
                                         "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
+                                
+                                sendDfr(client, gridRow);
                             }
 
                             client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
@@ -997,25 +1003,20 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void sendDps(final DGuiClient client, final DGridRowView gridRow) {
-        boolean send = false;
         DDbDps dps = null;
         DDbDfr dfr = null;
-        DDbDpsSending sending = null;
-        DDbBizPartner bizPartner = null;
         DDbBranchAddress branchAddress = null;
         DDbConfigCompany configCompany = (DDbConfigCompany) client.getSession().getConfigCompany();
-        final String name = configCompany.getEdsEmsName();
-        final String password = configCompany.getEdsEmsPassword();
-        Vector<String> emails = new Vector<>();
+        final String name = configCompany.getDfrEmsName();
+        final String password = configCompany.getDfrEmsPassword();
 
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
         }
-        else if (configCompany.getFkEdsEmsTypeId() == DModSysConsts.CS_EMS_TP_NA) {
-            client.showMsgBoxWarning("No está configurado el envío de documentos electrónicos vía e-mail.");
+        else if (configCompany.getFkDfrEmsTypeId() == DModSysConsts.CS_EMS_TP_NA) {
+            client.showMsgBoxWarning("No está configurado el envío de documentos electrónicos vía correo-e.");
         }
         else {
-
             try {
                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
                 dfr = dps.getChildDfr();
@@ -1030,156 +1031,135 @@ public abstract class DTrnEmissionUtils {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "La addenda del registro XML del documento no ha sido incorporada.");
                 }
                 else {
-                    sending = dps.createDpsSending();
-
-                    if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ISS) {
-                        throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + "El estatus del documento debe ser '" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                    branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, dps.getBizPartnerBranchAddressKey(), DDbConsts.MODE_STEALTH);
+                    
+                    if (branchAddress.countEmails() == 0) {
+                        client.showMsgBoxWarning("No se han definido correos-e para "
+                                + "'" + client.getSession().readField(DModConsts.BU_BPR, dps.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString() + "',\n"
+                                + "receptor del documento '" + dps.getDpsNumber() + "'.");
                     }
-                    else {
-                        branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, dps.getBizPartnerBranchAddressKey(), DDbConsts.MODE_STEALTH);
+                    
+                    DDialogEmailSending dialog = new DDialogEmailSending(client, DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
+                    dialog.setBizPartner(client.getSession().readField(DModConsts.BU_BPR, dps.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString());
+                    dialog.setDocument("Documento", dps.getDpsNumber());
+                    dialog.setEmails(branchAddress.createEmails());
+                    dialog.setVisible(true);
 
-                        if (branchAddress.getFkTelecommElectronic1TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
-                            if (branchAddress.getContact1().isEmpty()) {
-                                emails.add(branchAddress.getTelecommElectronic1());
-                            }
-                            else {
-                                emails.add("\"" + branchAddress.getContact1() + "\" <" + branchAddress.getTelecommElectronic1() + ">");
-                                sending.setContact1(branchAddress.getContact1());
-                            }
-                            sending.setEmail1(branchAddress.getTelecommElectronic1());
-                        }
+                    if (dialog.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                        try {
+                            client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                        if (branchAddress.getFkTelecommElectronic2TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
-                            if (branchAddress.getContact2().isEmpty()) {
-                                emails.add(branchAddress.getTelecommElectronic2());
-                            }
-                            else {
-                                emails.add("\"" + branchAddress.getContact2() + "\" <" + branchAddress.getTelecommElectronic2() + ">");
-                                sending.setContact2(branchAddress.getContact2());
-                            }
-                            sending.setEmail2(branchAddress.getTelecommElectronic2());
-                        }
+                            Properties properties = System.getProperties();
 
-                        if (emails.isEmpty()) {
-                            bizPartner = (DDbBizPartner) client.getSession().readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey(), DDbConsts.MODE_STEALTH);
-                            client.showMsgBoxWarning("No se han definido correos electrónicos para '" + bizPartner.getName() + "',\nreceptor del documento '" + dps.getDpsNumber() + "'.");
-                        }
-                        else {
-                            send = client.showMsgBoxConfirm("El documento '" + dps.getDpsNumber() + "' será enviado a:" +
-                                    (emails.size() <= 0 ? "" : "\n" + emails.get(0)) +
-                                    (emails.size() <= 1 ? "" : "\n" + emails.get(1)) +
-                                    "\n¿Está seguro que desea enviar el documento?") == JOptionPane.YES_OPTION;
+                            String from = configCompany.getDfrEmsFrom();
 
-                            if (send) {
-                                try {
-                                    client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
-
-                                    Properties properties = System.getProperties();
-
-                                    String from = configCompany.getEdsEmsFrom();
-
-                                    switch (configCompany.getFkEdsEmsTypeId()) {
-                                        case DModSysConsts.CS_EMS_TP_OWN:
-                                            properties.setProperty("mail.smtp.host", configCompany.getEdsEmsSmtpHost());
-                                            properties.setProperty("mail.smtp.port", "" + configCompany.getEdsEmsSmtpPort());
-                                            if (configCompany.isEdsEmsSmtpSslEnabled()) {
-                                                properties.setProperty("mail.smtp.ssl.enable", "true");
-                                            }
-                                            break;
-                                        case DModSysConsts.CS_EMS_TP_LIVE:
-                                            properties.setProperty("mail.smtp.host", "smtp.live.com");
-                                            properties.setProperty("mail.smtp.port", "587");
-                                            properties.setProperty("mail.smtp.auth", "true");
-                                            properties.setProperty("mail.smtp.starttls.enable", "true");
-                                            properties.setProperty("mail.smtp.ssl.trust", "smtp.live.com");
-                                            break;
-                                        case DModSysConsts.CS_EMS_TP_GMAIL:
-                                            properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-                                            properties.setProperty("mail.smtp.port", "587");
-                                            properties.setProperty("mail.smtp.auth", "true");
-                                            properties.setProperty("mail.smtp.starttls.enable", "true");
-                                            properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
-                                            break;
-                                        default:
-                                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                            switch (configCompany.getFkDfrEmsTypeId()) {
+                                case DModSysConsts.CS_EMS_TP_OWN:
+                                    properties.setProperty("mail.smtp.host", configCompany.getDfrEmsSmtpHost());
+                                    properties.setProperty("mail.smtp.port", "" + configCompany.getDfrEmsSmtpPort());
+                                    if (configCompany.isDfrEmsSmtpSslEnabled()) {
+                                        properties.setProperty("mail.smtp.ssl.enable", "true");
                                     }
-
-                                    Session session = Session.getInstance(properties,
-                                            new Authenticator() {
-                                                protected PasswordAuthentication getPasswordAuthentication() {
-                                                    return new javax.mail.PasswordAuthentication(name, password);
-                                                }
-                                            });
-
-                                    MimeMessage mimeMessage = new MimeMessage(session);
-                                    mimeMessage.setFrom(new InternetAddress(from));
-
-                                    if (emails.size() > 0) {
-                                        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(0)));
-                                    }
-                                    if (emails.size() > 1) {
-                                        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(1)));
-                                    }
-
-                                    mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(from));
-
-                                    mimeMessage.setSubject(configCompany.getEdsEmsSubject() + " " + dps.getDpsNumber());
-
-                                    Multipart multipart = new MimeMultipart();
-                                    BodyPart bodyPart = null;
-
-                                    bodyPart = new MimeBodyPart();
-                                    bodyPart.setText(configCompany.getEdsEmsBody());
-                                    multipart.addBodyPart(bodyPart);
-
-                                    String filePath = "";
-                                    String fileName = "";
-                                    DataSource dataSource = null;
-                                    DDbConfigBranch configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
-
-                                    // PDF file:
-
-                                    fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
-                                    filePath = configBranch.getEdsDirectory() + fileName;
-
-                                    dataSource = new FileDataSource(filePath);
-                                    bodyPart = new MimeBodyPart();
-                                    bodyPart.setDataHandler(new DataHandler(dataSource));
-                                    bodyPart.setFileName(fileName);
-                                    multipart.addBodyPart(bodyPart);
-
-                                    // XML file:
-
-                                    fileName = dfr.getDocXmlName();
-                                    filePath = configBranch.getEdsDirectory() + fileName;
-
-                                    dataSource = new FileDataSource(filePath);
-                                    bodyPart = new MimeBodyPart();
-                                    bodyPart.setDataHandler(new DataHandler(dataSource));
-                                    bodyPart.setFileName(fileName);
-                                    multipart.addBodyPart(bodyPart);
-
-                                    mimeMessage.setContent(multipart);
-
-                                    Transport.send(mimeMessage);
-
-                                    sending.save(client.getSession());
-                                    client.getSession().notifySuscriptors(DModConsts.T_DPS_SND);
-
-                                    client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido enviado.");
-                                }
-                                catch (MessagingException e) {
-                                    e.printStackTrace();
-                                    DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-                                }
-                                catch (Exception e) {
-                                    e.printStackTrace();
-                                    DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-                                }
-                                finally {
-                                    client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
-                                }
+                                    break;
+                                case DModSysConsts.CS_EMS_TP_LIVE:
+                                    properties.setProperty("mail.smtp.host", "smtp.live.com");
+                                    properties.setProperty("mail.smtp.port", "587");
+                                    properties.setProperty("mail.smtp.auth", "true");
+                                    properties.setProperty("mail.smtp.starttls.enable", "true");
+                                    properties.setProperty("mail.smtp.ssl.trust", "smtp.live.com");
+                                    break;
+                                case DModSysConsts.CS_EMS_TP_GMAIL:
+                                    properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+                                    properties.setProperty("mail.smtp.port", "587");
+                                    properties.setProperty("mail.smtp.auth", "true");
+                                    properties.setProperty("mail.smtp.starttls.enable", "true");
+                                    properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
+                                    break;
+                                default:
+                                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
                             }
+
+                            Session session = Session.getInstance(properties,
+                                    new Authenticator() {
+                                        protected PasswordAuthentication getPasswordAuthentication() {
+                                            return new javax.mail.PasswordAuthentication(name, password);
+                                        }
+                                    });
+
+                            MimeMessage mimeMessage = new MimeMessage(session);
+                            mimeMessage.setFrom(new InternetAddress(from));
+
+                            ArrayList<DBprEmail> emails = dialog.getEmails();
+                            for (DBprEmail email : emails) {
+                                mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email.composeEmail()));
+                            }
+
+                            mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(from));
+
+                            mimeMessage.setSubject(configCompany.getDfrEmsSubject() + " " + dps.getDpsNumber());
+
+                            Multipart multipart = new MimeMultipart();
+                            BodyPart bodyPart = null;
+
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setText(configCompany.getDfrEmsBody());
+                            multipart.addBodyPart(bodyPart);
+
+                            String filePath = "";
+                            String fileName = "";
+                            DataSource dataSource = null;
+                            DDbConfigBranch configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+
+                            // PDF file:
+
+                            fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
+                            filePath = configBranch.getDfrDirectory() + fileName;
+
+                            dataSource = new FileDataSource(filePath);
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setDataHandler(new DataHandler(dataSource));
+                            bodyPart.setFileName(fileName);
+                            multipart.addBodyPart(bodyPart);
+
+                            // XML file:
+
+                            fileName = dfr.getDocXmlName();
+                            filePath = configBranch.getDfrDirectory() + fileName;
+
+                            dataSource = new FileDataSource(filePath);
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setDataHandler(new DataHandler(dataSource));
+                            bodyPart.setFileName(fileName);
+                            multipart.addBodyPart(bodyPart);
+
+                            mimeMessage.setContent(multipart);
+
+                            Transport.send(mimeMessage);
+
+                            // register sending:
+                            DDbDpsSending sending = dps.createDpsSending();
+                            DTrnUtils.populateEmails(sending, emails);
+                            sending.save(client.getSession());
+
+                            // notify suscriptors and user:
+                            client.getSession().notifySuscriptors(DModConsts.T_DPS_SND);
+                            client.showMsgBoxInformation("El documento '" + dps.getDpsNumber() + "' ha sido enviado.");
+
+                            // preserve mails if requested:
+                            if (dialog.isPreserveEmailsSelected()) {
+                                dialog.preserveEmails(branchAddress);
+                            }
+                        }
+                        catch (MessagingException e) {
+                            e.printStackTrace();
+                            DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                            DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                        }
+                        finally {
+                            client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                         }
                     }
                 }
@@ -1191,23 +1171,19 @@ public abstract class DTrnEmissionUtils {
     }
 
     public static void sendDfr(final DGuiClient client, final DGridRowView gridRow) {
-        boolean send = false;
         DDbDfr dfr = null;
-        DDbBizPartner bizPartner = null;
         DDbBranchAddress branchAddress = null;
         DDbConfigCompany configCompany = (DDbConfigCompany) client.getSession().getConfigCompany();
-        final String name = configCompany.getEdsEmsName();
-        final String password = configCompany.getEdsEmsPassword();
-        Vector<String> emails = new Vector<>();
+        final String name = configCompany.getDfrEmsName();
+        final String password = configCompany.getDfrEmsPassword();
 
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
         }
-        else if (configCompany.getFkEdsEmsTypeId() == DModSysConsts.CS_EMS_TP_NA) {
-            client.showMsgBoxWarning("No está configurado el envío de comprobantes electrónicos vía e-mail.");
+        else if (configCompany.getFkDfrEmsTypeId() == DModSysConsts.CS_EMS_TP_NA) {
+            client.showMsgBoxWarning("No está configurado el envío de comprobantes vía correo-e.");
         }
         else {
-
             try {
                 dfr = (DDbDfr) client.getSession().readRegistry(DModConsts.T_DFR, gridRow.getRowPrimaryKey());
 
@@ -1223,142 +1199,128 @@ public abstract class DTrnEmissionUtils {
                 else {
                     branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, new int[] { dfr.getFkBizPartnerId(), 1, 1 }, DDbConsts.MODE_STEALTH);
 
-                    if (branchAddress.getFkTelecommElectronic1TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
-                        if (branchAddress.getContact1().isEmpty()) {
-                            emails.add(branchAddress.getTelecommElectronic1());
-                        }
-                        else {
-                            emails.add("\"" + branchAddress.getContact1() + "\" <" + branchAddress.getTelecommElectronic1() + ">");
-                        }
+                    if (branchAddress.countEmails() == 0) {
+                        client.showMsgBoxWarning("No se han definido correos-e para "
+                                + "'" + client.getSession().readField(DModConsts.BU_BPR, dfr.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString() + "',\n"
+                                + "receptor del comprobante '" + dfr.getDfrNumber() + "'.");
                     }
 
-                    if (branchAddress.getFkTelecommElectronic2TypeId() == DModSysConsts.BS_TCE_TP_EMA) {
-                        if (branchAddress.getContact2().isEmpty()) {
-                            emails.add(branchAddress.getTelecommElectronic2());
-                        }
-                        else {
-                            emails.add("\"" + branchAddress.getContact2() + "\" <" + branchAddress.getTelecommElectronic2() + ">");
-                        }
-                    }
+                    DDialogEmailSending dialog = new DDialogEmailSending(client, DModSysConsts.BS_BPR_CL_CUS);
+                    dialog.setBizPartner(client.getSession().readField(DModConsts.BU_BPR, dfr.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString());
+                    dialog.setDocument("Comprobante", dfr.getDfrNumber());
+                    dialog.setEmails(branchAddress.createEmails());
+                    dialog.setVisible(true);
 
-                    if (emails.isEmpty()) {
-                        bizPartner = (DDbBizPartner) client.getSession().readRegistry(DModConsts.BU_BPR, dfr.getBizPartnerKey(), DDbConsts.MODE_STEALTH);
-                        client.showMsgBoxWarning("No se han definido correos electrónicos para '" + bizPartner.getName() + "',\nreceptor del comprobante '" + dfr.getDfrNumber() + "'.");
-                    }
-                    else {
-                        send = client.showMsgBoxConfirm("El comprobante '" + dfr.getDfrNumber() + "' será enviado a:" +
-                                (emails.size() <= 0 ? "" : "\n" + emails.get(0)) +
-                                (emails.size() <= 1 ? "" : "\n" + emails.get(1)) +
-                                "\n¿Está seguro que desea enviar el comprobante?") == JOptionPane.YES_OPTION;
+                    if (dialog.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                        try {
+                            client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                        if (send) {
-                            try {
-                                client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
+                            Properties properties = System.getProperties();
 
-                                Properties properties = System.getProperties();
+                            String from = configCompany.getDfrEmsFrom();
 
-                                String from = configCompany.getEdsEmsFrom();
+                            switch (configCompany.getFkDfrEmsTypeId()) {
+                                case DModSysConsts.CS_EMS_TP_OWN:
+                                    properties.setProperty("mail.smtp.host", configCompany.getDfrEmsSmtpHost());
+                                    properties.setProperty("mail.smtp.port", "" + configCompany.getDfrEmsSmtpPort());
+                                    if (configCompany.isDfrEmsSmtpSslEnabled()) {
+                                        properties.setProperty("mail.smtp.ssl.enable", "true");
+                                    }
+                                    break;
+                                case DModSysConsts.CS_EMS_TP_LIVE:
+                                    properties.setProperty("mail.smtp.host", "smtp.live.com");
+                                    properties.setProperty("mail.smtp.port", "587");
+                                    properties.setProperty("mail.smtp.auth", "true");
+                                    properties.setProperty("mail.smtp.starttls.enable", "true");
+                                    properties.setProperty("mail.smtp.ssl.trust", "smtp.live.com");
+                                    break;
+                                case DModSysConsts.CS_EMS_TP_GMAIL:
+                                    properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+                                    properties.setProperty("mail.smtp.port", "587");
+                                    properties.setProperty("mail.smtp.auth", "true");
+                                    properties.setProperty("mail.smtp.starttls.enable", "true");
+                                    properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
+                                    break;
+                                default:
+                                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                            }
 
-                                switch (configCompany.getFkEdsEmsTypeId()) {
-                                    case DModSysConsts.CS_EMS_TP_OWN:
-                                        properties.setProperty("mail.smtp.host", configCompany.getEdsEmsSmtpHost());
-                                        properties.setProperty("mail.smtp.port", "" + configCompany.getEdsEmsSmtpPort());
-                                        if (configCompany.isEdsEmsSmtpSslEnabled()) {
-                                            properties.setProperty("mail.smtp.ssl.enable", "true");
+                            Session session = Session.getInstance(properties,
+                                    new Authenticator() {
+                                        protected PasswordAuthentication getPasswordAuthentication() {
+                                            return new javax.mail.PasswordAuthentication(name, password);
                                         }
-                                        break;
-                                    case DModSysConsts.CS_EMS_TP_LIVE:
-                                        properties.setProperty("mail.smtp.host", "smtp.live.com");
-                                        properties.setProperty("mail.smtp.port", "587");
-                                        properties.setProperty("mail.smtp.auth", "true");
-                                        properties.setProperty("mail.smtp.starttls.enable", "true");
-                                        properties.setProperty("mail.smtp.ssl.trust", "smtp.live.com");
-                                        break;
-                                    case DModSysConsts.CS_EMS_TP_GMAIL:
-                                        properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-                                        properties.setProperty("mail.smtp.port", "587");
-                                        properties.setProperty("mail.smtp.auth", "true");
-                                        properties.setProperty("mail.smtp.starttls.enable", "true");
-                                        properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
-                                        break;
-                                    default:
-                                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-                                }
+                                    });
 
-                                Session session = Session.getInstance(properties,
-                                        new Authenticator() {
-                                            protected PasswordAuthentication getPasswordAuthentication() {
-                                                return new javax.mail.PasswordAuthentication(name, password);
-                                            }
-                                        });
+                            MimeMessage mimeMessage = new MimeMessage(session);
+                            mimeMessage.setFrom(new InternetAddress(from));
 
-                                MimeMessage mimeMessage = new MimeMessage(session);
-                                mimeMessage.setFrom(new InternetAddress(from));
-
-                                if (emails.size() > 0) {
-                                    mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(0)));
-                                }
-                                if (emails.size() > 1) {
-                                    mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emails.get(1)));
-                                }
-
-                                mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(from));
-
-                                mimeMessage.setSubject(configCompany.getEdsEmsSubject() + " " + dfr.getDfrNumber());
-
-                                Multipart multipart = new MimeMultipart();
-                                BodyPart bodyPart = null;
-
-                                bodyPart = new MimeBodyPart();
-                                bodyPart.setText(configCompany.getEdsEmsBody());
-                                multipart.addBodyPart(bodyPart);
-
-                                String filePath = "";
-                                String fileName = "";
-                                DataSource dataSource = null;
-                                DDbConfigBranch configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
-
-                                // PDF file:
-
-                                fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
-                                filePath = configBranch.getEdsDirectory() + fileName;
-
-                                dataSource = new FileDataSource(filePath);
-                                bodyPart = new MimeBodyPart();
-                                bodyPart.setDataHandler(new DataHandler(dataSource));
-                                bodyPart.setFileName(fileName);
-                                multipart.addBodyPart(bodyPart);
-
-                                // XML file:
-
-                                fileName = dfr.getDocXmlName();
-                                filePath = configBranch.getEdsDirectory() + fileName;
-
-                                dataSource = new FileDataSource(filePath);
-                                bodyPart = new MimeBodyPart();
-                                bodyPart.setDataHandler(new DataHandler(dataSource));
-                                bodyPart.setFileName(fileName);
-                                multipart.addBodyPart(bodyPart);
-
-                                mimeMessage.setContent(multipart);
-
-                                Transport.send(mimeMessage);
-
-                                client.getSession().notifySuscriptors(DModConsts.T_DFR);
-
-                                client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido enviado.");
+                            ArrayList<DBprEmail> emails = dialog.getEmails();
+                            for (DBprEmail email : emails) {
+                                mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email.composeEmail()));
                             }
-                            catch (MessagingException e) {
-                                e.printStackTrace();
-                                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+
+                            mimeMessage.addRecipient(Message.RecipientType.BCC, new InternetAddress(from));
+
+                            mimeMessage.setSubject(configCompany.getDfrEmsSubject() + " " + dfr.getDfrNumber());
+
+                            Multipart multipart = new MimeMultipart();
+                            BodyPart bodyPart = null;
+
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setText(configCompany.getDfrEmsBody());
+                            multipart.addBodyPart(bodyPart);
+
+                            String filePath = "";
+                            String fileName = "";
+                            DataSource dataSource = null;
+                            DDbConfigBranch configBranch = (DDbConfigBranch) client.getSession().readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
+
+                            // PDF file:
+
+                            fileName = dfr.getDocXmlName().replaceAll(".xml", ".pdf");
+                            filePath = configBranch.getDfrDirectory() + fileName;
+
+                            dataSource = new FileDataSource(filePath);
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setDataHandler(new DataHandler(dataSource));
+                            bodyPart.setFileName(fileName);
+                            multipart.addBodyPart(bodyPart);
+
+                            // XML file:
+
+                            fileName = dfr.getDocXmlName();
+                            filePath = configBranch.getDfrDirectory() + fileName;
+
+                            dataSource = new FileDataSource(filePath);
+                            bodyPart = new MimeBodyPart();
+                            bodyPart.setDataHandler(new DataHandler(dataSource));
+                            bodyPart.setFileName(fileName);
+                            multipart.addBodyPart(bodyPart);
+
+                            mimeMessage.setContent(multipart);
+
+                            Transport.send(mimeMessage);
+
+                            // notify suscriptors and user:
+                            client.getSession().notifySuscriptors(DModConsts.T_DFR);
+                            client.showMsgBoxInformation("El comprobante '" + dfr.getDfrNumber() + "' ha sido enviado.");
+
+                            // preserve mails if requested:
+                            if (dialog.isPreserveEmailsSelected()) {
+                                dialog.preserveEmails(branchAddress);
                             }
-                            catch (Exception e) {
-                                e.printStackTrace();
-                                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-                            }
-                            finally {
-                                client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
-                            }
+                        }
+                        catch (MessagingException e) {
+                            e.printStackTrace();
+                            DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                            DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+                        }
+                        finally {
+                            client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                         }
                     }
                 }

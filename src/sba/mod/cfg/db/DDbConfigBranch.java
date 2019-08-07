@@ -24,10 +24,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
 
     protected int mnPkBizPartnerId;
     protected int mnPkBranchId;
-    protected String msEdsDirectory;
-    protected String msEdsName;
-    protected String msEdsPassword;
-    protected String msEdsCrpSeries;
+    protected String msDfrDirectory;
+    protected String msDfrName;
+    protected String msDfrPassword;
+    protected String msDfrCrpSeries;
     protected boolean mbDpsNumberAutomaticByUser;
     protected boolean mbDpsPrintingDialog;
     /*
@@ -60,10 +60,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
 
     public void setPkBizPartnerId(int n) { mnPkBizPartnerId = n; }
     public void setPkBranchId(int n) { mnPkBranchId = n; }
-    public void setEdsDirectory(String s) { msEdsDirectory = s; }
-    public void setEdsName(String s) { msEdsName = s; }
-    public void setEdsPassword(String s) { msEdsPassword = s; }
-    public void setEdsCrpSeries(String s) { msEdsCrpSeries = s; }
+    public void setDfrDirectory(String s) { msDfrDirectory = s; }
+    public void setDfrName(String s) { msDfrName = s; }
+    public void setDfrPassword(String s) { msDfrPassword = s; }
+    public void setDfrCrpSeries(String s) { msDfrCrpSeries = s; }
     public void setDpsNumberAutomaticByUser(boolean b) { mbDpsNumberAutomaticByUser = b; }
     public void setDpsPrintingDialog(boolean b) { mbDpsPrintingDialog = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -87,10 +87,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
 
     public int getPkBizPartnerId() { return mnPkBizPartnerId; }
     public int getPkBranchId() { return mnPkBranchId; }
-    public String getEdsDirectory() { return msEdsDirectory; }
-    public String getEdsName() { return msEdsName; }
-    public String getEdsPassword() { return msEdsPassword; }
-    public String getEdsCrpSeries() { return msEdsCrpSeries; }
+    public String getDfrDirectory() { return msDfrDirectory; }
+    public String getDfrName() { return msDfrName; }
+    public String getDfrPassword() { return msDfrPassword; }
+    public String getDfrCrpSeries() { return msDfrCrpSeries; }
     public boolean isDpsNumberAutomaticByUser() { return mbDpsNumberAutomaticByUser; }
     public boolean isDpsPrintingDialog() { return mbDpsPrintingDialog; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -129,10 +129,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
 
         mnPkBizPartnerId = 0;
         mnPkBranchId = 0;
-        msEdsDirectory = "";
-        msEdsName = "";
-        msEdsPassword = "";
-        msEdsCrpSeries = "";
+        msDfrDirectory = "";
+        msDfrName = "";
+        msDfrPassword = "";
+        msDfrCrpSeries = "";
         mbDpsNumberAutomaticByUser = false;
         mbDpsPrintingDialog = false;
         mbUpdatable = false;
@@ -191,10 +191,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
         else {
             mnPkBizPartnerId = resultSet.getInt("id_bpr");
             mnPkBranchId = resultSet.getInt("id_bra");
-            msEdsDirectory = resultSet.getString("eds_dir");
-            msEdsName = resultSet.getString("eds_name");
-            msEdsPassword = resultSet.getString("eds_pswd");
-            msEdsCrpSeries = resultSet.getString("eds_crp_ser");
+            msDfrDirectory = resultSet.getString("dfr_dir");
+            msDfrName = resultSet.getString("dfr_name");
+            msDfrPassword = resultSet.getString("dfr_pswd");
+            msDfrCrpSeries = resultSet.getString("dfr_crp_ser");
             mbDpsNumberAutomaticByUser = resultSet.getBoolean("b_dps_num_aut_usr");
             mbDpsPrintingDialog = resultSet.getBoolean("b_dps_prt_dlg");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -244,10 +244,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkBizPartnerId + ", " +
                     mnPkBranchId + ", " +
-                    "'" + msEdsDirectory + "', " +
-                    "'" + msEdsName + "', " +
-                    "'" + msEdsPassword + "', " +
-                    "'" + msEdsCrpSeries + "', " + 
+                    "'" + msDfrDirectory + "', " +
+                    "'" + msDfrName + "', " +
+                    "'" + msDfrPassword + "', " +
+                    "'" + msDfrCrpSeries + "', " + 
                     (mbDpsNumberAutomaticByUser ? 1 : 0) + ", " +
                     (mbDpsPrintingDialog ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -278,10 +278,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
                     "id_bpr = " + mnPkBizPartnerId + ", " +
                     "id_bra = " + mnPkBranchId + ", " +
                     */
-                    "eds_dir = '" + msEdsDirectory + "', " +
-                    "eds_name = '" + msEdsName + "', " +
-                    "eds_pswd = '" + msEdsPassword + "', " +
-                    "eds_crp_ser = '" + msEdsCrpSeries + "', " +
+                    "dfr_dir = '" + msDfrDirectory + "', " +
+                    "dfr_name = '" + msDfrName + "', " +
+                    "dfr_pswd = '" + msDfrPassword + "', " +
+                    "dfr_crp_ser = '" + msDfrCrpSeries + "', " +
                     "b_dps_num_aut_usr = " + (mbDpsNumberAutomaticByUser ? 1 : 0) + ", " +
                     "b_dps_prt_dlg = " + (mbDpsPrintingDialog ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -316,10 +316,10 @@ public class DDbConfigBranch extends DDbRegistryUser implements DGuiConfigBranch
 
         registry.setPkBizPartnerId(this.getPkBizPartnerId());
         registry.setPkBranchId(this.getPkBranchId());
-        registry.setEdsDirectory(this.getEdsDirectory());
-        registry.setEdsName(this.getEdsName());
-        registry.setEdsPassword(this.getEdsPassword());
-        registry.setEdsCrpSeries(this.getEdsCrpSeries());
+        registry.setDfrDirectory(this.getDfrDirectory());
+        registry.setDfrName(this.getDfrName());
+        registry.setDfrPassword(this.getDfrPassword());
+        registry.setDfrCrpSeries(this.getDfrCrpSeries());
         registry.setDpsNumberAutomaticByUser(this.isDpsNumberAutomaticByUser());
         registry.setDpsPrintingDialog(this.isDpsPrintingDialog());
         registry.setUpdatable(this.isUpdatable());

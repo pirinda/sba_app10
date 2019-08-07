@@ -180,7 +180,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpRegistry.setLayout(new java.awt.BorderLayout());
 
-        jpRegistry1.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jpRegistry1.setLayout(new java.awt.BorderLayout());
 
         jpRegistry11.setLayout(new java.awt.BorderLayout());
 
@@ -257,11 +257,11 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel10.add(jbFiscalId);
 
         moTextAlternativeId.setToolTipText("CURP");
-        moTextAlternativeId.setPreferredSize(new java.awt.Dimension(90, 23));
+        moTextAlternativeId.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel10.add(moTextAlternativeId);
 
-        moBoolFiscalHomologous.setText("Múltiple");
-        moBoolFiscalHomologous.setPreferredSize(new java.awt.Dimension(65, 23));
+        moBoolFiscalHomologous.setText("Varios");
+        moBoolFiscalHomologous.setPreferredSize(new java.awt.Dimension(60, 23));
         jPanel10.add(moBoolFiscalHomologous);
 
         jPanel5.add(jPanel10);
@@ -279,13 +279,13 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpRegistry11.add(jPanel5, java.awt.BorderLayout.NORTH);
 
-        jpRegistry1.add(jpRegistry11);
+        jpRegistry1.add(jpRegistry11, java.awt.BorderLayout.WEST);
 
         jpRegistry12.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de la matriz:"));
         jpRegistry12.setLayout(new java.awt.BorderLayout());
         jpRegistry12.add(moPanelBranch, java.awt.BorderLayout.CENTER);
 
-        jpRegistry1.add(jpRegistry12);
+        jpRegistry1.add(jpRegistry12, java.awt.BorderLayout.CENTER);
 
         jpRegistry.add(jpRegistry1, java.awt.BorderLayout.NORTH);
 
@@ -553,7 +553,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeBizPartner();
 
-        DGuiUtils.setWindowBounds(this, 800, 540);
+        DGuiUtils.setWindowBounds(this, 900, 550);
 
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), lenCode == 0 || lenCode > 15 ? 15 : lenCode);
         moKeyIdentityType.setKeySettings(miClient, moKeyIdentityType.getToolTipText(), true);

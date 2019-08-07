@@ -41,16 +41,16 @@ import sba.mod.trn.form.DDialogHistoryPrices;
  */
 public class DViewStock extends DGridPaneView implements ActionListener {
 
-    private JButton mjButtonShowCardexStock;
-    private JButton mjButtonShowHistoryPrices;
-    private DDialogCardexStock moDialogCardexStock;
-    private DDialogHistoryPrices moDialogHistoryPrices;
-    private DGridFilterDatePeriod moFilterDatePeriod;
-    private DMyGridFilterBranchEntity moFilterBranchEntity;
+    private final JButton mjButtonShowCardexStock;
+    private final JButton mjButtonShowHistoryPrices;
+    private final DDialogCardexStock moDialogCardexStock;
+    private final DDialogHistoryPrices moDialogHistoryPrices;
+    private final DGridFilterDatePeriod moFilterDatePeriod;
+    private final DMyGridFilterBranchEntity moFilterBranchEntity;
 
     /**
      * @param client GUI client.
-     * @param type Type of stock. Constant defined in DModConsts (TX_STK).
+     * @param type Type of stock. Constant defined in DModConsts (TX_STK or TX_STK_WAH).
      * @param subtype Subtype of stock. Constants defined in DUtilConsts (PER_...).
      * @param title View title.
      */
@@ -152,115 +152,116 @@ public class DViewStock extends DGridPaneView implements ActionListener {
 
     @Override
     public void prepareSqlQuery() {
-        String aux = "";
         String sql = "";
-        String select = "";
-        String having = "";
-        String groupBy = "";
-        String orderBy = "";
-        String innerJoin = "";
+        String sqlSelect = "";
+        String sqlHaving = "";
+        String sqlGroupBy = "";
+        String sqlOrderBy = "";
+        String sqlInnerJoin = "";
         Object filter = null;
-
+        
+        String selectIds = 
+                "s.id_itm AS " + DDbConsts.FIELD_ID + "1, " +
+                "s.id_unt AS " + DDbConsts.FIELD_ID + "2, ";
+        
+        String selectNames =
+                "i.name AS " + DDbConsts.FIELD_NAME + ", " +
+                "i.code AS " + DDbConsts.FIELD_CODE + ", " +
+                "u.code";
+        
+        String groupBy =
+                "s.id_itm, " +
+                "s.id_unt, " +
+                "i.name, " +
+                "i.code, " +
+                "u.code";
+        
+        String orderBy =
+                "i.name, " +
+                "i.code, " +
+                "u.code, " +
+                "s.id_itm, " +
+                "s.id_unt";
+        
+        int idsWah = 0;
+        
+        if (mnGridType == DModConsts.TX_STK_WAH) {
+            idsWah = 3;
+            
+            selectIds +=
+                    "s.id_bpr AS " + DDbConsts.FIELD_ID + "3, " +
+                    "s.id_bra AS " + DDbConsts.FIELD_ID + "4, " +
+                    "s.id_wah AS " + DDbConsts.FIELD_ID + "5, ";
+            
+            selectNames += ", " +
+                    "w.code";
+            
+            groupBy += ", " +
+                    "s.id_bpr, " +
+                    "s.id_bra, " +
+                    "s.id_wah, " +
+                    "w.code";
+            
+            orderBy += ", " +
+                    "w.code, " +
+                    "s.id_bpr, " +
+                    "s.id_bra, " +
+                    "s.id_wah";
+            
+            sqlInnerJoin += "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_WAH) + " AS w ON " +
+                    "s.id_bpr = w.id_bpr AND s.id_bra = w.id_bra AND s.id_wah = w.id_wah ";
+        }
+        
         switch (mnGridSubtype) {
             case DUtilConsts.PER_ITM:
-                moPaneSettings = new DGridPaneSettings(2);
-                select += "s.id_itm AS " + DDbConsts.FIELD_ID + "1, " +
-                        "s.id_unt AS " + DDbConsts.FIELD_ID + "2, " +
-                        "i.name AS " + DDbConsts.FIELD_NAME + ", " +
-                        "i.code AS " + DDbConsts.FIELD_CODE + ", " +
-                        "u.code, ";
-                groupBy += "s.id_itm, " +
-                        "s.id_unt, " +
-                        "i.name, " +
-                        "i.code, " +
-                        "u.code";
-                orderBy += "i.name, " +
-                        "i.code, " +
-                        "u.code, " +
-                        "s.id_itm, " +
-                        "s.id_unt";
+                moPaneSettings = new DGridPaneSettings(2 + idsWah);
+                sqlSelect += selectIds + selectNames + ", ";
+                sqlGroupBy += groupBy + " ";
+                sqlOrderBy += orderBy + " ";
                 break;
 
             case DUtilConsts.PER_LOT:
-                moPaneSettings = new DGridPaneSettings(3);
-                select += "s.id_itm AS " + DDbConsts.FIELD_ID + "1, " +
-                        "s.id_unt AS " + DDbConsts.FIELD_ID + "2, " +
-                        "s.id_lot AS " + DDbConsts.FIELD_ID + "3, " +
-                        "i.name AS " + DDbConsts.FIELD_NAME + ", " +
-                        "i.code AS " + DDbConsts.FIELD_CODE + ", " +
-                        "l.dt_exp_n, " +
+                moPaneSettings = new DGridPaneSettings(2 + idsWah + 1);
+                sqlSelect += selectIds + "s.id_lot AS " + DDbConsts.FIELD_ID + (2 + idsWah + 1) + ", " + selectNames + ", " +
                         "l.lot, " +
-                        "u.code, ";
-                groupBy += "s.id_itm, " +
-                        "s.id_unt, " +
+                        "l.dt_exp_n, ";
+                sqlGroupBy += groupBy + ", " +
                         "s.id_lot, " +
-                        "i.name, " +
-                        "i.code, " +
-                        "l.dt_exp_n, " +
                         "l.lot, " +
-                        "u.code";
-                orderBy += "i.name, " +
-                        "i.code, " +
-                        "l.dt_exp_n, " +
+                        "l.dt_exp_n ";
+                sqlOrderBy += orderBy + ", " +
                         "l.lot, " +
-                        "u.code, " +
                         "l.dt_exp_n, " +
-                        "s.id_itm, " +
-                        "s.id_unt, " +
-                        "s.id_lot";
+                        "s.id_lot ";
 
-                innerJoin = "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_LOT) + " AS l ON " +
+                sqlInnerJoin += "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_LOT) + " AS l ON " +
                         "s.id_itm = l.id_itm AND s.id_unt = l.id_unt AND s.id_lot = l.id_lot ";
                 break;
 
             case DUtilConsts.PER_SNR:
-                moPaneSettings = new DGridPaneSettings(2);
-                select += "s.id_itm AS " + DDbConsts.FIELD_ID + "1, " +
-                        "s.id_unt AS " + DDbConsts.FIELD_ID + "2, " +
-                        "i.name AS " + DDbConsts.FIELD_NAME + ", " +
-                        "i.code AS " + DDbConsts.FIELD_CODE + ", " +
+                moPaneSettings = new DGridPaneSettings(2 + idsWah);
+                sqlSelect += selectIds + selectNames + ", " +
                         "s.snr, " +
-                        "s.snr AS " + DDbConsts.FIELD_COMP + DModSysConsts.PARAM_SNR + ", " +
-                        "u.code, ";
-                groupBy += "s.id_itm, " +
-                        "s.id_unt, " +
-                        "s.snr, " +
-                        "i.name, " +
-                        "i.code, " +
-                        "u.code";
-                orderBy += "i.name, " +
-                        "i.code, " +
-                        "s.snr, " +
-                        "u.code, " +
-                        "s.id_itm, " +
-                        "s.id_unt";
+                        "s.snr AS " + DDbConsts.FIELD_COMP + DModSysConsts.PARAM_SNR + ", ";
+                sqlGroupBy += groupBy + ", " +
+                        "s.snr ";
+                sqlOrderBy += orderBy + ", " +
+                        "s.snr ";
                 break;
 
             case DUtilConsts.PER_IMP_DEC:
-                moPaneSettings = new DGridPaneSettings(2);
-                select += "s.id_itm AS " + DDbConsts.FIELD_ID + "1, " +
-                        "s.id_unt AS " + DDbConsts.FIELD_ID + "2, " +
-                        "i.name AS " + DDbConsts.FIELD_NAME + ", " +
-                        "i.code AS " + DDbConsts.FIELD_CODE + ", " +
+                moPaneSettings = new DGridPaneSettings(2 + idsWah);
+                sqlSelect += selectIds + selectNames + ", " +
                         "s.imp_dec, " +
                         "s.imp_dec_dt_n, " +
                         "s.imp_dec AS " + DDbConsts.FIELD_COMP + DModSysConsts.PARAM_IMP_DEC + ", " +
-                        "s.imp_dec_dt_n AS " + DDbConsts.FIELD_COMP + DModSysConsts.PARAM_IMP_DEC_DT + ", " +
-                        "u.code, ";
-                groupBy += "s.id_itm, " +
-                        "s.id_unt, " +
+                        "s.imp_dec_dt_n AS " + DDbConsts.FIELD_COMP + DModSysConsts.PARAM_IMP_DEC_DT + ", ";
+                sqlGroupBy += groupBy + ", " +
                         "s.imp_dec, " +
-                        "s.imp_dec_dt_n, " +
-                        "i.name, " +
-                        "i.code, " +
-                        "u.code";
-                orderBy += "i.name, " +
-                        "i.code, " +
+                        "s.imp_dec_dt_n ";
+                sqlOrderBy += orderBy + ", " +
                         "s.imp_dec, " +
-                        "s.imp_dec_dt_n, " +
-                        "u.code, " +
-                        "s.id_itm, " +
-                        "s.id_unt";
+                        "s.imp_dec_dt_n ";
                 break;
 
             default:
@@ -269,7 +270,7 @@ public class DViewStock extends DGridPaneView implements ActionListener {
 
         filter = (Boolean) moFiltersMap.get(DGridConsts.FILTER_DELETED);
         if ((Boolean) filter) {
-            having = "HAVING f_stk <> 0 ";
+            sqlHaving = "HAVING f_stk <> 0 ";
         }
 
         filter = (DGuiDate) moFiltersMap.get(DGridConsts.FILTER_DATE_PERIOD);
@@ -278,24 +279,24 @@ public class DViewStock extends DGridPaneView implements ActionListener {
 
         filter = (int[]) moFiltersMap.get(DMyGridConsts.FILTER_BRANCH_WAH);
         if (filter != null) {
-            aux = DGridUtils.getSqlFilterKey(new String[] { "s.id_bpr", "s.id_bra", "s.id_wah" }, (int[]) filter);
+            String aux = DGridUtils.getSqlFilterKey(new String[] { "s.id_bpr", "s.id_bra", "s.id_wah" }, (int[]) filter);
             if (!aux.isEmpty()) {
                 sql += (sql.length() == 0 ? "" : "AND ") + aux;
             }
         }
 
-        msSql = "SELECT " + select + " SUM(s.mov_in - s.mov_out) AS f_stk " +
+        msSql = "SELECT " + sqlSelect + "SUM(s.mov_in - s.mov_out) AS f_stk " +
                 "FROM " + DModConsts.TablesMap.get(DModConsts.T_STK) + " AS s " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_ITM) + " AS i ON " +
                 "s.id_itm = i.id_itm " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " AS u ON " +
                 "s.id_unt = u.id_unt " +
-                innerJoin +
-                "WHERE s.b_del = 0 " + (sql.length() == 0 ? "" : "AND " + sql) +
+                sqlInnerJoin +
+                "WHERE NOT s.b_del " + (sql.isEmpty() ? "" : "AND " + sql) +
                 (mnGridSubtype == DUtilConsts.PER_SNR ? "AND s.snr <> '' " : "") +
                 (mnGridSubtype == DUtilConsts.PER_IMP_DEC ? "AND s.imp_dec <> '' " : "") +
-                "GROUP BY " + groupBy + ", u.code " + having +
-                "ORDER BY " + orderBy + " ";
+                "GROUP BY " + sqlGroupBy + sqlHaving +
+                "ORDER BY " + sqlOrderBy + ";";
 
         switch (mnGridSubtype) {
             case DUtilConsts.PER_SNR:
@@ -317,6 +318,10 @@ public class DViewStock extends DGridPaneView implements ActionListener {
 
         cols = 4;
 
+        if (mnGridType == DModConsts.TX_STK_WAH) {
+            cols += 1; // for code of warehouse
+        }
+        
         switch (mnGridSubtype) {
             case DUtilConsts.PER_ITM:
                 break;
@@ -334,12 +339,16 @@ public class DViewStock extends DGridPaneView implements ActionListener {
 
         columns = new DGridColumnView[cols];
 
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME + " ítem");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE + " ítem");
 
+        if (mnGridType == DModConsts.TX_STK_WAH) {
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "w.code", DGridConsts.COL_TITLE_CODE + " almacén");
+        }
+        
         if (mnGridSubtype == DUtilConsts.PER_LOT) {
-            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "l.dt_exp_n", "Caducidad");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "l.lot", "Lote");
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "l.dt_exp_n", "Caducidad");
         }
 
         if (mnGridSubtype == DUtilConsts.PER_SNR) {
@@ -351,7 +360,7 @@ public class DViewStock extends DGridPaneView implements ActionListener {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "s.imp_dec_dt_n", "Importación");
         }
 
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_QTY, "f_stk", "Existencia");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_QTY, "f_stk", "Existencias");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "u.code", "Unidad");
 
         for (col = 0; col < columns.length; col++) {

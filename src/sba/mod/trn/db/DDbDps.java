@@ -2002,7 +2002,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         
         if (moChildDfr != null && moChildDfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
             configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            fileName += configBranch.getEdsDirectory();
+            fileName += configBranch.getDfrDirectory();
             fileName += moChildDfr.getDocXmlName().replaceAll(".xml", ".pdf");
 
             switch (moChildDfr.getFkXmlTypeId()) {
@@ -2079,16 +2079,19 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
     /**
      * Creates new entry for document sending log.
+     * @return DDbDpsSending
      */
     public DDbDpsSending createDpsSending() {
         DDbDpsSending dpsSending = new DDbDpsSending();
 
         dpsSending.setPkDpsId(this.getPkDpsId());
-        dpsSending.setPkSendingId(0);
-        dpsSending.setContact1("");
-        dpsSending.setContact2("");
-        dpsSending.setEmail1("");
-        dpsSending.setEmail2("");
+        //dpsSending.setPkSendingId(0);
+        //dpsSending.setContact1("");
+        //dpsSending.setContact2("");
+        //dpsSending.setContact3("");
+        //dpsSending.setEmail1("");
+        //dpsSending.setEmail2("");
+        //dpsSending.setEmail3("");
         dpsSending.setDeleted(false);
         dpsSending.setFkUserInsertId(this.getFkUserInsertId());
         dpsSending.setFkUserUpdateId(this.getFkUserUpdateId());

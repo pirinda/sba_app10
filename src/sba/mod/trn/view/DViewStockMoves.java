@@ -7,6 +7,7 @@ package sba.mod.trn.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import sba.gui.DGuiClientSessionCustom;
@@ -27,9 +28,11 @@ import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiDate;
 import sba.lib.gui.DGuiParams;
+import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.trn.db.DDbIog;
+import sba.mod.trn.db.DTrnUtils;
 
 /**
  *
@@ -45,6 +48,7 @@ public class DViewStockMoves extends DGridPaneView implements ActionListener {
     private JButton mjCreateOutExternalInv;
     private JButton mjCreateOutInternalTra;
     private JButton mjCreateOutInternalCnv;
+    private JButton mjPrint;
     private DGridFilterDatePeriod moFilterDatePeriod;
     private DMyGridFilterBranchEntity moFilterBranchEntity;
 
@@ -75,6 +79,8 @@ public class DViewStockMoves extends DGridPaneView implements ActionListener {
         mjCreateOutExternalInv = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/stk_out_ext_inv.gif")), DUtilConsts.TXT_CREATE + " salida inventario", this);
         mjCreateOutInternalTra = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/stk_out_int_tra.gif")), DUtilConsts.TXT_CREATE + " salida traspaso", this);
         mjCreateOutInternalCnv = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/stk_out_int_cnv.gif")), DUtilConsts.TXT_CREATE + " salida conversión", this);
+        mjPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateInExternalAdj);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateInExternalInv);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateInInternalTra);
@@ -83,6 +89,7 @@ public class DViewStockMoves extends DGridPaneView implements ActionListener {
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateOutExternalInv);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateOutInternalTra);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjCreateOutInternalCnv);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjPrint);
 
         mjCreateInInternalTra.setEnabled(false);
         mjCreateInInternalCnv.setEnabled(false);
@@ -242,6 +249,41 @@ public class DViewStockMoves extends DGridPaneView implements ActionListener {
         }
     }
 
+    private void actionPrint() {
+        if (mjPrint.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                DGridRowView gridRow = (DGridRowView) getSelectedGridRow();
+
+                if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else if (gridRow.isDeleted()) {
+                    miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_DELETED);
+                }
+                else if (gridRow.isRowSystem()) {
+                    miClient.showMsgBoxWarning(DDbConsts.MSG_REG_ + gridRow.getRowName() + DDbConsts.MSG_REG_IS_SYSTEM);
+                }
+                else {
+                    try {
+                        HashMap<String, Object> paramsMap = miClient.createReportParams();
+
+                        int iogId = getSelectedGridRow().getRowPrimaryKey()[0];
+                        paramsMap.put("nParentIogId", (long) iogId);
+                        paramsMap.put("nChildIogId", (long) DTrnUtils.getIogCounterpartId(miClient.getSession(), iogId));
+
+                        miClient.getSession().printReport(DModConsts.T_IOG, 0, null, paramsMap);
+                    }
+                    catch (Exception e) {
+                        DLibUtils.showException(this, e);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton) {
@@ -279,6 +321,9 @@ public class DViewStockMoves extends DGridPaneView implements ActionListener {
             else if (button == mjCreateOutInternalCnv) {
                 params.setTypeKey(DModSysConsts.TS_IOG_TP_OUT_INT_CNV);
                 miClient.getSession().showForm(DModConsts.TX_IOG_EXT, DModSysConsts.TS_IOG_CT_OUT, params);
+            }
+            else if (button == mjPrint) {
+                actionPrint();
             }
         }
     }

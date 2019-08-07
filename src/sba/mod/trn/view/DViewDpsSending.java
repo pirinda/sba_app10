@@ -35,18 +35,19 @@ import sba.mod.trn.db.DTrnUtils;
  */
 public class DViewDpsSending extends DGridPaneView implements ActionListener {
 
-    private DGridFilterDatePeriod moFilterDatePeriod;
-    private JButton mjButtonSend;
+    private final DGridFilterDatePeriod moFilterDatePeriod;
+    private final JButton mjButtonSend;
 
     /**
      * @param client GUI client.
+     * @param subtype
      * @param mode DPS emission type. Constant defined in DUtilConsts (EMT or EMT_PEND).
      * @param title View title.
      */
     public DViewDpsSending(DGuiClient client, int subtype, int mode, String title) {
         super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.T_DPS_SND, subtype, title, new DGuiParams(mode));
 
-        int edsEmsTypeId = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getFkEdsEmsTypeId();
+        int edsEmsTypeId = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getFkDfrEmsTypeId();
 
         jbRowNew.setEnabled(false);
         jbRowEdit.setEnabled(false);
@@ -176,7 +177,7 @@ public class DViewDpsSending extends DGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[25];
+        DGridColumnView[] columns = new DGridColumnView[27];
 
         if (mnGridSubtype == DModSysConsts.TS_DPS_CT_PUR) {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnGridSubtype)).toLowerCase());
@@ -209,6 +210,8 @@ public class DViewDpsSending extends DGridPaneView implements ActionListener {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "snd.ema_1", "Correo-e 1");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "snd.con_2", "Contacto 2");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "snd.ema_2", "Correo-e 2");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "snd.con_3", "Contacto 3");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "snd.ema_3", "Correo-e 3");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "emit.code", "Tipo timbrado");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "f_evt", "Envíos");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);

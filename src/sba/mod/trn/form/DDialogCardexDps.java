@@ -51,11 +51,9 @@ public class DDialogCardexDps extends DBeanFormDialog {
 
     /** Creates new form DDialogCardexDps
      * @param client GUI client.
-     * @param subtype Business partner class. Constants defined in DModSysConsts (BS_BPR_CL_...).
-     * @param modality Balance modality. Constants defined in DUtilConsts (PER_...).
      */
     public DDialogCardexDps(DGuiClient client) {
-        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.TX_ACC_PAY, DLibConsts.UNDEFINED, "Tarjeta auxiliar");
+        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.T_DPS_SND, DLibConsts.UNDEFINED, "Envío vía correo-e");
         initComponents();
         initComponentsCustom();
     }

@@ -106,14 +106,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected double mdDelayInterestRate;
     protected int mnDecimalsQuantity;
     protected int mnDecimalsPriceUnitary;
-    protected String msEdsEmsSmtpHost;
-    protected int mnEdsEmsSmtpPort;
-    protected boolean mbEdsEmsSmtpSslEnabled;
-    protected String msEdsEmsFrom;
-    protected String msEdsEmsName;
-    protected String msEdsEmsPassword;
-    protected String msEdsEmsSubject;
-    protected String msEdsEmsBody;
+    protected String msDfrEmsSmtpHost;
+    protected int mnDfrEmsSmtpPort;
+    protected boolean mbDfrEmsSmtpSslEnabled;
+    protected String msDfrEmsFrom;
+    protected String msDfrEmsName;
+    protected String msDfrEmsPassword;
+    protected String msDfrEmsSubject;
+    protected String msDfrEmsBody;
+    protected String msRepSnrGenuses;
     protected java.sql.Blob moImage_n;
     protected boolean mbDevelopment;
     /*
@@ -161,7 +162,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected int mnFkBlockingTypeSaleInvoiceId;
     protected int mnFkDnpTypeIogId;
     protected int mnFkDnpTypeIomId;
-    protected int mnFkEdsEmsTypeId;
+    protected int mnFkDfrEmsTypeId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -256,14 +257,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setDelayInterestRate(double d) { mdDelayInterestRate = d; }
     public void setDecimalsQuantity(int n) { mnDecimalsQuantity = n; }
     public void setDecimalsPriceUnitary(int n) { mnDecimalsPriceUnitary = n; }
-    public void setEdsEmsSmtpHost(String s) { msEdsEmsSmtpHost = s; }
-    public void setEdsEmsSmtpPort(int n) { mnEdsEmsSmtpPort = n; }
-    public void setEdsEmsSmtpSslEnabled(boolean b) { mbEdsEmsSmtpSslEnabled = b; }
-    public void setEdsEmsFrom(String s) { msEdsEmsFrom = s; }
-    public void setEdsEmsName(String s) { msEdsEmsName = s; }
-    public void setEdsEmsPassword(String s) { msEdsEmsPassword = s; }
-    public void setEdsEmsSubject(String s) { msEdsEmsSubject = s; }
-    public void setEdsEmsBody(String s) { msEdsEmsBody = s; }
+    public void setDfrEmsSmtpHost(String s) { msDfrEmsSmtpHost = s; }
+    public void setDfrEmsSmtpPort(int n) { mnDfrEmsSmtpPort = n; }
+    public void setDfrEmsSmtpSslEnabled(boolean b) { mbDfrEmsSmtpSslEnabled = b; }
+    public void setDfrEmsFrom(String s) { msDfrEmsFrom = s; }
+    public void setDfrEmsName(String s) { msDfrEmsName = s; }
+    public void setDfrEmsPassword(String s) { msDfrEmsPassword = s; }
+    public void setDfrEmsSubject(String s) { msDfrEmsSubject = s; }
+    public void setDfrEmsBody(String s) { msDfrEmsBody = s; }
+    public void setRepSnrGenuses(String s) { msRepSnrGenuses = s; }
     public void setImage_n(java.sql.Blob o) { moImage_n = o; }
     public void setDevelopment(boolean b) { mbDevelopment = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -309,7 +311,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setFkBlockingTypeSaleInvoiceId(int n) { mnFkBlockingTypeSaleInvoiceId = n; }
     public void setFkDnpTypeIogId(int n) { mnFkDnpTypeIogId = n; }
     public void setFkDnpTypeIomId(int n) { mnFkDnpTypeIomId = n; }
-    public void setFkEdsEmsTypeId(int n) { mnFkEdsEmsTypeId = n; }
+    public void setFkDfrEmsTypeId(int n) { mnFkDfrEmsTypeId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -394,14 +396,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public double getDelayInterestRate() { return mdDelayInterestRate; }
     public int getDecimalsQuantity() { return mnDecimalsQuantity; }
     public int getDecimalsPriceUnitary() { return mnDecimalsPriceUnitary; }
-    public String getEdsEmsSmtpHost() { return msEdsEmsSmtpHost; }
-    public int getEdsEmsSmtpPort() { return mnEdsEmsSmtpPort; }
-    public boolean isEdsEmsSmtpSslEnabled() { return mbEdsEmsSmtpSslEnabled; }
-    public String getEdsEmsFrom() { return msEdsEmsFrom; }
-    public String getEdsEmsName() { return msEdsEmsName; }
-    public String getEdsEmsPassword() { return msEdsEmsPassword; }
-    public String getEdsEmsSubject() { return msEdsEmsSubject; }
-    public String getEdsEmsBody() { return msEdsEmsBody; }
+    public String getDfrEmsSmtpHost() { return msDfrEmsSmtpHost; }
+    public int getDfrEmsSmtpPort() { return mnDfrEmsSmtpPort; }
+    public boolean isDfrEmsSmtpSslEnabled() { return mbDfrEmsSmtpSslEnabled; }
+    public String getDfrEmsFrom() { return msDfrEmsFrom; }
+    public String getDfrEmsName() { return msDfrEmsName; }
+    public String getDfrEmsPassword() { return msDfrEmsPassword; }
+    public String getDfrEmsSubject() { return msDfrEmsSubject; }
+    public String getDfrEmsBody() { return msDfrEmsBody; }
+    public String getRepSnrGenuses() { return msRepSnrGenuses; }
     public java.sql.Blob getImage_n() { return moImage_n; }
     public boolean isDevelopment() { return mbDevelopment; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -447,7 +450,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public int getFkBlockingTypeSaleInvoiceId() { return mnFkBlockingTypeSaleInvoiceId; }
     public int getFkDnpTypeIogId() { return mnFkDnpTypeIogId; }
     public int getFkDnpTypeIomId() { return mnFkDnpTypeIomId; }
-    public int getFkEdsEmsTypeId() { return mnFkEdsEmsTypeId; }
+    public int getFkDfrEmsTypeId() { return mnFkDfrEmsTypeId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -552,14 +555,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mdDelayInterestRate = 0;
         mnDecimalsQuantity = 0;
         mnDecimalsPriceUnitary = 0;
-        msEdsEmsSmtpHost = "";
-        mnEdsEmsSmtpPort = 0;
-        mbEdsEmsSmtpSslEnabled = false;
-        msEdsEmsFrom = "";
-        msEdsEmsName = "";
-        msEdsEmsPassword = "";
-        msEdsEmsSubject = "";
-        msEdsEmsBody = "";
+        msDfrEmsSmtpHost = "";
+        mnDfrEmsSmtpPort = 0;
+        mbDfrEmsSmtpSslEnabled = false;
+        msDfrEmsFrom = "";
+        msDfrEmsName = "";
+        msDfrEmsPassword = "";
+        msDfrEmsSubject = "";
+        msDfrEmsBody = "";
+        msRepSnrGenuses = "";
         moImage_n = null;
         mbDevelopment = false;
         mbUpdatable = false;
@@ -605,7 +609,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnFkBlockingTypeSaleInvoiceId = 0;
         mnFkDnpTypeIogId = 0;
         mnFkDnpTypeIomId = 0;
-        mnFkEdsEmsTypeId = 0;
+        mnFkDfrEmsTypeId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -728,14 +732,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mdDelayInterestRate = resultSet.getDouble("int_rat");
             mnDecimalsQuantity = resultSet.getInt("decs_qty");
             mnDecimalsPriceUnitary = resultSet.getInt("decs_prc_unt");
-            msEdsEmsSmtpHost = resultSet.getString("eds_ems_smtp_host");
-            mnEdsEmsSmtpPort = resultSet.getInt("eds_ems_smtp_port");
-            mbEdsEmsSmtpSslEnabled = resultSet.getBoolean("eds_ems_smtp_ssl");
-            msEdsEmsFrom = resultSet.getString("eds_ems_from");
-            msEdsEmsName = resultSet.getString("eds_ems_name");
-            msEdsEmsPassword = resultSet.getString("eds_ems_pswd");
-            msEdsEmsSubject = resultSet.getString("eds_ems_subj");
-            msEdsEmsBody = resultSet.getString("eds_ems_body");
+            msDfrEmsSmtpHost = resultSet.getString("dfr_ems_smtp_host");
+            mnDfrEmsSmtpPort = resultSet.getInt("dfr_ems_smtp_port");
+            mbDfrEmsSmtpSslEnabled = resultSet.getBoolean("dfr_ems_smtp_ssl");
+            msDfrEmsFrom = resultSet.getString("dfr_ems_from");
+            msDfrEmsName = resultSet.getString("dfr_ems_name");
+            msDfrEmsPassword = resultSet.getString("dfr_ems_pswd");
+            msDfrEmsSubject = resultSet.getString("dfr_ems_subj");
+            msDfrEmsBody = resultSet.getString("dfr_ems_body");
+            msRepSnrGenuses = resultSet.getString("rep_snr_gen");
             moImage_n = resultSet.getBlob("img_n");
             mbDevelopment = resultSet.getBoolean("b_dev");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -781,7 +786,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mnFkBlockingTypeSaleInvoiceId = resultSet.getInt("fk_blk_tp_sal_inv");
             mnFkDnpTypeIogId = resultSet.getInt("fk_dnp_tp_iog");
             mnFkDnpTypeIomId = resultSet.getInt("fk_dnp_tp_iom");
-            mnFkEdsEmsTypeId = resultSet.getInt("fk_eds_ems_tp");
+            mnFkDfrEmsTypeId = resultSet.getInt("fk_dfr_ems_tp");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -895,14 +900,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     mdDelayInterestRate + ", " +
                     mnDecimalsQuantity + ", " + 
                     mnDecimalsPriceUnitary + ", " + 
-                    "'" + msEdsEmsSmtpHost + "', " +
-                    mnEdsEmsSmtpPort + ", " +
-                    (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
-                    "'" + msEdsEmsFrom + "', " +
-                    "'" + msEdsEmsName + "', " +
-                    "'" + msEdsEmsPassword + "', " +
-                    "'" + msEdsEmsSubject + "', " +
-                    "'" + msEdsEmsBody + "', " +
+                    "'" + msDfrEmsSmtpHost + "', " +
+                    mnDfrEmsSmtpPort + ", " +
+                    (mbDfrEmsSmtpSslEnabled ? 1 : 0) + ", " +
+                    "'" + msDfrEmsFrom + "', " +
+                    "'" + msDfrEmsName + "', " +
+                    "'" + msDfrEmsPassword + "', " +
+                    "'" + msDfrEmsSubject + "', " +
+                    "'" + msDfrEmsBody + "', " +
+                    "'" + msRepSnrGenuses + "', " + 
                     "NULL, " +
                     (mbDevelopment ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -948,7 +954,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     mnFkBlockingTypeSaleInvoiceId + ", " +
                     mnFkDnpTypeIogId + ", " +
                     mnFkDnpTypeIomId + ", " +
-                    mnFkEdsEmsTypeId + ", " +
+                    mnFkDfrEmsTypeId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -1038,14 +1044,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "int_rat = " + mdDelayInterestRate + ", " +
                     "decs_qty = " + mnDecimalsQuantity + ", " +
                     "decs_prc_unt = " + mnDecimalsPriceUnitary + ", " +
-                    "eds_ems_smtp_host = '" + msEdsEmsSmtpHost + "', " +
-                    "eds_ems_smtp_port = " + mnEdsEmsSmtpPort + ", " +
-                    "eds_ems_smtp_ssl = " + (mbEdsEmsSmtpSslEnabled ? 1 : 0) + ", " +
-                    "eds_ems_from = '" + msEdsEmsFrom + "', " +
-                    "eds_ems_name = '" + msEdsEmsName + "', " +
-                    "eds_ems_pswd = '" + msEdsEmsPassword + "', " +
-                    "eds_ems_subj = '" + msEdsEmsSubject + "', " +
-                    "eds_ems_body = '" + msEdsEmsBody + "', " +
+                    "dfr_ems_smtp_host = '" + msDfrEmsSmtpHost + "', " +
+                    "dfr_ems_smtp_port = " + mnDfrEmsSmtpPort + ", " +
+                    "dfr_ems_smtp_ssl = " + (mbDfrEmsSmtpSslEnabled ? 1 : 0) + ", " +
+                    "dfr_ems_from = '" + msDfrEmsFrom + "', " +
+                    "dfr_ems_name = '" + msDfrEmsName + "', " +
+                    "dfr_ems_pswd = '" + msDfrEmsPassword + "', " +
+                    "dfr_ems_subj = '" + msDfrEmsSubject + "', " +
+                    "dfr_ems_body = '" + msDfrEmsBody + "', " +
+                    "rep_snr_gen = '" + msRepSnrGenuses + "', " +
                     //"img_n = " + moImage_n + ", " +
                     "b_dev = " + (mbDevelopment ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -1091,7 +1098,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "fk_blk_tp_sal_inv = " + mnFkBlockingTypeSaleInvoiceId + ", " +
                     "fk_dnp_tp_iog = " + mnFkDnpTypeIogId + ", " +
                     "fk_dnp_tp_iom = " + mnFkDnpTypeIomId + ", " +
-                    "fk_eds_ems_tp = " + mnFkEdsEmsTypeId + ", " +
+                    "fk_dfr_ems_tp = " + mnFkDfrEmsTypeId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -1188,14 +1195,15 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setDelayInterestRate(this.getDelayInterestRate());
         registry.setDecimalsQuantity(this.getDecimalsQuantity());
         registry.setDecimalsPriceUnitary(this.getDecimalsPriceUnitary());
-        registry.setEdsEmsSmtpHost(this.getEdsEmsSmtpHost());
-        registry.setEdsEmsSmtpPort(this.getEdsEmsSmtpPort());
-        registry.setEdsEmsSmtpSslEnabled(this.isEdsEmsSmtpSslEnabled());
-        registry.setEdsEmsFrom(this.getEdsEmsFrom());
-        registry.setEdsEmsName(this.getEdsEmsName());
-        registry.setEdsEmsPassword(this.getEdsEmsPassword());
-        registry.setEdsEmsSubject(this.getEdsEmsSubject());
-        registry.setEdsEmsBody(this.getEdsEmsBody());
+        registry.setDfrEmsSmtpHost(this.getDfrEmsSmtpHost());
+        registry.setDfrEmsSmtpPort(this.getDfrEmsSmtpPort());
+        registry.setDfrEmsSmtpSslEnabled(this.isDfrEmsSmtpSslEnabled());
+        registry.setDfrEmsFrom(this.getDfrEmsFrom());
+        registry.setDfrEmsName(this.getDfrEmsName());
+        registry.setDfrEmsPassword(this.getDfrEmsPassword());
+        registry.setDfrEmsSubject(this.getDfrEmsSubject());
+        registry.setDfrEmsBody(this.getDfrEmsBody());
+        registry.setRepSnrGenuses(this.getRepSnrGenuses());
         registry.setImage_n(this.getImage_n());
         registry.setDevelopment(this.isDevelopment());
         registry.setUpdatable(this.isUpdatable());
@@ -1241,7 +1249,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setFkBlockingTypeSaleInvoiceId(this.getFkBlockingTypeSaleInvoiceId());
         registry.setFkDnpTypeIogId(this.getFkDnpTypeIogId());
         registry.setFkDnpTypeIomId(this.getFkDnpTypeIomId());
-        registry.setFkEdsEmsTypeId(this.getFkEdsEmsTypeId());
+        registry.setFkDfrEmsTypeId(this.getFkDfrEmsTypeId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

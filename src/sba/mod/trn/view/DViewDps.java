@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import sba.gui.DGuiClientApp;
+import sba.gui.prt.DPrtConsts;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
@@ -71,6 +72,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     private JButton mjButtonTypeChange;
     private JButton mjButtonImport;
     private JButton mjButtonPrint;
+    private JButton mjButtonPrintAlt;
     private JButton mjButtonDfrSign;            // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrSignVerify;      // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCancel;          // only for Digital Fiscal Receipt (DFR)
@@ -288,6 +290,10 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         mjButtonPrint.setEnabled(true);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
 
+        mjButtonPrintAlt = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_print_alt.gif")), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase() + " (alternativo)", this);
+        mjButtonPrintAlt.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrintAlt);
+
         mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
         mjButtonDfrSign.setEnabled(mbDfrRequired);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
@@ -309,7 +315,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCheckStatus);
 
         mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrSend.setEnabled(mbDfrRequired && configCompany.getFkEdsEmsTypeId() != DModSysConsts.CS_EMS_TP_NA);
+        mjButtonDfrSend.setEnabled(mbDfrRequired && configCompany.getFkDfrEmsTypeId() != DModSysConsts.CS_EMS_TP_NA);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
     }
 
@@ -743,13 +749,13 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    private void actionPrint() {
-        if (mjButtonPrint.isEnabled()) {
+    private void actionPrint(final int printMode) {
+        if (printMode == DPrtConsts.PRINT_MODE_STD && mjButtonPrint.isEnabled() || printMode == DPrtConsts.PRINT_MODE_ALT && mjButtonPrintAlt.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow());
+                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow(), printMode);
             }
         }
     }
@@ -877,7 +883,10 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 actionTypeChange();
             }
             else if (button == mjButtonPrint) {
-                actionPrint();
+                actionPrint(DPrtConsts.PRINT_MODE_STD);
+            }
+            else if (button == mjButtonPrintAlt) {
+                actionPrint(DPrtConsts.PRINT_MODE_ALT);
             }
             else if (button == mjButtonDfrSign) {
                 actionDfrSign(DModSysConsts.TX_XMS_REQ_STP_REQ);

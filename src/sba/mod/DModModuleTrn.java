@@ -92,6 +92,7 @@ import sba.mod.trn.view.DViewTransact;
 import sba.mod.trn.view.DViewTransactAgent;
 import sba.mod.trn.view.DViewTransactBizPartner;
 import sba.mod.trn.view.DViewTransactItem;
+import sba.mod.trn.view.DViewTransactSerialNumber;
 import sba.mod.trn.view.DViewTransactUser;
 import sba.mod.trn.view.DViewXmlSignatureMove;
 import sba.mod.trn.view.DViewXmlStampsAvailable;
@@ -190,6 +191,10 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private JMenuItem mjStkStockLot;
     private JMenuItem mjStkStockSnr;
     private JMenuItem mjStkStockImpDec;
+    private JMenuItem mjStkWahStock;
+    private JMenuItem mjStkWahStockLot;
+    private JMenuItem mjStkWahStockSnr;
+    private JMenuItem mjStkWahStockImpDec;
     private JMenuItem mjStkMoves;
     private JMenuItem mjStkMovesIn;
     private JMenuItem mjStkMovesOut;
@@ -219,6 +224,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private JMenuItem mjRepTransacUserType;
     private JMenuItem mjRepTransacUser;
     private JMenuItem mjRepTransacUserItem;
+    private JMenuItem mjRepTransacSerialNumber;
     private JMenuItem mjRepPerMonthTransacCompany;
     private JMenuItem mjRepPerMonthTransacCompanyBranch;
     private JMenuItem mjRepPerMonthTransacItemGenus;
@@ -266,6 +272,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
     private DFormDfrAddenda moFormDfrAddenda;
     private DFormIog moFormIogExternalIn;
     private DFormIog moFormIogExternalOut;
+    private DFormIog moFormIogInternalIn;
+    private DFormIog moFormIogInternalOut;
     private DFormSerialNumberFix moFormSerialNumberFix;
     private DFormXmlSignatureMove moFormXmlSignatureMove;
 
@@ -491,6 +499,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransacUserType = new JMenuItem("Compras por tipo de usuario (Q)");
                 mjRepTransacUser = new JMenuItem("Compras por usuario (Q)");
                 mjRepTransacUserItem = new JMenuItem("Compras por usuario vs. ítem (Q)");
+                mjRepTransacSerialNumber = new JMenuItem("Compras por números de serie (Q)");
 
                 mjRepTransac.add(mjRepTransacCompany);
                 mjRepTransac.add(mjRepTransacCompanyBranch);
@@ -511,6 +520,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransac.add(mjRepTransacUserType);
                 mjRepTransac.add(mjRepTransacUser);
                 mjRepTransac.add(mjRepTransacUserItem);
+                mjRepTransac.addSeparator();
+                mjRepTransac.add(mjRepTransacSerialNumber);
 
                 mjRepPerMonth = new JMenu("Compras netas por mes");
                 mjRepPerMonthTransacCompany = new JMenuItem("Compras por mes (Q)");
@@ -575,6 +586,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransacUserType.addActionListener(this);
                 mjRepTransacUser.addActionListener(this);
                 mjRepTransacUserItem.addActionListener(this);
+                mjRepTransacSerialNumber.addActionListener(this);
                 mjRepPerMonthTransacCompany.addActionListener(this);
                 mjRepPerMonthTransacCompanyBranch.addActionListener(this);
                 mjRepPerMonthTransacItemGenus.addActionListener(this);
@@ -768,6 +780,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransacUserType = new JMenuItem("Ventas por tipo de usuario (Q)");
                 mjRepTransacUser = new JMenuItem("Ventas por usuario (Q)");
                 mjRepTransacUserItem = new JMenuItem("Ventas por usuario vs. ítem (Q)");
+                mjRepTransacSerialNumber = new JMenuItem("Ventas por números de serie (Q)");
 
                 mjRepTransac.add(mjRepTransacCompany);
                 mjRepTransac.add(mjRepTransacCompanyBranch);
@@ -788,6 +801,8 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransac.add(mjRepTransacUserType);
                 mjRepTransac.add(mjRepTransacUser);
                 mjRepTransac.add(mjRepTransacUserItem);
+                mjRepTransac.addSeparator();
+                mjRepTransac.add(mjRepTransacSerialNumber);
 
                 mjRepPerMonth = new JMenu("Ventas netas por mes");
                 mjRepPerMonthTransacCompany = new JMenuItem("Ventas por mes (Q)");
@@ -852,6 +867,7 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 mjRepTransacUserType.addActionListener(this);
                 mjRepTransacUser.addActionListener(this);
                 mjRepTransacUserItem.addActionListener(this);
+                mjRepTransacSerialNumber.addActionListener(this);
                 mjRepPerMonthTransacCompany.addActionListener(this);
                 mjRepPerMonthTransacCompanyBranch.addActionListener(this);
                 mjRepPerMonthTransacItemGenus.addActionListener(this);
@@ -928,6 +944,10 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
         mjStkStockLot = new JMenuItem("Existencias por lote");
         mjStkStockSnr = new JMenuItem("Existencias con número de serie");
         mjStkStockImpDec = new JMenuItem("Existencias con pedimento de importación");
+        mjStkWahStock = new JMenuItem("Existencias por almacén");
+        mjStkWahStockLot = new JMenuItem("Existencias por almacén por lote");
+        mjStkWahStockSnr = new JMenuItem("Existencias por almacén con número de serie");
+        mjStkWahStockImpDec = new JMenuItem("Existencias por almacén con pedimento de importación");
         mjStkMoves = new JMenuItem("Movimientos de bienes");
         mjStkMovesIn = new JMenuItem("Entradas de bienes");
         mjStkMovesOut = new JMenuItem("Salidas de bienes");
@@ -942,6 +962,11 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
         mjStk.add(mjStkStockLot);
         mjStk.add(mjStkStockSnr);
         mjStk.add(mjStkStockImpDec);
+        mjStk.addSeparator();
+        mjStk.add(mjStkWahStock);
+        mjStk.add(mjStkWahStockLot);
+        mjStk.add(mjStkWahStockSnr);
+        mjStk.add(mjStkWahStockImpDec);
         mjStk.addSeparator();
         mjStk.add(mjStkMoves);
         mjStk.add(mjStkMovesIn);
@@ -959,6 +984,10 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
         mjStkStockLot.addActionListener(this);
         mjStkStockSnr.addActionListener(this);
         mjStkStockImpDec.addActionListener(this);
+        mjStkWahStock.addActionListener(this);
+        mjStkWahStockLot.addActionListener(this);
+        mjStkWahStockSnr.addActionListener(this);
+        mjStkWahStockImpDec.addActionListener(this);
         mjStkMoves.addActionListener(this);
         mjStkMovesIn.addActionListener(this);
         mjStkMovesOut.addActionListener(this);
@@ -1546,18 +1575,21 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 view = new DViewDps(miClient, type, subtype, DTrnUtils.getModuleAcronym(mnModuleSubtype) + " - " + DTrnUtils.getMyDpsXTypeNamePlr(type));
                 break;
             case DModConsts.TX_STK:
+            case DModConsts.TX_STK_WAH:
+                String label = type == DModConsts.TX_STK_WAH ? " almacén" : "";
+                
                 switch (subtype) {
                     case DUtilConsts.PER_ITM:
-                        view = new DViewStock(miClient, type, subtype, "Existencias");
+                        view = new DViewStock(miClient, type, subtype, "Existencias" + label);
                         break;
                     case DUtilConsts.PER_LOT:
-                        view = new DViewStock(miClient, type, subtype, "Existencias lote");
+                        view = new DViewStock(miClient, type, subtype, "Existencias" + label + " lote");
                         break;
                     case DUtilConsts.PER_SNR:
-                        view = new DViewStock(miClient, type, subtype, "Existencias ns");
+                        view = new DViewStock(miClient, type, subtype, "Existencias" + label + " ns");
                         break;
                     case DUtilConsts.PER_IMP_DEC:
-                        view = new DViewStock(miClient, type, subtype, "Existencias ped. imp.");
+                        view = new DViewStock(miClient, type, subtype, "Existencias" + label + " ped. imp.");
                         break;
                     default:
                         miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1647,6 +1679,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 break;
             case DModConsts.TX_TRN_USR_ITM:
                 view = new DViewTransactUser(miClient, type, subtype, DTrnUtils.getDpsCategoryName(subtype) + " usuario vs. ítem Q");
+                break;
+            case DModConsts.TX_TRN_SNR:
+                view = new DViewTransactSerialNumber(miClient, subtype, DTrnUtils.getDpsCategoryName(subtype) + " números serie Q");
                 break;
             case DModConsts.TX_PMO_CO:
                 view = new DViewPerMonthTransact(miClient, type, subtype, DTrnUtils.getDpsCategoryName(subtype) + " mes Q");
@@ -1846,6 +1881,19 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
                 form.setValue(DModSysConsts.PARAM_IOG_TP, params.getTypeKey());
                 break;
             case DModConsts.TX_IOG_INT:
+                switch (subtype) {
+                    case DModSysConsts.TS_IOG_CT_IN:
+                        if (moFormIogInternalIn == null) moFormIogInternalIn = new DFormIog(miClient, type, subtype, DTrnUtils.getIogCategoryName(subtype));
+                        form = moFormIogInternalIn;
+                        break;
+                    case DModSysConsts.TS_IOG_CT_OUT:
+                        if (moFormIogInternalOut == null) moFormIogInternalOut = new DFormIog(miClient, type, subtype, DTrnUtils.getIogCategoryName(subtype));
+                        form = moFormIogInternalOut;
+                        break;
+                    default:
+                        miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                form.setValue(DModSysConsts.PARAM_IOG_TP, params.getTypeKey());
                 break;
             case DModConsts.TX_IOG_MFG:
                 break;
@@ -1866,7 +1914,17 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
 
     @Override
     public DGuiReport getReport(final int type, final int subtype, final DGuiParams params) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        DGuiReport report = null;
+        
+        switch (type) {
+            case DModConsts.T_IOG:
+                report = new DGuiReport("reps/iog.jasper", "Movimiento de almacén");
+                break;
+            default:
+                miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
+        return report;
     }
 
     @Override
@@ -2009,6 +2067,18 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             else if (menuItem == mjStkStockImpDec) {
                 showView(DModConsts.TX_STK, DUtilConsts.PER_IMP_DEC, null);
             }
+            else if (menuItem == mjStkWahStock) {
+                showView(DModConsts.TX_STK_WAH, DUtilConsts.PER_ITM, null);
+            }
+            else if (menuItem == mjStkWahStockLot) {
+                showView(DModConsts.TX_STK_WAH, DUtilConsts.PER_LOT, null);
+            }
+            else if (menuItem == mjStkWahStockSnr) {
+                showView(DModConsts.TX_STK_WAH, DUtilConsts.PER_SNR, null);
+            }
+            else if (menuItem == mjStkWahStockImpDec) {
+                showView(DModConsts.TX_STK_WAH, DUtilConsts.PER_IMP_DEC, null);
+            }
             else if (menuItem == mjStkMoves) {
                 showView(DModConsts.TX_STK_MOV, DLibConsts.UNDEFINED, null);
             }
@@ -2076,6 +2146,9 @@ public class DModModuleTrn extends DGuiModule implements ActionListener {
             }
             else if (menuItem == mjRepTransacUserItem) {
                 showView(DModConsts.TX_TRN_USR_ITM, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), null);
+            }
+            else if (menuItem == mjRepTransacSerialNumber) {
+                showView(DModConsts.TX_TRN_SNR, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), null);
             }
             else if (menuItem == mjRepPerMonthTransacCompany) {
                 showView(DModConsts.TX_PMO_CO, DTrnUtils.getDpsCategoryByModuleSubtype(mnModuleSubtype), null);

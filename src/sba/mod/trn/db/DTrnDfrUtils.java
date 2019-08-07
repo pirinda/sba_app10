@@ -1192,7 +1192,7 @@ public abstract class DTrnDfrUtils {
         DGuiEdsSignature signature;
         DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
-        cfd.DCfd cfd = new cfd.DCfd(configBranch.getEdsDirectory());
+        cfd.DCfd cfd = new cfd.DCfd(configBranch.getDfrDirectory());
         cfd.DSubelementAddenda extAddenda = null;
 
         switch (xmlType) {
@@ -1413,8 +1413,8 @@ public abstract class DTrnDfrUtils {
 
             configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dfr.getCompanyBranchKey());
             
-            edsName = configBranch.getEdsName();
-            edsPassword = configBranch.getEdsPassword();
+            edsName = configBranch.getDfrName();
+            edsPassword = configBranch.getDfrPassword();
             
             switch (xmlSignatureProviderId) {
                 case DModSysConsts.CS_XSP_FCG:  // FORCOGSA
@@ -1810,8 +1810,8 @@ public abstract class DTrnDfrUtils {
                 certificate = (DDbCertificate) session.readRegistry(DModConsts.CU_CER, new int[] { configBranch.getFkCertificateId_n() });
                 
                 fiscalId = company.getFiscalId();
-                edsName = configBranch.getEdsName();
-                edsPassword = configBranch.getEdsPassword();
+                edsName = configBranch.getDfrName();
+                edsPassword = configBranch.getDfrPassword();
                 
                 switch (xmlSignatureProviderId) {
                     case DModSysConsts.CS_XSP_FCG:  // FORCOGSA

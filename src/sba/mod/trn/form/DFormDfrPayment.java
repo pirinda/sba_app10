@@ -1126,7 +1126,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         clearFieldsCfd();
         
         if (moKeyCfdReceptor.getSelectedIndex() > 0) {
-            moTextCfdSeries.setValue(moConfigBranch.getEdsCrpSeries());
+            moTextCfdSeries.setValue(moConfigBranch.getDfrCrpSeries());
             moDateCfdDate.setValue(miClient.getSession().getWorkingDate());
             moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(DCfdi33Catalogs.CFDI_USO_POR_DEF) });
             moKeyCfdTaxRegime.setValue(new int[] { moConfigCompany.getFkTaxRegimeId() });
@@ -2408,7 +2408,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         //registry.setPkDfrId();
         
         if (registry.isRegistryNew()) {
-            registry.setSeries(moConfigBranch.getEdsCrpSeries());
+            registry.setSeries(moConfigBranch.getDfrCrpSeries());
         }
         else {
             registry.setAuxLock(moRegistryLock);

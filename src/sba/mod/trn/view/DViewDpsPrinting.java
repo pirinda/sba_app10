@@ -7,7 +7,9 @@ package sba.mod.trn.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import sba.gui.prt.DPrtConsts;
 import sba.gui.util.DUtilConsts;
 import sba.lib.db.DDbConsts;
 import sba.lib.grid.DGridColumnView;
@@ -36,6 +38,7 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
 
     private DGridFilterDatePeriod moFilterDatePeriod;
     private JButton mjButtonPrint;
+    private JButton mjButtonPrintAlt;
 
     /**
      * @param client GUI client.
@@ -59,6 +62,10 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT, this);
         mjButtonPrint.setEnabled(true);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
+
+        mjButtonPrintAlt = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_print_alt.gif")), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase() + " (alternativo)", this);
+        mjButtonPrintAlt.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrintAlt);
     }
 
     /*
@@ -233,16 +240,16 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
 
     @Override
     public void actionMouseClicked() {
-        actionPrint();
+        actionPrint(DPrtConsts.PRINT_MODE_STD);
     }
 
-    private void actionPrint() {
-        if (mjButtonPrint.isEnabled()) {
+    private void actionPrint(final int printMode) {
+        if (printMode == DPrtConsts.PRINT_MODE_STD && mjButtonPrint.isEnabled() || printMode == DPrtConsts.PRINT_MODE_ALT && mjButtonPrintAlt.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow());
+                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow(), printMode);
             }
         }
     }
@@ -253,7 +260,10 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
             JButton button = (JButton) e.getSource();
 
             if (button == mjButtonPrint) {
-                actionPrint();
+                actionPrint(DPrtConsts.PRINT_MODE_STD);
+            }
+            else if (button == mjButtonPrintAlt) {
+                actionPrint(DPrtConsts.PRINT_MODE_ALT);
             }
         }
     }

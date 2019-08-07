@@ -880,7 +880,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
                 configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
             }
             
-            DXmlUtils.writeXml(mbAuxRegenerateXmlOnSave ? msDocXml : getSuitableDocXml(), configBranch.getEdsDirectory() + msDocXmlName);
+            DXmlUtils.writeXml(mbAuxRegenerateXmlOnSave ? msDocXml : getSuitableDocXml(), configBranch.getDfrDirectory() + msDocXmlName);
         }
         
         // Additional processing:
@@ -1210,7 +1210,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
             DGuiEdsSignature signature;
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getBizPartnerKey());
             DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            cfd.DCfd cfd = new cfd.DCfd(configBranch.getEdsDirectory());
+            cfd.DCfd cfd = new cfd.DCfd(configBranch.getDfrDirectory());
             cfd.DSubelementAddenda extAddenda = null;
 
             switch (mnFkXmlTypeId) {
@@ -1316,7 +1316,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         
         if (mnFkXmlStatusId == DModSysConsts.TS_XML_ST_ISS) {
             configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            fileName += configBranch.getEdsDirectory();
+            fileName += configBranch.getDfrDirectory();
             fileName += msDocXmlName.replaceAll(".xml", ".pdf");
 
             switch (mnFkXmlTypeId) {

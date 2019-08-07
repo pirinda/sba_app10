@@ -63,6 +63,7 @@ public class DViewBranchAddress extends DGridPaneView {
                 "v.tcd_3, " +
                 "v.tce_1, " +
                 "v.tce_2, " +
+                "v.tce_3, " +
                 "v.b_def, " +
                 "c.name, " +
                 "t1.name, " +
@@ -70,6 +71,7 @@ public class DViewBranchAddress extends DGridPaneView {
                 "t3.name, " +
                 "e1.name, " +
                 "e2.name, " +
+                "e3.name, " +
                 "v.b_can_upd AS " + DDbConsts.FIELD_CAN_UPD + ", " +
                 "v.b_can_dis AS " + DDbConsts.FIELD_CAN_DIS + ", " +
                 "v.b_can_del AS " + DDbConsts.FIELD_CAN_DEL + ", " +
@@ -99,6 +101,8 @@ public class DViewBranchAddress extends DGridPaneView {
                 "v.fk_tce_1_tp = e1.id_tce_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BS_TCE_TP) + " AS e2 ON " +
                 "v.fk_tce_2_tp = e2.id_tce_tp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BS_TCE_TP) + " AS e3 ON " +
+                "v.fk_tce_3_tp = e3.id_tce_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
@@ -112,7 +116,7 @@ public class DViewBranchAddress extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[32];
+        DGridColumnView[] columns = new DGridColumnView[34];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_L, "b.name", DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, "bc.code", DGridConsts.COL_TITLE_CODE);
@@ -129,16 +133,18 @@ public class DViewBranchAddress extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "v.zip", "Código postal");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "v.pob", "Apartado postal");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "c.name", "País");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.tcd_1", "Teléfono 1");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tcd_1", "Teléfono 1");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "t1.name", "Tipo teléfono 1");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.tcd_2", "Teléfono 2");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tcd_2", "Teléfono 2");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "t2.name", "Tipo teléfono 2");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.tcd_3", "Teléfono 3");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tcd_3", "Teléfono 3");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "t3.name", "Tipo teléfono 3");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.tce_1", "Buzón cuenta 1");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "e1.name", "Tipo buzón cuenta 1");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.tce_2", "Buzón cuenta 2");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "e2.name", "Tipo buzón cuenta 2");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tce_1", "Cuenta 1");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "e1.name", "Tipo cuenta 1");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tce_2", "Cuenta 2");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "e2.name", "Tipo cuenta 2");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.tce_3", "Cuenta 3");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "e3.name", "Tipo cuenta 3");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

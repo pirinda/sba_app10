@@ -92,7 +92,7 @@ public abstract class DTrnDfrPrinting {
         
         // CFDI data:
         
-        map.put("sXmlBaseDir", ((DDbConfigBranch) session.getConfigBranch()).getEdsDirectory());
+        map.put("sXmlBaseDir", ((DDbConfigBranch) session.getConfigBranch()).getDfrDirectory());
         map.put("nParamSessionId", sessionId);
         map.put("bIsAnnulled", dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ANN);
         map.put("bIsDeleted", dfr.isDeleted());

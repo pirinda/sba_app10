@@ -24,8 +24,10 @@ public class DDbDpsSending extends DDbRegistryUser {
     protected int mnPkSendingId;
     protected String msContact1;
     protected String msContact2;
+    protected String msContact3;
     protected String msEmail1;
     protected String msEmail2;
+    protected String msEmail3;
     /*
     protected boolean mbDeleted;
     protected int mnFkUserInsertId;
@@ -43,8 +45,10 @@ public class DDbDpsSending extends DDbRegistryUser {
     public void setPkSendingId(int n) { mnPkSendingId = n; }
     public void setContact1(String s) { msContact1 = s; }
     public void setContact2(String s) { msContact2 = s; }
+    public void setContact3(String s) { msContact3 = s; }
     public void setEmail1(String s) { msEmail1 = s; }
     public void setEmail2(String s) { msEmail2 = s; }
+    public void setEmail3(String s) { msEmail3 = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -55,8 +59,10 @@ public class DDbDpsSending extends DDbRegistryUser {
     public int getPkSendingId() { return mnPkSendingId; }
     public String getContact1() { return msContact1; }
     public String getContact2() { return msContact2; }
+    public String getContact3() { return msContact3; }
     public String getEmail1() { return msEmail1; }
     public String getEmail2() { return msEmail2; }
+    public String getEmail3() { return msEmail3; }
     public boolean isDeleted() { return mbDeleted; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -82,8 +88,10 @@ public class DDbDpsSending extends DDbRegistryUser {
         mnPkSendingId = 0;
         msContact1 = "";
         msContact2 = "";
+        msContact3 = "";
         msEmail1 = "";
         msEmail2 = "";
+        msEmail3 = "";
         mbDeleted = false;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -140,8 +148,10 @@ public class DDbDpsSending extends DDbRegistryUser {
             mnPkSendingId = resultSet.getInt("id_snd");
             msContact1 = resultSet.getString("con_1");
             msContact2 = resultSet.getString("con_2");
+            msContact3 = resultSet.getString("con_3");
             msEmail1 = resultSet.getString("ema_1");
             msEmail2 = resultSet.getString("ema_2");
+            msEmail3 = resultSet.getString("ema_3");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -170,8 +180,10 @@ public class DDbDpsSending extends DDbRegistryUser {
                     mnPkSendingId + ", " +
                     "'" + msContact1 + "', " +
                     "'" + msContact2 + "', " +
+                    "'" + msContact3 + "', " + 
                     "'" + msEmail1 + "', " +
                     "'" + msEmail2 + "', " +
+                    "'" + msEmail3 + "', " + 
                     (mbDeleted ? 1 : 0) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -189,8 +201,10 @@ public class DDbDpsSending extends DDbRegistryUser {
                     */
                     "con_1 = '" + msContact1 + "', " +
                     "con_2 = '" + msContact2 + "', " +
+                    "con_3 = '" + msContact3 + "', " +
                     "ema_1 = '" + msEmail1 + "', " +
                     "ema_2 = '" + msEmail2 + "', " +
+                    "ema_3 = '" + msEmail3 + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -213,8 +227,10 @@ public class DDbDpsSending extends DDbRegistryUser {
         registry.setPkSendingId(this.getPkSendingId());
         registry.setContact1(this.getContact1());
         registry.setContact2(this.getContact2());
+        registry.setContact3(this.getContact3());
         registry.setEmail1(this.getEmail1());
         registry.setEmail2(this.getEmail2());
+        registry.setEmail3(this.getEmail3());
         registry.setDeleted(this.isDeleted());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

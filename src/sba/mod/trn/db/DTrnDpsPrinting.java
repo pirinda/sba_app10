@@ -257,7 +257,7 @@ public class DTrnDpsPrinting {
             hashMap.put("sRecDomEmails", dbBranchAddress.getTelecommElectronics());
         }
 
-        hashMap.put("sEdsDir", dbConfigBranch.getEdsDirectory());
+        hashMap.put("sEdsDir", dbConfigBranch.getDfrDirectory());
 
         return hashMap;
     }
@@ -271,7 +271,7 @@ public class DTrnDpsPrinting {
         hashMap.put("oDecimalFormatPriceUnitary", ((DDbConfigCompany) moSession.getConfigCompany()).getDecimalFormatPriceUnitary());
         hashMap.put("nPkDps", (long) moDps.getPkDpsId());
         hashMap.put("nFkEmissionType", (long) moDps.getFkEmissionTypeId());
-        hashMap.put("sEdsDir", dbConfigBranch.getEdsDirectory());
+        hashMap.put("sEdsDir", dbConfigBranch.getDfrDirectory());
         
         // XML parsing:
 

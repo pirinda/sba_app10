@@ -11,7 +11,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,44,0,0,3,32"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,44,0,0,3,107"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -23,12 +23,7 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="2"/>
-        <Property name="horizontalGap" type="int" value="5"/>
-        <Property name="rows" type="int" value="1"/>
-        <Property name="verticalGap" type="int" value="5"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jpRegistry1">
           <Properties>
@@ -38,10 +33,15 @@
               </Border>
             </Property>
           </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="West"/>
+            </Constraint>
+          </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
             <Property name="columns" type="int" value="1"/>
-            <Property name="rows" type="int" value="7"/>
+            <Property name="rows" type="int" value="8"/>
             <Property name="verticalGap" type="int" value="5"/>
           </Layout>
           <SubComponents>
@@ -293,13 +293,50 @@
               </Border>
             </Property>
           </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="Center"/>
+            </Constraint>
+          </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
             <Property name="columns" type="int" value="1"/>
-            <Property name="rows" type="int" value="7"/>
+            <Property name="rows" type="int" value="8"/>
             <Property name="verticalGap" type="int" value="5"/>
           </Layout>
           <SubComponents>
+            <Container class="javax.swing.JPanel" name="jpRegistry28">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlDummy1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlTelecommDevice">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="N&#xfa;mero tel&#xe9;fono:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[175, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlTelecommDeviceType">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Tipo tel&#xe9;fono:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
             <Container class="javax.swing.JPanel" name="jpRegistry21">
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -311,20 +348,22 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Tel&#xe9;fono 1:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommDevice1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommDevice1Type">
                   <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Tipo de tel&#xe9;fono 1"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -340,20 +379,22 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Tel&#xe9;fono 2:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommDevice2">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommDevice2Type">
                   <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Tipo de tel&#xe9;fono 2"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -369,20 +410,65 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Tel&#xe9;fono 3:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommDevice3">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommDevice3Type">
                   <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Tipo de tel&#xe9;fono 3"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jpRegistry27">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlDummy2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlContact">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Nombre contacto:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[125, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlTelecommElectronic">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="66" green="66" red="0" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Correo-e o cuenta:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[175, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlTelecommElectronicType">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Tipo cuenta:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -398,14 +484,28 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Contacto 1:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextContact1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[255, 23]"/>
+                      <Dimension value="[125, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommElectronic1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[175, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommElectronic1Type">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -422,14 +522,28 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Contacto 2:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextContact2">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[255, 23]"/>
+                      <Dimension value="[125, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommElectronic2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[175, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommElectronic2Type">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -442,59 +556,33 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlTelecommElectronic1">
+                <Component class="javax.swing.JLabel" name="jlContact3">
                   <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="66" green="66" red="0" type="rgb"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Buz&#xf3;n o cuenta 1:"/>
+                    <Property name="text" type="java.lang.String" value="Contacto 3:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommElectronic1">
+                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextContact3">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[125, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommElectronic1Type">
-                  <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Tipo de buz&#xf3;n o cuenta 1"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jpRegistry27">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlTelecommElectronic2">
-                  <Properties>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="66" green="66" red="0" type="rgb"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Buz&#xf3;n o cuenta 2:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommElectronic2">
+                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTelecommElectronic3">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommElectronic2Type">
+                <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTelecommElectronic3Type">
                   <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Tipo de buz&#xf3;n o cuenta 2"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>

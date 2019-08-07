@@ -7,6 +7,7 @@ package sba.mod.bpr.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
@@ -44,8 +45,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     protected String msTelecommDevice3;
     protected String msContact1;
     protected String msContact2;
+    protected String msContact3;
     protected String msTelecommElectronic1;
     protected String msTelecommElectronic2;
+    protected String msTelecommElectronic3;
     protected String msNote;
     protected boolean mbDefault;
     /*
@@ -62,6 +65,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     protected int mnFkTelecommDevice3TypeId;
     protected int mnFkTelecommElectronic1TypeId;
     protected int mnFkTelecommElectronic2TypeId;
+    protected int mnFkTelecommElectronic3TypeId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -93,8 +97,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     public void setTelecommDevice3(String s) { msTelecommDevice3 = s; }
     public void setContact1(String s) { msContact1 = s; }
     public void setContact2(String s) { msContact2 = s; }
+    public void setContact3(String s) { msContact3 = s; }
     public void setTelecommElectronic1(String s) { msTelecommElectronic1 = s; }
     public void setTelecommElectronic2(String s) { msTelecommElectronic2 = s; }
+    public void setTelecommElectronic3(String s) { msTelecommElectronic3 = s; }
     public void setNote(String s) { msNote = s; }
     public void setDefault(boolean b) { mbDefault = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -109,6 +115,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     public void setFkTelecommDevice3TypeId(int n) { mnFkTelecommDevice3TypeId = n; }
     public void setFkTelecommElectronic1TypeId(int n) { mnFkTelecommElectronic1TypeId = n; }
     public void setFkTelecommElectronic2TypeId(int n) { mnFkTelecommElectronic2TypeId = n; }
+    public void setFkTelecommElectronic3TypeId(int n) { mnFkTelecommElectronic3TypeId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -133,8 +140,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     public String getTelecommDevice3() { return msTelecommDevice3; }
     public String getContact1() { return msContact1; }
     public String getContact2() { return msContact2; }
+    public String getContact3() { return msContact3; }
     public String getTelecommElectronic1() { return msTelecommElectronic1; }
     public String getTelecommElectronic2() { return msTelecommElectronic2; }
+    public String getTelecommElectronic3() { return msTelecommElectronic3; }
     public String getNote() { return msNote; }
     public boolean isDefault() { return mbDefault; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -149,6 +158,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     public int getFkTelecommDevice3TypeId() { return mnFkTelecommDevice3TypeId; }
     public int getFkTelecommElectronic1TypeId() { return mnFkTelecommElectronic1TypeId; }
     public int getFkTelecommElectronic2TypeId() { return mnFkTelecommElectronic2TypeId; }
+    public int getFkTelecommElectronic3TypeId() { return mnFkTelecommElectronic3TypeId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -184,6 +194,9 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         }
         if (!msTelecommElectronic2.isEmpty()) {
             s += (s.isEmpty() ? "" : ", ") + msTelecommElectronic2;
+        }
+        if (!msTelecommElectronic3.isEmpty()) {
+            s += (s.isEmpty() ? "" : ", ") + msTelecommElectronic3;
         }
 
         return s;
@@ -228,8 +241,66 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         return address;
     }
     
+    public boolean isEmailContact1() {
+        return mnFkTelecommElectronic1TypeId == DModSysConsts.BS_TCE_TP_EMA && !msTelecommElectronic1.isEmpty();
+    }
     
+    public String getEmailContact1() {
+        return new DBprEmail(msContact1, msTelecommElectronic1).composeEmail();
+    }
 
+    public boolean isEmailContact2() {
+        return mnFkTelecommElectronic2TypeId == DModSysConsts.BS_TCE_TP_EMA && !msTelecommElectronic2.isEmpty();
+    }
+    
+    public String getEmailContact2() {
+        return new DBprEmail(msContact2, msTelecommElectronic2).composeEmail();
+    }
+
+    public boolean isEmailContact3() {
+        return mnFkTelecommElectronic3TypeId == DModSysConsts.BS_TCE_TP_EMA && !msTelecommElectronic3.isEmpty();
+    }
+    
+    public String getEmailContact3() {
+        return new DBprEmail(msContact3, msTelecommElectronic3).composeEmail();
+    }
+    
+    public int countEmails() {
+        int count = 0;
+        
+        if (isEmailContact1()) {
+            count++;
+        }
+        
+        if (isEmailContact2()) {
+            count++;
+        }
+        
+        if (isEmailContact3()) {
+            count++;
+        }
+        
+        return count;
+    }
+    
+    public ArrayList<DBprEmail> createEmails() {
+        ArrayList<DBprEmail> emails = new ArrayList<>();
+        
+        if (isEmailContact1()) {
+            emails.add(new DBprEmail(msContact1, msTelecommElectronic1));
+        }
+        
+        if (isEmailContact2()) {
+            emails.add(new DBprEmail(msContact2, msTelecommElectronic2));
+        }
+        
+        if (isEmailContact3()) {
+            emails.add(new DBprEmail(msContact3, msTelecommElectronic3));
+        }
+        
+        return emails;
+    }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkBizPartnerId = pk[0];
@@ -265,8 +336,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         msTelecommDevice3 = "";
         msContact1 = "";
         msContact2 = "";
+        msContact3 = "";
         msTelecommElectronic1 = "";
         msTelecommElectronic2 = "";
+        msTelecommElectronic3 = "";
         msNote = "";
         mbDefault = false;
         mbUpdatable = false;
@@ -281,6 +354,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         mnFkTelecommDevice3TypeId = 0;
         mnFkTelecommElectronic1TypeId = 0;
         mnFkTelecommElectronic2TypeId = 0;
+        mnFkTelecommElectronic3TypeId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -354,8 +428,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
             msTelecommDevice3 = resultSet.getString("tcd_3");
             msContact1 = resultSet.getString("con_1");
             msContact2 = resultSet.getString("con_2");
+            msContact3 = resultSet.getString("con_3");
             msTelecommElectronic1 = resultSet.getString("tce_1");
             msTelecommElectronic2 = resultSet.getString("tce_2");
+            msTelecommElectronic3 = resultSet.getString("tce_3");
             msNote = resultSet.getString("note");
             mbDefault = resultSet.getBoolean("b_def");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -370,6 +446,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
             mnFkTelecommDevice3TypeId = resultSet.getInt("fk_tcd_3_tp");
             mnFkTelecommElectronic1TypeId = resultSet.getInt("fk_tce_1_tp");
             mnFkTelecommElectronic2TypeId = resultSet.getInt("fk_tce_2_tp");
+            mnFkTelecommElectronic3TypeId = resultSet.getInt("fk_tce_3_tp");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -417,8 +494,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
                     "'" + msTelecommDevice3 + "', " +
                     "'" + msContact1 + "', " +
                     "'" + msContact2 + "', " +
+                    "'" + msContact3 + "', " +
                     "'" + msTelecommElectronic1 + "', " +
                     "'" + msTelecommElectronic2 + "', " +
+                    "'" + msTelecommElectronic3 + "', " +
                     "'" + msNote + "', " +
                     (mbDefault ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -433,6 +512,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
                     mnFkTelecommDevice3TypeId + ", " +
                     mnFkTelecommElectronic1TypeId + ", " +
                     mnFkTelecommElectronic2TypeId + ", " +
+                    mnFkTelecommElectronic3TypeId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -464,8 +544,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
                     "tcd_3 = '" + msTelecommDevice3 + "', " +
                     "con_1 = '" + msContact1 + "', " +
                     "con_2 = '" + msContact2 + "', " +
+                    "con_3 = '" + msContact3 + "', " +
                     "tce_1 = '" + msTelecommElectronic1 + "', " +
                     "tce_2 = '" + msTelecommElectronic2 + "', " +
+                    "tce_3 = '" + msTelecommElectronic3 + "', " +
                     "note = '" + msNote + "', " +
                     "b_def = " + (mbDefault ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -480,6 +562,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
                     "fk_tcd_3_tp = " + mnFkTelecommDevice3TypeId + ", " +
                     "fk_tce_1_tp = " + mnFkTelecommElectronic1TypeId + ", " +
                     "fk_tce_2_tp = " + mnFkTelecommElectronic2TypeId + ", " +
+                    "fk_tce_3_tp = " + mnFkTelecommElectronic3TypeId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -515,8 +598,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         registry.setTelecommDevice3(this.getTelecommDevice3());
         registry.setContact1(this.getContact1());
         registry.setContact2(this.getContact2());
+        registry.setContact3(this.getContact3());
         registry.setTelecommElectronic1(this.getTelecommElectronic1());
         registry.setTelecommElectronic2(this.getTelecommElectronic2());
+        registry.setTelecommElectronic3(this.getTelecommElectronic3());
         registry.setNote(this.getNote());
         registry.setDefault(this.isDefault());
         registry.setUpdatable(this.isUpdatable());
@@ -531,6 +616,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         registry.setFkTelecommDevice3TypeId(this.getFkTelecommDevice3TypeId());
         registry.setFkTelecommElectronic1TypeId(this.getFkTelecommElectronic1TypeId());
         registry.setFkTelecommElectronic2TypeId(this.getFkTelecommElectronic2TypeId());
+        registry.setFkTelecommElectronic3TypeId(this.getFkTelecommElectronic3TypeId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

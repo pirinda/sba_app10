@@ -968,18 +968,19 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     private ArrayList<DDbIogRow> getIogRows() {
-        ArrayList<DDbIogRow> iogRows = new ArrayList<DDbIogRow>();
+        ArrayList<DDbIogRow> iogRows = new ArrayList<>();
 
         for (DGridRow row : moGridDpsRows.getModel().getGridRows()) {
             iogRows.add((DDbIogRow) row);
         }
 
         for (DGridRow row : moGridDpsRows.getDeletedRows()) {
-            DDbIogRow dpsRow = (DDbIogRow) row;
-            if (!dpsRow.isRegistryNew()) {
-                dpsRow.setDeleted(true);
-                dpsRow.setRegistryEdited(true);
-                iogRows.add(dpsRow);
+            DDbIogRow iogRow = (DDbIogRow) row;
+            
+            if (!iogRow.isRegistryNew()) {
+                iogRow.setDeleted(true);
+                iogRow.setRegistryEdited(true);
+                iogRows.add(iogRow);
             }
         }
 
@@ -1418,6 +1419,8 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         renderSourceWarehouse();
 
+        moDestinyWarehouse = null;
+        
         if (!DTrnUtils.isIogTypeForSibling(moRegistry.getIogTypeKey())) {
             jlDestinyBranchWarehouse.setEnabled(false);
             jbDestinyBranchWarehouse.setEnabled(false);
@@ -1426,10 +1429,7 @@ public class DFormIog extends DBeanForm implements DGridPaneFormOwner, ActionLis
             jlDestinyBranchWarehouse.setEnabled(true);
             jbDestinyBranchWarehouse.setEnabled(true);
 
-            if (moRegistry.isRegistryNew()) {
-                moDestinyWarehouse = null;
-            }
-            else {
+            if (!moRegistry.isRegistryNew()) {
                 try {
                     moDestinyWarehouse = new DDbBranchWarehouse();
                     moDestinyWarehouse.read(miClient.getSession(), moRegistry.getSiblingIog().getBranchWarehouseKey());

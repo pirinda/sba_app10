@@ -21,6 +21,7 @@ import sba.lib.grid.DGridRow;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DBprEmail;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbUser;
@@ -732,8 +733,7 @@ public abstract class DTrnUtils {
      * @param itemFilter Constants defined in DTrnConsts.ITEM_FILTER_...
      * @param findMode Constants defined in DTrnConsts.FIND_MODE_BY_...
      * @param year Fiscal year.
-     * @param warehouseKey Warehouse key.
-     * @param bizPartnerKey Business partner key.
+     * @param branchWarehouseKey Warehouse key.
      */
     public static Vector<DRowFindItem> readFindItems(final DGuiSession session, final int itemFilter, final int findMode, final int year, final int[] branchWarehouseKey) {
         return readFindItems(session, itemFilter, findMode, year, branchWarehouseKey, DLibConsts.UNDEFINED, null);
@@ -744,8 +744,9 @@ public abstract class DTrnUtils {
      * @param itemFilter Constants defined in DTrnConsts.ITEM_FILTER_...
      * @param findMode Constants defined in DTrnConsts.FIND_MODE_BY_...
      * @param year Fiscal year.
-     * @param warehouseKey Warehouse key.
-     * @param bizPartnerKey Business partner key.
+     * @param branchWarehouseKey Warehouse key.
+     * @param itemPriceType
+     * @param taxGroupConfigRow
      */
     public static Vector<DRowFindItem> readFindItems(final DGuiSession session, final int itemFilter, final int findMode, final int year, final int[] branchWarehouseKey, final int itemPriceType, final DDbTaxGroupConfigRow taxGroupConfigRow) {
         int table = DLibConsts.UNDEFINED;
@@ -1193,6 +1194,20 @@ public abstract class DTrnUtils {
         }
 
         return number;
+    }
+    
+    public static int getIogCounterpartId(final DGuiSession session, final int iogId) throws Exception {
+        int iogCounterpartId = 0;
+        
+        String sql = "SELECT id_iog "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_IOG) + " "
+                + "WHERE fk_src_iog_n = " + iogId + " AND NOT b_del;";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            iogCounterpartId = resultSet.getInt(1);
+        }
+        
+        return iogCounterpartId;
     }
 
     /**
@@ -2294,11 +2309,11 @@ public abstract class DTrnUtils {
         }
         else if (DLibUtils.compareKeys(iogTypeKey, DModSysConsts.TS_IOG_TP_IN_INT_TRA)) {
             //key = DModSysConsts.TS_IOG_TP_OUT_INT_TRA;
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Operación no soportada.");
         }
         else if (DLibUtils.compareKeys(iogTypeKey, DModSysConsts.TS_IOG_TP_IN_INT_CNV)) {
             //key = DModSysConsts.TS_IOG_TP_OUT_INT_CNV;
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("Operación no soportada.");
         }
 
         return key;
@@ -2367,5 +2382,32 @@ public abstract class DTrnUtils {
         }
                 
         return count;
+    }
+    
+    /**
+     * Populate SDbDpsSending instance with info from array of DBprEmail objects.
+     * @param dpsSending
+     * @param bprEmails
+     */
+    public static void populateEmails(final DDbDpsSending dpsSending, final ArrayList<DBprEmail> bprEmails) {
+        for (int index = 0; index < bprEmails.size() && index < 3; index++) {
+            DBprEmail bprEmail = bprEmails.get(index);
+            
+            switch (index + 1) {
+                case 1:
+                    dpsSending.setContact1(bprEmail.Contact);
+                    dpsSending.setEmail1(bprEmail.Email);
+                    break;
+                case 2:
+                    dpsSending.setContact2(bprEmail.Contact);
+                    dpsSending.setEmail2(bprEmail.Email);
+                    break;
+                case 3:
+                    dpsSending.setContact3(bprEmail.Contact);
+                    dpsSending.setEmail3(bprEmail.Email);
+                    break;
+                default:
+            }
+        }
     }
 }

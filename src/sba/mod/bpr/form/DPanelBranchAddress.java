@@ -82,6 +82,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jlNote = new javax.swing.JLabel();
         moTextNote = new sba.lib.gui.bean.DBeanFieldText();
         jpRegistry2 = new javax.swing.JPanel();
+        jpRegistry28 = new javax.swing.JPanel();
+        jlDummy1 = new javax.swing.JLabel();
+        jlTelecommDevice = new javax.swing.JLabel();
+        jlTelecommDeviceType = new javax.swing.JLabel();
         jpRegistry21 = new javax.swing.JPanel();
         jlTelecommDevice1 = new javax.swing.JLabel();
         moTextTelecommDevice1 = new sba.lib.gui.bean.DBeanFieldText();
@@ -94,29 +98,35 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jlTelecommDevice3 = new javax.swing.JLabel();
         moTextTelecommDevice3 = new sba.lib.gui.bean.DBeanFieldText();
         moKeyTelecommDevice3Type = new sba.lib.gui.bean.DBeanFieldKey();
+        jpRegistry27 = new javax.swing.JPanel();
+        jlDummy2 = new javax.swing.JLabel();
+        jlContact = new javax.swing.JLabel();
+        jlTelecommElectronic = new javax.swing.JLabel();
+        jlTelecommElectronicType = new javax.swing.JLabel();
         jpRegistry24 = new javax.swing.JPanel();
         jlContact1 = new javax.swing.JLabel();
         moTextContact1 = new sba.lib.gui.bean.DBeanFieldText();
+        moTextTelecommElectronic1 = new sba.lib.gui.bean.DBeanFieldText();
+        moKeyTelecommElectronic1Type = new sba.lib.gui.bean.DBeanFieldKey();
         jpRegistry25 = new javax.swing.JPanel();
         jlContact2 = new javax.swing.JLabel();
         moTextContact2 = new sba.lib.gui.bean.DBeanFieldText();
-        jpRegistry26 = new javax.swing.JPanel();
-        jlTelecommElectronic1 = new javax.swing.JLabel();
-        moTextTelecommElectronic1 = new sba.lib.gui.bean.DBeanFieldText();
-        moKeyTelecommElectronic1Type = new sba.lib.gui.bean.DBeanFieldKey();
-        jpRegistry27 = new javax.swing.JPanel();
-        jlTelecommElectronic2 = new javax.swing.JLabel();
         moTextTelecommElectronic2 = new sba.lib.gui.bean.DBeanFieldText();
         moKeyTelecommElectronic2Type = new sba.lib.gui.bean.DBeanFieldKey();
+        jpRegistry26 = new javax.swing.JPanel();
+        jlContact3 = new javax.swing.JLabel();
+        moTextContact3 = new sba.lib.gui.bean.DBeanFieldText();
+        moTextTelecommElectronic3 = new sba.lib.gui.bean.DBeanFieldText();
+        moKeyTelecommElectronic3Type = new sba.lib.gui.bean.DBeanFieldKey();
 
         setLayout(new java.awt.BorderLayout());
 
-        jpRegistry.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jpRegistry.setLayout(new java.awt.BorderLayout());
 
         jpRegistry1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del domicilio:"));
-        jpRegistry1.setLayout(new java.awt.GridLayout(7, 1, 0, 5));
+        jpRegistry1.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
-        jpRegistry11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre:*");
         jlName.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -130,7 +140,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry11);
 
-        jpRegistry12.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlStreet.setText("Calle:");
         jlStreet.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -150,7 +160,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry12);
 
-        jpRegistry13.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNeighborhood.setText("Colonia:");
         jlNeighborhood.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -166,7 +176,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry13);
 
-        jpRegistry14.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlLocality.setText("Localidad:*");
         jlLocality.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -182,7 +192,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry14);
 
-        jpRegistry15.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlState.setText("Estado:*");
         jlState.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -194,7 +204,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry15);
 
-        jpRegistry16.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlZipCode.setText("CP:*");
         jlZipCode.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -220,7 +230,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry16);
 
-        jpRegistry17.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNote.setText("Notas:");
         jlNote.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -231,106 +241,140 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry1.add(jpRegistry17);
 
-        jpRegistry.add(jpRegistry1);
+        jpRegistry.add(jpRegistry1, java.awt.BorderLayout.WEST);
 
         jpRegistry2.setBorder(javax.swing.BorderFactory.createTitledBorder("Información de contacto:"));
-        jpRegistry2.setLayout(new java.awt.GridLayout(7, 1, 0, 5));
+        jpRegistry2.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
-        jpRegistry21.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlDummy1.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry28.add(jlDummy1);
+
+        jlTelecommDevice.setText("Número teléfono:");
+        jlTelecommDevice.setPreferredSize(new java.awt.Dimension(175, 23));
+        jpRegistry28.add(jlTelecommDevice);
+
+        jlTelecommDeviceType.setText("Tipo teléfono:");
+        jlTelecommDeviceType.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry28.add(jlTelecommDeviceType);
+
+        jpRegistry2.add(jpRegistry28);
+
+        jpRegistry21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTelecommDevice1.setText("Teléfono 1:");
-        jlTelecommDevice1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlTelecommDevice1.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry21.add(jlTelecommDevice1);
 
-        moTextTelecommDevice1.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextTelecommDevice1.setPreferredSize(new java.awt.Dimension(175, 23));
         jpRegistry21.add(moTextTelecommDevice1);
 
-        moKeyTelecommDevice1Type.setToolTipText("Tipo de teléfono 1");
+        moKeyTelecommDevice1Type.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry21.add(moKeyTelecommDevice1Type);
 
         jpRegistry2.add(jpRegistry21);
 
-        jpRegistry22.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTelecommDevice2.setText("Teléfono 2:");
-        jlTelecommDevice2.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlTelecommDevice2.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry22.add(jlTelecommDevice2);
 
-        moTextTelecommDevice2.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextTelecommDevice2.setPreferredSize(new java.awt.Dimension(175, 23));
         jpRegistry22.add(moTextTelecommDevice2);
 
-        moKeyTelecommDevice2Type.setToolTipText("Tipo de teléfono 2");
+        moKeyTelecommDevice2Type.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry22.add(moKeyTelecommDevice2Type);
 
         jpRegistry2.add(jpRegistry22);
 
-        jpRegistry23.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTelecommDevice3.setText("Teléfono 3:");
-        jlTelecommDevice3.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlTelecommDevice3.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry23.add(jlTelecommDevice3);
 
-        moTextTelecommDevice3.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextTelecommDevice3.setPreferredSize(new java.awt.Dimension(175, 23));
         jpRegistry23.add(moTextTelecommDevice3);
 
-        moKeyTelecommDevice3Type.setToolTipText("Tipo de teléfono 3");
+        moKeyTelecommDevice3Type.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry23.add(moKeyTelecommDevice3Type);
 
         jpRegistry2.add(jpRegistry23);
 
-        jpRegistry24.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jpRegistry27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlContact1.setText("Contacto 1:");
-        jlContact1.setPreferredSize(new java.awt.Dimension(100, 23));
-        jpRegistry24.add(jlContact1);
+        jlDummy2.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry27.add(jlDummy2);
 
-        moTextContact1.setPreferredSize(new java.awt.Dimension(255, 23));
-        jpRegistry24.add(moTextContact1);
+        jlContact.setText("Nombre contacto:");
+        jlContact.setPreferredSize(new java.awt.Dimension(125, 23));
+        jpRegistry27.add(jlContact);
 
-        jpRegistry2.add(jpRegistry24);
+        jlTelecommElectronic.setForeground(new java.awt.Color(0, 102, 102));
+        jlTelecommElectronic.setText("Correo-e o cuenta:");
+        jlTelecommElectronic.setPreferredSize(new java.awt.Dimension(175, 23));
+        jpRegistry27.add(jlTelecommElectronic);
 
-        jpRegistry25.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlContact2.setText("Contacto 2:");
-        jlContact2.setPreferredSize(new java.awt.Dimension(100, 23));
-        jpRegistry25.add(jlContact2);
-
-        moTextContact2.setPreferredSize(new java.awt.Dimension(255, 23));
-        jpRegistry25.add(moTextContact2);
-
-        jpRegistry2.add(jpRegistry25);
-
-        jpRegistry26.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlTelecommElectronic1.setForeground(new java.awt.Color(0, 102, 102));
-        jlTelecommElectronic1.setText("Buzón o cuenta 1:");
-        jlTelecommElectronic1.setPreferredSize(new java.awt.Dimension(100, 23));
-        jpRegistry26.add(jlTelecommElectronic1);
-
-        moTextTelecommElectronic1.setPreferredSize(new java.awt.Dimension(150, 23));
-        jpRegistry26.add(moTextTelecommElectronic1);
-
-        moKeyTelecommElectronic1Type.setToolTipText("Tipo de buzón o cuenta 1");
-        jpRegistry26.add(moKeyTelecommElectronic1Type);
-
-        jpRegistry2.add(jpRegistry26);
-
-        jpRegistry27.setLayout(new java.awt.FlowLayout(0, 5, 0));
-
-        jlTelecommElectronic2.setForeground(new java.awt.Color(0, 102, 102));
-        jlTelecommElectronic2.setText("Buzón o cuenta 2:");
-        jlTelecommElectronic2.setPreferredSize(new java.awt.Dimension(100, 23));
-        jpRegistry27.add(jlTelecommElectronic2);
-
-        moTextTelecommElectronic2.setPreferredSize(new java.awt.Dimension(150, 23));
-        jpRegistry27.add(moTextTelecommElectronic2);
-
-        moKeyTelecommElectronic2Type.setToolTipText("Tipo de buzón o cuenta 2");
-        jpRegistry27.add(moKeyTelecommElectronic2Type);
+        jlTelecommElectronicType.setText("Tipo cuenta:");
+        jlTelecommElectronicType.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry27.add(jlTelecommElectronicType);
 
         jpRegistry2.add(jpRegistry27);
 
-        jpRegistry.add(jpRegistry2);
+        jpRegistry24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlContact1.setText("Contacto 1:");
+        jlContact1.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry24.add(jlContact1);
+
+        moTextContact1.setPreferredSize(new java.awt.Dimension(125, 23));
+        jpRegistry24.add(moTextContact1);
+
+        moTextTelecommElectronic1.setPreferredSize(new java.awt.Dimension(175, 23));
+        jpRegistry24.add(moTextTelecommElectronic1);
+
+        moKeyTelecommElectronic1Type.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry24.add(moKeyTelecommElectronic1Type);
+
+        jpRegistry2.add(jpRegistry24);
+
+        jpRegistry25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlContact2.setText("Contacto 2:");
+        jlContact2.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry25.add(jlContact2);
+
+        moTextContact2.setPreferredSize(new java.awt.Dimension(125, 23));
+        jpRegistry25.add(moTextContact2);
+
+        moTextTelecommElectronic2.setPreferredSize(new java.awt.Dimension(175, 23));
+        jpRegistry25.add(moTextTelecommElectronic2);
+
+        moKeyTelecommElectronic2Type.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry25.add(moKeyTelecommElectronic2Type);
+
+        jpRegistry2.add(jpRegistry25);
+
+        jpRegistry26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlContact3.setText("Contacto 3:");
+        jlContact3.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry26.add(jlContact3);
+
+        moTextContact3.setPreferredSize(new java.awt.Dimension(125, 23));
+        jpRegistry26.add(moTextContact3);
+
+        moTextTelecommElectronic3.setPreferredSize(new java.awt.Dimension(175, 23));
+        jpRegistry26.add(moTextTelecommElectronic3);
+
+        moKeyTelecommElectronic3Type.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpRegistry26.add(moKeyTelecommElectronic3Type);
+
+        jpRegistry2.add(jpRegistry26);
+
+        jpRegistry.add(jpRegistry2, java.awt.BorderLayout.CENTER);
 
         add(jpRegistry, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
@@ -338,34 +382,38 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
     private void initComponentsCustom() {
         mbHeadquarters = false;
 
-        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 50);
+        moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 50);
         moBoolDefault.setBooleanSettings(moBoolDefault.getComponent().getText(), false);
-        moTextStreet.setTextSettings(DGuiUtils.getLabelName(jlStreet.getText()), 100, 0);
+        moTextStreet.setTextSettings(DGuiUtils.getLabelName(jlStreet), 100, 0);
         moTextNumberExterior.setTextSettings(DGuiUtils.getLabelName(moTextNumberExterior.getToolTipText()), 25, 0);
         moTextNumberInterior.setTextSettings(DGuiUtils.getLabelName(moTextNumberInterior.getToolTipText()), 25, 0);
-        moTextNeighborhood.setTextSettings(DGuiUtils.getLabelName(jlNeighborhood.getText()), 100, 0);
+        moTextNeighborhood.setTextSettings(DGuiUtils.getLabelName(jlNeighborhood), 100, 0);
         moTextReference.setTextSettings(DGuiUtils.getLabelName(moTextReference.getToolTipText()), 100, 0);
-        moTextLocality.setTextSettings(DGuiUtils.getLabelName(jlLocality.getText()), 50, 0);
+        moTextLocality.setTextSettings(DGuiUtils.getLabelName(jlLocality), 50, 0);
         moTextCounty.setTextSettings(DGuiUtils.getLabelName(moTextCounty.getToolTipText()), 50, 0);
-        moTextState.setTextSettings(DGuiUtils.getLabelName(jlState.getText()), 50, 0);
-        moTextZipCode.setTextSettings(DGuiUtils.getLabelName(jlZipCode.getText()), 10, 0);
+        moTextState.setTextSettings(DGuiUtils.getLabelName(jlState), 50, 0);
+        moTextZipCode.setTextSettings(DGuiUtils.getLabelName(jlZipCode), 10, 0);
         moTextPostOfficeBox.setTextSettings(DGuiUtils.getLabelName(moTextPostOfficeBox.getToolTipText()), 10, 0);
         moKeyCountry.setKeySettings(miClient, moKeyCountry.getToolTipText(), false);
-        moTextNote.setTextSettings(DGuiUtils.getLabelName(jlNote.getText()), 100, 0);
-        moTextTelecommDevice1.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice1.getText()), 50, 0);
-        moKeyTelecommDevice1Type.setKeySettings(miClient, moKeyTelecommDevice1Type.getToolTipText(), true);
-        moTextTelecommDevice2.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice2.getText()), 50, 0);
-        moKeyTelecommDevice2Type.setKeySettings(miClient, moKeyTelecommDevice2Type.getToolTipText(), true);
-        moTextTelecommDevice3.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice3.getText()), 50, 0);
-        moKeyTelecommDevice3Type.setKeySettings(miClient, moKeyTelecommDevice3Type.getToolTipText(), true);
-        moTextContact1.setTextSettings(DGuiUtils.getLabelName(jlContact1.getText()), 50, 0);
-        moTextContact2.setTextSettings(DGuiUtils.getLabelName(jlContact2.getText()), 50, 0);
-        moTextTelecommElectronic1.setTextSettings(DGuiUtils.getLabelName(jlTelecommElectronic1.getText()), 50, 0);
+        moTextNote.setTextSettings(DGuiUtils.getLabelName(jlNote), 100, 0);
+        moTextTelecommDevice1.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice1), 50, 0);
+        moKeyTelecommDevice1Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommDeviceType) + " 1", true);
+        moTextTelecommDevice2.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice2), 50, 0);
+        moKeyTelecommDevice2Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommDeviceType) + " 2", true);
+        moTextTelecommDevice3.setTextSettings(DGuiUtils.getLabelName(jlTelecommDevice3), 50, 0);
+        moKeyTelecommDevice3Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommDeviceType) + " 3", true);
+        moTextContact1.setTextSettings(DGuiUtils.getLabelName(jlContact1), 50, 0);
+        moTextTelecommElectronic1.setTextSettings(DGuiUtils.getLabelName(jlTelecommElectronic.getText()) + " 1", 50, 0);
         moTextTelecommElectronic1.setTextCaseType(DLibConsts.UNDEFINED);
-        moKeyTelecommElectronic1Type.setKeySettings(miClient, moKeyTelecommElectronic1Type.getToolTipText(), true);
-        moTextTelecommElectronic2.setTextSettings(DGuiUtils.getLabelName(jlTelecommElectronic2.getText()), 50, 0);
+        moKeyTelecommElectronic1Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommElectronicType) + " 1", true);
+        moTextContact2.setTextSettings(DGuiUtils.getLabelName(jlContact2), 50, 0);
+        moTextTelecommElectronic2.setTextSettings(DGuiUtils.getLabelName(jlTelecommElectronic.getText()) + " 2", 50, 0);
         moTextTelecommElectronic2.setTextCaseType(DLibConsts.UNDEFINED);
-        moKeyTelecommElectronic2Type.setKeySettings(miClient, moKeyTelecommElectronic2Type.getToolTipText(), true);
+        moKeyTelecommElectronic2Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommElectronicType) + " 2", true);
+        moTextContact3.setTextSettings(DGuiUtils.getLabelName(jlContact3), 50, 0);
+        moTextTelecommElectronic3.setTextSettings(DGuiUtils.getLabelName(jlTelecommElectronic.getText()) + " 3", 50, 0);
+        moTextTelecommElectronic3.setTextCaseType(DLibConsts.UNDEFINED);
+        moKeyTelecommElectronic3Type.setKeySettings(miClient, DGuiUtils.getLabelName(jlTelecommElectronicType) + " 3", true);
 
         moFields.addField(moTextName);
         moFields.addField(moBoolDefault);
@@ -388,11 +436,14 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         moFields.addField(moTextTelecommDevice3);
         moFields.addField(moKeyTelecommDevice3Type);
         moFields.addField(moTextContact1);
-        moFields.addField(moTextContact2);
         moFields.addField(moTextTelecommElectronic1);
         moFields.addField(moKeyTelecommElectronic1Type);
+        moFields.addField(moTextContact2);
         moFields.addField(moTextTelecommElectronic2);
         moFields.addField(moKeyTelecommElectronic2Type);
+        moFields.addField(moTextContact3);
+        moFields.addField(moTextTelecommElectronic3);
+        moFields.addField(moKeyTelecommElectronic3Type);
     }
 
     private void actionCountry() {
@@ -403,19 +454,25 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jbCountry;
+    private javax.swing.JLabel jlContact;
     private javax.swing.JLabel jlContact1;
     private javax.swing.JLabel jlContact2;
+    private javax.swing.JLabel jlContact3;
+    private javax.swing.JLabel jlDummy1;
+    private javax.swing.JLabel jlDummy2;
     private javax.swing.JLabel jlLocality;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNeighborhood;
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlState;
     private javax.swing.JLabel jlStreet;
+    private javax.swing.JLabel jlTelecommDevice;
     private javax.swing.JLabel jlTelecommDevice1;
     private javax.swing.JLabel jlTelecommDevice2;
     private javax.swing.JLabel jlTelecommDevice3;
-    private javax.swing.JLabel jlTelecommElectronic1;
-    private javax.swing.JLabel jlTelecommElectronic2;
+    private javax.swing.JLabel jlTelecommDeviceType;
+    private javax.swing.JLabel jlTelecommElectronic;
+    private javax.swing.JLabel jlTelecommElectronicType;
     private javax.swing.JLabel jlZipCode;
     private javax.swing.JPanel jpRegistry;
     private javax.swing.JPanel jpRegistry1;
@@ -434,6 +491,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
     private javax.swing.JPanel jpRegistry25;
     private javax.swing.JPanel jpRegistry26;
     private javax.swing.JPanel jpRegistry27;
+    private javax.swing.JPanel jpRegistry28;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolDefault;
     private sba.lib.gui.bean.DBeanFieldKey moKeyCountry;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTelecommDevice1Type;
@@ -441,8 +499,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
     private sba.lib.gui.bean.DBeanFieldKey moKeyTelecommDevice3Type;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTelecommElectronic1Type;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTelecommElectronic2Type;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyTelecommElectronic3Type;
     private sba.lib.gui.bean.DBeanFieldText moTextContact1;
     private sba.lib.gui.bean.DBeanFieldText moTextContact2;
+    private sba.lib.gui.bean.DBeanFieldText moTextContact3;
     private sba.lib.gui.bean.DBeanFieldText moTextCounty;
     private sba.lib.gui.bean.DBeanFieldText moTextLocality;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
@@ -459,6 +519,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
     private sba.lib.gui.bean.DBeanFieldText moTextTelecommDevice3;
     private sba.lib.gui.bean.DBeanFieldText moTextTelecommElectronic1;
     private sba.lib.gui.bean.DBeanFieldText moTextTelecommElectronic2;
+    private sba.lib.gui.bean.DBeanFieldText moTextTelecommElectronic3;
     private sba.lib.gui.bean.DBeanFieldText moTextZipCode;
     // End of variables declaration//GEN-END:variables
 
@@ -501,6 +562,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         miClient.getSession().populateCatalogue(moKeyTelecommDevice3Type, DModConsts.BS_TCD_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTelecommElectronic1Type, DModConsts.BS_TCE_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTelecommElectronic2Type, DModConsts.BS_TCE_TP, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTelecommElectronic3Type, DModConsts.BS_TCE_TP, DLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -547,6 +609,9 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
             if (moRegistry.getFkTelecommElectronic2TypeId() == DLibConsts.UNDEFINED) {
                 moRegistry.setFkTelecommElectronic2TypeId(DModSysConsts.BS_TCE_TP_NA);
             }
+            if (moRegistry.getFkTelecommElectronic3TypeId() == DLibConsts.UNDEFINED) {
+                moRegistry.setFkTelecommElectronic3TypeId(DModSysConsts.BS_TCE_TP_NA);
+            }
         }
         else {
 
@@ -568,8 +633,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         moTextTelecommDevice3.setValue(moRegistry.getTelecommDevice3());
         moTextContact1.setValue(moRegistry.getContact1());
         moTextContact2.setValue(moRegistry.getContact2());
+        moTextContact3.setValue(moRegistry.getContact3());
         moTextTelecommElectronic1.setValue(moRegistry.getTelecommElectronic1());
         moTextTelecommElectronic2.setValue(moRegistry.getTelecommElectronic2());
+        moTextTelecommElectronic3.setValue(moRegistry.getTelecommElectronic3());
         moTextNote.setValue(moRegistry.getNote());
         moBoolDefault.setValue(moRegistry.isDefault());
         moKeyCountry.setValue(new int[] { moRegistry.getFkCountryId_n() });
@@ -578,6 +645,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         moKeyTelecommDevice3Type.setValue(new int[] { moRegistry.getFkTelecommDevice3TypeId() });
         moKeyTelecommElectronic1Type.setValue(new int[] { moRegistry.getFkTelecommElectronic1TypeId() });
         moKeyTelecommElectronic2Type.setValue(new int[] { moRegistry.getFkTelecommElectronic2TypeId() });
+        moKeyTelecommElectronic3Type.setValue(new int[] { moRegistry.getFkTelecommElectronic3TypeId() });
 
         setPanelEditable(true);
 
@@ -609,8 +677,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         registry.setTelecommDevice3(moTextTelecommDevice3.getValue());
         registry.setContact1(moTextContact1.getValue());
         registry.setContact2(moTextContact2.getValue());
+        registry.setContact3(moTextContact3.getValue());
         registry.setTelecommElectronic1(moTextTelecommElectronic1.getValue());
         registry.setTelecommElectronic2(moTextTelecommElectronic2.getValue());
+        registry.setTelecommElectronic3(moTextTelecommElectronic3.getValue());
         registry.setNote(moTextNote.getValue());
         registry.setDefault(moBoolDefault.getValue());
         registry.setFkCountryId_n(moKeyCountry.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyCountry.getValue()[0]);
@@ -619,6 +689,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         registry.setFkTelecommDevice3TypeId(moKeyTelecommDevice3Type.getValue()[0]);
         registry.setFkTelecommElectronic1TypeId(moKeyTelecommElectronic1Type.getValue()[0]);
         registry.setFkTelecommElectronic2TypeId(moKeyTelecommElectronic2Type.getValue()[0]);
+        registry.setFkTelecommElectronic3TypeId(moKeyTelecommElectronic3Type.getValue()[0]);
 
         return registry;
     }
@@ -664,6 +735,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextTelecommElectronic2.getFieldName() + "'.");
                 validation.setComponent(moTextTelecommElectronic2);
             }
+            else if (moTextTelecommElectronic3.getValue().isEmpty() && moKeyTelecommElectronic3Type.getSelectedIndex() > 1) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextTelecommElectronic3.getFieldName() + "'.");
+                validation.setComponent(moTextTelecommElectronic3);
+            }
             else if (!moTextTelecommElectronic1.getValue().isEmpty() && moKeyTelecommElectronic1Type.getSelectedIndex() <= 1) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyTelecommElectronic1Type.getFieldName() + "'.");
                 validation.setComponent(moKeyTelecommElectronic1Type);
@@ -671,6 +746,10 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
             else if (!moTextTelecommElectronic2.getValue().isEmpty() && moKeyTelecommElectronic2Type.getSelectedIndex() <= 1) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyTelecommElectronic2Type.getFieldName() + "'.");
                 validation.setComponent(moKeyTelecommElectronic2Type);
+            }
+            else if (!moTextTelecommElectronic3.getValue().isEmpty() && moKeyTelecommElectronic3Type.getSelectedIndex() <= 1) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyTelecommElectronic3Type.getFieldName() + "'.");
+                validation.setComponent(moKeyTelecommElectronic3Type);
             }
         }
 
