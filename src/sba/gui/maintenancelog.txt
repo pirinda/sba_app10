@@ -1,4 +1,10 @@
 ================================================================================
+SBA 1.0 024.1
+2019-08-26/ Sergio Abraham FLORES GUTIÉRREZ
+1) Deshabilitación de consulta de CFDI relacionados al cancelar CFDI debido a que
+    el método de consula de CFDI relacionados dejó de funcionar con el PAC Quadrum asociado a Finkok.
+
+================================================================================
 SBA 1.0 024.0
 2019-08-05/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de traspasos de almacén y de vistas de existencias por almacén.

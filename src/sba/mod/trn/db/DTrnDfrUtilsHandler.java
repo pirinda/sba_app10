@@ -146,7 +146,8 @@ public class DTrnDfrUtilsHandler {
                         }
 
                         cfdiAckQuery = new CfdiAckQuery(dfr.getUuid(), valEsCancelable, valCodigoEstatus, valEstado, valEstatusCancelacion);
-                        cfdiAckQuery.CfdiRelatedList.addAll(getCfdiRelated(dfr));
+                        // XXX 2019-08-27 Sergio Flores: El método de consula de CFDI relacionados dejó de funcionar con el PAC Quadrum asociado a Finkok:
+                        //cfdiAckQuery.CfdiRelatedList.addAll(getCfdiRelated(dfr));
                     }
                     break;
 
