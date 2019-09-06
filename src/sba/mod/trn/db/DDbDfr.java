@@ -59,7 +59,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     public static final int FIELD_CAN_ST = 1;
 
     /** Timeout in minutes.  */
-    public static final int TIMEOUT = 3; // 3 min.
+    public static final int TIMEOUT = 1; // 1 min.
     
     protected int mnPkDfrId;
     protected String msSeries;
@@ -461,6 +461,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     public int[] getBranchCashKey_n() { return !(mnFkCashBizPartnerId_n != DLibConsts.UNDEFINED && mnFkCashBranchId_n != DLibConsts.UNDEFINED && mnFkCashCashId_n != DLibConsts.UNDEFINED) ? null : new int[] { mnFkCashBizPartnerId_n, mnFkCashBranchId_n, mnFkCashCashId_n }; }
     public int[] getBookkeepingNumberKey_n() { return !(mnFkBookkeepingYearId_n != DLibConsts.UNDEFINED && mnFkBookkeepingNumberId_n != DLibConsts.UNDEFINED) ? null : new int[] { mnFkBookkeepingYearId_n, mnFkBookkeepingNumberId_n }; }
     public String getDfrNumber() { return DTrnUtils.composeDpsNumber(msSeries, mnNumber); }
+    public boolean isDfrCfdi() { return DLibUtils.belongsTo(mnFkXmlTypeId, new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }); }
     /**
      * Get XML raw (just as fetched from web service) if available and its status is at least 'issued', otherwise own generated XML.
      * @return Suitable XML.
@@ -998,7 +999,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         
         if (can) {
             if (mnFkXmlStatusId == DModSysConsts.TS_XML_ST_ANN) {
-                msQueryResult = DDbConsts.MSG_REG_ + getDfrNumber() + DDbConsts.MSG_REG_IS_DISABLED;
+                msQueryResult = DDbConsts.MSG_REG_ + getDfrNumber() + DDbConsts.MSG_REG_IS_DISABLED + "\n" + DTrnConsts.ERR_MSG_NOT_PROCEED;
                 can = false;
             }
         }
@@ -1012,7 +1013,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
 
     @Override
     public boolean canDelete(final DGuiSession session) throws SQLException, Exception {
-        msQueryResult = DDbConsts.ERR_MSG_REG_NON_DELETABLE;
+        msQueryResult = DDbConsts.ERR_MSG_REG_NON_DELETABLE + "\n" + DTrnConsts.ERR_MSG_NOT_PROCEED;
         return false;
     }
 

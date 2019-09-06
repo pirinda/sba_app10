@@ -1989,7 +1989,7 @@ public abstract class DTrnDfrUtils {
                                     else {
                                         xml = receiptResult.getReceipt().getValue();
                                         /*
-                                        Cancellation cknowledgment comes wraped in another XML (SOAP response),
+                                        Cancellation acknowledgment comes wraped in another XML (SOAP response),
                                         so '<' and '>' must be represented with its correspondign character entity references.
                                         */
                                         xml = xml.replace("&lt;", "<");

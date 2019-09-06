@@ -38,4 +38,6 @@ public abstract class DTrnConsts {
     public static final String MSG_CNF_ROW_VALUELESS = "¿Está seguro que desea agregar una partida sin valor?";
 
     public static final String ERR_MSG_BKK_MOVES = "El documento tiene movimientos contables.";
+    
+    public static final String ERR_MSG_NOT_PROCEED = "No se puede proceder con la acción solicitada.";
 }

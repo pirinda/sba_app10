@@ -37,8 +37,8 @@ import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
-import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
+import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
@@ -335,54 +335,38 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     }
 
     private boolean proceedDisableDelete(final int[] keyDps, final int action) {
-        boolean proceed = false;
-        String msg = "";
+        boolean proceed = true;
         DDbDps dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, keyDps);
-        DDbDfr dfr = dps.getChildDfr();
-
-        if (dfr == null || !DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
-            proceed = true; // DPS without DFR or with DFR of type CFD can be annuled anytime!
-        }
-        else {
-            switch (dfr.getFkXmlStatusId()) {
-                case DModSysConsts.TS_XML_ST_ANN:
-                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' ya tiene estatus 'cancelado'.";
-                    miClient.showMsgBoxWarning(msg);
+        
+        try {
+            switch (action) {
+                case ACTION_DISABLE:
+                    if (dps.isDeleted()) {
+                        miClient.showMsgBoxWarning("!El documento '" + dps.getDpsNumber() + "' está eliminado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
+                    }
+                    else if (dps.isDisabled()) {
+                        miClient.showMsgBoxWarning("!El documento '" + dps.getDpsNumber() + "' ya está cancelado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
+                    }
+                    proceed = dps.canDisable(miClient.getSession());
                     break;
                     
-                case DModSysConsts.TS_XML_ST_ISS:
-                    msg = "El registro XML del documento '" + dps.getDpsNumber() + "' permanece con estatus 'emitido'.\n";
-                    
-                    switch (action) {
-                        case ACTION_DISABLE:
-                            if (dps.getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
-                            }
-                            else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
-                            }
-                            break;
-                            
-                        case ACTION_DELETE:
-                            if (!dps.isDeleted()) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
-                            }
-                            else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
-                            }
-                            break;
-                            
-                        default:
+                case ACTION_DELETE:
+                    if (dps.isDeleted()) {
+                        miClient.showMsgBoxWarning("!El documento '" + dps.getDpsNumber() + "' ya está eliminado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
                     }
-                    
-                    msg += DGuiConsts.MSG_CNF_CONT;
-                    
-                    proceed = miClient.showMsgBoxConfirm(msg) == JOptionPane.YES_OPTION;
+                    proceed = dps.canDelete(miClient.getSession());
                     break;
                     
                 default:
-                    proceed = true; // DPS has DFR of type CFDI not yet signed nor annuled!
+                    proceed = false; // unknown action!
             }
+        }
+        catch (Exception e) {
+            proceed = false;
+            DLibUtils.showException(this, e);
         }
         
         return proceed;

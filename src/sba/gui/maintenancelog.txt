@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 024.2
+2019-09-06/ Sergio Abraham FLORES GUTIÉRREZ
+1) Mejoramiento a las funcionalidades de anulación, inhabilitación y eliminación de DPS y CFDI pagos.
+
+================================================================================
 SBA 1.0 024.1
 2019-08-26/ Sergio Abraham FLORES GUTIÉRREZ
 1) Deshabilitación de consulta de CFDI relacionados al cancelar CFDI debido a que

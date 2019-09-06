@@ -47,7 +47,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     public static final int FIELD_CLOSED_IOG = 2;
     public static final int FIELD_AUDITED = 3;
     /** Timeout in minutes.  */
-    public static final int TIMEOUT = 3; // 3 min.
+    public static final int TIMEOUT = 1; // 1 min.
 
     protected int mnPkDpsId;
     protected String msSeries;
@@ -143,8 +143,10 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     protected int mnAuxNewDpsSeriesId;
     protected int mnAuxXmlTypeId;
     protected boolean mbAuxDfrRequired;
+    protected boolean mbAuxCheckDfrDiscarting;
     protected double mdAuxTotalQuantity;
     protected DDbLock moAuxLock;
+    
 
     public DDbDps() {
         super(DModConsts.T_DPS);
@@ -765,6 +767,28 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         return reference;
     }
     
+    private boolean canDiscardDfr() throws Exception {
+        String error = "";
+        
+        if (moChildDfr != null && moChildDfr.isDfrCfdi()) {
+            switch (moChildDfr.getFkXmlStatusId()) {
+                case DModSysConsts.TS_XML_ST_ISS:
+                    error = "!El XML del documento '" + getDpsNumber() + "' está emitido!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED;
+                    break;
+                case DModSysConsts.TS_XML_ST_ANN:
+                    error = "!El XML del documento '" + getDpsNumber() + "' está cancelado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED;
+                    break;
+                default:
+            }
+        }
+        
+        if (!error.isEmpty()) {
+            throw new Exception (error);
+        }
+        
+        return true;
+    }
+    
     /*
      * Public methods
      */
@@ -1032,6 +1056,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     public void setAuxNewDpsSeriesId(int n) { mnAuxNewDpsSeriesId = n; }
     public void setAuxXmlTypeId(int n) { mnAuxXmlTypeId = n; }
     public void setAuxDfrRequired(boolean b) { mbAuxDfrRequired = b; }
+    public void setAuxCheckDfrDiscarting(boolean b) { mbAuxCheckDfrDiscarting = b; }
     public void setAuxTotalQuantity(double d) { mdAuxTotalQuantity = d; }
     public void setAuxLock(DDbLock o) { moAuxLock = o; }
 
@@ -1049,6 +1074,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     public int getAuxNewDpsSeriesId() { return mnAuxNewDpsSeriesId; }
     public int getAuxXmlTypeId() { return mnAuxXmlTypeId; }
     public boolean isAuxDfrRequired() { return mbAuxDfrRequired; }
+    public boolean isAuxCheckDfrDiscarting() { return mbAuxCheckDfrDiscarting; }
     public double getAuxTotalQuantity() { return mdAuxTotalQuantity; }
     public DDbLock getAuxLock() { return moAuxLock; }
 
@@ -1183,6 +1209,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         mnAuxNewDpsSeriesId = 0;
         mnAuxXmlTypeId = 0;
         mbAuxDfrRequired = false;
+        mbAuxCheckDfrDiscarting = true;
         mdAuxTotalQuantity = 0;
         moAuxLock = null;
     }
@@ -1808,6 +1835,11 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
         return canSave;
     }
+    
+    public boolean canAnnul(final DGuiSession session) throws SQLException, Exception {
+        mbAuxCheckDfrDiscarting = false;
+        return canDisable(session);
+    }
 
     @Override
     public boolean canDisable(final DGuiSession session) throws SQLException, Exception {
@@ -1822,7 +1854,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
             else {
                 // If document is annuled already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
                 
-                can = canChangeStatus(session, mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ANN);
+                can = (!mbAuxCheckDfrDiscarting || mbAuxCheckDfrDiscarting && canDiscardDfr()) && canChangeStatus(session, mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ANN);
             }
             
             if (can) {
@@ -1846,7 +1878,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
             else {
                 // If document is deleted already, i.e., 'inactive', then it will be activated by invoking method with parameter 'activate' = true, and viceversa:
                 
-                can = canChangeStatus(session, mbDeleted);
+                can = (!mbAuxCheckDfrDiscarting || mbAuxCheckDfrDiscarting && canDiscardDfr())  && canChangeStatus(session, mbDeleted);
             }
             
             if (can) {

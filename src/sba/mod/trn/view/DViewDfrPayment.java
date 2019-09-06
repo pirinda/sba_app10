@@ -30,6 +30,7 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.trn.db.DDbDfr;
+import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
@@ -93,53 +94,38 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
      */
     
     private boolean proceedDisableDelete(final int[] keyDfr, final int action) {
-        boolean proceed = false;
-        String msg = "";
+        boolean proceed = true;
         DDbDfr dfr = (DDbDfr) miClient.getSession().readRegistry(DModConsts.T_DFR, keyDfr);
-
-        if (dfr == null || !DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
-            proceed = true; // DPS without DFR or with DFR of type CFD can be annuled anytime!
-        }
-        else {
-            switch (dfr.getFkXmlStatusId()) {
-                case DModSysConsts.TS_XML_ST_ANN:
-                    msg = "El registro XML del documento '" + dfr.getDfrNumber() + "' ya tiene estatus 'cancelado'.";
-                    miClient.showMsgBoxWarning(msg);
-                    break;
-                    
-                case DModSysConsts.TS_XML_ST_ISS:
-                    msg = "El registro XML del documento '" + dfr.getDfrNumber() + "' permanecerá con estatus 'emitido'.\n";
-                    
-                    switch (action) {
-                        case ACTION_DISABLE:
-                            if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ANN) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
-                            }
-                            else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
-                            }
-                            break;
-                            
-                        case ACTION_DELETE:
-                            if (!dfr.isDeleted()) {
-                                msg += "IMPORTANTE: Será necesario cancelarlo posteriormente de forma manual ante la autoridad.\n";
-                            }
-                            else {
-                                msg += "IMPORTANTE: Será necesario validar que no haya sido cancelado anteriormente de forma manual ante la autoridad.\n";
-                            }
-                            break;
-                            
-                        default:
+        
+        try {
+            switch (action) {
+                case ACTION_DISABLE:
+                    if (dfr.isDeleted()) {
+                        miClient.showMsgBoxWarning("!El comprobante '" + dfr.getDfrNumber() + "' está eliminado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
                     }
-                    
-                    msg += DGuiConsts.MSG_CNF_CONT;
-                    
-                    proceed = miClient.showMsgBoxConfirm(msg) == JOptionPane.YES_OPTION;
+                    else if (dfr.isDisabled()) {
+                        miClient.showMsgBoxWarning("!El comprobante '" + dfr.getDfrNumber() + "' ya está cancelado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
+                    }
+                    proceed = dfr.canDisable(miClient.getSession());
                     break;
-                    
+
+                case ACTION_DELETE:
+                    if (dfr.isDeleted()) {
+                        miClient.showMsgBoxWarning("!El comprobante '" + dfr.getDfrNumber() + "' ya está eliminado!\n" + DTrnConsts.ERR_MSG_NOT_PROCEED);
+                        proceed = false;
+                    }
+                    proceed = dfr.canDelete(miClient.getSession());
+                    break;
+
                 default:
-                    proceed = true;
+                    proceed = false; // unknown action!
             }
+        }
+        catch (Exception e) {
+            proceed = false;
+            DLibUtils.showException(this, e);
         }
         
         return proceed;

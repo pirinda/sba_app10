@@ -336,7 +336,7 @@ public abstract class DTrnEmissionUtils {
                 // Check if document number can be still changed:
 
                 if (DTrnUtils.isDpsNumberAutomatic(dps.getDpsClassKey()) && ((DDbConfigBranch) client.getSession().getConfigBranch()).isDpsPrintingDialog() &&
-                    (dfr == null || (DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }) && dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
+                    (dfr == null || (dfr.isDfrCfdi() && dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN))) {
                     formDpsPrinting = (DFormDpsPrinting) client.getSession().getModule(DModConsts.MOD_TRN).getForm(DModConsts.T_DPS_PRT, DLibConsts.UNDEFINED, null);
                     formDpsPrinting.setRegistry(dps);
                     formDpsPrinting.setVisible(true);
@@ -524,8 +524,8 @@ public abstract class DTrnEmissionUtils {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (!DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
-                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
+                        else if (!dfr.isDfrCfdi()) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser CFDI: " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
@@ -806,8 +806,8 @@ public abstract class DTrnEmissionUtils {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + DDbConsts.ERR_MSG_REG_NOT_FOUND +
                                     "\nEl registro XML del documento no existe.");
                         }
-                        else if (!DLibUtils.belongsTo(dfr.getFkXmlTypeId(), new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 })) {
-                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser " +
+                        else if (!dfr.isDfrCfdi()) {
+                            throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + "El tipo del registro XML del documento debe ser CFDI: " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_32 }, DDbRegistry.FIELD_NAME) + "' o " +
                                     "'" + client.getSession().readField(DModConsts.TS_XML_TP, new int[] { DModSysConsts.TS_XML_TP_CFDI_33 }, DDbRegistry.FIELD_NAME) + "'.");
                         }
@@ -825,27 +825,29 @@ public abstract class DTrnEmissionUtils {
                                     "' no puede ser posterior al día de hoy '" + DLibUtils.DateFormatDate.format(client.getSession().getSystemDate()) + "'.");
                         }
                         else {
-                            // Check if document can be disabled:
+                            // Check if document can be disabled (in this case, annuled):
 
-                            cancel = dps.canDisable(client.getSession());
+                            cancel = dps.canAnnul(client.getSession());
                         }
                     }
 
                     if (cancel) {
-                        cancel = client.showMsgBoxConfirm("¿Está seguro que desea cancelar el documento '" + dps.getDpsNumber() + "'?") == JOptionPane.YES_OPTION;
+                        if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            cancel = client.showMsgBoxConfirm("¿Está seguro que desea cancelar el documento '" + dps.getDpsNumber() + "'?") == JOptionPane.YES_OPTION;
 
-                        if (cancel) {
-                            if (xsr == null || lastRequestStatus == DModSysConsts.TX_XMS_REQ_ST_STA) {
-                                formDpsCancelling = (DFormDpsCancelling) client.getSession().getModule(DModConsts.MOD_TRN).getForm(DModConsts.T_DPS_SIG, DModSysConsts.TX_XMS_REQ_TP_CAN, null);
-                                formDpsCancelling.setRegistry(dps);
-                                formDpsCancelling.setValue(DModConsts.CS_XSP, xsp);
-                                formDpsCancelling.setVisible(true);
+                            if (cancel) {
+                                if (xsr == null || lastRequestStatus == DModSysConsts.TX_XMS_REQ_ST_STA) {
+                                    formDpsCancelling = (DFormDpsCancelling) client.getSession().getModule(DModConsts.MOD_TRN).getForm(DModConsts.T_DPS_SIG, DModSysConsts.TX_XMS_REQ_TP_CAN, null);
+                                    formDpsCancelling.setRegistry(dps);
+                                    formDpsCancelling.setValue(DModConsts.CS_XSP, xsp);
+                                    formDpsCancelling.setVisible(true);
 
-                                if (formDpsCancelling.getFormResult() != DGuiConsts.FORM_RESULT_OK) {
-                                    cancel = false;
-                                }
-                                else {
-                                    action = (Integer) formDpsCancelling.getValue(DModSysConsts.TX_XMS_REQ_TP_CAN); // "annul" or "anull and cancel"
+                                    if (formDpsCancelling.getFormResult() != DGuiConsts.FORM_RESULT_OK) {
+                                        cancel = false;
+                                    }
+                                    else {
+                                        action = (Integer) formDpsCancelling.getValue(DModSysConsts.TX_XMS_REQ_TP_CAN); // "annul" or "anull and cancel"
+                                    }
                                 }
                             }
                         }
