@@ -1196,6 +1196,9 @@
                               <SubComponents>
                                 <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolRowNote">
                                   <Properties>
+                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="66" green="66" red="0" type="rgb"/>
+                                    </Property>
                                     <Property name="text" type="java.lang.String" value="Notas:"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[75, 23]"/>
@@ -1218,7 +1221,7 @@
                                     </Property>
                                   </Properties>
                                 </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolRowNoteCfd">
+                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolRowNoteDfr">
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="CFDI"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

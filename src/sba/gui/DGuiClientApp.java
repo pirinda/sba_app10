@@ -94,7 +94,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 024.2"; // release date: 2019-09-06
+    public static final String APP_RELEASE = "SBA 1.0 025.0"; // release date: 2019-11-30
     public static final String APP_COPYRIGHT = "Copyright © 2011-2019 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 

@@ -23,6 +23,7 @@ public class DDbDpsRowNote extends DDbRegistry {
     protected int mnPkNoteId;
     protected String msText;
     protected boolean mbPrintable;
+    protected boolean mbDfr;
 
     public DDbDpsRowNote() {
         super(DModConsts.T_DPS_ROW_NOT);
@@ -34,12 +35,14 @@ public class DDbDpsRowNote extends DDbRegistry {
     public void setPkNoteId(int n) { mnPkNoteId = n; }
     public void setText(String s) { msText = s; }
     public void setPrintable(boolean b) { mbPrintable = b; }
+    public void setDfr(boolean b) { mbDfr = b; }
 
     public int getPkDpsId() { return mnPkDpsId; }
     public int getPkRowId() { return mnPkRowId; }
     public int getPkNoteId() { return mnPkNoteId; }
     public String getText() { return msText; }
     public boolean isPrintable() { return mbPrintable; }
+    public boolean isDfr() { return mbDfr; }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -62,6 +65,7 @@ public class DDbDpsRowNote extends DDbRegistry {
         mnPkNoteId = 0;
         msText = "";
         mbPrintable = false;
+        mbDfr = false;
     }
 
     @Override
@@ -117,6 +121,7 @@ public class DDbDpsRowNote extends DDbRegistry {
             mnPkNoteId = resultSet.getInt("id_not");
             msText = resultSet.getString("txt");
             mbPrintable = resultSet.getBoolean("b_prt");
+            mbDfr = resultSet.getBoolean("b_dfr");
 
             mbRegistryNew = false;
         }
@@ -137,7 +142,8 @@ public class DDbDpsRowNote extends DDbRegistry {
                     mnPkRowId + ", " +
                     mnPkNoteId + ", " +
                     "'" + msText + "', " +
-                    (mbPrintable ? 1 : 0) + " " +
+                    (mbPrintable ? 1 : 0) + ", " +
+                    (mbDfr ? 1 : 0) + " " + 
                     ")";
         }
         else {
@@ -148,7 +154,8 @@ public class DDbDpsRowNote extends DDbRegistry {
                     "id_not = " + mnPkNoteId + ", " +
                     */
                     "txt = '" + msText + "', " +
-                    "b_prt = " + (mbPrintable ? 1 : 0) + " " +
+                    "b_prt = " + (mbPrintable ? 1 : 0) + ", " +
+                    "b_dfr = " + (mbDfr ? 1 : 0) + " " +
                     getSqlWhere();
         }
 
@@ -166,6 +173,7 @@ public class DDbDpsRowNote extends DDbRegistry {
         registry.setPkNoteId(this.getPkNoteId());
         registry.setText(this.getText());
         registry.setPrintable(this.isPrintable());
+        registry.setDfr(this.isDfr());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

@@ -87,12 +87,15 @@ public class DDialogNoteShow extends DBeanFormDialog {
         if (source != null) {
             if (source instanceof DDbIogRow) {
                 for (DDbIogRowNote note : ((DDbIogRow) source).getChildRowNotes()) {
-                    notes += (notes.isEmpty() ? "" : "\n") + note.getText();
+                    notes += (notes.isEmpty() ? "" : "\n") + note.getText() + 
+                            (!note.isPrintable() ? "" : " (Imprimir)");
                 }
             }
             else if (source instanceof DDbDpsRow) {
                 for (DDbDpsRowNote note : ((DDbDpsRow) source).getChildRowNotes()) {
-                    notes += (notes.isEmpty() ? "" : "\n") + note.getText();
+                    notes += (notes.isEmpty() ? "" : "\n") + note.getText() +
+                            (!note.isPrintable() ? "" : " (Imprimir)") +
+                            (!note.isDfr()? "" : " (CFDI)");
                 }
             }
         }

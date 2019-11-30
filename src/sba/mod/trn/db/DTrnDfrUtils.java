@@ -807,6 +807,13 @@ public abstract class DTrnDfrUtils {
                 // "Concepto" node:
 
                 cfd.ver33.DElementConcepto concepto = new cfd.ver33.DElementConcepto();
+                
+                String notes = "";
+                for (DDbDpsRowNote note : dpsRow.getChildRowNotes()) {
+                    if (note.isDfr()) {
+                        notes += (notes.isEmpty() ? "" : " ") + note.getText();
+                    }
+                }
 
                 concepto.getAttClaveProdServ().setString(dpsRow.getDfrItemKey());
                 concepto.getAttNoIdentificacion().setString(dpsRow.getCode());
@@ -814,7 +821,7 @@ public abstract class DTrnDfrUtils {
                 concepto.getAttCantidad().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsQuantity());
                 concepto.getAttClaveUnidad().setString(dpsRow.getDfrUnitKey());
                 concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
-                concepto.getAttDescripcion().setString(dpsRow.getName());
+                concepto.getAttDescripcion().setString(dpsRow.getName() + (notes.isEmpty() ? "" : " " + notes));
                 concepto.getAttValorUnitario().setDecimals(((DDbConfigCompany) session.getConfigCompany()).getDecimalsPriceUnitary());
                 concepto.getAttValorUnitario().setDouble(dpsRow.getPriceUnitaryCy());
                 concepto.getAttImporte().setDouble(dpsRow.getSubtotalProvCy_r());

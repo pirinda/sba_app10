@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 025.0
+2019-11-30/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de adición opcional de notas de renglones de DPS al concepto del CFDI.
+
+================================================================================
 SBA 1.0 024.2
 2019-09-06/ Sergio Abraham FLORES GUTIÉRREZ
 1) Mejoramiento a las funcionalidades de anulación, inhabilitación y eliminación de DPS y CFDI pagos.
