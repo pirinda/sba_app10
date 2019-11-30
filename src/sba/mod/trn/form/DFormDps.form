@@ -1214,7 +1214,15 @@
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Imprimir"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
+                                      <Dimension value="[70, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolRowNoteCfd">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="CFDI"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[55, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -1260,7 +1268,7 @@
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Capturar con impuestos"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[165, 23]"/>
+                                      <Dimension value="[145, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>

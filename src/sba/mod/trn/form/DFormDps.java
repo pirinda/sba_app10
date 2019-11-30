@@ -315,6 +315,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNote = new sba.lib.gui.bean.DBeanFieldBoolean();
         moTextRowNote = new sba.lib.gui.bean.DBeanFieldText();
         moBoolRowNotePrintable = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolRowNoteCfd = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolRowCfdPredial = new sba.lib.gui.bean.DBeanFieldBoolean();
         moTextRowCfdPredial = new sba.lib.gui.bean.DBeanFieldText();
         jtfTaxRegion = new javax.swing.JTextField();
@@ -890,8 +891,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel5.add(moTextRowNote);
 
         moBoolRowNotePrintable.setText("Imprimir");
-        moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(75, 23));
+        moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel5.add(moBoolRowNotePrintable);
+
+        moBoolRowNoteCfd.setText("CFDI");
+        moBoolRowNoteCfd.setPreferredSize(new java.awt.Dimension(55, 23));
+        jPanel5.add(moBoolRowNoteCfd);
 
         moBoolRowCfdPredial.setText("No. predial:");
         moBoolRowCfdPredial.setPreferredSize(new java.awt.Dimension(85, 23));
@@ -916,7 +921,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel5.add(jtfIdentityType);
 
         moBoolRowTaxInput.setText("Capturar con impuestos");
-        moBoolRowTaxInput.setPreferredSize(new java.awt.Dimension(165, 23));
+        moBoolRowTaxInput.setPreferredSize(new java.awt.Dimension(145, 23));
         jPanel5.add(moBoolRowTaxInput);
 
         jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
@@ -3429,6 +3434,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolDiscountDocPercentageApplying;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowCfdPredial;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNote;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNoteCfd;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNotePrintable;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowTaxInput;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDiscountDoc;
