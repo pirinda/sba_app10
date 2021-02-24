@@ -34,4 +34,40 @@ SBA 1.0 023.6
 2019-02-28/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de captura de pedimento de importación en entradas de almacén.
 
+================================================================================
+SBA 1.0 025.0
+2019-11-30/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de adición opcional de notas de renglones de DPS al concepto del CFDI.
+
+================================================================================
+SBA 1.0 024.2
+2019-09-06/ Sergio Abraham FLORES GUTIÉRREZ
+1) Mejoramiento a las funcionalidades de anulación, inhabilitación y eliminación de DPS y CFDI pagos.
+
+================================================================================
+SBA 1.0 024.1
+2019-08-26/ Sergio Abraham FLORES GUTIÉRREZ
+1) Deshabilitación de consulta de CFDI relacionados al cancelar CFDI debido a que
+    el método de consula de CFDI relacionados dejó de funcionar con el PAC Quadrum asociado a Finkok.
+
+================================================================================
+SBA 1.0 024.0
+2019-08-05/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de traspasos de almacén y de vistas de existencias por almacén.
+2) Implementación de envío automático al timbrar CFDI.
+3) Implementación de edición y preservación opcional de destinatarios de envío de CFDI.
+4) Implementación de selección de formato de impresión de CFDI factura.
+5) Implementación de consulta de números de serie vendidos y comprados.
+6) Implementación de impresión de movimientos de almacén.
+
+================================================================================
+SBA 1.0 023.6
+2019-05-07/ Sergio Abraham FLORES GUTIÉRREZ
+1) Cambio a propiedades de control visual campo texto del código de activación de paquetes de timbres para ser focusable.
+
+================================================================================
+SBA 1.0 023.6
+2019-02-28/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de captura de pedimento de importación en entradas de almacén.
+
 #eof

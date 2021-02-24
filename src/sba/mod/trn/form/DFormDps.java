@@ -315,7 +315,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNote = new sba.lib.gui.bean.DBeanFieldBoolean();
         moTextRowNote = new sba.lib.gui.bean.DBeanFieldText();
         moBoolRowNotePrintable = new sba.lib.gui.bean.DBeanFieldBoolean();
-        moBoolRowNoteCfd = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolRowNoteDfr = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolRowCfdPredial = new sba.lib.gui.bean.DBeanFieldBoolean();
         moTextRowCfdPredial = new sba.lib.gui.bean.DBeanFieldText();
         jtfTaxRegion = new javax.swing.JTextField();
@@ -882,6 +882,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        moBoolRowNote.setForeground(new java.awt.Color(0, 102, 102));
         moBoolRowNote.setText("Notas:");
         moBoolRowNote.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel5.add(moBoolRowNote);
@@ -894,9 +895,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNotePrintable.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel5.add(moBoolRowNotePrintable);
 
-        moBoolRowNoteCfd.setText("CFDI");
-        moBoolRowNoteCfd.setPreferredSize(new java.awt.Dimension(55, 23));
-        jPanel5.add(moBoolRowNoteCfd);
+        moBoolRowNoteDfr.setText("CFDI");
+        moBoolRowNoteDfr.setPreferredSize(new java.awt.Dimension(55, 23));
+        jPanel5.add(moBoolRowNoteDfr);
 
         moBoolRowCfdPredial.setText("No. predial:");
         moBoolRowCfdPredial.setPreferredSize(new java.awt.Dimension(85, 23));
@@ -1156,8 +1157,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDecRowDiscountDoc.setDecimalSettings(DGuiUtils.getLabelName(jlRowDiscountDoc), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecRowSubtotal.setDecimalSettings(DGuiUtils.getLabelName(jlRowSubtotal), DGuiConsts.GUI_TYPE_DEC_AMT, false);
         moBoolRowNote.setBooleanSettings(DGuiUtils.getLabelName(moBoolRowNote.getText()), false);
-        moTextRowNote.setTextSettings(DGuiUtils.getLabelName(moBoolRowNote.getText()), 255, 0);
+        moTextRowNote.setTextSettings(DGuiUtils.getLabelName(moBoolRowNote.getText()), 512, 0);
+        moTextRowNote.setTextCaseType(DLibConsts.UNDEFINED);
         moBoolRowNotePrintable.setBooleanSettings(moBoolRowNotePrintable.getText(), true);
+        moBoolRowNoteDfr.setBooleanSettings(moBoolRowNoteDfr.getText(), false);
         moBoolRowCfdPredial.setBooleanSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), false);
         moTextRowCfdPredial.setTextSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), 150, 0);
         
@@ -1210,6 +1213,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moBoolRowNote);
         moFields.addField(moTextRowNote);
         moFields.addField(moBoolRowNotePrintable);
+        moFields.addField(moBoolRowNoteDfr);
         moFields.addField(moBoolRowCfdPredial);
         moFields.addField(moTextRowCfdPredial);
         moFields.addField(moBoolRowTaxInput);
@@ -1916,7 +1920,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             if (DTrnUtils.isDpsForStockOut(moRegistry, true) && mvRowStockMoves.isEmpty()) {
                 // Propouse older stock lots:
 
-                currentStockMoves = new ArrayList<DTrnStockMove>();
+                currentStockMoves = new ArrayList<>();
 
                 for (DDbDpsRow row : moRegistry.getChildRows()) {
                     if (!row.isDeleted()) {
@@ -2280,6 +2284,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNote.setEnabled(editable);
         moTextRowNote.setEnabled(editable && moBoolRowNote.isSelected());
         moBoolRowNotePrintable.setEnabled(editable && moBoolRowNote.isSelected());
+        moBoolRowNoteDfr.setEnabled(editable && moBoolRowNote.isSelected() && (mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment)));
         moBoolRowCfdPredial.setEnabled(editable);
         moTextRowCfdPredial.setEnabled(editable && moBoolRowCfdPredial.isSelected());
         moBoolRowTaxInput.setEnabled(editable);
@@ -2585,13 +2590,25 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_UNDEF_REG);
                 moTextFind.requestFocus();
             }
-            else if (moTextRowCode.isEditable() && moTextRowCode.getValue().length() == 0) {
+            else if (moTextRowCode.isEditable() && moTextRowCode.getValue().isEmpty()) {
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextRowCode.getFieldName() + "'.");
                 moTextRowCode.requestFocus();
             }
-            else if (moTextRowName.isEditable() && moTextRowName.getValue().length() == 0) {
+            else if (moTextRowName.isEditable() && moTextRowName.getValue().isEmpty()) {
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextRowName.getFieldName() + "'.");
                 moTextRowName.requestFocus();
+            }
+            else if (moDecRowQuantity.getValue() == 0 && !isCurrentAdjustmentForMoney()) {
+                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecRowQuantity.getFieldName()+ "'.");
+                moDecRowQuantity.requestFocus();
+            }
+            else if (moBoolRowNote.getValue() && moTextRowNote.getValue().isEmpty()) {
+                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextRowNote.getFieldName()+ "'.");
+                moTextRowNote.requestFocus();
+            }
+            else if (moBoolRowNoteDfr.getValue() && !moBoolRowNotePrintable.getValue()) {
+                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moBoolRowNotePrintable.getText() + "'.");
+                moBoolRowNotePrintable.requestFocus();
             }
             else if (moItem.isPredial() && !moBoolRowCfdPredial.getValue()) {
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moBoolRowCfdPredial.getText() + "'.");
@@ -2600,10 +2617,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             else if (moItem.isPredial() && moTextRowCfdPredial.isEnabled() && moTextRowCfdPredial.getValue().isEmpty()) {
                 miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moBoolRowCfdPredial.getText() + "'.");
                 moTextRowCfdPredial.requestFocus();
-            }
-            else if (moDecRowQuantity.getValue() == 0 && !isCurrentAdjustmentForMoney()) {
-                miClient.showMsgBoxWarning(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecRowQuantity.getText() + "'.");
-                moDecRowQuantity.requestFocus();
             }
             else {
                 if (moDecRowSubtotal.getValue() == 0) {
@@ -2636,10 +2649,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         dpsRow = createDpsRow();
                         dpsRow.getAuxStockMoves().addAll(mvRowStockMoves);
 
-                        if (moTextRowNote.getValue().length() > 0) {
+                        if (!moTextRowNote.getValue().isEmpty()) {
                             dpsRowNote = new DDbDpsRowNote();
                             dpsRowNote.setText(moTextRowNote.getValue());
                             dpsRowNote.setPrintable(moBoolRowNotePrintable.getValue());
+                            dpsRowNote.setDfr(moBoolRowNoteDfr.getValue());
                             dpsRow.getChildRowNotes().add(dpsRowNote);
                         }
 
@@ -3010,6 +3024,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moTextRowNote.setEnabled(true);
             moBoolRowNotePrintable.setEnabled(true);
             moBoolRowNotePrintable.setSelected(true);
+            moBoolRowNoteDfr.setEnabled(mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment));
+            moBoolRowNoteDfr.setSelected(false);
             
             moTextRowNote.requestFocus();
         }
@@ -3018,6 +3034,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moTextRowNote.resetField();
             moBoolRowNotePrintable.setEnabled(false);
             moBoolRowNotePrintable.setSelected(false);
+            moBoolRowNoteDfr.setEnabled(false);
+            moBoolRowNoteDfr.setSelected(false);
         }
     }
     
@@ -3434,7 +3452,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolDiscountDocPercentageApplying;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowCfdPredial;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNote;
-    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNoteCfd;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNoteDfr;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowNotePrintable;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolRowTaxInput;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurDiscountDoc;
