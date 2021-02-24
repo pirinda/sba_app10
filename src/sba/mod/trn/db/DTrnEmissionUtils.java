@@ -832,6 +832,8 @@ public abstract class DTrnEmissionUtils {
                     }
 
                     if (cancel) {
+                        boolean retryCancel = false;
+                        
                         if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
                             cancel = client.showMsgBoxConfirm("¿Está seguro que desea cancelar el documento '" + dps.getDpsNumber() + "'?") == JOptionPane.YES_OPTION;
 
@@ -847,6 +849,7 @@ public abstract class DTrnEmissionUtils {
                                     }
                                     else {
                                         action = (Integer) formDpsCancelling.getValue(DModSysConsts.TX_XMS_REQ_TP_CAN); // "annul" or "anull and cancel"
+                                        retryCancel = (Boolean) formDpsCancelling.getValue(DFormDpsCancelling.RETRY_CANCEL); // yes or no
                                     }
                                 }
                             }
@@ -856,7 +859,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnDfrUtils.cancelDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dps.getChildDfr(), dps, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action, retryCancel);
                                 cancelled = true;
                             }
                             catch (Exception e) {
@@ -974,7 +977,7 @@ public abstract class DTrnEmissionUtils {
                             try {
                                 client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
-                                DTrnDfrUtils.cancelDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action);
+                                DTrnDfrUtils.cancelDfr(client.getSession(), dfr, dfr, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestType, action, true); // "retry cancel" is implicit!
                                 cancelled = true;
                             }
                             catch (Exception e) {

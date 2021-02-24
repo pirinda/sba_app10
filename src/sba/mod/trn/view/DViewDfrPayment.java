@@ -178,6 +178,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
                 "IF(v.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "v.can_st, " +
                 "v.fk_xml_tp AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "xtp.name AS " + DDbConsts.FIELD_TYPE + ", " +
                 "v.b_del AS " + DDbConsts.FIELD_IS_DEL + ", " +
@@ -218,6 +219,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, "v.doc_ts", DGridConsts.COL_TITLE_DATE + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "csh.code", DUtilConsts.TXT_BRANCH_CSH + " empresa");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + catetory);

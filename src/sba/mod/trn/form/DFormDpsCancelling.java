@@ -32,6 +32,8 @@ import sba.mod.trn.db.DTrnEmissionConsts;
  * @author Sergio Flores
  */
 public class DFormDpsCancelling extends DBeanForm {
+    
+    public static final int RETRY_CANCEL = 1;
 
     private DDbDps moRegistry;
     private int mnOriginalYear;
@@ -66,6 +68,9 @@ public class DFormDpsCancelling extends DBeanForm {
         moRadDisable = new sba.lib.gui.bean.DBeanFieldRadio();
         jPanel21 = new javax.swing.JPanel();
         moRadDisableCancel = new sba.lib.gui.bean.DBeanFieldRadio();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        moBoolRetryCancel = new sba.lib.gui.bean.DBeanFieldBoolean();
 
         jpContainer.setLayout(new java.awt.BorderLayout());
 
@@ -84,7 +89,7 @@ public class DFormDpsCancelling extends DBeanForm {
 
         bgAnnulCancel.add(moRadDisable);
         moRadDisable.setText("Anular documento: en el sistema solamente");
-        moRadDisable.setPreferredSize(new java.awt.Dimension(500, 23));
+        moRadDisable.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel8.add(moRadDisable);
 
         jPanel5.add(jPanel8);
@@ -93,10 +98,21 @@ public class DFormDpsCancelling extends DBeanForm {
 
         bgAnnulCancel.add(moRadDisableCancel);
         moRadDisableCancel.setText("Anular y cancelar documento: en el sistema y ante la autoridad");
-        moRadDisableCancel.setPreferredSize(new java.awt.Dimension(500, 23));
+        moRadDisableCancel.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel21.add(moRadDisableCancel);
 
         jPanel5.add(jPanel21);
+
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel5.add(jPanel1);
+
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolRetryCancel.setText("Reintentar la cancelación aún cuando el receptor haya rechazado la solicitud de cancelación anterior");
+        moBoolRetryCancel.setPreferredSize(new java.awt.Dimension(600, 23));
+        jPanel3.add(moBoolRetryCancel);
+
+        jPanel5.add(jPanel3);
 
         jPanel2.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
@@ -110,9 +126,11 @@ public class DFormDpsCancelling extends DBeanForm {
 
         moRadDisable.setBooleanSettings(moRadDisable.getText(), false);
         moRadDisableCancel.setBooleanSettings(moRadDisableCancel.getText(), false);
+        moBoolRetryCancel.setBooleanSettings(moBoolRetryCancel.getText(), true);
 
         moFields.addField(moRadDisable);
         moFields.addField(moRadDisableCancel);
+        moFields.addField(moBoolRetryCancel);
 
         moFields.setFormButton(jbSave);
 
@@ -122,12 +140,15 @@ public class DFormDpsCancelling extends DBeanForm {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgAnnulCancel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jpContainer;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRetryCancel;
     private sba.mod.trn.form.DPanelDps moPanelDps;
     private sba.lib.gui.bean.DBeanFieldRadio moRadDisable;
     private sba.lib.gui.bean.DBeanFieldRadio moRadDisableCancel;
@@ -139,13 +160,19 @@ public class DFormDpsCancelling extends DBeanForm {
     
     private void displayXmlSignatureProviderSettings() {
         if (moRegistry.getChildDfr() == null || moRegistry.getChildDfr().getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_PEN || !moXmlSignatureProvider.isCancellation()) {
-            moRadDisable.setSelected(true);
             moRadDisableCancel.setEnabled(false);
+            moBoolRetryCancel.setEnabled(false);
+            
+            moRadDisable.setSelected(true);
         }
         else {
-            moRadDisableCancel.setSelected(true);
             moRadDisableCancel.setEnabled(true);
+            moBoolRetryCancel.setEnabled(true);
+            
+            moRadDisableCancel.setSelected(true);
         }
+        
+        moBoolRetryCancel.setSelected(false);
     }
     
     /*
@@ -227,6 +254,9 @@ public class DFormDpsCancelling extends DBeanForm {
         switch (type) {
             case DModSysConsts.TX_XMS_REQ_TP_CAN:
                 value = moRadDisable.isSelected() ? DTrnEmissionConsts.ANNUL : DTrnEmissionConsts.ANNUL_CANCEL;
+                break;
+            case RETRY_CANCEL:
+                value = moBoolRetryCancel.getValue();
                 break;
             default:
         }

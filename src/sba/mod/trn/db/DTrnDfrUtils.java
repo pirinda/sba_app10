@@ -1078,7 +1078,7 @@ public abstract class DTrnDfrUtils {
             timbreFiscalDigital.getAttVersion().setString(timbreFiscal_n.getVersion());
             timbreFiscalDigital.getAttUUID().setString(timbreFiscal_n.getUuid());
             timbreFiscalDigital.getAttFechaTimbrado().setString(timbreFiscal_n.getFechaTimbrado());
-            timbreFiscalDigital.getAttRfcProvCertif().setString(timbreFiscal_n.getRfcProdCertif());
+            timbreFiscalDigital.getAttRfcProvCertif().setString(timbreFiscal_n.getRfcProvCertif());
             timbreFiscalDigital.getAttLeyenda().setString(timbreFiscal_n.getLeyenda());
             timbreFiscalDigital.getAttSelloCFD().setString(timbreFiscal_n.getSelloCfd());
             timbreFiscalDigital.getAttNoCertificadoSAT().setString(timbreFiscal_n.getNoCertificadoSat());
@@ -1308,6 +1308,7 @@ public abstract class DTrnDfrUtils {
      * @param dfr DFR registry.
      * @return true if is correct.
      */
+    @SuppressWarnings("deprecation")
     public static boolean belongsXmlToDfr(final String xml, final DDbDfr dfr) throws Exception {
         cfd.ver32.DElementComprobante comprobanteXml = DCfdUtils.getCfdi32(xml);
         cfd.ver32.DElementComprobante comprobanteDfr = DCfdUtils.getCfdi32(dfr.getDocXml());
@@ -1447,7 +1448,7 @@ public abstract class DTrnDfrUtils {
                             // Process response:
 
                             if (timbradoResponse.getMensaje() != null) {
-                                xsr.delete(session);    // delete request log
+                                xsr.delete(session); // delete request log
                                 throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
                             
@@ -1479,7 +1480,7 @@ public abstract class DTrnDfrUtils {
                             // Process response:
 
                             if (timbradoResponse.getMensaje() != null) {
-                                xsr.delete(session);    // delete request log
+                                xsr.delete(session); // delete request log
                                 throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
 
@@ -1507,7 +1508,7 @@ public abstract class DTrnDfrUtils {
                             // Process response:
 
                             if (timbradoResponse.getMensaje() != null) {
-                                xsr.delete(session);    // delete request log
+                                xsr.delete(session); // delete request log
                                 throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                             }
 
@@ -1555,7 +1556,7 @@ public abstract class DTrnDfrUtils {
                         incidencias = acuseRecepcionCfdi.getIncidencias();
 
                         if (!incidencias.getValue().getIncidencia().isEmpty()) {
-                            xsr.delete(session);    // delete request log
+                            xsr.delete(session); // delete request log
                             
                             String message = "";
                             for (stamp_demo.Incidencia incidencia : incidencias.getValue().getIncidencia()) {
@@ -1594,7 +1595,7 @@ public abstract class DTrnDfrUtils {
                         incidencias = acuseRecepcionCfdi.getIncidencias();
 
                         if (!incidencias.getValue().getIncidencia().isEmpty()) {
-                            xsr.delete(session);    // delete request log
+                            xsr.delete(session); // delete request log
 
                             String message = "";
                             for (com.finkok.stamp.Incidencia incidencia : incidencias.getValue().getIncidencia()) {
@@ -1682,7 +1683,7 @@ public abstract class DTrnDfrUtils {
                     timbreFiscal.setFechaTimbrado(node.getNodeValue());
 
                     node = namedNodeMapTimbreFiscal.getNamedItem("RfcProvCertif");
-                    timbreFiscal.setRfcProdCertif(node.getNodeValue());
+                    timbreFiscal.setRfcProvCertif(node.getNodeValue());
 
                     node = namedNodeMapTimbreFiscal.getNamedItem("Leyenda");
                     if (node != null) {
@@ -1741,13 +1742,13 @@ public abstract class DTrnDfrUtils {
         DLockUtils.freeLock(session, lock, DLockConsts.LOCK_ST_FREED_UPDATE);
     }
 
-    public static void cancelDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action) throws TransformerConfigurationException, TransformerException, Exception {
+    public static void cancelDfr(final DGuiSession session, final DDbDfr dfr, final DTrnDfr trnDfr, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int requestSubtype, final int action, final boolean retryCancel) throws TransformerConfigurationException, TransformerException, Exception {
         String xml = "";
         String value = "";
         String fiscalId = "";
         String edsName = "";
         String edsPassword = "";
-        String cancelStatus = "?";
+        String cancelStatus = "???";
         ArrayList<String> alUuids = null;
         DDbBizPartner company = null;
         DDbConfigBranch configBranch = null;
@@ -1839,7 +1840,7 @@ public abstract class DTrnDfrUtils {
                                 timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                                 }
 
@@ -1865,7 +1866,7 @@ public abstract class DTrnDfrUtils {
                                 timbradoResponse = fcgPort.timbrar(dfr.getDocXml(), autenticarResponse.getToken());
 
                                 if (timbradoResponse.getMensaje() != null) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("WsTimbradoResponse msg: [" + timbradoResponse.getMensaje() + "]");
                                 }
 
@@ -1957,17 +1958,17 @@ public abstract class DTrnDfrUtils {
                                 folios = cancelaCFDResult.getFolios();
 
                                 if (folios == null) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().isEmpty()) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().get(0).getEstatusUUID().getValue().compareTo(DTrnEmissionConsts.UUID_ANNUL) != 0) {
                                     value = folios.getValue().getFolio().get(0).getEstatusUUID().getValue();
 
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("CancelaCFDResult msg: folios.folio.estatus != 201: [" + value + (value.compareTo(DTrnEmissionConsts.UUID_ANNUL_UUID_UNEXIST) != 0 ? "" : " (UUID does not exist!)") + "]");
                                 }
                                 else {
@@ -1979,11 +1980,11 @@ public abstract class DTrnDfrUtils {
                                 
                                 if (receiptResult != null) {
                                     if (receiptResult.getSuccess() == null) {
-                                        xsr.delete(session);    // delete request log
+                                        xsr.delete(session); // delete request log
                                         throw new Exception("ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else if (!receiptResult.getSuccess().getValue()) {
-                                        xsr.delete(session);    // delete request log
+                                        xsr.delete(session); // delete request log
                                         throw new Exception("ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else {
@@ -2019,10 +2020,30 @@ public abstract class DTrnDfrUtils {
 
                                     if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_VER) {
                                         // cancel verification request:
-                                        dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "");
+                                        
+                                        if (ackQuery.CancelStatus.isEmpty()) {
+                                            cancelStatus = "";
+                                        }
+                                        else {
+                                            switch (ackQuery.CancelStatus) {
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PROC: // cancellation in process
+                                                    cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE;
+                                                    break;
+                                                case DCfdi33Consts.ESTATUS_CANCEL_RECH: // cancellation was rejected
+                                                    cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE;
+                                                    break;
+                                                case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO: // cancellation in pending buffer
+                                                    cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PEND_BUFF_CODE;
+                                                    break;
+                                                default:
+                                                    cancelStatus = "???";
+                                            }
+                                        }
+                                        
+                                        dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, cancelStatus);
                                         session.notifySuscriptors(dfr.getRegistryType());
                                         
-                                        xsr.delete(session);    // delete request log
+                                        xsr.delete(session); // delete request log
                                         throw new Exception("El CFDI está vigente.");
                                     }
 
@@ -2034,50 +2055,56 @@ public abstract class DTrnDfrUtils {
                                             break;
 
                                         case DCfdi33Consts.CANCELABLE_NO:
-                                            // CFDI is not cancellable:
-                                            xsr.delete(session);    // delete request log
+                                            // CFDI is not cancellable, stop:
+                                            xsr.delete(session); // delete request log
                                             throw new Exception("El CFDI es no cancelable.\n " + ackQuery.composeCfdiRelated());
                                     }
 
                                     // check cancellation status:
-                                    switch (ackQuery.CancelStatus) {
-                                        case DCfdi33Consts.ESTATUS_CANCEL_PROC: // CFDI cancellation is in process
-                                            dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
-                                            session.notifySuscriptors(dfr.getRegistryType());
-                                            
-                                            // do not delete XSR, preserve it!
-                                            throw new Exception("La solicitud de cancelación del CFDI está pendiente de ser aceptada o rechazada por el receptor.");
+                                    if (!ackQuery.CancelStatus.isEmpty()) { // since december 2020, cancel status is empty for all cancellable CFDI types!, awkward!
+                                        switch (ackQuery.CancelStatus) {
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PROC: // cancellation in process
+                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
+                                                session.notifySuscriptors(dfr.getRegistryType());
 
-                                        case DCfdi33Consts.ESTATUS_CANCEL_RECH: // CFDI cancellation was rejected by receptor
-                                            dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
-                                            session.notifySuscriptors(dfr.getRegistryType());
-                                            
-                                            xsr.delete(session);    // delete request log
-                                            throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
+                                                // do not delete XSR, preserve it!
+                                                throw new Exception("La solicitud de cancelación del CFDI está pendiente de ser aceptada o rechazada por el receptor.");
 
-                                        case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
-                                        case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
-                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
-                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
-                                            xsr.delete(session);    // delete request log
-                                            throw new Exception("El estatus de cancelación del CFDI es inconsistente.");
+                                            case DCfdi33Consts.ESTATUS_CANCEL_RECH: // cancellation was rejected
+                                                if (!retryCancel) {
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                                    session.notifySuscriptors(dfr.getRegistryType());
 
-                                        case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
-                                            // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer)!
-                                            break;
+                                                    xsr.delete(session); // delete request log
+                                                    throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
+                                                }
+                                                // CFD about to be cancelled one more time!
+                                                break;
 
-                                        default:
-                                            xsr.delete(session);    // delete request log
-                                            throw new Exception("El estatus de cancelación del CFDI es desconocido.");
+                                            case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                            case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
+                                                xsr.delete(session); // delete request log
+                                                throw new Exception("El estatus de cancelación del CFDI es inconsistente.");
+
+                                            case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
+                                                // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer), go throuth...
+                                                break;
+
+                                            default:
+                                                xsr.delete(session); // delete request log
+                                                throw new Exception("El estatus de cancelación del CFDI es desconocido.");
+                                        }
                                     }
                                     break;
 
                                 case DCfdi33Consts.CFDI_ESTATUS_NO_ENC:
                                     // CFDI was 'not found' before fiscal authority:
-                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "");
+                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "!!!");
                                     session.notifySuscriptors(dfr.getRegistryType());
 
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("El CFDI no fue encontrado ante el SAT.");
                                     
                                 default:
@@ -2138,11 +2165,11 @@ public abstract class DTrnDfrUtils {
                                 folios = cancelaCFDResult.getFolios();
 
                                 if (folios == null) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("CancelaCFDResult msg: folios = null: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else if (folios.getValue().getFolio().isEmpty()) {
-                                    xsr.delete(session);    // delete request log
+                                    xsr.delete(session); // delete request log
                                     throw new Exception("CancelaCFDResult msg: folios.folio is empty: [" + cancelaCFDResult.getCodEstatus().getValue() + "]");
                                 }
                                 else {
@@ -2150,31 +2177,32 @@ public abstract class DTrnDfrUtils {
                                     switch (estatusUuid) {
                                         case DTrnEmissionConsts.UUID_ANNUL:
                                         case DTrnEmissionConsts.UUID_ANNUL_PREV:
-                                            // CFDI is cancelled, or a cancellation request is in process:
+                                            // CFDI is already cancelled, or a cancellation request is in process (in pending buffer):
 
                                             String estatusCancelacion = folios.getValue().getFolio().get(0).getEstatusCancelacion().getValue();
+                                            
                                             switch (estatusCancelacion) {
-                                                case DCfdi33Consts.ESTATUS_CANCEL_PROC:
-                                                    // CFDI cancellation is in process:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PROC: // cancellation in process
+                                                case DCfdi33Consts.RESPONSE_CANCEL: // unexpected message in a succesful cancellation, treated as if cancellation in process
                                                     dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
                                                     session.notifySuscriptors(dfr.getRegistryType());
                                                     
                                                     // do not delete XSR, preserve it!
                                                     throw new Exception("La solicitud de cancelación del CFDI ha sido enviada al receptor.");
 
-                                                case DCfdi33Consts.ESTATUS_CANCEL_RECH:
-                                                    // CFDI cancellation was rejected by receptor:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_RECH: // cancellation was rejected
                                                     dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
                                                     session.notifySuscriptors(dfr.getRegistryType());
                                                     
-                                                    xsr.delete(session);    // delete request log
+                                                    xsr.delete(session); // delete request log
                                                     throw new Exception("La solicitud de cancelación del CFDI ha sido rechazada por el receptor.");
 
                                                 case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
                                                 case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
-                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
-                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
                                                     // CFDI was canceled!:
+                                                    
                                                     switch (estatusCancelacion) {
                                                         case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
                                                             cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
@@ -2182,8 +2210,8 @@ public abstract class DTrnDfrUtils {
                                                         case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
                                                             cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
                                                             break;
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
                                                             cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
                                                             break;
                                                         default:
@@ -2198,8 +2226,7 @@ public abstract class DTrnDfrUtils {
                                                     xml = xml.replace("&gt;", ">");
                                                     break;
 
-                                                case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
-                                                    // CFDI in pending buffer:
+                                                case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO: // cancellation in pending buffer
                                                     dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PEND_BUFF_CODE);
                                                     session.notifySuscriptors(dfr.getRegistryType());
 
@@ -2208,10 +2235,10 @@ public abstract class DTrnDfrUtils {
 
                                                 default:
                                                     // unexpected cancellation code status:
-                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "?");
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "!!!");
                                                     session.notifySuscriptors(dfr.getRegistryType());
 
-                                                    xsr.delete(session);    // delete request log
+                                                    xsr.delete(session); // delete request log
                                                     throw new Exception("El estatus de cancelación del CFDI es desconocido: [" + estatusCancelacion + "].");
                                             }
                                             break;
@@ -2219,7 +2246,7 @@ public abstract class DTrnDfrUtils {
                                         default:
                                             // unexpected response code:
 
-                                            xsr.delete(session);    // delete request log
+                                            xsr.delete(session); // delete request log
                                             throw new Exception("CancelaCFDResult msg: folios.folio.estatus different to 201 and 202: [" + folios.getValue().getFolio().get(0).getEstatusUUID().getValue() + "]");
                                     }
                                 }
@@ -2229,15 +2256,16 @@ public abstract class DTrnDfrUtils {
                                 
                                 if (receiptResult != null) {
                                     if (receiptResult.getSuccess() == null) {
-                                        xsr.delete(session);    // delete request log
+                                        xsr.delete(session); // delete request log
                                         throw new Exception("ReceiptResult msg: success = null: [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else if (!receiptResult.getSuccess().getValue()) {
-                                        xsr.delete(session);    // delete request log
+                                        xsr.delete(session); // delete request log
                                         throw new Exception("ReceiptResult msg: success.value = false [" + (receiptResult.getError() == null ? "error null" : receiptResult.getError().getValue()) + "]");
                                     }
                                     else {
                                         // CFDI was canceled!:
+                                        
                                         switch (ackQuery.CancelStatus) {
                                             case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
                                                 cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
@@ -2245,8 +2273,8 @@ public abstract class DTrnDfrUtils {
                                             case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
                                                 cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
                                                 break;
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:       // it is not clear wich expression is the good one
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_EXT:   // it is not clear wich expression is the good one
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
                                                 cancelStatus = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
                                                 break;
                                             default:

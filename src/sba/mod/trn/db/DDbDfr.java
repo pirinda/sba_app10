@@ -653,6 +653,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;

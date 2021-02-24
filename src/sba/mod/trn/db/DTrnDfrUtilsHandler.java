@@ -26,7 +26,17 @@ public class DTrnDfrUtilsHandler {
     public DTrnDfrUtilsHandler(DGuiSession session) {
         moSession = session;
     }
-    
+
+    /** Obtener la lista de los CFDI relacionados con otro CFDI.
+     * 2019-08-14, Sergio Flores: Se deshabilita temporalmente la consulta de CFDI relacionados 
+     * debido a cambio inesperado en los parámetros de la solicitud del web service,
+     * ahora se discurrió que deben proporcionarse el RFC y CSD del receptor. ¡Sí, el CSD del receptor! WTF!
+     * @param dfr
+     * @return
+     * @throws Exception
+     * @deprecated
+     */
+    @Deprecated
     public ArrayList<CfdiRelated> getCfdiRelated(final DDbDfr dfr) throws Exception {
         ArrayList<CfdiRelated> cfdiRelatedList = new ArrayList<>();
         
@@ -48,10 +58,14 @@ public class DTrnDfrUtilsHandler {
                 case DModSysConsts.CS_XSP_FNK:
                     com.finkok.facturacion.cancel.CancelSOAP cancelSOAP = new com.finkok.facturacion.cancel.CancelSOAP();
                     com.finkok.facturacion.cancel.Application application = cancelSOAP.getApplication();
-
+                    
+                    /* 2019-08-14, Sergio Flores: Se deshabilita temporalmente la consulta de CFDI relacionados.
+                     * debido a cambio inesperado en los parámetros de la solicitud del web service,
+                     * ahora se discurrió que deben proporcionarse el RFC y CSD del receptor. ¡Sí, el CSD del receptor! WTF!
+                    
                     views.core.soap.services.apps.RelatedResult relatedResult = application.getRelated(
                             edsName, edsPswd, fiscalId, dfr.getUuid(), certificate.getXtaCertificatePemKeyPublic_n(), certificate.getXtaCertificatePemKeyPrivate_n());
-
+                    
                     if (relatedResult.getError() != null) {
                         throw new Exception(relatedResult.getError().getValue());
                     }
@@ -75,6 +89,7 @@ public class DTrnDfrUtilsHandler {
                             cfdiRelatedList.add(new CfdiRelated(valUuid, valEmisor, valReceptor));
                         }
                     }
+                    */
                     break;
 
                 default:

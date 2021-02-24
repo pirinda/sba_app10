@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 024.3
+2021-02-24/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de nueva función de cancelación de CFDI y refactorización general al proceso de cancelación.
+
+================================================================================
 SBA 1.0 024.2
 2019-09-06/ Sergio Abraham FLORES GUTIÉRREZ
 1) Mejoramiento a las funcionalidades de anulación, inhabilitación y eliminación de DPS y CFDI pagos.

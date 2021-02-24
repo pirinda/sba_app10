@@ -466,6 +466,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
                 "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
                 "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ANN + ", " + DGridConsts.ICON_XML_ANNUL + ", " + DGridConsts.ICON_NULL + "))) AS f_xml, " +
+                "dfr.can_st, " +
                 "v.fk_dps_ct AS " + DDbConsts.FIELD_TYPE_ID + "1, " +
                 "v.fk_dps_cl AS " + DDbConsts.FIELD_TYPE_ID + "2, " +
                 "v.fk_dps_tp AS " + DDbConsts.FIELD_TYPE_ID + "3, " +
@@ -519,7 +520,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[27];
+        DGridColumnView[] columns = new DGridColumnView[28];
 
         String category =  DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnGridSubtype)).toLowerCase();
         if (mnGridSubtype == DModSysConsts.TS_DPS_CT_PUR) {
@@ -531,6 +532,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "v.dt", DGridConsts.COL_TITLE_DATE + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
         }
@@ -539,6 +541,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "v.dt", DGridConsts.COL_TITLE_DATE + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + category);
@@ -771,7 +774,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                boolean enabled = jbRowDisable.isEnabled(); // preserve button enabled status
+                boolean enabled = jbRowDisable.isEnabled(); // preserve button status
                 
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
@@ -779,7 +782,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                     }
                     else {
                         if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
-                            jbRowDisable.setEnabled(true);
+                            jbRowDisable.setEnabled(true); // enable button to allow (to force) disabling of document
                             actionRowDisable();
                         }
                         else {
@@ -791,7 +794,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                     DLibUtils.showException(this, e);
                 }
                 finally {
-                    jbRowDisable.setEnabled(enabled);   // restore original button enable status
+                    jbRowDisable.setEnabled(enabled);   // restore original button status
                 }
             }
         }

@@ -103,7 +103,7 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Anular documento: en el sistema solamente"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[500, 23]"/>
+                          <Dimension value="[600, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -123,7 +123,31 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Anular y cancelar documento: en el sistema y ante la autoridad"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[500, 23]"/>
+                          <Dimension value="[600, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanel1">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanel3">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolRetryCancel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Reintentar la cancelaci&#xf3;n a&#xfa;n cuando el receptor haya rechazado la solicitud de cancelaci&#xf3;n anterior"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[600, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
