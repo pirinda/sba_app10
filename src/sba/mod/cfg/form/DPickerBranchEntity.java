@@ -226,6 +226,7 @@ public class DPickerBranchEntity extends javax.swing.JDialog {
      * Private methods
      */
 
+    @SuppressWarnings("unchecked")
     private void initComponentsCustom() {
         DDbUser user = (DDbUser) miClient.getSession().getUser();
 
@@ -262,6 +263,7 @@ public class DPickerBranchEntity extends javax.swing.JDialog {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void itemStateBranch() {
         int[] branchKey = null;
         Vector<DGuiItem> items = new Vector<>();

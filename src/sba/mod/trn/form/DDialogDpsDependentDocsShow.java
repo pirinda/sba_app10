@@ -112,10 +112,11 @@ public class DDialogDpsDependentDocsShow extends DBeanFormDialog {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void renderDependentDocs() {
         DDbDps dps = null;
         DDbDpsRow dpsRow = null;
-        Vector<String> docs = new Vector<String>();
+        Vector<String> docs = new Vector<>();
 
         for (int[] key : mvDependentDpsRowKeys) {
             dps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, new int[] { key[0] });

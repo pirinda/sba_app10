@@ -152,6 +152,7 @@ public class DDialogSelectItemFound extends DBeanFormDialog {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void renderItemsFound() {
         DDbItem itemRegistry = null;
         DGuiItem item = null;

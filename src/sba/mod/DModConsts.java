@@ -284,6 +284,7 @@ public abstract class DModConsts {
     public static final int TX_DFR_PAY = 640310;
     public static final int TX_DFR_ADD = 640311;
     public static final int TX_DFR_INV = 640316;
+    public static final int TX_DFR_ANNUL_PARAMS = 640321;
 
     public static final int TR_DPS = 650001;
     public static final int TR_DPS_CFD = 650002;

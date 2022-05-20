@@ -19,7 +19,6 @@ import cfd.ver33.crp10.DElementPagosPago;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
-import sa.lib.SLibUtils;
 import sba.lib.DLibUtils;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModSysConsts;
@@ -174,7 +173,7 @@ public abstract class DTrnDfrPrinting {
                         
                         sql = "INSERT INTO temp_pago VALUES ("
                                 + "0," // auto increment
-                                + "'" + SLibUtils.DateFormatDatetime.format(pago.getAttFechaPago().getDatetime()) + "',"
+                                + "'" + DLibUtils.DateFormatDatetime.format(pago.getAttFechaPago().getDatetime()) + "',"
                                 + "'" + pago.getAttFormaDePagoP().getString()+ "',"
                                 + "'" + pago.getAttMonedaP().getString()+ "',"
                                 + pago.getAttTipoCambioP().getDouble() + ","

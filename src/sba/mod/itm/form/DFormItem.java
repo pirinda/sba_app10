@@ -20,6 +20,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import sba.gui.DGuiClientSessionCustom;
+import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -35,6 +36,7 @@ import sba.lib.gui.bean.DBeanFieldText;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.fin.db.DDbTaxGroupConfigRow;
@@ -58,6 +60,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private DDbBrand moBrand;
     private DDbManufacturer moManufacturer;
     private DDbTaxGroupConfigRow moTaxGroupConfigRow;
+    private int mnCompanyIdentityType;
     private double mdTaxRate;
 
     /** Creates new form DFormItem */
@@ -1019,6 +1022,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moDecUnitsPackage);
 
         moFields.setFormButton(jbSave);
+
+        mnCompanyIdentityType = ((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId();
 
         jlPriceSrp.setText(DLibUtils.textProperCase((String) miClient.getSession().readField(DModConsts.MS_ITM_PRC_TP, new int[] { DModSysConsts.MS_ITM_PRC_TP_SRP }, DDbRegistry.FIELD_NAME)) + ":");
         jlPrice1.setText(DLibUtils.textProperCase((String) miClient.getSession().readField(DModConsts.MS_ITM_PRC_TP, new int[] { DModSysConsts.MS_ITM_PRC_TP_RET }, DDbRegistry.FIELD_NAME)) + ":");
@@ -1991,7 +1996,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyItemGenus, DModConsts.IU_GEN, DLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyTaxRegime, DModConsts.CS_TAX_REG, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTaxRegime, DModConsts.CS_TAX_REG, mnCompanyIdentityType, null);
         miClient.getSession().populateCatalogue(moKeyTaxGroup, DModConsts.FU_TAX_GRP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyAbpItem, DModConsts.F_ABP_ITM, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyBrand, DModConsts.IU_BRD, DLibConsts.UNDEFINED, null);

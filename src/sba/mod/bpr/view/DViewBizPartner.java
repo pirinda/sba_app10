@@ -62,6 +62,8 @@ public class DViewBizPartner extends DGridPaneView {
                 "v.b_dbr, " +
                 "vt.name, " +
                 "et.name, " +
+                "CONCAT(tr.code, ' - ', tr.name) AS _tax_reg, " +
+                "xat.name, " +
                 "bt.name, " +
                 "v.b_can_upd AS " + DDbConsts.FIELD_CAN_UPD + ", " +
                 "v.b_can_dis AS " + DDbConsts.FIELD_CAN_DIS + ", " +
@@ -81,6 +83,10 @@ public class DViewBizPartner extends DGridPaneView {
                 "v.fk_idy_tp = vt.id_idy_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_EMI_TP) + " AS et ON " +
                 "v.fk_emi_tp = et.id_emi_tp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CS_TAX_REG) + " AS tr ON " +
+                "v.fk_tax_reg = tr.id_tax_reg " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ADD_TP) + " AS xat ON " +
+                "v.fk_xml_add_tp = xat.id_xml_add_tp " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_CFG) + " AS bc ON " +
                 "v.id_bpr = bc.id_bpr AND bc.id_bpr_cl = " + mnBizPartnerClass + " " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_TP) + " AS bt ON " +
@@ -100,7 +106,7 @@ public class DViewBizPartner extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[20];
+        DGridColumnView[] columns = new DGridColumnView[22];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME + " " + DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase());
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE + " " + DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase());
@@ -115,6 +121,8 @@ public class DViewBizPartner extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, "v.b_cdr", DBprUtils.getBizPartnerClassNameSng(DModSysConsts.BS_BPR_CL_CDR));
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "v.nick", "Alias");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "f_days", "Días última transacción");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_tax_reg", "Régimen fiscal");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "xat.name", "Tipo addenda");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

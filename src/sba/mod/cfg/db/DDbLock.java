@@ -19,6 +19,11 @@ import sba.mod.DModConsts;
  * @author Sergio Flores
  */
 public class DDbLock extends DDbRegistryUser {
+    
+    public static final int LOCK_ST_ACTIVE = 1; // lock active
+    public static final int LOCK_ST_FREED_CANCEL = 2; // lock freed by cancellation
+    public static final int LOCK_ST_FREED_UPDATE = 3; // lock freed by update
+    public static final int LOCK_ST_FREED_EXCEPTION = 4; // lock freed by exception thrown
 
     protected int mnPkLockId;
     protected int mnRegistryTypeId;
@@ -26,13 +31,15 @@ public class DDbLock extends DDbRegistryUser {
     protected int mnLockTimeout;
     protected Date mtLockTimestamp;
     protected int mnLockStatus;
+    /*
     protected boolean mbDeleted;
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
+    */
     
-    protected boolean mbAuxUpdateLockTimestamp;
+    protected boolean mbAuxResumeLock;
             
     public DDbLock() {
         super(DModConsts.C_LOCK);
@@ -63,9 +70,9 @@ public class DDbLock extends DDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setAuxUpdateLockTimestamp(boolean b) { mbAuxUpdateLockTimestamp = b; }
+    public void setAuxResumeLock(boolean b) { mbAuxResumeLock = b; }
 
-    public boolean isAuxUpdateLockTimestamp() { return mbAuxUpdateLockTimestamp; }
+    public boolean isAuxResumeLock() { return mbAuxResumeLock; }
     
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -158,6 +165,11 @@ public class DDbLock extends DDbRegistryUser {
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
+        
+        if (mbAuxResumeLock) {
+            mnLockStatus = LOCK_ST_ACTIVE;
+            mbDeleted = false;
+        }
 
         if (mbRegistryNew) {
             computePrimaryKey(session);
@@ -188,7 +200,7 @@ public class DDbLock extends DDbRegistryUser {
                     "reg_tp_id = " + mnRegistryTypeId + ", " +
                     "reg_id = " + mnRegistryId + ", " +
                     "lock_tout = " + mnLockTimeout + ", " +
-                    (!mbAuxUpdateLockTimestamp ? "" : "lock_ts = NOW(), ") +
+                    (!mbAuxResumeLock ? "" : "lock_ts = NOW(), ") +
                     "lock_st = " + mnLockStatus + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
@@ -197,9 +209,9 @@ public class DDbLock extends DDbRegistryUser {
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
             
-            mbAuxUpdateLockTimestamp = false; //disable automatic further lock-timestamp updates
+            mbAuxResumeLock = false; // reactivation works only once per event
         }
-
+        
         session.getStatement().execute(msSql);
         mbRegistryNew = false;
 
@@ -208,23 +220,6 @@ public class DDbLock extends DDbRegistryUser {
 
     @Override
     public DDbLock clone() throws CloneNotSupportedException {
-        DDbLock registry = new DDbLock();
-
-        registry.setPkLockId(this.getPkLockId());
-        registry.setRegistryTypeId(this.getRegistryTypeId());
-        registry.setRegistryId(this.getRegistryId());
-        registry.setLockTimeout(this.getLockTimeout());
-        registry.setLockTimestamp(this.getLockTimestamp());
-        registry.setLockStatus(this.getLockStatus());
-        registry.setDeleted(this.isDeleted());
-        registry.setFkUserInsertId(this.getFkUserInsertId());
-        registry.setFkUserUpdateId(this.getFkUserUpdateId());
-        registry.setTsUserInsert(this.getTsUserInsert());
-        registry.setTsUserUpdate(this.getTsUserUpdate());
-        
-        registry.setAuxUpdateLockTimestamp(this.isAuxUpdateLockTimestamp());
-
-        registry.setRegistryNew(this.isRegistryNew());
-        return registry;
+        throw new CloneNotSupportedException("Not supported: locks cannot be cloned!");
     }
 }

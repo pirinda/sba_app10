@@ -482,6 +482,7 @@ public class DDialogSerialNumber extends DBeanFormDialog implements ActionListen
         jtfCurrencyCode.setCaretPosition(0);
     }
 
+    @SuppressWarnings("unchecked")
     private void renderStockMoves() {
         jltSerialNumber.setListData(mvSerialNumbers);
         jtfInput.setText(DLibUtils.DecimalFormatInteger.format(mvSerialNumbers.size()));

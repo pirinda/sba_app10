@@ -84,6 +84,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jlCode = new javax.swing.JLabel();
         moTextCode = new sba.lib.gui.bean.DBeanFieldText();
         moKeyIdentityType = new sba.lib.gui.bean.DBeanFieldKey();
+        jbIdentityType = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jlLastname = new javax.swing.JLabel();
         moTextLastname = new sba.lib.gui.bean.DBeanFieldText();
@@ -136,9 +137,6 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel34 = new javax.swing.JPanel();
         jlAgentType = new javax.swing.JLabel();
         moKeyAgentType = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel25 = new javax.swing.JPanel();
-        jlWeb = new javax.swing.JLabel();
-        moTextWeb = new sba.lib.gui.bean.DBeanFieldText();
         jPanel23 = new javax.swing.JPanel();
         jlEmissionType = new javax.swing.JLabel();
         moKeyEmissionType = new sba.lib.gui.bean.DBeanFieldKey();
@@ -146,6 +144,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jlXmlAddendaType = new javax.swing.JLabel();
         moKeyXmlAddendaType = new sba.lib.gui.bean.DBeanFieldKey();
         jbXmlAddendaType = new javax.swing.JButton();
+        jPanel38 = new javax.swing.JPanel();
+        jlTaxRegime = new javax.swing.JLabel();
+        moKeyTaxRegime = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel25 = new javax.swing.JPanel();
+        jlWeb = new javax.swing.JLabel();
+        moTextWeb = new sba.lib.gui.bean.DBeanFieldText();
         jpConfig12 = new javax.swing.JPanel();
         jPanel32 = new javax.swing.JPanel();
         jlCurrency = new javax.swing.JLabel();
@@ -171,6 +175,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel37 = new javax.swing.JPanel();
         jlCfdUsage = new javax.swing.JLabel();
         moKeyCfdUsage = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel1 = new javax.swing.JPanel();
         jPanel33 = new javax.swing.JPanel();
         moBoolAbpBizPartnerByUser = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel31 = new javax.swing.JPanel();
@@ -194,9 +199,15 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel6.add(jlCode);
         jPanel6.add(moTextCode);
 
-        moKeyIdentityType.setToolTipText("Tipo de persona");
-        moKeyIdentityType.setPreferredSize(new java.awt.Dimension(180, 23));
+        moKeyIdentityType.setToolTipText("Tipo persona");
+        moKeyIdentityType.setPreferredSize(new java.awt.Dimension(152, 23));
         jPanel6.add(moKeyIdentityType);
+
+        jbIdentityType.setText("<");
+        jbIdentityType.setToolTipText("Modificar tipo persona");
+        jbIdentityType.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        jbIdentityType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel6.add(jbIdentityType);
 
         jPanel5.add(jPanel6);
 
@@ -298,10 +309,10 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig.setLayout(new java.awt.BorderLayout());
 
-        jpConfig1.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jpConfig1.setLayout(new java.awt.BorderLayout());
 
         jpConfig11.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipo:"));
-        jpConfig11.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
+        jpConfig11.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -384,18 +395,6 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig11.add(jPanel34);
 
-        jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlWeb.setForeground(new java.awt.Color(0, 102, 102));
-        jlWeb.setText("Sitio web:");
-        jlWeb.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel25.add(jlWeb);
-
-        moTextWeb.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel25.add(moTextWeb);
-
-        jpConfig11.add(jPanel25);
-
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlEmissionType.setText("Tipo emisión:*");
@@ -424,10 +423,33 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig11.add(jPanel36);
 
-        jpConfig1.add(jpConfig11);
+        jPanel38.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTaxRegime.setText("Régimen fiscal:*");
+        jlTaxRegime.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel38.add(jlTaxRegime);
+
+        moKeyTaxRegime.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel38.add(moKeyTaxRegime);
+
+        jpConfig11.add(jPanel38);
+
+        jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWeb.setForeground(new java.awt.Color(0, 102, 102));
+        jlWeb.setText("Sitio web:");
+        jlWeb.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel25.add(jlWeb);
+
+        moTextWeb.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel25.add(moTextWeb);
+
+        jpConfig11.add(jPanel25);
+
+        jpConfig1.add(jpConfig11, java.awt.BorderLayout.WEST);
 
         jpConfig12.setBorder(javax.swing.BorderFactory.createTitledBorder("Crédito:"));
-        jpConfig12.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
+        jpConfig12.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
 
         jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -502,7 +524,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jlModeOfPaymentType.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel35.add(jlModeOfPaymentType);
 
-        moKeyModeOfPaymentType.setPreferredSize(new java.awt.Dimension(250, 23));
+        moKeyModeOfPaymentType.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel35.add(moKeyModeOfPaymentType);
 
         jpConfig12.add(jPanel35);
@@ -513,10 +535,13 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jlCfdUsage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel37.add(jlCfdUsage);
 
-        moKeyCfdUsage.setPreferredSize(new java.awt.Dimension(250, 23));
+        moKeyCfdUsage.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel37.add(moKeyCfdUsage);
 
         jpConfig12.add(jPanel37);
+
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpConfig12.add(jPanel1);
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -537,7 +562,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig12.add(jPanel31);
 
-        jpConfig1.add(jpConfig12);
+        jpConfig1.add(jpConfig12, java.awt.BorderLayout.CENTER);
 
         jpConfig.add(jpConfig1, java.awt.BorderLayout.PAGE_START);
 
@@ -574,10 +599,11 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moBoolBank.setBooleanSettings(moBoolBank.getText(), false);
         moBoolCarrier.setBooleanSettings(moBoolCarrier.getText(), false);
         moKeyAgentType.setKeySettings(miClient, DGuiUtils.getLabelName(jlAgentType), true);
-        moTextWeb.setTextSettings(DGuiUtils.getLabelName(jlWeb), 15, 0);
-        moTextWeb.setTextCaseType(DLibConsts.UNDEFINED);
         moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType), true);
         moKeyXmlAddendaType.setKeySettings(miClient, DGuiUtils.getLabelName(jlXmlAddendaType), true);
+        moKeyTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxRegime), true);
+        moTextWeb.setTextSettings(DGuiUtils.getLabelName(jlWeb), 50, 0);
+        moTextWeb.setTextCaseType(DLibConsts.UNDEFINED);
         moKeyCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlCurrency), false);
         moBoolCreditByUser.setBooleanSettings(moBoolCreditByUser.getText(), false);
         moKeyCreditType.setKeySettings(miClient, DGuiUtils.getLabelName(jlCreditType), true);
@@ -609,9 +635,10 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moFields.addField(moBoolBank, 1);
         moFields.addField(moBoolCarrier, 1);
         moFields.addField(moKeyAgentType, 1);
-        moFields.addField(moTextWeb, 1);
         moFields.addField(moKeyEmissionType, 1);
         moFields.addField(moKeyXmlAddendaType, 1);
+        moFields.addField(moKeyTaxRegime, 1);
+        moFields.addField(moTextWeb, 1);
         moFields.addField(moKeyCurrency, 1);
         moFields.addField(moBoolCreditByUser, 1);
         moFields.addField(moKeyCreditType, 1);
@@ -676,21 +703,27 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
     }
 
+    private void actionIdentityType() {
+        jbIdentityType.setEnabled(false);
+        moKeyIdentityType.setEnabled(true);
+        moKeyIdentityType.requestFocusInWindow();
+    }
+
     private void actionFiscalId() {
         moTextFiscalId.setValue(((DDbConfigCompany) miClient.getSession().getConfigCompany()).getFiscalIdCountry());
-        moTextFiscalId.requestFocus();
+        moTextFiscalId.requestFocusInWindow();
     }
 
     private void actionXmlAddendaType() {
         jbXmlAddendaType.setEnabled(false);
         moKeyXmlAddendaType.setEnabled(true);
-        moKeyXmlAddendaType.requestFocus();
+        moKeyXmlAddendaType.requestFocusInWindow();
     }
 
     private void actionCurrency() {
         jbCurrency.setEnabled(false);
         moKeyCurrency.setEnabled(true);
-        moKeyCurrency.requestFocus();
+        moKeyCurrency.requestFocusInWindow();
     }
 
     private void itemStateKeyIdentityType() {
@@ -704,9 +737,14 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
             moTextFirstname.resetField();
             moTextName.resetField();
             moTextAlternativeId.resetField();
+            
+            moKeyTaxRegime.setEnabled(false);
+            moKeyTaxRegime.removeAllItems();
         }
         else {
-            switch (moKeyIdentityType.getValue()[0]) {
+            int identityType = moKeyIdentityType.getValue()[0];
+            
+            switch (identityType) {
                 case DModSysConsts.BS_IDY_TP_PER:
                     moTextLastname.setEditable(true);
                     moTextFirstname.setEditable(true);
@@ -726,8 +764,13 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                     moTextFirstname.resetField();
                     moTextAlternativeId.resetField();
                     break;
+                    
                 default:
+                    // do nothing
             }
+            
+            moKeyTaxRegime.setEnabled(true);
+            miClient.getSession().populateCatalogue(moKeyTaxRegime, DModConsts.CS_TAX_REG, identityType, null);
         }
     }
 
@@ -847,6 +890,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -870,6 +914,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel38;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -878,6 +923,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JButton jbCurrency;
     private javax.swing.JButton jbFiscalId;
+    private javax.swing.JButton jbIdentityType;
     private javax.swing.JButton jbXmlAddendaType;
     private javax.swing.JLabel jlAbpBizPartner;
     private javax.swing.JLabel jlAgentType;
@@ -903,6 +949,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNickname;
     private javax.swing.JLabel jlNote;
+    private javax.swing.JLabel jlTaxRegime;
     private javax.swing.JLabel jlWeb;
     private javax.swing.JLabel jlXmlAddendaType;
     private javax.swing.JPanel jpConfig;
@@ -935,6 +982,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private sba.lib.gui.bean.DBeanFieldKey moKeyEmissionType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyIdentityType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyModeOfPaymentType;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyTaxRegime;
     private sba.lib.gui.bean.DBeanFieldKey moKeyXmlAddendaType;
     private sba.mod.bpr.form.DPanelBranch moPanelBranch;
     private sba.mod.bpr.form.DPanelBranchAddress moPanelBranchAddress;
@@ -953,6 +1001,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
     @Override
     public void addAllListeners() {
+        jbIdentityType.addActionListener(this);
         jbFiscalId.addActionListener(this);
         jbXmlAddendaType.addActionListener(this);
         jbCurrency.addActionListener(this);
@@ -966,6 +1015,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
     @Override
     public void removeAllListeners() {
+        jbIdentityType.removeActionListener(this);
         jbFiscalId.removeActionListener(this);
         jbXmlAddendaType.removeActionListener(this);
         jbCurrency.removeActionListener(this);
@@ -1055,8 +1105,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                 moRegistry.setFkEmissionTypeId(DModSysConsts.TS_EMI_TP_BPR);
             }
 
-            if (moRegistry.getFkXmlAddendaTypeId()== DLibConsts.UNDEFINED) {
+            if (moRegistry.getFkXmlAddendaTypeId() == DLibConsts.UNDEFINED) {
                 moRegistry.setFkXmlAddendaTypeId(DModSysConsts.TS_XML_ADD_TP_NA);
+            }
+            
+            if (moRegistry.getFkTaxRegimeId() == DLibConsts.UNDEFINED) {
+                moRegistry.setFkTaxRegimeId(DModSysConsts.CS_TAX_REG_NA);
             }
         }
         else {
@@ -1065,41 +1119,43 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
             config = moRegistry.getChildConfig(mnBizPartnerClass);
         }
 
-        moTextName.setValue(moRegistry.getName());
+        moTextCode.setValue(config.getCode());
+        moKeyIdentityType.setValue(new int[] { moRegistry.getFkIdentityTypeId() });
         moTextLastname.setValue(moRegistry.getLastname());
         moTextFirstname.setValue(moRegistry.getFirstname());
+        moTextName.setValue(moRegistry.getName());
         moTextNickname.setValue(moRegistry.getNickname());
         moTextFiscalId.setValue(moRegistry.getFiscalId());
         moTextAlternativeId.setValue(moRegistry.getAlternativeId());
-        moTextForeignId.setValue(moRegistry.getForeignId());
-        moTextWeb.setValue(moRegistry.getWeb());
-        moTextNote.setValue(moRegistry.getNote());
         moBoolFiscalHomologous.setValue(moRegistry.isFiscalHomologous());
+        moTextNote.setValue(moRegistry.getNote());
+        
+        moKeyBizPartnerType.setValue(new int[] { config.getFkBizPartnerClassId(), config.getFkBizPartnerTypeId() });
+        moDateStart.setValue(config.getDateStart());
+        moDateEnd.setValue(config.getDateEnd_n());
+        moTextCodeOwn.setValue(config.getCodeOwn());
+        moTextForeignId.setValue(moRegistry.getForeignId());
+        
+        moBoolAgent.setValue(moRegistry.getChildAgentConfig() != null && !moRegistry.getChildAgentConfig().isDeleted());
+        moKeyAgentType.setValue(new int[] { moRegistry.getChildAgentConfig() == null ? DLibConsts.UNDEFINED : moRegistry.getChildAgentConfig().getFkAgentTypeId() });
+        
         moBoolBank.setValue(moRegistry.isBank());
         moBoolCarrier.setValue(moRegistry.isCarrier());
-        moKeyIdentityType.setValue(new int[] { moRegistry.getFkIdentityTypeId() });
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
         moKeyXmlAddendaType.setValue(new int[] { moRegistry.getFkXmlAddendaTypeId()});
+        moTextWeb.setValue(moRegistry.getWeb());
 
-        moTextCode.setValue(config.getCode());
-        moTextCodeOwn.setValue(config.getCodeOwn());
+        moKeyCurrency.setValue(new int[] { config.getFkCurrencyId_n() });
+        moBoolCreditByUser.setValue(config.isCreditByUser());
+        moKeyCreditType.setValue(new int[] { config.getFkCreditTypeId_n() });
         moCurCreditLimit.getField().setValue(config.getCreditLimit());
         moIntCreditDays.setValue(config.getCreditDays());
         moIntCreditDaysGrace.setValue(config.getCreditDaysGrace());
-        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(config.getCfdUsage()) });
-        moDateStart.setValue(config.getDateStart());
-        moDateEnd.setValue(config.getDateEnd_n());
-        moBoolCreditByUser.setValue(config.isCreditByUser());
-        moKeyBizPartnerType.setValue(new int[] { config.getFkBizPartnerClassId(), config.getFkBizPartnerTypeId() });
-        moKeyCurrency.setValue(new int[] { config.getFkCurrencyId_n() });
-        moKeyCreditType.setValue(new int[] { config.getFkCreditTypeId_n() });
         moKeyModeOfPaymentType.setValue(new int[] { config.getFkModeOfPaymentTypeId_n() });
-        moKeyAbpBizPartner.setValue(new int[] { config.getFkAbpBizPartnerId_n() });
-
-        moBoolAgent.setValue(moRegistry.getChildAgentConfig() != null && !moRegistry.getChildAgentConfig().isDeleted());
-        moKeyAgentType.setValue(new int[] { moRegistry.getChildAgentConfig() == null ? DLibConsts.UNDEFINED : moRegistry.getChildAgentConfig().getFkAgentTypeId() });
-
+        moKeyCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(config.getCfdUsage()) });
+        
         moBoolAbpBizPartnerByUser.setValue(config.getFkAbpBizPartnerId_n() != DLibConsts.UNDEFINED);
+        moKeyAbpBizPartner.setValue(new int[] { config.getFkAbpBizPartnerId_n() });
 
         moPanelBranch.setRegistry(moRegistry.getChildBranches().get(0));
         moPanelBranchAddress.setRegistry(moRegistry.getChildBranches().get(0).getChildAddresses().get(0));
@@ -1113,23 +1169,37 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moGridBranchAddresses.populateGrid(addresses);
 
         jTabbedPane.setSelectedIndex(0);
+        
         setFormEditable(true);
+        
         itemStateKeyIdentityType();
+        moKeyTaxRegime.setValue(new int[] { moRegistry.getFkTaxRegimeId()});
+        
         itemStateKeyBizPartnerType();
-        itemStateKeyCreditType();
         itemStateBoolAgent();
+        itemStateKeyCreditType();
         itemStateBoolCreditByUser();
         itemStateBoolAbpBizPartnerByUser();
+        
+        // Prevent undesired modifications to identity type:
+        if (moRegistry.isRegistryNew() && moRegistry.getFkIdentityTypeId() == 0) {
+            jbIdentityType.setEnabled(false);
+            moKeyIdentityType.setEnabled(true);
+        }
+        else {
+            jbIdentityType.setEnabled(true);
+            moKeyIdentityType.setEnabled(false);
+        }
 
+        // Enable code if appropriate:
         moTextCode.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isCodeBizPartnerApplying());
         
         // Prevent undesired modifications to currency:
-
         jbCurrency.setEnabled(true);
         moKeyCurrency.setEnabled(false);
 
-        // Prevent undesired or inappropriate modifications to XML-addenda type:
-
+        // Prevent undesired modifications to XML-addenda type:
+        jbXmlAddendaType.setEnabled(true);
         moKeyXmlAddendaType.setEnabled(false);
         
         switch (mnBizPartnerClass) {
@@ -1171,6 +1241,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         registry.setCarrier(moBoolCarrier.getValue());
         registry.setFkIdentityTypeId(moKeyIdentityType.getValue()[0]);
         registry.setFkEmissionTypeId(moKeyEmissionType.getValue()[0]);
+        registry.setFkTaxRegimeId(moKeyTaxRegime.getValue()[0]);
         registry.setFkXmlAddendaTypeId(moKeyXmlAddendaType.getValue()[0]);
 
         config = registry.getChildConfig(mnBizPartnerClass);
@@ -1281,7 +1352,10 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
 
-            if (button == jbFiscalId) {
+            if (button == jbIdentityType) {
+                actionIdentityType();
+            }
+            else if (button == jbFiscalId) {
                 actionFiscalId();
             }
             else if (button == jbXmlAddendaType) {

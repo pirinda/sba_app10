@@ -81,6 +81,7 @@ import sba.mod.DModUtils;
 import sba.mod.cfg.db.DDbCertificate;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
 import sba.mod.cfg.db.DDbUserGui;
 import sba.mod.cfg.db.DLockUtils;
@@ -94,8 +95,8 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 025.1"; // release date: 2021-02-24
-    public static final String APP_COPYRIGHT = "Copyright © 2011-2019 Sergio Abraham Flores Gutiérrez";
+    public static final String APP_RELEASE = "SBA 1.0 027.0"; // release date: 2022-05-20
+    public static final String APP_COPYRIGHT = "Copyright © 2011-2022 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
     private int mnTerminal;
@@ -155,6 +156,8 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private ImageIcon moIconModPos;
     private ImageIcon moIconModSrv;
     */
+    
+    private DDbLock moCurrentLock;
     private HashMap<Integer, DXmlCatalog> moXmlCatalogsMap;
 
     /** Creates new form DGuiClientApp */
@@ -204,7 +207,8 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiFileSessionSettings = new javax.swing.JMenuItem();
         jmiFileUserPassword = new javax.swing.JMenuItem();
         jsFile1 = new javax.swing.JPopupMenu.Separator();
-        jmiFileDeleteActiveLocks = new javax.swing.JMenuItem();
+        jmiFileDeleteUserActiveLocks = new javax.swing.JMenuItem();
+        jmiFileClearUserSettings = new javax.swing.JMenuItem();
         jsFile2 = new javax.swing.JPopupMenu.Separator();
         jmiFileCloseViewsAll = new javax.swing.JMenuItem();
         jmiFileCloseViewsOther = new javax.swing.JMenuItem();
@@ -477,8 +481,11 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmFile.add(jmiFileUserPassword);
         jmFile.add(jsFile1);
 
-        jmiFileDeleteActiveLocks.setText("Eliminar los bloqueos a registros...");
-        jmFile.add(jmiFileDeleteActiveLocks);
+        jmiFileDeleteUserActiveLocks.setText("Liberar mis accesos exclusivos a registros...");
+        jmFile.add(jmiFileDeleteUserActiveLocks);
+
+        jmiFileClearUserSettings.setText("Limpiar mis preferencias de usuario...");
+        jmFile.add(jmiFileClearUserSettings);
         jmFile.add(jsFile2);
 
         jmiFileCloseViewsAll.setText("Cerrar todas las vistas");
@@ -666,6 +673,9 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             DBeanOptionPicker.OwnerFrame = this;
             DBeanDialogReport.OwnerFrame = this;
             
+            // Current lock:
+            moCurrentLock = null;
+            
             // Read XML catalogs:
             moXmlCatalogsMap = new HashMap<>();
             DXmlCatalog catalogMetodoPago = new DXmlCatalog(DCfdi33Catalogs.XML_MDP, "xml/" + DCfdi33Catalogs.XML_MDP + DXmlCatalog.XmlFileExt, false);
@@ -699,7 +709,8 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiFileWorkingDate.addActionListener(this);
         jmiFileSessionSettings.addActionListener(this);
         jmiFileUserPassword.addActionListener(this);
-        jmiFileDeleteActiveLocks.addActionListener(this);
+        jmiFileDeleteUserActiveLocks.addActionListener(this);
+        jmiFileClearUserSettings.addActionListener(this);
         jmiFileCloseViewsAll.addActionListener(this);
         jmiFileCloseViewsOther.addActionListener(this);
         jmiFileCloseSession.addActionListener(this);
@@ -1167,10 +1178,24 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         new DUtilPasswordDlg(this).setVisible(true);
     }
 
-    public void actionFileDeleteActiveLocks() {
-        if (showMsgBoxConfirm("¿Está seguro que desea eliminar los bloqueos a registros?") == JOptionPane.YES_OPTION) {
+    public void actionFileDeleteUserActiveLocks() {
+        if (showMsgBoxConfirm("¿Está seguro que desea liberar sus accesos exclusivos a registros?") == JOptionPane.YES_OPTION) {
             try {
-                DLockUtils.deleteActiveLocks(moSession);
+                DLockUtils.deleteActiveLocksUser(moSession);
+                showMsgBoxInformation(DLibConsts.MSG_PROCESS_FINISHED);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+        }
+    }
+
+    public void actionFileClearUserSettings() {
+        if (showMsgBoxConfirm("¿Está seguro que desea limpiar sus preferencias de usuario de vistas y formas de captura?") == JOptionPane.YES_OPTION) {
+            try {
+                try (Statement statement = moSession.getStatement().getConnection().createStatement()) {
+                    statement.execute("DELETE FROM " + DModConsts.TablesMap.get(DModConsts.C_USR_GUI) + " WHERE id_usr = " + moSession.getUser().getPkUserId() + ";");
+                }
                 showMsgBoxInformation(DLibConsts.MSG_PROCESS_FINISHED);
             }
             catch (Exception e) {
@@ -1273,10 +1298,11 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JMenu jmHelp;
     private javax.swing.JMenu jmView;
     private javax.swing.JMenuBar jmbMenu;
+    private javax.swing.JMenuItem jmiFileClearUserSettings;
     private javax.swing.JMenuItem jmiFileCloseSession;
     private javax.swing.JMenuItem jmiFileCloseViewsAll;
     private javax.swing.JMenuItem jmiFileCloseViewsOther;
-    private javax.swing.JMenuItem jmiFileDeleteActiveLocks;
+    private javax.swing.JMenuItem jmiFileDeleteUserActiveLocks;
     private javax.swing.JMenuItem jmiFileExit;
     private javax.swing.JMenuItem jmiFileSessionSettings;
     private javax.swing.JMenuItem jmiFileUserPassword;
@@ -1323,6 +1349,34 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
      * Public methods
      */
 
+    /**
+     * Sets lock as current lock.
+     * Helps to garantee that lock is freed if an exception occurs.
+     * @param lock 
+     */
+    public void setCurrentLock(final DDbLock lock) {
+        moCurrentLock = lock;
+    }
+    
+    /**
+     * Frees current lock.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
+     */
+    public void freeCurrentLock(final int freedLockStatus) {
+        if (moCurrentLock != null) {
+            try {
+                DLockUtils.validateLock(moSession, moCurrentLock, false); // throws exception if lock is no longer active
+                DLockUtils.freeLock(moSession, moCurrentLock, freedLockStatus); // free lock, it is still active
+            }
+            catch (Exception e) {
+                DLibUtils.printException(this, e);
+            }
+            finally {
+                moCurrentLock = null;
+            }
+        }
+    }
+    
     public HashMap<Integer, DXmlCatalog> getXmlCatalogsMap() {
         return moXmlCatalogsMap;
     }
@@ -1647,8 +1701,11 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             else if (menuItem == jmiFileUserPassword) {
                 actionFileUserPassword();
             }
-            else if (menuItem == jmiFileDeleteActiveLocks) {
-                actionFileDeleteActiveLocks();
+            else if (menuItem == jmiFileDeleteUserActiveLocks) {
+                actionFileDeleteUserActiveLocks();
+            }
+            else if (menuItem == jmiFileClearUserSettings) {
+                actionFileClearUserSettings();
             }
             else if (menuItem == jmiFileCloseViewsAll) {
                 actionFileCloseViewAll();

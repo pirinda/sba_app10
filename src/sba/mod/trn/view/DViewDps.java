@@ -37,6 +37,7 @@ import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnEmissionUtils;
@@ -79,6 +80,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     private JButton mjButtonDfrCancelVerify;    // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCheckStatus;     // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrSend;            // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrDownload;          // only for Digital Fiscal Receipt (DFR)
 
     /**
      * @param client GUI client.
@@ -317,6 +319,10 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
         mjButtonDfrSend.setEnabled(mbDfrRequired && configCompany.getFkDfrEmsTypeId() != DModSysConsts.CS_EMS_TP_NA);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
+
+        mjButtonDfrDownload = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_doc_xml.gif")), DUtilConsts.TXT_SAVE + " XML", this);
+        mjButtonDfrDownload.setEnabled(mbDfrRequired);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrDownload);
     }
 
     /*
@@ -532,7 +538,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "v.dt", DGridConsts.COL_TITLE_DATE + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
-            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 30);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
         }
@@ -541,7 +547,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, "v.dt", DGridConsts.COL_TITLE_DATE + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
-            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "dfr.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 30);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + category);
@@ -584,6 +590,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.T_DPS_PRT);
         moSuscriptionsSet.add(DModConsts.T_DPS_SIG);
         moSuscriptionsSet.add(DModConsts.T_DPS_SND);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
     }
 
     @Override
@@ -747,7 +754,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
         }
     }
 
-    private void actionDfrSign(final int requestType) {
+    private void actionDfrSign(final int requestSubtype) {
         if (mjButtonDfrSign.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
@@ -755,46 +762,54 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             else {
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                     }
                     else {
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
                     }
                 }
                 catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
                     DLibUtils.showException(this, e);
                 }
             }
         }
     }
 
-    private void actionDfrCancel(final int requestType) {
+    private void actionDfrCancel(final int requestSubtype) {
         if (mjButtonDfrCancel.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                boolean enabled = jbRowDisable.isEnabled(); // preserve button status
+                boolean restoreDisableButton = false;
+                boolean isDisableButtonEnabled = false;
                 
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
-                        DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                        DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                     }
                     else {
-                        if (requestType == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                        if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            restoreDisableButton = true;
+                            isDisableButtonEnabled = jbRowDisable.isEnabled(); // preserve button status
                             jbRowDisable.setEnabled(true); // enable button to allow (to force) disabling of document
                             actionRowDisable();
                         }
                         else {
-                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN +
+                                    "\nLa acción solicitada no está disponible para este tipo de registro.");
                         }
                     }
                 }
                 catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
                     DLibUtils.showException(this, e);
                 }
                 finally {
-                    jbRowDisable.setEnabled(enabled);   // restore original button status
+                    if (restoreDisableButton) {
+                        jbRowDisable.setEnabled(isDisableButtonEnabled);   // restore original button status
+                    }
                 }
             }
         }
@@ -830,6 +845,27 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 try {
                     if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.sendDps(miClient, (DGridRowView) getSelectedGridRow());
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    private void actionDfrDownload() {
+        if (mjButtonDfrDownload.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.downloadDps(miClient, (DGridRowView) getSelectedGridRow());
                     }
                     else {
                         throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -892,6 +928,9 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             }
             else if (button == mjButtonDfrSend) {
                 actionDfrSend();
+            }
+            else if (button == mjButtonDfrDownload) {
+                actionDfrDownload();
             }
         }
     }

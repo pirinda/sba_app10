@@ -8,7 +8,10 @@ package sba.mod.trn.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import sba.gui.DGuiClientApp;
 import sba.gui.util.DUtilConsts;
+import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.grid.DGridColumnView;
 import sba.lib.grid.DGridConsts;
@@ -25,6 +28,7 @@ import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.trn.db.DTrnEmissionUtils;
 import sba.mod.trn.db.DTrnUtils;
 
@@ -263,6 +267,7 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.BU_BRA);
         moSuscriptionsSet.add(DModConsts.CU_USR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
     }
 
     @Override
@@ -270,13 +275,24 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
         actionSign(DModSysConsts.TX_XMS_REQ_STP_REQ);
     }
 
-    public void actionSign(final int requestType) {
+    public void actionSign(final int requestSubtype) {
         if (mjButtonSign.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
+                    DLibUtils.showException(this, e);
+                }
             }
         }
     }

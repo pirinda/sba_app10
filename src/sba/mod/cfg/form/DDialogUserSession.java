@@ -374,6 +374,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
         jbSave.setText(DGuiConsts.TXT_BTN_OK);
     }
     
+    @SuppressWarnings("unchecked")
     private void actionShowAllBrancWarehouses() {
         Vector<DGuiItem> items = new Vector<>();
         
@@ -390,6 +391,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
         jltBranchWarehouses.requestFocus();
     }
 
+    @SuppressWarnings("unchecked")
     private void valueChangedBranches() {
         int[] branchKey = null;
         Vector<DGuiItem> items = null;
@@ -520,6 +522,7 @@ public class DDialogUserSession extends DBeanFormDialog implements ActionListene
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void setRegistry(DDbRegistry registry) throws Exception {
         Vector<DGuiItem> itemBranches = new Vector<>();
 

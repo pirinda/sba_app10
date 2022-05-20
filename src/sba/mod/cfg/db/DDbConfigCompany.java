@@ -257,8 +257,32 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setDelayInterestRate(double d) { mdDelayInterestRate = d; }
     public void setDecimalsQuantity(int n) { mnDecimalsQuantity = n; }
     public void setDecimalsPriceUnitary(int n) { mnDecimalsPriceUnitary = n; }
+    /**
+     * Set SMTP host.
+     * Microsoft (hotmail.com, outlook.com, live.com):
+     * - SMTP host: smtp.live.com, apparently deprecated by beginning of 2022
+     * - SMTP host: smtp.office365.com, since beginning of 2022
+     * Google (gmail.com):
+     * - SMTP host: smtp.gmail.com
+     * - NOTE: This sign-in technology is obsolete by May 30, 2022. Gmail access is now superseded by own implementation of Gmail API.
+     */
     public void setDfrEmsSmtpHost(String s) { msDfrEmsSmtpHost = s; }
+    /**
+     * Set SMTP port.
+     * Microsoft (hotmail.com, outlook.com, live.com):
+     * - SMTP port: 587
+     * Google (gmail.com):
+     * - SMTP port: 587
+     * - NOTE: This sign-in technology is obsolete by May 30, 2022. Gmail access is now superseded by own implementation of Gmail API.
+     */
     public void setDfrEmsSmtpPort(int n) { mnDfrEmsSmtpPort = n; }
+    /**
+     * Set if SSL for SMTP is enabled.
+     * Microsoft (hotmail.com, outlook.com, live.com):
+     * - SSL enabled: false
+     * Google (gmail.com):
+     * - SSL enabled: false
+     */
     public void setDfrEmsSmtpSslEnabled(boolean b) { mbDfrEmsSmtpSslEnabled = b; }
     public void setDfrEmsFrom(String s) { msDfrEmsFrom = s; }
     public void setDfrEmsName(String s) { msDfrEmsName = s; }

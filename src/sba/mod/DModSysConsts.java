@@ -706,10 +706,14 @@ public abstract class DModSysConsts {
     public static final int TS_CUT_TP_ARC = 2;
     public static final int TS_CUT_TP_CLO = 3;
     
+    /** Request type: Signature. */
     public static final int TX_XMS_REQ_TP_SIG = 1;
+    /** Request type: Cancellation. */
     public static final int TX_XMS_REQ_TP_CAN = 2;
     
+    /** Request subtype: Request. */
     public static final int TX_XMS_REQ_STP_REQ = 1;
+    /** Request subtype: Verification. */
     public static final int TX_XMS_REQ_STP_VER = 2;
     
     /** Request started. */

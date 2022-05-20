@@ -237,6 +237,7 @@ public class DDialogSelectBranchEntity extends javax.swing.JDialog {
         itemStateBranchEntityAll();
     }//GEN-LAST:event_jckBranchEntityAllItemStateChanged
 
+    @SuppressWarnings("unchecked")
     private void initComponentsCustom() {
         DDbUser user = (DDbUser) miClient.getSession().getUser();
 
@@ -275,6 +276,7 @@ public class DDialogSelectBranchEntity extends javax.swing.JDialog {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void itemStateBranch() {
         int[] branchKey = null;
         Vector<DGuiItem> items = new Vector<>();

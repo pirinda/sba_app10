@@ -193,6 +193,7 @@ public class DDialogSerialNumberShow extends DBeanFormDialog {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void renderRow(Object source) {
         int item = DLibConsts.UNDEFINED;
         int unit = DLibConsts.UNDEFINED;

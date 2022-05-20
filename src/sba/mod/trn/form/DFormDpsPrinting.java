@@ -24,7 +24,6 @@ import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbLock;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DDbDpsPrinting;
@@ -37,8 +36,8 @@ import sba.mod.trn.db.DTrnUtils;
  */
 public class DFormDpsPrinting extends DBeanForm {
 
-    private DDbDps moRegistry;
-    private DDbLock moRegistryLock;
+    private DDbDps moDps;
+    private DDbLock moDpsLock;
     private int mnOriginalYear;
     private Date mtOriginalDate;
 
@@ -179,15 +178,15 @@ public class DFormDpsPrinting extends DBeanForm {
     }
     
     private void freeLockByCancel() {
-        if (moRegistryLock != null) {
+        if (moDpsLock != null) {
             try {
-                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+                DLockUtils.freeLock(miClient.getSession(), moDpsLock, DDbLock.LOCK_ST_FREED_CANCEL);
             }
             catch (Exception e) {
                 DLibUtils.showException(this, e);
             }
             finally {
-                moRegistryLock = null;
+                moDpsLock = null;
             }
         }
     }
@@ -230,7 +229,7 @@ public class DFormDpsPrinting extends DBeanForm {
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        moRegistry = (DDbDps) registry;
+        moDps = (DDbDps) registry;
 
         mnFormResult = DLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -240,30 +239,30 @@ public class DFormDpsPrinting extends DBeanForm {
         removeAllListeners();
         reloadCatalogues();
 
-        if (moRegistry.isRegistryNew()) {
+        if (moDps.isRegistryNew()) {
             throw new Exception(DGuiConsts.ERR_MSG_FORM_EXIST_REG);
         }
         else {
             jtfRegistryKey.setText("");
             
-            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDpsId(), DDbDps.TIMEOUT);
+            moDpsLock = moDps.assureLock(miClient.getSession());
         }
 
         setFormEditable(true);  // enable all controls before setting form values
 
-        mtOriginalDate = moRegistry.getDate();
+        mtOriginalDate = moDps.getDate();
         mnOriginalYear = DLibTimeUtils.digestYear(mtOriginalDate)[0];
 
-        moTextSeries.setValue(moRegistry.getSeries());
-        moIntNumber.setValue(moRegistry.getNumber());
+        moTextSeries.setValue(moDps.getSeries());
+        moIntNumber.setValue(moDps.getNumber());
         moDateDate.setValue(mtOriginalDate);
-        moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
+        moKeyEmissionType.setValue(new int[] { moDps.getFkEmissionTypeId() });
 
-        jtfDocType.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_TP, moRegistry.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
+        jtfDocType.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_TP, moDps.getDpsTypeKey(), DDbRegistry.FIELD_NAME));
         jtfDocType.setCaretPosition(0);
 
         moPanelDps.setValue(DModSysConsts.PARAM_YEAR, mnOriginalYear);
-        moPanelDps.setRegistry(moRegistry);
+        moPanelDps.setRegistry(moDps);
 
         moTextSeries.setEditable(false);
         moDateDate.setEditable(false);
@@ -273,8 +272,8 @@ public class DFormDpsPrinting extends DBeanForm {
 
     @Override
     public DDbDpsPrinting getRegistry() throws Exception {
-        moRegistry.setAuxLock(moRegistryLock);
-        DDbDpsPrinting registry = moRegistry.createDpsPrinting();
+        moDps.setAuxLock(moDpsLock);
+        DDbDpsPrinting registry = moDps.createDpsPrinting(true);
 
         if (registry.isRegistryNew()) { }
 
@@ -294,7 +293,7 @@ public class DFormDpsPrinting extends DBeanForm {
     @Override
     public DGuiValidation validateForm() {
         String message = "";
-        DDbDpsSeriesNumber dpsSeriesNumber = DTrnUtils.getDpsSeriesNumber(miClient.getSession(), moRegistry.getDpsTypeKey(), moTextSeries.getValue(), moIntNumber.getValue());
+        DDbDpsSeriesNumber dpsSeriesNumber = DTrnUtils.getDpsSeriesNumber(miClient.getSession(), moDps.getDpsTypeKey(), moTextSeries.getValue(), moIntNumber.getValue());
         DGuiValidation validation = moFields.validateFields();
 
         if (validation.isValid()) {
@@ -312,16 +311,16 @@ public class DFormDpsPrinting extends DBeanForm {
                 // Validate document number:
 
                 if (validation.isValid()) {
-                    moRegistry.setSeries(moTextSeries.getValue());
-                    moRegistry.setNumber(moIntNumber.getValue());
+                    moDps.setSeries(moTextSeries.getValue());
+                    moDps.setNumber(moIntNumber.getValue());
 
-                    message = DTrnUtils.validateNumberForDps(miClient.getSession(), moRegistry);
+                    message = DTrnUtils.validateNumberForDps(miClient.getSession(), moDps);
                     if (!message.isEmpty()) {
                         validation.setMessage(message);
                         validation.setComponent(moIntNumber);
                     }
-                    else if (moRegistry.isRegistryNew() && DTrnUtils.isDpsNumberAutomatic(moRegistry.getDpsClassKey())) {
-                        moIntNumber.setValue(moRegistry.getNumber());   // new document number could be updated
+                    else if (moDps.isRegistryNew() && DTrnUtils.isDpsNumberAutomatic(moDps.getDpsClassKey())) {
+                        moIntNumber.setValue(moDps.getNumber());   // new document number could be updated
                     }
                 }
             }

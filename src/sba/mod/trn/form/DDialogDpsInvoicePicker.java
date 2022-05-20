@@ -10,7 +10,6 @@ import java.awt.event.ItemEvent;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Vector;
-import sa.lib.SLibConsts;
 import sba.gui.mygrid.DMyGridRow;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
@@ -303,7 +302,7 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
     
     @Override
     public void resetForm() {
-        mnFormResult = SLibConsts.UNDEFINED;
+        mnFormResult = DLibConsts.UNDEFINED;
         mbFirstActivation = true;
     }
 

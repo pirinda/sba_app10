@@ -24,6 +24,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
     protected int mnPkRequestId;
     protected int mnRequestType;
     protected int mnRequestStatus;
+    protected String msAnnulReasonCode;
+    protected String msAnnulRelatedUuid;
     /*
     protected boolean mbDeleted;
     protected boolean mbSystem;
@@ -53,6 +55,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
     public void setPkRequestId(int n) { mnPkRequestId = n; }
     public void setRequestType(int n) { mnRequestType = n; }
     public void setRequestStatus(int n) { mnRequestStatus = n; }
+    public void setAnnulReasonCode(String s) { msAnnulReasonCode = s; }
+    public void setAnnulRelatedUuid(String s) { msAnnulRelatedUuid = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkXmlSignatureProviderId(int n) { mnFkXmlSignatureProviderId = n; }
@@ -65,6 +69,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
     public int getPkRequestId() { return mnPkRequestId; }
     public int getRequestType() { return mnRequestType; }
     public int getRequestStatus() { return mnRequestStatus; }
+    public String getAnnulReasonCode() { return msAnnulReasonCode; }
+    public String getAnnulRelatedUuid() { return msAnnulRelatedUuid; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkXmlSignatureProviderId() { return mnFkXmlSignatureProviderId; }
@@ -92,6 +98,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
         mnPkRequestId = 0;
         mnRequestType = 0;
         mnRequestStatus = 0;
+        msAnnulReasonCode = "";
+        msAnnulRelatedUuid = "";
         mbDeleted = false;
         mbSystem = false;
         mnFkXmlSignatureProviderId = 0;
@@ -150,6 +158,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
             mnPkRequestId = resultSet.getInt("id_req");
             mnRequestType = resultSet.getInt("req_tp");
             mnRequestStatus = resultSet.getInt("req_st");
+            msAnnulReasonCode = resultSet.getString("ann_reason_code");
+            msAnnulRelatedUuid = resultSet.getString("ann_related_uuid");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkXmlSignatureProviderId = resultSet.getInt("fk_xsp");
@@ -181,6 +191,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
                     mnPkRequestId + ", " + 
                     mnRequestType + ", " + 
                     mnRequestStatus + ", " + 
+                    "'" + msAnnulReasonCode + "', " + 
+                    "'" + msAnnulRelatedUuid + "', " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkXmlSignatureProviderId + ", " + 
@@ -200,6 +212,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
                     */
                     "req_tp = " + mnRequestType + ", " +
                     "req_st = " + mnRequestStatus + ", " +
+                    "ann_reason_code = '" + msAnnulReasonCode + "', " +
+                    "ann_related_uuid = '" + msAnnulRelatedUuid + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_xsp = " + mnFkXmlSignatureProviderId + ", " +
@@ -223,6 +237,8 @@ public class DDbXmlSignatureRequest extends DDbRegistryUser {
         registry.setPkRequestId(this.getPkRequestId());
         registry.setRequestType(this.getRequestType());
         registry.setRequestStatus(this.getRequestStatus());
+        registry.setAnnulReasonCode(this.getAnnulReasonCode());
+        registry.setAnnulRelatedUuid(this.getAnnulRelatedUuid());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkXmlSignatureProviderId(this.getFkXmlSignatureProviderId());

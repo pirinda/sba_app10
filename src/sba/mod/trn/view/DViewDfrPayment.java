@@ -7,8 +7,10 @@ package sba.mod.trn.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import sba.gui.DGuiClientApp;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
@@ -29,6 +31,7 @@ import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprUtils;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnEmissionUtils;
@@ -51,6 +54,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
     private JButton mjButtonDfrCancelVerify;    // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCheckStatus;     // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrSend;            // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrDownload;          // only for Digital Fiscal Receipt (DFR)
 
     /**
      * @param client GUI client.
@@ -87,6 +91,9 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
 
         mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " comprobante", this);
         getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
+
+        mjButtonDfrDownload = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_doc_xml.gif")), DUtilConsts.TXT_SAVE + " XML", this);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrDownload);
     }
 
     /*
@@ -219,7 +226,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, "v.doc_ts", DGridConsts.COL_TITLE_DATE + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "csh.code", DUtilConsts.TXT_BRANCH_CSH + " empresa");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 20);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.can_st", DGridConsts.COL_TITLE_STAT + " cancel", 30);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_ico", DGridConsts.COL_TITLE_STAT + " docto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "f_xml", "XML");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "b.name", DGridConsts.COL_TITLE_NAME + " " + catetory);
@@ -400,6 +407,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                     DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                 }
                 catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
                     DLibUtils.showException(this, e);
                 }
             }
@@ -416,6 +424,7 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                     DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
                 }
                 catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
                     DLibUtils.showException(this, e);
                 }
             }
@@ -454,6 +463,22 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         }
     }
 
+    private void actionDfrDownload() {
+        if (mjButtonDfrDownload.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    DTrnEmissionUtils.downloadDfr(miClient, (DGridRowView) getSelectedGridRow());
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton) {
@@ -479,6 +504,9 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
             }
             else if (button == mjButtonDfrSend) {
                 actionDfrSend();
+            }
+            else if (button == mjButtonDfrDownload) {
+                actionDfrDownload();
             }
         }
     }

@@ -156,6 +156,7 @@ public class DDialogSelectDpsSeries extends DBeanFormDialog {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void setRegistry(DDbRegistry registry) throws Exception {
         Vector<DGuiItem> items = new Vector<>();
         DGuiClientSessionCustom sessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();

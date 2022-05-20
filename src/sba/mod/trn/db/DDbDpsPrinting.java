@@ -43,8 +43,10 @@ public class DDbDpsPrinting extends DDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
+    protected DDbLock moAuxDpsLock;
+    protected boolean mbAuxFreeDpsLockOnSave;
+    
     protected boolean mbHasDpsChanged;
-    protected DDbLock moAuxLock;
 
     public DDbDpsPrinting() {
         super(DModConsts.T_DPS_PRT);
@@ -83,10 +85,13 @@ public class DDbDpsPrinting extends DDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setAuxLock(DDbLock o) { moAuxLock = o; }
+    public void setAuxDpsLock(DDbLock o) { moAuxDpsLock = o; }
+    public void setAuxFreeDpsLockOnSave(boolean b) { mbAuxFreeDpsLockOnSave = b; }
+    
+    public DDbLock getAuxDpsLock() { return moAuxDpsLock; }
+    public boolean isAuxFreeDpsLockOnSave() { return mbAuxFreeDpsLockOnSave; }
     
     public boolean hasDpsChanged() { return mbHasDpsChanged; }
-    public DDbLock getAuxLock() { return moAuxLock; }
 
     public int[] getDpsCategoryKey() { return new int[] { mnFkDpsCategoryId }; }
     public int[] getDpsClassKey() { return new int[] { mnFkDpsCategoryId, mnFkDpsClassId }; }
@@ -125,8 +130,10 @@ public class DDbDpsPrinting extends DDbRegistryUser {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
+        moAuxDpsLock = null;
+        mbAuxFreeDpsLockOnSave = false;
+        
         mbHasDpsChanged = false;
-        moAuxLock = null;
     }
 
     @Override
@@ -256,7 +263,7 @@ public class DDbDpsPrinting extends DDbRegistryUser {
         // Update DPS:
 
         dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnPkDpsId });
-        dps.setAuxLock(moAuxLock);
+        dps.setAuxLock(moAuxDpsLock);
 
         if (mbHasDpsChanged = dps.hasDpsChanged(msSeries, mnNumber, msOrder, mtDate, mnFkEmissionTypeId, getDpsTypeKey())) {
             dps.assureLock(session);
@@ -279,7 +286,9 @@ public class DDbDpsPrinting extends DDbRegistryUser {
             session.getStatement().execute(msSql);
         }
 
-        dps.freeLockByUpdate(session);
+        if (mbAuxFreeDpsLockOnSave) {
+            dps.freeLock(session, DDbLock.LOCK_ST_FREED_UPDATE);
+        }
         
         // Finish registry updating:
 
@@ -307,7 +316,8 @@ public class DDbDpsPrinting extends DDbRegistryUser {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
-        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
+        registry.setAuxDpsLock(this.getAuxDpsLock()); // locks cannot be clonned!
+        registry.setAuxFreeDpsLockOnSave(this.isAuxFreeDpsLockOnSave());
         
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

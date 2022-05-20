@@ -38,7 +38,6 @@ import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbLock;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
@@ -57,8 +56,9 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
     private static final int DESCRIP_MAX_LEN = 50;
 
     private DDbDfr moRegistry;
-    private DDbDps moDps;
     private DDbLock moRegistryLock;
+    private DDbDps moDps;
+    private DDbLock moDpsLock;
     private DGridPaneForm moGridDpsRows;
 
     /** Creates new form DFormDfrAddenda
@@ -287,7 +287,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        freeLockByCancel();
+        freeLocks(DDbLock.LOCK_ST_FREED_CANCEL);
     }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -386,18 +386,23 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         mvFormGrids.add(moGridDpsRows);
     }
     
-    private void freeLockByCancel() {
-        if (moRegistryLock != null) {
+    private void freeLock(final DDbLock lock, final int freedLockStatus) {
+        if (lock != null) {
             try {
-                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+                DLockUtils.freeLock(miClient.getSession(), lock, freedLockStatus);
             }
             catch (Exception e) {
-                DLibUtils.showException(this, e);
-            }
-            finally {
-                moRegistryLock = null;
+                DLibUtils.printException(this, e);
             }
         }
+    }
+    
+    private void freeLocks(final int freedLockStatus) {
+        freeLock(moRegistryLock, freedLockStatus);
+        moRegistryLock = null;
+        
+        freeLock(moDpsLock, freedLockStatus);
+        moDpsLock = null;
     }
     
     private void actionPerformedContEntryEdit() {
@@ -413,6 +418,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                     break;
 
                 default:
+                    // do nothing
             }
         }
     }
@@ -442,6 +448,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                     break;
 
                 default:
+                    // do nothing
             }
         }
     }
@@ -500,6 +507,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                     break;
                     
                 default:
+                    // do nothing
             }
             
             jtfContEntryStatus.setText(done ? STATUS_DONE : STATUS_PEND);
@@ -551,7 +559,15 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         }
         else {
             jtfRegistryKey.setText("");
-            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDfrId(), DDbDps.TIMEOUT);
+            
+            try {
+                moRegistryLock = moRegistry.assureLock(miClient.getSession());
+                moDpsLock = moDps.assureLock(miClient.getSession());
+            }
+            catch (Exception e) {
+                freeLocks(DDbLock.LOCK_ST_FREED_EXCEPTION);
+                throw e;
+            }
         }
         
         jtfXmlAddendaType.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ADD_TP, new int[] { moRegistry.getFkXmlAddendaTypeId() }, DDbRegistry.FIELD_NAME));
@@ -565,6 +581,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                 break;
                 
             default:
+                // do nothing
         }
 
         setFormEditable(true);  // enable all controls before setting form values
@@ -585,6 +602,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                         break;
                         
                     default:
+                        // do nothing
                 }
             }
         }
@@ -602,6 +620,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                 break;
                 
             default:
+                // do nothing
         }
         
         addAllListeners();
@@ -609,19 +628,21 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
 
     @Override
     public DDbDfr getRegistry() throws Exception {
-        DSubelementAddenda extAddenda = null;
-        DElementAddendaContinentalTire addendaContinentalTire = null;
         DDbDfr registry = moRegistry.clone();
 
         if (registry.isRegistryNew()) {
+            throw new Exception(DGuiConsts.ERR_MSG_FORM_EXIST_REG);
         }
         else {
-            registry.setAuxLock(moRegistryLock);
+            registry.setAuxLock(moRegistryLock); // replace just cloned lock with original one
+            registry.setAuxDpsLock(moDpsLock); // provide DPS lock
         }
+        
+        DSubelementAddenda extAddenda = null;
         
         switch (moRegistry.getFkXmlAddendaTypeId()) {
             case DModSysConsts.TS_XML_ADD_TP_CON:
-                addendaContinentalTire = new DElementAddendaContinentalTire();
+                DElementAddendaContinentalTire addendaContinentalTire = new DElementAddendaContinentalTire();
                 addendaContinentalTire.getEltPo().setValue(jtfContPo.getText());
                 addendaContinentalTire.getEltPedido().setValue(moTextContPedido.getValue());
                 addendaContinentalTire.getEltTipoProv().setValue(jtfContTipoProv.getText());
@@ -635,10 +656,11 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
                 break;
                 
             default:
+                // do nothing
         }
         
-        registry.setDocXmlAddenda(extAddenda.getElementForXml());   // the very only member of registry set on this form!
-        registry.setAuxRegenerateXmlOnSave(true);   // activate request for embedding new addenda and updating XML file when saving this registry
+        registry.setDocXmlAddenda(extAddenda.getElementForXml()); // the very only member of registry set on this form!
+        registry.setAuxRegenerateXmlOnSave(true); // activate request for embedding new addenda and updating XML file when saving this registry
 
         return registry;
     }
@@ -675,6 +697,12 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
     @Override
     public Object getValue(final int type) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void actionCancel() {
+        freeLocks(DDbLock.LOCK_ST_FREED_CANCEL);
+        super.actionCancel();
     }
 
     @Override

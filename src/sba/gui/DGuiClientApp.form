@@ -28,9 +28,14 @@
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile1">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiFileDeleteActiveLocks">
+            <MenuItem class="javax.swing.JMenuItem" name="jmiFileDeleteUserActiveLocks">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Eliminar los bloqueos a registros..."/>
+                <Property name="text" type="java.lang.String" value="Liberar mis accesos exclusivos a registros..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiFileClearUserSettings">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Limpiar mis preferencias de usuario..."/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jsFile2">

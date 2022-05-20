@@ -236,6 +236,7 @@ public class DViewDpsPrinting extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.CU_USR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
         moSuscriptionsSet.add(DModConsts.T_DPS_SIG);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
     }
 
     @Override

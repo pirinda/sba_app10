@@ -123,7 +123,19 @@ public class DTrnDfrUtilsHandler {
         String edsName = configBranch.getDfrName();
         String edsPswd = configBranch.getDfrPassword();
 
-        if (!((DDbConfigCompany) moSession.getConfigCompany()).isDevelopment()) {
+        if (((DDbConfigCompany) moSession.getConfigCompany()).isDevelopment()) {
+            // environment for development is set:
+
+            switch (configBranch.getFkXmlSignatureProviderId()) {
+                case DModSysConsts.CS_XSP_FCG:
+                case DModSysConsts.CS_XSP_FNK:
+                    throw new UnsupportedOperationException("La consulta de estatus SAT de CFDI no está implementada en ambiente de desarrollo.");
+
+                default:
+                    // do nothing
+            }
+        }
+        else {
             // environment for production is set:
 
             switch (configBranch.getFkXmlSignatureProviderId()) {
@@ -167,19 +179,7 @@ public class DTrnDfrUtilsHandler {
                     break;
 
                 default:
-            }
-        }
-        else {
-            // environment for development is set:
-
-            switch (configBranch.getFkXmlSignatureProviderId()) {
-                case DModSysConsts.CS_XSP_FCG:
-                    break;
-
-                case DModSysConsts.CS_XSP_FNK:
-                    break;
-
-                default:
+                    // do nothing
             }
         }
         

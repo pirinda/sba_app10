@@ -42,6 +42,7 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
     private int mnCurrentYear;
     private int[] manBookkeepingKey_n;
     private DDbDps moRegistry;
+    private boolean mbEnableCardex;
     private DDialogCardexDps moDialogCardexDps;
 
     /** Creates new form DPanelDps */
@@ -263,7 +264,8 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
-        jbShowCardex.setEnabled(false);
+        mbEnableCardex = false;
+        moDialogCardexDps = null;
         jtfBizPartnerFiscalId.setToolTipText(DUtilConsts.TXT_FISCAL_ID);
     }
 
@@ -329,9 +331,8 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
      */
 
     public void enableShowCardex() {
+        mbEnableCardex = true;
         moDialogCardexDps = new DDialogCardexDps(miClient);
-
-        jbShowCardex.setEnabled(true);
     }
 
     /*
@@ -393,6 +394,8 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
             moCurBalance.getField().setValue(0d);
             moCurBalanceCy.getField().setValue(0d);
             moCurBalanceCy.setCurrencyKey(null);
+            
+            jbShowCardex.setEnabled(false);
         }
         else {
             moRegistry = (DDbDps) registry;
@@ -443,9 +446,11 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
             moCurBalance.getField().setValue(amount.getAmount());
             moCurBalanceCy.getField().setValue(amount.getAmountCy());
             moCurBalanceCy.setCurrencyKey(moRegistry.getCurrencyKey());
-
-            if (moRegistry.isRegistryNew()) { } else { }
+            
+            jbShowCardex.setEnabled(mbEnableCardex);
         }
+        
+        if (moRegistry.isRegistryNew()) { } else { }
 
         mnYear = 0; // reset year every time
 

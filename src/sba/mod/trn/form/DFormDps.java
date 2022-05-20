@@ -69,7 +69,6 @@ import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DDbTaxGroupConfigRow;
 import sba.mod.itm.db.DDbItem;
@@ -124,6 +123,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private DGridPaneForm moGridDpsRows;
     private DDbItem moItem;
     private DDbUnit moUnit;
+    private int mnCompanyIdentityType;
     private int mnIogCategory;
     private int mnBizPartnerItemPriceType;
     private int[] manAdjustmentClassMoneyKey;
@@ -1234,6 +1234,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowTaxInput.setNextButton(jbRowAdd);
 
         moFields.setFormButton(jbSave);
+        
+        mnCompanyIdentityType = ((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId();
 
         jbBizPartnerPick.setToolTipText(DGuiConsts.TXT_BTN_FIND + " " + bizPartner.toLowerCase() + " " + DUtilConsts.ACTION_KEY);
         jbBizPartnerEdit.setToolTipText(DGuiConsts.TXT_BTN_EDIT + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)).toLowerCase());
@@ -1452,7 +1454,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private void freeLockByCancel() {
         if (moRegistryLock != null) {
             try {
-                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DDbLock.LOCK_ST_FREED_CANCEL);
             }
             catch (Exception e) {
                 DLibUtils.showException(this, e);
@@ -2495,7 +2497,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     private void actionPerformedExchangeRatePick() {
-
+        miClient.showMsgBoxInformation("Favor de captuar manualmente el tipo de cambio deseado.");
+        moDecExchangeRate.requestFocusInWindow();
     }
 
     private void actionPerformedCfdCfdiRelatedShow() {
@@ -3592,7 +3595,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         miClient.getSession().populateCatalogue(moKeyCurrency, DModConsts.CS_CUR, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyPaymentType, DModConsts.FS_PAY_TP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyModeOfPaymentType, DModConsts.FS_MOP_TP, DLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyCfdTaxRegime, DModConsts.CS_TAX_REG, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyCfdTaxRegime, DModConsts.CS_TAX_REG, mnCompanyIdentityType, null);
         miClient.getSession().populateCatalogue(moKeyEmissionType, DModConsts.TS_EMI_TP, DLibConsts.UNDEFINED, null);
     }
 
@@ -3672,14 +3675,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moRegistryLock = null;
         }
         else {
-            jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
-
             moTextSeries.setValue(moRegistry.getSeries());
             moIntNumber.setValue(moRegistry.getNumber());
 
             mtOriginalDate = moRegistry.getDate();
             
-            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDpsId(), DDbDps.TIMEOUT);
+            jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
+
+            moRegistryLock = moRegistry.assureLock(miClient.getSession());
         }
 
         if (!isDpsNumberAutomatic) {

@@ -154,6 +154,7 @@ public class DFormBookkeepingMoveCustomDpsClear extends DBeanForm {
         moFields.setFormButton(jbSave);
 
         moPanelDps.setPanelSettings(miClient);
+        moPanelDps.enableShowCardex();
     }
 
     private void renderCurrencySettings() {

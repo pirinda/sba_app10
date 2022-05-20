@@ -30,6 +30,7 @@ import sba.lib.DLibConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
+import sba.lib.db.DDbRegistry;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiEdsSignature;
@@ -42,7 +43,6 @@ import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbLock;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DDbAbpBranchCash;
 import sba.mod.fin.db.DDbBookkeepingMove;
@@ -54,12 +54,12 @@ import sba.mod.fin.db.DFinUtils;
  * Digital Fiscal Receipt (DFR)
  * @author Sergio Flores
  */
-public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
+public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     
     public static final int FIELD_CAN_ST = 1;
 
     /** Timeout in minutes.  */
-    public static final int TIMEOUT = 1; // 1 min.
+    public static final int TIMEOUT = 3; // 3 min.
     
     protected int mnPkDfrId;
     protected String msSeries;
@@ -118,6 +118,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     protected boolean mbAuxRegenerateXmlOnSave;
     protected int[] manAuxXmlSignatureRequestKey;
     protected DDbLock moAuxLock;
+    protected DDbLock moAuxDpsLock;
     
     public DDbDfr() {
         super(DModConsts.T_DFR);
@@ -316,30 +317,70 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
      */
 
     /**
-     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
-     * @param session GUI session.
+     * Checks if registry is available, that is, not locked.
+     * @param session
+     * @return
      * @throws Exception 
      */
-    public void assureLock(final DGuiSession session) throws Exception {
+    @Override
+    public boolean checkAvailability(final DGuiSession session) throws Exception {
+        boolean isAvailable = true;
+        
         if (!mbRegistryNew) {
             if (moAuxLock == null) {
+                // no lock set already, check only availabitity:
+                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDfrId);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+                isAvailable = true;
+            }
+        }
+        
+        return isAvailable;
+    }
+
+    /**
+     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @return 
+     * @throws Exception 
+     */
+    @Override
+    public DDbLock assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, create it:
                 moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDfrId, TIMEOUT);
             }
             else {
-                DLockUtils.validateLock(session, moAuxLock);
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
             }
         }
+        
+        return moAuxLock;
     }
 
     /**
      * Frees current lock, if any, with by-update status.
      * @param session GUI session.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
      * @throws Exception 
      */
-    public void freeLockByUpdate(final DGuiSession session) throws Exception {
+    @Override
+    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
         if (moAuxLock != null) {
-            DLockUtils.freeLock(session, moAuxLock, DLockConsts.LOCK_ST_FREED_UPDATE);
+            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
             moAuxLock = null;
+        }
+    }
+
+    private void freeDpsLock(final DGuiSession session, final int freedLockStatus) throws Exception {
+        if (moAuxDpsLock != null) {
+            DLockUtils.freeLock(session, moAuxDpsLock, freedLockStatus);
+            moAuxDpsLock = null;
         }
     }
 
@@ -446,6 +487,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
     public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
     public void setAuxLock(DDbLock o) { moAuxLock = o; }
+    public void setAuxDpsLock(DDbLock o) { moAuxDpsLock = o; }
 
     public boolean isAuxJustIssued() { return mbAuxJustIssued; }
     public boolean isAuxJustAnnulled() { return mbAuxJustAnnulled; }
@@ -454,6 +496,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
     public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
     public DDbLock getAuxLock() { return moAuxLock; }
+    public DDbLock getAuxDpsLock() { return moAuxDpsLock; }
     
     public int[] getCompanyKey() { return new int[] { mnFkOwnerBizPartnerId }; }
     public int[] getCompanyBranchKey() { return new int[] { mnFkOwnerBizPartnerId, mnFkOwnerBranchId }; }
@@ -560,6 +603,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         mbAuxRegenerateXmlOnSave = false;
         manAuxXmlSignatureRequestKey = null;
         moAuxLock = null;
+        moAuxDpsLock = null;
     }
 
     @Override
@@ -891,9 +935,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         
         // Finish registry updating:
         
-        if (!mbRegistryNew) {
-            freeLockByUpdate(session);
-        }
+        freeLock(session, DDbLock.LOCK_ST_FREED_UPDATE);
+        freeDpsLock(session, DDbLock.LOCK_ST_FREED_UPDATE);
         
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
@@ -957,7 +1000,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         registry.setAuxRewriteXmlOnSave(this.isAuxRewriteXmlOnSave());
         registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
         registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
-        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
+        registry.setAuxLock(this.getAuxLock()); // locks cannot be clonned!
+        registry.setAuxDpsLock(this.getAuxDpsLock()); // locks cannot be clonned!
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
@@ -985,13 +1029,13 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     
     @Override
     public boolean canSave(final DGuiSession session) throws SQLException, Exception {
-        boolean canSave = super.canSave(session);
+        boolean can = super.canSave(session);
 
-        if (canSave) {
-            assureLock(session);
+        if (can) {
+            can = checkAvailability(session);
         }
 
-        return canSave;
+        return can;
     }
 
     @Override
@@ -1006,7 +1050,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
         }
 
         if (can) {
-            assureLock(session);
+            can = checkAvailability(session);
         }
 
         return can;
@@ -1015,6 +1059,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
     @Override
     public boolean canDelete(final DGuiSession session) throws SQLException, Exception {
         msQueryResult = DDbConsts.ERR_MSG_REG_NON_DELETABLE + "\n" + DTrnConsts.ERR_MSG_NOT_PROCEED;
+        
         return false;
     }
 
@@ -1334,5 +1379,50 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDfr {
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
         }
+    }
+
+    @Override
+    public String getDocName() {
+        return "comprobante";
+    }
+
+    @Override
+    public String getDocNumber() {
+        return getDfrNumber();
+    }
+
+    @Override
+    public Date getDocDate() {
+        return getDocTs();
+    }
+    
+    @Override
+    public int getDocStatus() {
+        return getFkXmlStatusId();
+    }
+    
+    @Override
+    public int getBizPartnerCategory() {
+        return DModSysConsts.BS_BPR_CL_CUS;
+    }
+
+    @Override
+    public int[] getBizPartnerBranchAddressKey() {
+        return new int[] { mnFkBizPartnerId, DUtilConsts.BPR_BRA_ID, DUtilConsts.BRA_ADD_ID };
+    }
+
+    @Override
+    public DDbDfr getDfr() {
+        return this;
+    }
+
+    @Override
+    public DDbRegistry createDocSending() {
+        return null;
+    }
+    
+    @Override
+    public boolean canAnnul(final DGuiSession session) throws Exception {
+        return canDisable(session);
     }
 }

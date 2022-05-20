@@ -92,6 +92,7 @@ public class DXmlCatalog {
         return items;
     }
     
+    @SuppressWarnings("unchecked")
     public void populateCatalog(JComboBox comboBox) {
         comboBox.removeAllItems();
         for (DGuiItem item : createGuiItems()) {

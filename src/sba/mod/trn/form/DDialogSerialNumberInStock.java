@@ -266,6 +266,7 @@ public class DDialogSerialNumberInStock extends DBeanFormDialog {
         jtfUnitCode.setCaretPosition(0);
     }
 
+    @SuppressWarnings("unchecked")
     private void renderStockMoves() {
         String sql = "";
         ResultSet resultSet = null;

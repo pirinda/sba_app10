@@ -29,7 +29,6 @@ import sba.mod.DModSysConsts;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbUser;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.fin.db.DDbAbpBizPartner;
 import sba.mod.fin.db.DDbAbpItem;
@@ -41,13 +40,14 @@ import sba.mod.fin.db.DFinUtils;
  *
  * @author Sergio Flores
  */
-public class DDbDps extends DDbRegistryUser implements DTrnDfr {
+public class DDbDps extends DDbRegistryUser implements DTrnDoc {
 
     public static final int FIELD_CLOSED_DPS = 1;
     public static final int FIELD_CLOSED_IOG = 2;
     public static final int FIELD_AUDITED = 3;
+    
     /** Timeout in minutes.  */
-    public static final int TIMEOUT = 1; // 1 min.
+    public static final int TIMEOUT = 3; // 3 min.
 
     protected int mnPkDpsId;
     protected String msSeries;
@@ -788,7 +788,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         
         return true;
     }
-    
+
     /*
      * Public methods
      */
@@ -842,31 +842,64 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
         return text;
     }
+    
+    /**
+     * Checks if registry is available, that is, not locked.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public boolean checkAvailability(final DGuiSession session) throws Exception {
+        boolean isAvailable = true;
+        
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, check only availabitity:
+                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDpsId);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+                isAvailable = true;
+            }
+        }
+        
+        return isAvailable;
+    }
 
     /**
      * Assures lock. That is if it does not already exist, it is created, otherwise validated.
      * @param session GUI session.
+     * @return 
      * @throws Exception 
      */
-    public void assureLock(final DGuiSession session) throws Exception {
+    @Override
+    public DDbLock assureLock(final DGuiSession session) throws Exception {
         if (!mbRegistryNew) {
             if (moAuxLock == null) {
+                // no lock set already, create it:
                 moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDpsId, TIMEOUT);
             }
             else {
-                DLockUtils.validateLock(session, moAuxLock);
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
             }
         }
+        
+        return moAuxLock;
     }
 
     /**
      * Frees current lock, if any, with by-update status.
      * @param session GUI session.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
      * @throws Exception 
      */
-    public void freeLockByUpdate(final DGuiSession session) throws Exception {
+    @Override
+    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
         if (moAuxLock != null) {
-            DLockUtils.freeLock(session, moAuxLock, DLockConsts.LOCK_ST_FREED_UPDATE);
+            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
             moAuxLock = null;
         }
     }
@@ -1607,9 +1640,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
         // Finish registry updating:
         
-        if (!mbRegistryNew) {
-            freeLockByUpdate(session);
-        }
+        freeLock(session, DDbLock.LOCK_ST_FREED_UPDATE);
 
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
@@ -1714,7 +1745,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
         registry.setAuxDfrRequired(this.isAuxDfrRequired());
         registry.setAuxTotalQuantity(this.getAuxTotalQuantity());
-        registry.setAuxLock(this.getAuxLock() == null ? null : this.getAuxLock().clone());
+        registry.setAuxLock(this.getAuxLock()); // locks cannot be clonned!
 
         registry.setRegistryNew(this.isRegistryNew());
 
@@ -1772,19 +1803,19 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     @Override
     public boolean canSave(final DGuiSession session) throws SQLException, Exception {
         int year = 0;
-        boolean canSave = super.canSave(session);
+        boolean can = super.canSave(session);
 
-        if (canSave) {
+        if (can) {
             // Validate document number:
 
             msQueryResult = DTrnUtils.validateNumberForDps(session, this);
 
             if (!msQueryResult.isEmpty()) {
-                canSave = false;
+                can = false;
             }
         }
 
-        if (canSave) {
+        if (can) {
             // Validate stock:
 
             if (isStockRequired()) {
@@ -1797,13 +1828,13 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
                             if (DTrnUtils.isDpsForStockIn(this, true)) {
                                 if (!DTrnDocRowUtils.validateRowIn(session, year, row)) {
-                                    canSave = false;
+                                    can = false;
                                     break;
                                 }
                             }
                             else if (DTrnUtils.isDpsForStockOut(this, true)) {
-                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<DTrnDocRow>(mvChildRows))) {
-                                    canSave = false;
+                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<>(mvChildRows))) {
+                                    can = false;
                                     break;
                                 }
                             }
@@ -1813,13 +1844,13 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
 
                             if (DTrnUtils.isDpsForStockIn(this, false)) {
                                 if (!DTrnDocRowUtils.validateRowIn(session, year, row)) {
-                                    canSave = false;
+                                    can = false;
                                     break;
                                 }
                             }
                             else if (DTrnUtils.isDpsForStockOut(this, false)) {
-                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<DTrnDocRow>(mvChildRows))) {
-                                    canSave = false;
+                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<>(mvChildRows))) {
+                                    can = false;
                                     break;
                                 }
                             }
@@ -1829,15 +1860,17 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
             }
         }
         
-        if (canSave) {
-            assureLock(session);
+        if (can) {
+            can = checkAvailability(session);
         }
 
-        return canSave;
+        return can;
     }
     
+    @Override
     public boolean canAnnul(final DGuiSession session) throws SQLException, Exception {
         mbAuxCheckDfrDiscarting = false;
+        
         return canDisable(session);
     }
 
@@ -1858,7 +1891,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
             }
             
             if (can) {
-                assureLock(session);
+                can = checkAvailability(session);
             }
         }
 
@@ -1882,7 +1915,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
             }
             
             if (can) {
-                assureLock(session);
+                can = checkAvailability(session);
             }
         }
 
@@ -1920,6 +1953,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     @Override
     public void delete(final DGuiSession session) throws SQLException, Exception {
         mbDeleted = !mbDeleted;
+        
         save(session);
         session.notifySuscriptors(mnRegistryType);
     }
@@ -2005,6 +2039,90 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
     }
 
     /**
+     * Creates new entry for document printing log.
+     * @param freeDpsLockOnSave
+     * @return 
+     */
+    public DDbDpsPrinting createDpsPrinting(final boolean freeDpsLockOnSave) {
+        DDbDpsPrinting dpsPrinting = new DDbDpsPrinting();
+
+        dpsPrinting.setPkDpsId(this.getPkDpsId());
+        dpsPrinting.setPkPrintingId(0);
+        dpsPrinting.setSeries(this.getSeries());
+        dpsPrinting.setNumber(this.getNumber());
+        dpsPrinting.setOrder(this.getOrder());
+        dpsPrinting.setDate(this.getDate());
+        dpsPrinting.setDeleted(false);
+        dpsPrinting.setFkEmissionTypeId(this.getFkEmissionTypeId());
+        dpsPrinting.setFkDpsCategoryId(this.getFkDpsCategoryId());
+        dpsPrinting.setFkDpsClassId(this.getFkDpsClassId());
+        dpsPrinting.setFkDpsTypeId(this.getFkDpsTypeId());
+        dpsPrinting.setFkUserInsertId(this.getFkUserInsertId());
+        dpsPrinting.setFkUserUpdateId(this.getFkUserUpdateId());
+        dpsPrinting.setTsUserInsert(this.getTsUserInsert());
+        dpsPrinting.setTsUserUpdate(this.getTsUserUpdate());
+        
+        dpsPrinting.setAuxDpsLock(this.getAuxLock());
+        dpsPrinting.setAuxFreeDpsLockOnSave(freeDpsLockOnSave);
+
+        return dpsPrinting;
+    }
+
+    /**
+     * Creates new entry for document signing log.
+     * @param freeDpsLockOnSave
+     * @return 
+     */
+    public DDbDpsSigning createDpsSigning(final boolean freeDpsLockOnSave) {
+        DDbDpsSigning dpsSigning = new DDbDpsSigning();
+
+        dpsSigning.setPkDpsId(this.getPkDpsId());
+        dpsSigning.setPkSigningId(0);
+        dpsSigning.setSeries(this.getSeries());
+        dpsSigning.setNumber(this.getNumber());
+        dpsSigning.setOrder(this.getOrder());
+        dpsSigning.setDate(this.getDate());
+        dpsSigning.setDeleted(false);
+        dpsSigning.setFkEmissionTypeId(this.getFkEmissionTypeId());
+        dpsSigning.setFkDpsCategoryId(this.getFkDpsCategoryId());
+        dpsSigning.setFkDpsClassId(this.getFkDpsClassId());
+        dpsSigning.setFkDpsTypeId(this.getFkDpsTypeId());
+        dpsSigning.setFkUserInsertId(this.getFkUserInsertId());
+        dpsSigning.setFkUserUpdateId(this.getFkUserUpdateId());
+        dpsSigning.setTsUserInsert(this.getTsUserInsert());
+        dpsSigning.setTsUserUpdate(this.getTsUserUpdate());
+
+        dpsSigning.setAuxDpsLock(this.getAuxLock());
+        dpsSigning.setAuxFreeDpsLockOnSave(freeDpsLockOnSave);
+
+        return dpsSigning;
+    }
+
+    /**
+     * Creates new entry for document sending log.
+     * @return DDbDpsSending
+     */
+    public DDbDpsSending createDpsSending() {
+        DDbDpsSending dpsSending = new DDbDpsSending();
+
+        dpsSending.setPkDpsId(this.getPkDpsId());
+        //dpsSending.setPkSendingId(0);
+        //dpsSending.setContact1("");
+        //dpsSending.setContact2("");
+        //dpsSending.setContact3("");
+        //dpsSending.setEmail1("");
+        //dpsSending.setEmail2("");
+        //dpsSending.setEmail3("");
+        dpsSending.setDeleted(false);
+        dpsSending.setFkUserInsertId(this.getFkUserInsertId());
+        dpsSending.setFkUserUpdateId(this.getFkUserUpdateId());
+        dpsSending.setTsUserInsert(this.getTsUserInsert());
+        dpsSending.setTsUserUpdate(this.getTsUserUpdate());
+
+        return dpsSending;
+    }
+
+    /**
      * Updates Digital Fiscal Receipt (DFR).
      * VERY IMPORTANT NOTICE!: Check on each usage of this method that is covered by exclusive-access locks.
      * By now, all current usages (one in DTrnDfrUtils, two in DTrnEmissionUtils) are covered properly by these locks.
@@ -2055,81 +2173,38 @@ public class DDbDps extends DDbRegistryUser implements DTrnDfr {
         }
     }
 
-    /**
-     * Creates new entry for document printing log.
-     */
-    public DDbDpsPrinting createDpsPrinting() {
-        DDbDpsPrinting dpsPrinting = new DDbDpsPrinting();
-
-        dpsPrinting.setPkDpsId(this.getPkDpsId());
-        dpsPrinting.setPkPrintingId(0);
-        dpsPrinting.setSeries(this.getSeries());
-        dpsPrinting.setNumber(this.getNumber());
-        dpsPrinting.setOrder(this.getOrder());
-        dpsPrinting.setDate(this.getDate());
-        dpsPrinting.setDeleted(false);
-        dpsPrinting.setFkEmissionTypeId(this.getFkEmissionTypeId());
-        dpsPrinting.setFkDpsCategoryId(this.getFkDpsCategoryId());
-        dpsPrinting.setFkDpsClassId(this.getFkDpsClassId());
-        dpsPrinting.setFkDpsTypeId(this.getFkDpsTypeId());
-        dpsPrinting.setFkUserInsertId(this.getFkUserInsertId());
-        dpsPrinting.setFkUserUpdateId(this.getFkUserUpdateId());
-        dpsPrinting.setTsUserInsert(this.getTsUserInsert());
-        dpsPrinting.setTsUserUpdate(this.getTsUserUpdate());
-        
-        dpsPrinting.setAuxLock(this.getAuxLock());
-
-        return dpsPrinting;
+    @Override
+    public String getDocName() {
+        return "documento";
     }
 
-    /**
-     * Creates new entry for document signing log.
-     */
-    public DDbDpsSigning createDpsSigning() {
-        DDbDpsSigning dpsSigning = new DDbDpsSigning();
-
-        dpsSigning.setPkDpsId(this.getPkDpsId());
-        dpsSigning.setPkSigningId(0);
-        dpsSigning.setSeries(this.getSeries());
-        dpsSigning.setNumber(this.getNumber());
-        dpsSigning.setOrder(this.getOrder());
-        dpsSigning.setDate(this.getDate());
-        dpsSigning.setDeleted(false);
-        dpsSigning.setFkEmissionTypeId(this.getFkEmissionTypeId());
-        dpsSigning.setFkDpsCategoryId(this.getFkDpsCategoryId());
-        dpsSigning.setFkDpsClassId(this.getFkDpsClassId());
-        dpsSigning.setFkDpsTypeId(this.getFkDpsTypeId());
-        dpsSigning.setFkUserInsertId(this.getFkUserInsertId());
-        dpsSigning.setFkUserUpdateId(this.getFkUserUpdateId());
-        dpsSigning.setTsUserInsert(this.getTsUserInsert());
-        dpsSigning.setTsUserUpdate(this.getTsUserUpdate());
-
-        dpsSigning.setAuxLock(this.getAuxLock());
-
-        return dpsSigning;
+    @Override
+    public String getDocNumber() {
+        return getDpsNumber();
     }
 
-    /**
-     * Creates new entry for document sending log.
-     * @return DDbDpsSending
-     */
-    public DDbDpsSending createDpsSending() {
-        DDbDpsSending dpsSending = new DDbDpsSending();
+    @Override
+    public Date getDocDate() {
+        return getChildDfr() == null ? null : getChildDfr().getDocTs();
+    }
+    
+    @Override
+    public int getDocStatus() {
+        return getFkDpsStatusId();
+    }
+    
+    @Override
+    public int getBizPartnerCategory() {
+        return DTrnUtils.getBizPartnerClassByDpsCategory(mnFkDpsCategoryId);
+    }
 
-        dpsSending.setPkDpsId(this.getPkDpsId());
-        //dpsSending.setPkSendingId(0);
-        //dpsSending.setContact1("");
-        //dpsSending.setContact2("");
-        //dpsSending.setContact3("");
-        //dpsSending.setEmail1("");
-        //dpsSending.setEmail2("");
-        //dpsSending.setEmail3("");
-        dpsSending.setDeleted(false);
-        dpsSending.setFkUserInsertId(this.getFkUserInsertId());
-        dpsSending.setFkUserUpdateId(this.getFkUserUpdateId());
-        dpsSending.setTsUserInsert(this.getTsUserInsert());
-        dpsSending.setTsUserUpdate(this.getTsUserUpdate());
+    @Override
+    public DDbDfr getDfr() {
+        return getChildDfr();
+    }
 
-        return dpsSending;
+    @Override
+    public DDbRegistry createDocSending() {
+        return createDpsSending();
     }
 }

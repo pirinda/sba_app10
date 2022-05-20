@@ -69,7 +69,6 @@ import sba.mod.cfg.db.DDbBranchCash;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
-import sba.mod.cfg.db.DLockConsts;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
@@ -101,6 +100,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DGridPaneForm moGridPayments;
     private DGridPaneForm moGridPaymentDocs;
     private Date mtOriginalDate;
+    private int mnCompanyIdentityType;
     private int mnOriginalYear;
     private JButton mjButtonLaunchCalc;
 
@@ -1003,6 +1003,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         moFields.setFormButton(jbSave);
 
+        mnCompanyIdentityType = ((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId();
+
         moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_CFDI_USO);
         moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
 
@@ -1088,7 +1090,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private void freeLockByCancel() {
         if (moRegistryLock != null) {
             try {
-                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DLockConsts.LOCK_ST_FREED_CANCEL);
+                DLockUtils.freeLock(miClient.getSession(), moRegistryLock, DDbLock.LOCK_ST_FREED_CANCEL);
             }
             catch (Exception e) {
                 DLibUtils.showException(this, e);
@@ -2257,7 +2259,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyCfdReceptor, DModConsts.BU_BPR, DModSysConsts.BS_BPR_CL_CUS, null);
-        miClient.getSession().populateCatalogue(moKeyCfdTaxRegime, DModConsts.CS_TAX_REG, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyCfdTaxRegime, DModConsts.CS_TAX_REG, mnCompanyIdentityType, null);
     }
 
     @Override
@@ -2296,6 +2298,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             }
             
             jtfRegistryKey.setText("");
+            
             moRegistryLock = null;
         }
         else {
@@ -2304,7 +2307,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moBranchCash = (DDbBranchCash) miClient.getSession().readRegistry(DModConsts.CU_CSH, moRegistry.getBranchCashKey_n());
 
             jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
-            moRegistryLock = DLockUtils.createLock(miClient.getSession(), moRegistry.getRegistryType(), moRegistry.getPkDfrId(), DDbDps.TIMEOUT);
+            
+            moRegistryLock = moRegistry.assureLock(miClient.getSession());
         }
         
         jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moConfigBranch.getPrimaryKey(), DDbRegistry.FIELD_CODE));

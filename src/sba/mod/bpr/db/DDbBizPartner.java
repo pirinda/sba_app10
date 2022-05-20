@@ -53,6 +53,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     */
     protected int mnFkIdentityTypeId;
     protected int mnFkEmissionTypeId;
+    protected int mnFkTaxRegimeId;
     protected int mnFkXmlAddendaTypeId;
     /*
     protected int mnFkUserInsertId;
@@ -109,6 +110,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkIdentityTypeId(int n) { mnFkIdentityTypeId = n; }
     public void setFkEmissionTypeId(int n) { mnFkEmissionTypeId = n; }
+    public void setFkTaxRegimeId(int n) { mnFkTaxRegimeId = n; }
     public void setFkXmlAddendaTypeId(int n) { mnFkXmlAddendaTypeId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -140,6 +142,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public boolean isSystem() { return mbSystem; }
     public int getFkIdentityTypeId() { return mnFkIdentityTypeId; }
     public int getFkEmissionTypeId() { return mnFkEmissionTypeId; }
+    public int getFkTaxRegimeId() { return mnFkTaxRegimeId; }
     public int getFkXmlAddendaTypeId() { return mnFkXmlAddendaTypeId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -220,6 +223,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         mbSystem = false;
         mnFkIdentityTypeId = 0;
         mnFkEmissionTypeId = 0;
+        mnFkTaxRegimeId = 0;
         mnFkXmlAddendaTypeId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -299,6 +303,7 @@ public class DDbBizPartner extends DDbRegistryUser {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkIdentityTypeId = resultSet.getInt("fk_idy_tp");
             mnFkEmissionTypeId = resultSet.getInt("fk_emi_tp");
+            mnFkTaxRegimeId = resultSet.getInt("fk_tax_reg");
             mnFkXmlAddendaTypeId = resultSet.getInt("fk_xml_add_tp");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -385,6 +390,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkIdentityTypeId + ", " +
                     mnFkEmissionTypeId + ", " +
+                    mnFkTaxRegimeId + ", " + 
                     mnFkXmlAddendaTypeId + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -423,6 +429,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_idy_tp = " + mnFkIdentityTypeId + ", " +
                     "fk_emi_tp = " + mnFkEmissionTypeId + ", " +
+                    "fk_tax_reg = " + mnFkTaxRegimeId + ", " +
                     "fk_xml_add_tp = " + mnFkXmlAddendaTypeId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -485,6 +492,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         registry.setSystem(this.isSystem());
         registry.setFkIdentityTypeId(this.getFkIdentityTypeId());
         registry.setFkEmissionTypeId(this.getFkEmissionTypeId());
+        registry.setFkTaxRegimeId(this.getFkTaxRegimeId());
         registry.setFkXmlAddendaTypeId(this.getFkXmlAddendaTypeId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

@@ -126,8 +126,10 @@ public class DViewDpsSending extends DGridPaneView implements ActionListener {
                 "emit.name, " +
                 "snd.con_1, " +
                 "snd.con_2, " +
+                "snd.con_3, " +
                 "snd.ema_1, " +
                 "snd.ema_2, " +
+                "snd.ema_3, " +
                 "IF(v.fk_dps_st = " + DModSysConsts.TS_DPS_ST_ANN + ", " + DGridConsts.ICON_ANNUL + ", " + DGridConsts.ICON_NULL + ") AS f_ico, " +
                 "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_PEN + ", " + DGridConsts.ICON_XML_PEND + ", " +
                 "IF(dfr.fk_xml_st = " + DModSysConsts.TS_XML_ST_ISS + ", " + DGridConsts.ICON_XML_ISSU + ", " +
@@ -234,6 +236,7 @@ public class DViewDpsSending extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.CU_USR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
         moSuscriptionsSet.add(DModConsts.T_DPS_SIG);
+        moSuscriptionsSet.add(DModConsts.T_DFR);
     }
 
     @Override

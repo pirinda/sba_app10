@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
@@ -23,7 +22,6 @@ import sba.lib.gui.DGuiModule;
 import sba.lib.gui.DGuiOptionPicker;
 import sba.lib.gui.DGuiParams;
 import sba.lib.gui.DGuiReport;
-import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.cfg.db.DDbBranchCash;
 import sba.mod.cfg.db.DDbBranchWarehouse;
 import sba.mod.cfg.db.DDbCertificate;
@@ -153,7 +151,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
         mjUsrUserBranchCash = new JMenuItem("Usuarios y cuentas de dinero (Q)");
         mjUsrUserBranchWarehouse = new JMenuItem("Usuarios y almacenes de bienes (Q)");
         mjUsrUserBranchDpsSeries = new JMenuItem("Usuarios y series de documentos (Q)");
-        mjUsrDeleteAllActiveLocks = new JMenuItem("Eliminar todos los bloqueos a registros...");
+        mjUsrDeleteAllActiveLocks = new JMenuItem("Liberar accesos exclusivos a registros...");
         mjUsr.add(mjUsrUser);
         mjUsr.add(mjUsrUserCustomType);
         mjUsr.addSeparator();
@@ -211,9 +209,9 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
     }
     
     private void actionPerformedDeleteAllActiveLocks() {
-        if (miClient.showMsgBoxConfirm("¿Está seguro que desea eliminar todos los bloqueos a registros?") == JOptionPane.YES_OPTION) {
+        if (miClient.showMsgBoxConfirm("¿Está seguro que desea liberar los accesos exclusivos a registros de todos los usuarios?") == JOptionPane.YES_OPTION) {
             try {
-                DLockUtils.deleteActiveLocks(miClient.getSession());
+                DLockUtils.deleteActiveLocksAll(miClient.getSession());
                 miClient.showMsgBoxInformation(DLibConsts.MSG_PROCESS_FINISHED);
             }
             catch (Exception e) {
@@ -393,7 +391,7 @@ public class DModModuleCfg extends DGuiModule implements ActionListener {
                 settings = new DGuiCatalogueSettings("Régimen fiscal", 1);
                 sql = "SELECT id_tax_reg AS " + DDbConsts.FIELD_ID + "1, CONCAT(code, ' - ', name) AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " " +
                         "FROM " + DModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND " +
-                        "(id_tax_reg = " + DModSysConsts.CS_TAX_REG_NA + " OR " + (((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId() == DModSysConsts.BS_IDY_TP_PER ? "b_per" : "b_org") + ") " +
+                        "(id_tax_reg = " + DModSysConsts.CS_TAX_REG_NA + (subtype == DModSysConsts.BS_IDY_TP_PER ? " OR b_per" : (subtype == DModSysConsts.BS_IDY_TP_ORG ? " OR b_org" : "")) + ") " +
                         "ORDER BY sort ";
                 break;
             case DModConsts.CU_CFG_CO:
