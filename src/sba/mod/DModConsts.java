@@ -348,7 +348,7 @@ public abstract class DModConsts {
     public static final int SR_REP_NEW = 850001;
     public static final int SR_REP_DVY = 850002;
 
-    public static final HashMap<Integer, String> TablesMap = new HashMap<Integer, String>();
+    public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 
     static {
         TablesMap.put(SU_SYS, "su_sys");

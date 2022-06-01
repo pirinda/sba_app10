@@ -2130,21 +2130,25 @@ public abstract class DTrnDfrUtils {
                                                 throw new Exception("La solicitud de cancelación del CFDI está pendiente de ser aceptada o rechazada por el receptor.");
 
                                             case DCfdi33Consts.ESTATUS_CANCEL_RECH: // CFDI cancellation was rejected by receptor
-                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                                if (!cancelParams.RetryCancel) {
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
 
-                                                xsr.delete(session); // delete request log
-                                                throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
+                                                    xsr.delete(session); // delete request log
+                                                    throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
+                                                }
+                                                // previous cancellation request was rejected, so try again...
+                                                break;
+
+                                            case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
+                                                // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer), go throuth...
+                                                break;
 
                                             case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
                                             case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
                                             case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
                                             case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
                                                 xsr.delete(session); // delete request log
-                                                throw new Exception("El estatus de cancelación del CFDI es inconsistente.");
-
-                                            case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
-                                                // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer), go throuth...
-                                                break;
+                                                throw new Exception("El estatus de cancelación del CFDI es inconsistente: [" + cfdiAckQuery.CancelStatus + "]");
 
                                             default:
                                                 xsr.delete(session); // delete request log

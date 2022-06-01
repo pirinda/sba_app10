@@ -146,7 +146,6 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     protected boolean mbAuxCheckDfrDiscarting;
     protected double mdAuxTotalQuantity;
     protected DDbLock moAuxLock;
-    
 
     public DDbDps() {
         super(DModConsts.T_DPS);

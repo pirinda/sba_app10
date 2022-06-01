@@ -122,7 +122,7 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolRetryCancel.setText("Reintentar la cancelación aún si el receptor rechazó la solicitud de cancelación anterior, en caso de haberla");
+        moBoolRetryCancel.setText("Reintentar cancelar nuevamente aún si el receptor rechazó la solicitud de cancelación anterior");
         moBoolRetryCancel.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel3.add(moBoolRetryCancel);
 
