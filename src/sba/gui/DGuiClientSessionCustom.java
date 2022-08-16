@@ -48,13 +48,11 @@ public final class DGuiClientSessionCustom implements DGuiSessionCustom {
     private int[] manBranchDpsSeriesKey;
 
     public DGuiClientSessionCustom(DGuiClient client) {
-        DDbConfigCompany configCompany = null;
-
         try {
             miClient = client;
             miStatement = miClient.getSession().getStatement().getConnection().createStatement();
 
-            configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+            DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
             manLocalCountryKey = new int[] { configCompany.getFkCountryId() };
             msLocalCountry = (String) miClient.getSession().readField(DModConsts.CS_CTY, manLocalCountryKey, DDbRegistry.FIELD_NAME);

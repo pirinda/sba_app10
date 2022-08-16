@@ -6,6 +6,7 @@
 package sba.gui.prt;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.HashMap;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -49,8 +50,19 @@ public class DPrtUtils {
                     default:
                 }
                 break;
-            case DModConsts.TR_DPS_CFDI_33_CRP_10:
-                fileName = "reps/trn_cfdi_33_crp_10.jasper";
+            case DModConsts.TR_DPS_CFDI_40:
+                switch (printMode) {
+                    case DPrtConsts.PRINT_MODE_STD:
+                        fileName = "reps/cfdi40.jasper";
+                        break;
+                    case DPrtConsts.PRINT_MODE_ALT:
+                        fileName = "reps/cfdi40_alt.jasper";
+                        break;
+                    default:
+                }
+                break;
+            case DModConsts.TR_DPS_CFDI_40_CRP_10:
+                fileName = "reps/trn_cfdi_40_crp_10.jasper";
                 break;
             case DModConsts.SR_REP_NEW:
                 fileName = "reps/rep_new.jasper";
@@ -65,7 +77,7 @@ public class DPrtUtils {
     }
 
     public static HashMap<String, Object> createReportHashMap(final DGuiSession session) {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
 
         //map.put("sCompanyName", ((DGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName());
         map.put("sUserName", session.getUser().getName());
@@ -100,7 +112,7 @@ public class DPrtUtils {
             jasperViewer.setTitle(DGuiClientApp.APP_NAME);
             jasperViewer.setVisible(true);
         }
-        catch (Exception e) {
+        catch (JRException | SQLException e) {
             DLibUtils.showException(DPrtUtils.class.getName(), e);
         }
     }
@@ -122,7 +134,7 @@ public class DPrtUtils {
 
             JasperExportManager.exportReportToPdfFile(jasperPrint, destFileName);
         }
-        catch (Exception e) {
+        catch (JRException | SQLException e) {
             DLibUtils.showException(DPrtUtils.class.getName(), e);
         }
     }

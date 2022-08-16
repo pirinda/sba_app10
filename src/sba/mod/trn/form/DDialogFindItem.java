@@ -419,8 +419,6 @@ public class DDialogFindItem extends DBeanFormDialog implements DGridPaneFormOwn
 
     private void initComponentsCustom() {
         int col = 0;
-        DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
-        DGuiClientSessionCustom sessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();
 
         DGuiUtils.setWindowBounds(this, 1000, 625);
 
@@ -489,6 +487,10 @@ public class DDialogFindItem extends DBeanFormDialog implements DGridPaneFormOwn
         mbOnlyConvertible = false;
         mbValidateStock = true;
 
+        DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+        DDbConfigBranch configBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
+        DGuiClientSessionCustom sessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();
+        
         mtDate = miClient.getSession().getWorkingDate();
         mnYear = DLibTimeUtils.digestYear(mtDate)[0];
         mnItemPriceType = DModSysConsts.MS_ITM_PRC_TP_SRP;
@@ -497,8 +499,8 @@ public class DDialogFindItem extends DBeanFormDialog implements DGridPaneFormOwn
         mdQuantity = 0;
         mdDiscountPercentage = 0;
         manWarehouseKey = new int[] { DUtilConsts.BPR_CO_ID, DUtilConsts.BPR_BRA_ID, DUtilConsts.BRA_WAH_ID };
-        manTaxGroupKey = new int[] { ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getFkTaxGroupId_n() };
-        manTaxRegionKey = new int[] { ((DDbConfigBranch) miClient.getSession().getConfigBranch()).getFkTaxRegionId() };
+        manTaxGroupKey = new int[] { configCompany.getFkTaxGroupId_n() };
+        manTaxRegionKey = new int[] { configBranch.getFkTaxRegionId() };
         manDefaultItemCategoryKey = null;
         manDefaultItemClassKey = null;
         manDefaultItemTypeKey = null;

@@ -21,5 +21,8 @@
 <Entry id="19" code="D08" name="Gastos de transportación escolar obligatoria." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
 <Entry id="20" code="D09" name="Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones." term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
 <Entry id="21" code="D10" name="Pagos por servicios educativos (colegiaturas)" term_start="2017-01-01" term_end="" app_per="1" app_org="0"/>
-<Entry id="22" code="P01" name="Por definir" term_start="2017-03-31" term_end="" app_per="1" app_org="1"/>
+<Entry id="22" code="S01" name="Sin efectos fiscales." term_start="2022-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="23" code="CP01" name="Pagos" term_start="2022-01-01" term_end="" app_per="1" app_org="1"/>
+<Entry id="24" code="CN01" name="Nómina" term_start="2022-01-01" term_end="" app_per="1" app_org="0"/>
+<Entry id="25" code="P01" name="Por definir" term_start="2017-03-31" term_end="2022-06-30" app_per="1" app_org="1"/>
 </Catalog>

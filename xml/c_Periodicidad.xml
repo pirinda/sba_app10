@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="Diario" term_start="2022-01-01" term_end=""/>
+<Entry id="2" code="02" name="Semanal" term_start="2022-01-01" term_end=""/>
+<Entry id="3" code="03" name="Quincenal" term_start="2022-01-01" term_end=""/>
+<Entry id="4" code="04" name="Mensual" term_start="2022-01-01" term_end=""/>
+<Entry id="5" code="05" name="Bimestral" term_start="2022-01-01" term_end=""/>
+</Catalog>

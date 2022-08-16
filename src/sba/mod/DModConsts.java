@@ -285,12 +285,15 @@ public abstract class DModConsts {
     public static final int TX_DFR_ADD = 640311;
     public static final int TX_DFR_INV = 640316;
     public static final int TX_DFR_ANNUL_PARAMS = 640321;
+    public static final int TX_DFR_RELATIONS = 640326;
 
     public static final int TR_DPS = 650001;
     public static final int TR_DPS_CFD = 650002;
     public static final int TR_DPS_CFDI_32 = 650032;
     public static final int TR_DPS_CFDI_33 = 650033;
     public static final int TR_DPS_CFDI_33_CRP_10 = 650034;
+    public static final int TR_DPS_CFDI_40 = 650040;
+    public static final int TR_DPS_CFDI_40_CRP_10 = 650041;
 
     public static final int MS_PRC_TP = 710001;
     public static final int MS_ITM_PRC_TP = 710002;

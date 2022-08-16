@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="Enero" term_start="2022-01-01" term_end=""/>
+<Entry id="2" code="02" name="Febrero" term_start="2022-01-01" term_end=""/>
+<Entry id="3" code="03" name="Marzo" term_start="2022-01-01" term_end=""/>
+<Entry id="4" code="04" name="Abril" term_start="2022-01-01" term_end=""/>
+<Entry id="5" code="05" name="Mayo" term_start="2022-01-01" term_end=""/>
+<Entry id="6" code="06" name="Junio" term_start="2022-01-01" term_end=""/>
+<Entry id="7" code="07" name="Julio" term_start="2022-01-01" term_end=""/>
+<Entry id="8" code="08" name="Agosto" term_start="2022-01-01" term_end=""/>
+<Entry id="9" code="09" name="Septiembre" term_start="2022-01-01" term_end=""/>
+<Entry id="10" code="10" name="Octubre" term_start="2022-01-01" term_end=""/>
+<Entry id="11" code="11" name="Noviembre" term_start="2022-01-01" term_end=""/>
+<Entry id="12" code="12" name="Diciembre" term_start="2022-01-01" term_end=""/>
+<Entry id="13" code="13" name="Enero-Febrero" term_start="2022-01-01" term_end=""/>
+<Entry id="14" code="14" name="Marzo-Abril" term_start="2022-01-01" term_end=""/>
+<Entry id="15" code="15" name="Mayo-Junio" term_start="2022-01-01" term_end=""/>
+<Entry id="16" code="16" name="Julio-Agosto" term_start="2022-01-01" term_end=""/>
+<Entry id="17" code="17" name="Septiembre-Octubre" term_start="2022-01-01" term_end=""/>
+<Entry id="18" code="18" name="Noviembre-Diciembre" term_start="2022-01-01" term_end=""/>
+</Catalog>

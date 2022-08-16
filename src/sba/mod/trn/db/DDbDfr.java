@@ -10,12 +10,12 @@ import cfd.DCfdUtils;
 import cfd.DElement;
 import cfd.DSubelementAddenda;
 import cfd.ext.continental.DElementAddendaContinentalTire;
-import cfd.ver33.DCfdi33Catalogs;
 import cfd.ver33.DElementComplemento;
 import cfd.ver33.DElementComprobante;
 import cfd.ver33.crp10.DElementDoctoRelacionado;
 import cfd.ver33.crp10.DElementPagos;
 import cfd.ver33.crp10.DElementPagosPago;
+import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -98,17 +98,19 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     protected int mnFkBookkeepingNumberId_n;
     protected int mnFkUserIssuedId;
     protected int mnFkUserAnnulledId;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
+    */
     protected Date mtTsUserIssued;
     protected Date mtTsUserAnnulled;
+    /*
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
+    */
     
-    protected String msDfrConfirmacion;
-    protected String msDfrCfdiRelacionado;
-    protected String msDfrTaxRegime;
-    protected String msDfrCfdUsage;
+    protected DDfr moXtaDfr;
+    
     protected DElementPagos moDfrPagos;
 
     protected boolean mbAuxJustIssued;
@@ -159,8 +161,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         bkkMoveCash.setDebitCy(pago.getAttMonto().getDouble());
         bkkMoveCash.setCreditCy(0);
         
-        DXmlCatalog xmlCatalogCurrency = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_MON);
-        DXmlCatalog xmlCatalogModeOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_FDP);
+        DXmlCatalog xmlCatalogCurrency = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_MON);
+        DXmlCatalog xmlCatalogModeOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_FDP);
 
         bkkMoveCash.setExchangeRate(xrt);
         bkkMoveCash.setUnits(0);
@@ -468,16 +470,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setDfrConfirmacion(String s) { msDfrConfirmacion = s; }
-    public void setDfrCfdiRelacionado(String s) { msDfrCfdiRelacionado = s; }
-    public void setDfrTaxRegime(String s) { msDfrTaxRegime = s; }
-    public void setDfrCfdUsage(String s) { msDfrCfdUsage = s; }
+    public void setXtaDfr(DDfr o) { moXtaDfr = o; }
+    
     public void setDfrPagos(DElementPagos o) { moDfrPagos = o; }
     
-    public String getDfrConfirmacion() { return msDfrConfirmacion; }
-    public String getDfrCfdiRelacionado() { return msDfrCfdiRelacionado; }
-    public String getDfrTaxRegime() { return msDfrTaxRegime; }
-    public String getDfrCfdUsage() { return msDfrCfdUsage; }
+    public DDfr getXtaDfr() { return moXtaDfr; }
+    
     public DElementPagos getDfrPagos() { return moDfrPagos; }
     
     public void setAuxJustIssued(boolean b) { mbAuxJustIssued = b; }
@@ -504,7 +502,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public int[] getBranchCashKey_n() { return !(mnFkCashBizPartnerId_n != DLibConsts.UNDEFINED && mnFkCashBranchId_n != DLibConsts.UNDEFINED && mnFkCashCashId_n != DLibConsts.UNDEFINED) ? null : new int[] { mnFkCashBizPartnerId_n, mnFkCashBranchId_n, mnFkCashCashId_n }; }
     public int[] getBookkeepingNumberKey_n() { return !(mnFkBookkeepingYearId_n != DLibConsts.UNDEFINED && mnFkBookkeepingNumberId_n != DLibConsts.UNDEFINED) ? null : new int[] { mnFkBookkeepingYearId_n, mnFkBookkeepingNumberId_n }; }
     public String getDfrNumber() { return DTrnUtils.composeDpsNumber(msSeries, mnNumber); }
-    public boolean isDfrCfdi() { return DLibUtils.belongsTo(mnFkXmlTypeId, new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33 }); }
+    public boolean isDfrCfdi() { return DLibUtils.belongsTo(mnFkXmlTypeId, new int[] { DModSysConsts.TS_XML_TP_CFDI_32, DModSysConsts.TS_XML_TP_CFDI_33, DModSysConsts.TS_XML_TP_CFDI_40 }); }
     /**
      * Get XML raw (just as fetched from web service) if available and its status is at least 'issued', otherwise own generated XML.
      * @return Suitable XML.
@@ -590,10 +588,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
         
-        msDfrConfirmacion = "";
-        msDfrCfdiRelacionado = "";
-        msDfrTaxRegime = "";
-        msDfrCfdUsage = "";
+        moXtaDfr = null;
+        
         moDfrPagos = null;
         
         mbAuxJustIssued = false;
@@ -793,6 +789,39 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     msDocXml = DCfdConsts.XML_HEADER + comprobante33.getElementForXml();
                     break;
 
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    // Create DFR:
+                    cfd.ver40.DElementComprobante comprobante40 = DCfdUtils.getCfdi40(getSuitableDocXml());
+                    DTrnDfrUtils.configureCfdi40(session, comprobante40);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver4.DElementAddenda addenda = null;
+                            
+                            if (comprobante40.getEltOpcAddenda() != null) {
+                                addenda = comprobante40.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver4.DElementAddenda();
+                                comprobante40.setEltOpcAddenda(addenda);
+                            }
+                            
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+                            
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+                    
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante40.getElementForXml();
+                    break;
+
                 default:
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
@@ -801,7 +830,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         if (mnFkXmlSubtypeId == DModSysConsts.TS_XML_STP_CFDI_CRP) {
             // generate CFDI 3.3 with CRP 1.0:
             if (msSeries.isEmpty()) {
-                msSeries = DCfdi33Catalogs.CFD_TP_P; // default series if no one provided
+                msSeries = DCfdi40Catalogs.CFD_TP_P; // default series if no one provided
             }
             if (mnNumber == 0) {
                 computeNextNumber(session);
@@ -988,10 +1017,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
         
-        registry.setDfrConfirmacion(this.getDfrConfirmacion());
-        registry.setDfrCfdiRelacionado(this.getDfrCfdiRelacionado());
-        registry.setDfrTaxRegime(this.getDfrTaxRegime());
-        registry.setDfrCfdUsage(this.getDfrCfdUsage());
+        registry.setXtaDfr(this.getXtaDfr() == null ? null : this.getXtaDfr().clone());
+        
         registry.setDfrPagos(this.getDfrPagos() == null ? null : this.getDfrPagos()); // not cloned!, because clone is not supported for this class!
 
         registry.setAuxJustIssued(this.isAuxJustIssued());
@@ -1004,6 +1031,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setAuxDpsLock(this.getAuxDpsLock()); // locks cannot be clonned!
 
         registry.setRegistryNew(this.isRegistryNew());
+        
+        // XXX Improve this:
+        registry.setQueryResultId(this.getQueryResultId());
+        registry.setQueryResult(this.getQueryResult());
+        registry.setSql(this.getSql());
+
         return registry;
     }
     
@@ -1165,28 +1198,31 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         comprobante.getAttSubTotal().setDouble(0);
         comprobante.getAttSubTotal().setDecimals(0);
 
-        comprobante.getAttMoneda().setString(DCfdi33Catalogs.ClaveMonedaXxx);
+        comprobante.getAttMoneda().setString(DCfdi40Catalogs.ClaveMonedaXxx);
         //comprobante.getAttTipoCambio().setDouble();
         
         comprobante.getAttTotal().setDouble(0);
         comprobante.getAttTotal().setDecimals(0);
 
-        comprobante.getAttTipoDeComprobante().setString(DCfdi33Catalogs.CFD_TP_P);
+        comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_P);
         //comprobante.getAttMetodoPago().setString();
         
-        braAddressEmisor = braEmisor.getChildAddresses().get(0);
+        braAddressEmisor = braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(msDfrConfirmacion);
+        comprobante.getAttConfirmacion().setString(moXtaDfr.getConfirmation());
         
         // element 'CfdiRelacionados':
-        if (!msDfrCfdiRelacionado.isEmpty()) {
+        if (moXtaDfr.getCfdRelations() != null && !moXtaDfr.getCfdRelations().getRelatedCfds().isEmpty()) {
+            DDfrCfdRelations.RelatedCfd relatedCfd = moXtaDfr.getCfdRelations().getRelatedCfds().get(0);
             cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
-            cfdiRelacionados.getAttTipoRelacion().setString(DCfdi33Catalogs.REL_TP_SUSTITUCION);
+            cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
             
-            cfd.ver33.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver33.DElementCfdiRelacionado();
-            cfdiRelacionado.getAttUuid().setString(msDfrCfdiRelacionado);
-            cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
+            for (String uuid : relatedCfd.Uuids) {
+                cfd.ver33.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver33.DElementCfdiRelacionado();
+                cfdiRelacionado.getAttUuid().setString(uuid);
+                cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
+            }
             
             comprobante.setEltOpcCfdiRelacionados(cfdiRelacionados);
         }
@@ -1194,26 +1230,26 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(msDfrTaxRegime);
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfr.getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getProperName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(msDfrCfdUsage);
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfr.getCfdUsage());
 
         // element 'Conceptos':
         
         cfd.ver33.DElementConcepto concepto = new cfd.ver33.DElementConcepto();
 
-        concepto.getAttClaveProdServ().setString(DCfdi33Catalogs.ClaveProdServServsFacturacion);
+        concepto.getAttClaveProdServ().setString(DCfdi40Catalogs.ClaveProdServServsFacturacion);
         //concepto.getAttNoIdentificacion().setString();
         concepto.getAttCantidad().setDouble(1);
         concepto.getAttCantidad().setDecimals(0);
-        concepto.getAttClaveUnidad().setString(DCfdi33Catalogs.ClaveUnidadAct);
+        concepto.getAttClaveUnidad().setString(DCfdi40Catalogs.ClaveUnidadAct);
         //concepto.getAttUnidad().setString();
-        concepto.getAttDescripcion().setString(DCfdi33Catalogs.ConceptoPago);
+        concepto.getAttDescripcion().setString(DCfdi40Catalogs.ConceptoPago);
         concepto.getAttValorUnitario().setDouble(0);
         concepto.getAttValorUnitario().setDecimals(0);
         concepto.getAttImporte().setDouble(0);

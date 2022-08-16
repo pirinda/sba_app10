@@ -5,7 +5,7 @@
  */
 package sba.mod.trn.db;
 
-import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import sba.gui.DGuiClientApp;
 import sba.gui.cat.DXmlCatalog;
@@ -49,36 +49,36 @@ public abstract class DTrnDfrCatalogs {
         DXmlCatalog xmlCatalog;
         
         switch (catalog) {
-            case DCfdi33Catalogs.CAT_CFDI_TP:
-                entry = code + " - " + DCfdi33Catalogs.TipoComprobante.get(code);
+            case DCfdi40Catalogs.CAT_CFDI_TP:
+                entry = code + " - " + DCfdi40Catalogs.TipoComprobante.get(code);
                 break;
-            case DCfdi33Catalogs.CAT_CFDI_USO:
+            case DCfdi40Catalogs.CAT_CFDI_USO:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;
-            case DCfdi33Catalogs.CAT_REG_FISC:
+            case DCfdi40Catalogs.CAT_REG_FISC:
                 entry = getCatalogEntry(client.getSession(), DModConsts.CS_TAX_REG, code);
                 break;
-            case DCfdi33Catalogs.CAT_MDP:
+            case DCfdi40Catalogs.CAT_MDP:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;
-            case DCfdi33Catalogs.CAT_FDP:
+            case DCfdi40Catalogs.CAT_FDP:
                 entry = getCatalogEntry(client.getSession(), DModConsts.FS_MOP_TP, code);
                 break;
-            case DCfdi33Catalogs.CAT_MON:
+            case DCfdi40Catalogs.CAT_MON:
                 entry = getCatalogEntry(client.getSession(), DModConsts.CS_CUR, code);
                 break;
-            case DCfdi33Catalogs.CAT_PAIS:
+            case DCfdi40Catalogs.CAT_PAIS:
                 entry = getCatalogEntry(client.getSession(), DModConsts.CS_CTY, code);
                 break;
-            case DCfdi33Catalogs.CAT_IMP:
-                entry = code + " - " + DCfdi33Catalogs.Impuesto.get(code);
+            case DCfdi40Catalogs.CAT_IMP:
+                entry = code + " - " + DCfdi40Catalogs.Impuesto.get(code);
                 break;
-            case DCfdi33Catalogs.CAT_FAC_TP:
+            case DCfdi40Catalogs.CAT_FAC_TP:
                 entry = code;
                 break;
-            case DCfdi33Catalogs.CAT_REL_TP:
+            case DCfdi40Catalogs.CAT_REL_TP:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;

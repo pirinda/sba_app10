@@ -621,6 +621,7 @@ public abstract class DModSysConsts {
     public static final int TS_XML_TP_CFD = 2;
     public static final int TS_XML_TP_CFDI_32 = 3;
     public static final int TS_XML_TP_CFDI_33 = 4;
+    public static final int TS_XML_TP_CFDI_40 = 5;
 
     public static final int TS_XML_STP_NA = 1;
     public static final int TS_XML_STP_CFDI_FAC = 2;

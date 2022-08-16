@@ -18,6 +18,7 @@ import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiConfigCompany;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
+import sba.mod.bpr.db.DDbBizPartner;
 
 /**
  *
@@ -128,7 +129,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected int mnFkCountryId;
     protected int mnFkCurrencyId;
     protected int mnFkAddressFormatTypeId;
-    protected int mnFkTaxRegimeId;
     protected int mnFkAccountCashId_n;
     protected int mnFkAccountWarehouseId_n;
     protected int mnFkAccountVendorId_n;
@@ -170,6 +170,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected Date mtTsUserUpdate;
     */
 
+    protected DDbBizPartner moChildBizPartner;
+    
     protected DecimalFormat moDecimalFormatQuantity;
     protected DecimalFormat moDecimalFormatPriceUnitary;
             
@@ -301,7 +303,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setFkCountryId(int n) { mnFkCountryId = n; }
     public void setFkCurrencyId(int n) { mnFkCurrencyId = n; }
     public void setFkAddressFormatTypeId(int n) { mnFkAddressFormatTypeId = n; }
-    public void setFkTaxRegimeId(int n) { mnFkTaxRegimeId = n; }
     public void setFkAccountCashId_n(int n) { mnFkAccountCashId_n = n; }
     public void setFkAccountWarehouseId_n(int n) { mnFkAccountWarehouseId_n = n; }
     public void setFkAccountVendorId_n(int n) { mnFkAccountVendorId_n = n; }
@@ -440,7 +441,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public int getFkCountryId() { return mnFkCountryId; }
     public int getFkCurrencyId() { return mnFkCurrencyId; }
     public int getFkAddressFormatTypeId() { return mnFkAddressFormatTypeId; }
-    public int getFkTaxRegimeId() { return mnFkTaxRegimeId; }
     public int getFkAccountCashId_n() { return mnFkAccountCashId_n; }
     public int getFkAccountWarehouseId_n() { return mnFkAccountWarehouseId_n; }
     public int getFkAccountVendorId_n() { return mnFkAccountVendorId_n; }
@@ -480,6 +480,10 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    private void setChildBizPartner(DDbBizPartner o) { moChildBizPartner = o; } // non-public class interface
+    
+    public DDbBizPartner getChildBizPartner() { return moChildBizPartner; }
+    
     public void setDecimalFormatQuantity(DecimalFormat o) { moDecimalFormatQuantity = o; }
     public void setDecimalFormatPriceUnitary(DecimalFormat o) { moDecimalFormatPriceUnitary = o; }
 
@@ -599,7 +603,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnFkCountryId = 0;
         mnFkCurrencyId = 0;
         mnFkAddressFormatTypeId = 0;
-        mnFkTaxRegimeId = 0;
         mnFkAccountCashId_n = 0;
         mnFkAccountWarehouseId_n = 0;
         mnFkAccountVendorId_n = 0;
@@ -638,6 +641,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        moChildBizPartner = null;
         
         moDecimalFormatQuantity = null;
         moDecimalFormatPriceUnitary = null;
@@ -776,7 +781,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mnFkCountryId = resultSet.getInt("fk_cty");
             mnFkCurrencyId = resultSet.getInt("fk_cur");
             mnFkAddressFormatTypeId = resultSet.getInt("fk_baf_tp");
-            mnFkTaxRegimeId = resultSet.getInt("fk_tax_reg");
             mnFkAccountCashId_n = resultSet.getInt("fk_acc_csh_n");
             mnFkAccountWarehouseId_n = resultSet.getInt("fk_acc_wah_n");
             mnFkAccountVendorId_n = resultSet.getInt("fk_acc_ven_n");
@@ -815,6 +819,10 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+            
+            // read child directly, not from session, becuse it may not have been set up yet:
+            moChildBizPartner = new DDbBizPartner();
+            moChildBizPartner.read(session, getPrimaryKey());
 
             moDecimalFormatQuantity = new DecimalFormat("#,##0" + (mnDecimalsQuantity == 0 ? "" : "." + DLibUtils.textRepeat("0", mnDecimalsQuantity)));
             moDecimalFormatPriceUnitary = new DecimalFormat("#,##0" + (mnDecimalsPriceUnitary == 0 ? "" : "." + DLibUtils.textRepeat("0", mnDecimalsPriceUnitary)));
@@ -944,7 +952,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     mnFkCountryId + ", " +
                     mnFkCurrencyId + ", " +
                     mnFkAddressFormatTypeId + ", " +
-                    mnFkTaxRegimeId + ", " + 
                     (mnFkAccountCashId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountCashId_n) + ", " +
                     (mnFkAccountWarehouseId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountWarehouseId_n) + ", " +
                     (mnFkAccountVendorId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountVendorId_n) + ", " +
@@ -1088,7 +1095,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "fk_cty = " + mnFkCountryId + ", " +
                     "fk_cur = " + mnFkCurrencyId + ", " +
                     "fk_baf_tp = " + mnFkAddressFormatTypeId + ", " +
-                    "fk_tax_reg = " + mnFkTaxRegimeId + ", " +
                     "fk_acc_csh_n = " + (mnFkAccountCashId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountCashId_n) + ", " +
                     "fk_acc_wah_n = " + (mnFkAccountWarehouseId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountWarehouseId_n) + ", " +
                     "fk_acc_ven_n = " + (mnFkAccountVendorId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAccountVendorId_n) + ", " +
@@ -1239,7 +1245,6 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setFkCountryId(this.getFkCountryId());
         registry.setFkCurrencyId(this.getFkCurrencyId());
         registry.setFkAddressFormatTypeId(this.getFkAddressFormatTypeId());
-        registry.setFkTaxRegimeId(this.getFkTaxRegimeId());
         registry.setFkAccountCashId_n(this.getFkAccountCashId_n());
         registry.setFkAccountWarehouseId_n(this.getFkAccountWarehouseId_n());
         registry.setFkAccountVendorId_n(this.getFkAccountVendorId_n());
@@ -1278,6 +1283,8 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
+        
+        registry.setChildBizPartner(this.getChildBizPartner() == null ? null : this.getChildBizPartner().clone());
 
         registry.setDecimalFormatQuantity(this.getDecimalFormatQuantity());
         registry.setDecimalFormatPriceUnitary(this.getDecimalFormatPriceUnitary());

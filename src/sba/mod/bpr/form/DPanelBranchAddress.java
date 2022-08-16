@@ -567,8 +567,6 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        DDbConfigCompany configCompany = null;
-
         moRegistry = (DDbBranchAddress) registry;
 
         removeAllListeners();
@@ -579,7 +577,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
             moRegistry.setName(mbHeadquarters ? DUtilConsts.HEADQUARTERS_ADD : moRegistry.getName());
 
-            configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+            DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
             if (moRegistry.getLocality().isEmpty()) {
                 moRegistry.setLocality(configCompany.getDefaultLocality());

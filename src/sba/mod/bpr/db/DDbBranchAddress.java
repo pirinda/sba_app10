@@ -224,16 +224,16 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
 
         switch (formatType) {
             case DModSysConsts.BS_BAF_TP_STD:
-                address = msAddress1 + (msNumberExterior.length() == 0 ? "" : " " + msNumberExterior) + (msNumberInterior.length() == 0 ? "" : " " + msNumberInterior);
-                address += (address.length() == 0 ? "" : "\n") + msAddress2 + (msAddress3.length() == 0 ? "" : ", " + msAddress3);
-                address += (address.length() == 0 ? "" : "\n") + msZipCode + (msLocality.length() == 0 ? "" : " " + msLocality) + (msCounty.length() == 0 ? "" : ", " + msCounty) + (msState.length() == 0 ? "" : ", " + msState);
-                address += address.length() == 0 ? "" : (country.isEmpty() ? "" : "\n" + country);
+                address = msAddress1 + (msNumberExterior.isEmpty() ? "" : " " + msNumberExterior) + (msNumberInterior.isEmpty() ? "" : " " + msNumberInterior);
+                address += (address.isEmpty() ? "" : "\n") + msAddress2 + (msAddress3.isEmpty() ? "" : ", " + msAddress3);
+                address += (address.isEmpty() ? "" : "\n") + msZipCode + (msLocality.isEmpty() ? "" : " " + msLocality) + (msCounty.isEmpty() ? "" : ", " + msCounty) + (msState.isEmpty() ? "" : ", " + msState);
+                address += address.isEmpty() ? "" : (country.isEmpty() ? "" : "\n" + country);
                 break;
             case DModSysConsts.BS_BAF_TP_US:
-                address = msNumberExterior + (msNumberInterior.length() == 0 ? "" : " " + msNumberInterior) + (msAddress1.length() == 0 ? "" : " " + msAddress1);
-                address += (address.length() == 0 ? "" : "\n") + msAddress2 + (msAddress3.length() == 0 ? "" : " " + msAddress3);
-                address += (address.length() == 0 ? "" : "\n") + msLocality + (msCounty.length() == 0 ? "" : " " + msCounty) + (msState.length() == 0 ? "" : " " + msState) + (msZipCode.length() == 0 ? "" : " " + msZipCode);
-                address += address.length() == 0 ? "" : (country.isEmpty() ? "" : "\n" + country);
+                address = msNumberExterior + (msNumberInterior.isEmpty() ? "" : " " + msNumberInterior) + (msAddress1.isEmpty() ? "" : " " + msAddress1);
+                address += (address.isEmpty() ? "" : "\n") + msAddress2 + (msAddress3.isEmpty() ? "" : " " + msAddress3);
+                address += (address.isEmpty() ? "" : "\n") + msLocality + (msCounty.isEmpty() ? "" : " " + msCounty) + (msState.isEmpty() ? "" : " " + msState) + (msZipCode.isEmpty() ? "" : " " + msZipCode);
+                address += address.isEmpty() ? "" : (country.isEmpty() ? "" : "\n" + country);
                 break;
             default:
         }
@@ -670,13 +670,13 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
                 value = msName;
                 break;
             case 1:
-                value = msAddress1 + (msNumberExterior.length() == 0 ? "" : " " + msNumberExterior) + (msNumberInterior.length() == 0 ? "" : " " + msNumberInterior);
+                value = msAddress1 + (msNumberExterior.isEmpty() ? "" : " " + msNumberExterior) + (msNumberInterior.isEmpty() ? "" : " " + msNumberInterior);
                 break;
             case 2:
-                value = msAddress2 + (msAddress3.length() == 0 ? "" : " " + msAddress3);
+                value = msAddress2 + (msAddress3.isEmpty() ? "" : " " + msAddress3);
                 break;
             case 3:
-                value = msLocality + (msState.length() == 0 ? "" : ", " + msState);
+                value = msLocality + (msState.isEmpty() ? "" : ", " + msState);
                 break;
             case 4:
                 value = msZipCode;

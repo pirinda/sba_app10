@@ -193,11 +193,13 @@ public class DModModuleMkt extends DGuiModule implements ActionListener {
         mjPrcCustomerPromotionalPackageDis.addActionListener(this);
         mjPrcCustomerPromotionalPackageCus.addActionListener(this);
 
-        mjPrcCustomerFixedPrice.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isCustomerFixedPrices());
-        mjPrcCustomerSpecialPrice.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isCustomerSpecialPrices());
+        DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+        
+        mjPrcCustomerFixedPrice.setEnabled(configCompany.isCustomerFixedPrices());
+        mjPrcCustomerSpecialPrice.setEnabled(configCompany.isCustomerSpecialPrices());
         mjPrcCustomerSpecialPriceCus.setEnabled(mjPrcCustomerSpecialPrice.isEnabled());
         mjPrcCustomerSpecialPricePrc.setEnabled(mjPrcCustomerSpecialPrice.isEnabled());
-        mjPrcCustomerPromotionalPackage.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isCustomerPromotionalPackages());
+        mjPrcCustomerPromotionalPackage.setEnabled(configCompany.isCustomerPromotionalPackages());
         mjPrcCustomerPromotionalPackageCus.setEnabled(mjPrcCustomerPromotionalPackage.isEnabled());
         mjPrcCustomerPromotionalPackageDis.setEnabled(mjPrcCustomerPromotionalPackage.isEnabled());
 

@@ -713,10 +713,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     }
 
     private void itemStateBoolItemLineApplying() {
-        DDbConfigCompany configCompany = null;
-
         if (moBoolItemLineApplying.getValue()) {
-            configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+            DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
             moIntCodeOrderItemLine.setEnabled(configCompany.isItemCodeApplying() && configCompany.isCodeItemLineApplying());
             moIntNameOrderItemLine.setEnabled(true);

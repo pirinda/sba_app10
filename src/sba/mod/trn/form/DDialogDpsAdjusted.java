@@ -11,7 +11,7 @@
 
 package sba.mod.trn.form;
 
-import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver40.DCfdi40Catalogs;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -580,9 +580,9 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         dpsRowNew.setDfrItemKey(item.getActualCfdItemKey());
         dpsRowNew.setDfrUnitKey(unit.getCfdUnitKey());
         */
-        dpsRowNew.setDfrItemKey(DCfdi33Catalogs.ClaveProdServServsFacturacion); //fixed ClaveProdServ
-        dpsRowNew.setDfrUnitKey(DCfdi33Catalogs.ClaveUnidadAct);    //fixed ClaveUnidad
-        dpsRowNew.setDfrSourceUuid(moDps.getDfrUuid());
+        dpsRowNew.setDfrItemKey(DCfdi40Catalogs.ClaveProdServServsFacturacion); //fixed ClaveProdServ
+        dpsRowNew.setDfrUnitKey(DCfdi40Catalogs.ClaveUnidadAct); //fixed ClaveUnidad
+        dpsRowNew.setDfrSourceUuid(moDps.getChildDfr().getUuid());
         
         dpsRowNew.setDbUnitCode(dpsRow.getDbUnitCode());
         dpsRowNew.setDbTaxRegimeId(dpsRow.getDbTaxRegimeId());
@@ -598,7 +598,7 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
 
     private Vector<DDbDpsRow> createDpsRows() {
         DRowDpsRowAdjusted rowAdjusted = null;
-        Vector<DDbDpsRow> rows = new Vector<DDbDpsRow>();
+        Vector<DDbDpsRow> rows = new Vector<>();
 
         for (DGridRow row : moGridAdjustment.getModel().getGridRows()) {
             rowAdjusted = (DRowDpsRowAdjusted) row;

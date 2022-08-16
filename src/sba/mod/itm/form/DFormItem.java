@@ -1212,8 +1212,6 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     }
 
     private void itemStateKeyItemGenus(boolean computeItemNameCode) {
-        DDbConfigCompany configCompany = null;
-
         if (moKeyItemGenus.getSelectedIndex() <= 0) {
             moItemGenus = null;
             moItemLine = null;
@@ -1294,7 +1292,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         else {
             moItemGenus = (DDbItemGenus) miClient.getSession().readRegistry(DModConsts.IU_GEN, moKeyItemGenus.getValue());
 
-            configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+            DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
             if (moItemGenus.isItemLineApplying()) {
                 moKeyItemLine.setEnabled(true);
@@ -1592,8 +1590,6 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     }
 
     private void itemStateBoolFreeOfPrice() {
-        DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
-
         if (moBoolFreeOfPrice.getValue() || moKeyItemGenus.getSelectedIndex() <= 0 || (moKeyItemLine.isEnabled() && moKeyItemLine.getSelectedIndex() <= 0)) {
             moDecPriceSrp.setEnabled(false);
             moDecPrice1.setEnabled(false);
@@ -1624,6 +1620,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
             moDecPriceNet5.setValue(0d);
         }
         else {
+            DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+
             moDecPriceSrp.setEnabled(configCompany.isPriceSrpApplying());
             moDecPrice1.setEnabled(configCompany.isPrice1Applying());
             moDecPrice2.setEnabled(configCompany.isPrice2Applying());
@@ -2011,10 +2009,8 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        boolean isCodeApplying = false;
         DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
-
-        isCodeApplying = configCompany.isItemCodeApplying() && configCompany.isCodeItemApplying();
+        boolean isCodeApplying = configCompany.isItemCodeApplying() && configCompany.isCodeItemApplying();
 
         moRegistry = (DDbItem) registry;
 

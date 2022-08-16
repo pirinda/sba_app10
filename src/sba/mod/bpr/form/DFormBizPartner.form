@@ -229,7 +229,7 @@
                             </Component>
                             <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextFiscalId">
                             </Component>
-                            <Component class="javax.swing.JButton" name="jbFiscalId">
+                            <Component class="javax.swing.JButton" name="jbSetDefaultFiscalId">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="..."/>
                                 <Property name="toolTipText" type="java.lang.String" value="Poner RFC predeterminado"/>

@@ -5,6 +5,7 @@
 
 package sba.mod.bpr.db;
 
+import cfd.DCfdConsts;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,7 +18,6 @@ import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
-import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.mkt.db.DDbAgentConfig;
 
 /**
@@ -179,9 +179,25 @@ public class DDbBizPartner extends DDbRegistryUser {
         }
         return desiredChild;
     }
+    
+    public DDbBranch getChildBranchHeadquarters() {
+        return mvChildBranches.size() > 0 ? mvChildBranches.get(0) : null;
+    }
 
     public String getProperName() {
         return DLibUtils.textTrim(mnFkIdentityTypeId == DModSysConsts.BS_IDY_TP_ORG ? msName : msFirstname + " " + msLastname);
+    }
+    
+    public boolean isPublic() {
+        return isPublicDomestic()|| isPublicInternational();
+    }
+
+    public boolean isPublicDomestic() {
+        return msFiscalId.equals(DCfdConsts.RFC_GEN_NAC);
+    }
+
+    public boolean isPublicInternational() {
+        return msFiscalId.equals(DCfdConsts.RFC_GEN_INT);
     }
 
     @Override
@@ -555,8 +571,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     msSql = "SELECT COUNT(*) " +
                             "FROM " + DModConsts.TablesMap.get(DModConsts.BU_BPR) + " " +
                             "WHERE fis_id = '" + msFiscalId + "' AND fis_id NOT IN (" +
-                            "'" + ((DDbConfigCompany) session.getConfigCompany()).getFiscalIdCountry() + "', " +
-                            "'" + ((DDbConfigCompany) session.getConfigCompany()).getFiscalIdForeign() + "') AND " +
+                            "'" + DCfdConsts.RFC_GEN_NAC + "', '" + DCfdConsts.RFC_GEN_INT + "') AND " +
                             "id_bpr <> " + mnPkBizPartnerId + " AND " +
                             "b_ven = " + mbVendor + " AND " +
                             "b_cus = " + mbCustomer + " AND " +

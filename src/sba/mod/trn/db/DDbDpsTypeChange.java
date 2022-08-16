@@ -5,7 +5,7 @@
 
 package sba.mod.trn.db;
 
-import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -340,17 +340,16 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
         if (mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) {
             // prepare CFDI:
             
-            DXmlCatalog xmlCatalogMethodOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_MDP);
+            DXmlCatalog xmlCatalogMethodOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_MDP);
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
             DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
             
-            dps.setDfrMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DCfdi33Catalogs.MDP_PUE_ID : DCfdi33Catalogs.MDP_PPD_ID));
-            dps.setDfrPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
-            dps.setDfrConfirmation("");
-            dps.setDfrTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
-            dps.setDfrCfdUsage(bizPartnerConfig.getActualCfdUsage());
-            dps.setDfrRelationType("");
-            dps.getDfrCfdiRelated().clear();    // it is assumed that no UUID's are available
+            dps.getXtaDfr().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DCfdi40Catalogs.MDP_PUE_ID : DCfdi40Catalogs.MDP_PPD_ID));
+            dps.getXtaDfr().setPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
+            dps.getXtaDfr().setConfirmation("");
+            dps.getXtaDfr().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.getXtaDfr().setCfdUsage(bizPartnerConfig.getActualCfdUsage());
+            dps.getXtaDfr().setCfdRelations(null); // it is assumed that no UUID's are available
             
             for (DDbDpsRow row : dps.getChildRows()) {
                 if (!row.isDeleted()) {

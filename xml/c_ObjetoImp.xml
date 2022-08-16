@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="No objeto de impuesto." term_start="2022-01-01" term_end=""/>
+<Entry id="2" code="02" name="Sí objeto de impuesto." term_start="2022-01-01" term_end=""/>
+<Entry id="3" code="03" name="Sí objeto del impuesto y no obligado al desglose." term_start="2022-01-01" term_end=""/>
+</Catalog>

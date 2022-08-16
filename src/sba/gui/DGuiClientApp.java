@@ -13,7 +13,7 @@ package sba.gui;
 
 import cfd.DCfdConsts;
 import cfd.DCfdSignature;
-import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver40.DCfdi40Catalogs;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -95,7 +95,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 027.0"; // release date: 2022-06-01
+    public static final String APP_RELEASE = "SBA 1.0 028.0"; // release date: 2022-06-10
     public static final String APP_COPYRIGHT = "Copyright © 2011-2022 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -678,16 +678,24 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             
             // Read XML catalogs:
             moXmlCatalogsMap = new HashMap<>();
-            DXmlCatalog catalogMetodoPago = new DXmlCatalog(DCfdi33Catalogs.XML_MDP, "xml/" + DCfdi33Catalogs.XML_MDP + DXmlCatalog.XmlFileExt, false);
-            DXmlCatalog catalogFormaPago = new DXmlCatalog(DCfdi33Catalogs.XML_FDP, "xml/" + DCfdi33Catalogs.XML_FDP + DXmlCatalog.XmlFileExt, false);
-            DXmlCatalog catalogMoneda = new DXmlCatalog(DCfdi33Catalogs.XML_MON, "xml/" + DCfdi33Catalogs.XML_MON + DXmlCatalog.XmlFileExt, false);
-            DXmlCatalog catalogTipoRelacion = new DXmlCatalog(DCfdi33Catalogs.XML_REL_TP, "xml/" + DCfdi33Catalogs.XML_REL_TP + DXmlCatalog.XmlFileExt, false);
-            DXmlCatalog catalogUsoCfdi = new DXmlCatalog(DCfdi33Catalogs.XML_CFDI_USO, "xml/" + DCfdi33Catalogs.XML_CFDI_USO + DXmlCatalog.XmlFileExt, false);
-            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_MDP, catalogMetodoPago);
-            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_FDP, catalogFormaPago);
-            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_MON, catalogMoneda);
-            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_REL_TP, catalogTipoRelacion);
-            moXmlCatalogsMap.put(DCfdi33Catalogs.CAT_CFDI_USO, catalogUsoCfdi);
+            DXmlCatalog catalogMetodoPago = new DXmlCatalog(DCfdi40Catalogs.XML_MDP, "xml/" + DCfdi40Catalogs.XML_MDP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogTipoRelacion = new DXmlCatalog(DCfdi40Catalogs.XML_REL_TP, "xml/" + DCfdi40Catalogs.XML_REL_TP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogUsoCfdi = new DXmlCatalog(DCfdi40Catalogs.XML_CFDI_USO, "xml/" + DCfdi40Catalogs.XML_CFDI_USO + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogFormaPago = new DXmlCatalog(DCfdi40Catalogs.XML_FDP, "xml/" + DCfdi40Catalogs.XML_FDP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogMoneda = new DXmlCatalog(DCfdi40Catalogs.XML_MON, "xml/" + DCfdi40Catalogs.XML_MON + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogExportacion = new DXmlCatalog(DCfdi40Catalogs.XML_EXP, "xml/" + DCfdi40Catalogs.XML_EXP + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogPeriodicidad = new DXmlCatalog(DCfdi40Catalogs.XML_GBL_PER, "xml/" + DCfdi40Catalogs.XML_GBL_PER + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogMeses = new DXmlCatalog(DCfdi40Catalogs.XML_GBL_MES, "xml/" + DCfdi40Catalogs.XML_GBL_MES + DXmlCatalog.XmlFileExt, false);
+            DXmlCatalog catalogObjetoImp = new DXmlCatalog(DCfdi40Catalogs.XML_OBJ_IMP, "xml/" + DCfdi40Catalogs.XML_OBJ_IMP + DXmlCatalog.XmlFileExt, false);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_MDP, catalogMetodoPago);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_FDP, catalogFormaPago);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_MON, catalogMoneda);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_REL_TP, catalogTipoRelacion);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_CFDI_USO, catalogUsoCfdi);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_EXP, catalogExportacion);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_GBL_PER, catalogPeriodicidad);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_GBL_MES, catalogMeses);
+            moXmlCatalogsMap.put(DCfdi40Catalogs.CAT_OBJ_IMP, catalogObjetoImp);
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);

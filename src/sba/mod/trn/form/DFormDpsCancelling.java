@@ -11,8 +11,7 @@
 
 package sba.mod.trn.form;
 
-import cfd.ver3.DCfdVer3Consts;
-import cfd.ver4.DCfdi4Consts;
+import cfd.ver4.DCfdVer4Consts;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
@@ -164,7 +163,7 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         moRadAnnulActionDisableCancel.setBooleanSettings(moRadAnnulActionDisableCancel.getText(), false);
         moBoolRetryCancel.setBooleanSettings(moBoolRetryCancel.getText(), false);
         moKeyAnnulReasonCode.setKeySettings(miClient, DGuiUtils.getLabelName(jlAnnulReasonCode), true);
-        moTextAnnulRelatedUuid.setTextSettings(DGuiUtils.getLabelName(jlAnnulRelatedUuid), DCfdVer3Consts.LEN_UUID, DCfdVer3Consts.LEN_UUID);
+        moTextAnnulRelatedUuid.setTextSettings(DGuiUtils.getLabelName(jlAnnulRelatedUuid), DCfdVer4Consts.LEN_UUID, DCfdVer4Consts.LEN_UUID);
 
         moFields.addField(moRadAnnulActionDisable);
         moFields.addField(moRadAnnulActionDisableCancel);
@@ -231,7 +230,7 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
     
     private void itemStateChangedAnnulReasonCode() {
         moTextAnnulRelatedUuid.resetField();
-        moTextAnnulRelatedUuid.setEnabled(DLibUtils.compareKeys(moKeyAnnulReasonCode.getValue(), new int[] { DLibUtils.parseInt(DCfdi4Consts.CAN_MOTIVO_ERROR_CON_REL) }));
+        moTextAnnulRelatedUuid.setEnabled(DLibUtils.compareKeys(moKeyAnnulReasonCode.getValue(), new int[] { DLibUtils.parseInt(DCfdVer4Consts.CAN_MOTIVO_ERROR_CON_REL) }));
     }
     
     /*
@@ -257,8 +256,8 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
     public void reloadCatalogues() {
         moKeyAnnulReasonCode.removeAllItems();
         moKeyAnnulReasonCode.addItem(new DGuiItem("- " + DGuiUtils.getLabelName(jlAnnulReasonCode) + " -"));
-        for (String code : DCfdi4Consts.CancelaciónMotivos.keySet()) {
-            moKeyAnnulReasonCode.addItem(new DGuiItem(new int[] { DLibUtils.parseInt(code) }, code + " - " + DCfdi4Consts.CancelaciónMotivos.get(code)));
+        for (String code : DCfdVer4Consts.CancelaciónMotivos.keySet()) {
+            moKeyAnnulReasonCode.addItem(new DGuiItem(new int[] { DLibUtils.parseInt(code) }, code + " - " + DCfdVer4Consts.CancelaciónMotivos.get(code)));
         }
     }
 

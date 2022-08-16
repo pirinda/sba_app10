@@ -20,7 +20,6 @@ import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import sba.gui.util.DUtilConsts;
-import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
 import sba.lib.gui.DGuiClient;
@@ -56,7 +55,7 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
 
     /** Creates new form DFormReparation */
     public DFormReparation(DGuiClient client, String title) {
-        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.SU_EQU, DLibConsts.UNDEFINED, title);
+        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.SU_EQU, 0, title);
         initComponents();
         initComponentsCustom();
     }
@@ -557,7 +556,7 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
             moKeyBranchAddress.removeAllItems();
         }
         else {
-            miClient.getSession().populateCatalogue(moKeyBranchAddress, DModConsts.BU_ADD, DLibConsts.UNDEFINED, new DGuiParams(moBizPartnerBranch.getPrimaryKey()));
+            miClient.getSession().populateCatalogue(moKeyBranchAddress, DModConsts.BU_ADD, 0, new DGuiParams(moBizPartnerBranch.getPrimaryKey()));
 
             // Select default branch address:
 
@@ -581,12 +580,12 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
         }
         else {
             moBizPartner = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, moKeyBizPartner.getValue());
-            moBizPartnerBranch = moBizPartner.getChildBranches().get(0);
+            moBizPartnerBranch = moBizPartner.getChildBranchHeadquarters();
             moKeyBranchAddress.setEnabled(true);
 
-            text = moBizPartnerBranch.getChildAddresses().get(0).composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession()));
+            text = moBizPartnerBranch.getChildAddressOfficial().composeAddress(miClient.getSession(), moBizPartnerBranch.getActualFkAddressFormatTypeId(miClient.getSession()));
             text += (text.isEmpty() ? "" : "\n") + moBizPartner.getFiscalId();
-            text += (text.isEmpty() ? "" : "\n") + moBizPartnerBranch.getChildAddresses().get(0).getTelecommDevices();
+            text += (text.isEmpty() ? "" : "\n") + moBizPartnerBranch.getChildAddressOfficial().getTelecommDevices();
         }
 
         jtaHeadquartersAddressRo.setText(text);
@@ -688,8 +687,8 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyBizPartner, DModConsts.BU_BPR, DModSysConsts.BS_BPR_CL_CUS, null);
-        miClient.getSession().populateCatalogue(moKeyEquipment, DModConsts.SU_EQU, DLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyBrand, DModConsts.IU_BRD, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyEquipment, DModConsts.SU_EQU, 0, null);
+        miClient.getSession().populateCatalogue(moKeyBrand, DModConsts.IU_BRD, 0, null);
     }
 
     @Override
@@ -701,7 +700,7 @@ public class DFormReparation extends DBeanForm implements ActionListener, ItemLi
 
         moRegistry = (DDbReparation) registry;
 
-        mnFormResult = DLibConsts.UNDEFINED;
+        mnFormResult = 0;
         mbFirstActivation = true;
 
         removeAllListeners();

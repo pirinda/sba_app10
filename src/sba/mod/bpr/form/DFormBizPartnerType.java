@@ -11,7 +11,7 @@
 
 package sba.mod.bpr.form;
 
-import cfd.ver33.DCfdi33Catalogs;
+import cfd.ver40.DCfdi40Catalogs;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import sba.gui.DGuiClientApp;
@@ -246,7 +246,7 @@ public class DFormBizPartnerType extends DBeanForm implements ItemListener {
         
         moFields.setFormButton(jbSave);
         
-        moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi33Catalogs.CAT_CFDI_USO);
+        moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_CFDI_USO);
         moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
     }
 

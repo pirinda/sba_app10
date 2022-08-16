@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 028.0
+2021-06-08/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de CFDI 4.0.
+
+================================================================================
 SBA 1.0 027.0
 2021-06-01/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de nueva función de cancelación de CFDI 2022 y refactorización general al proceso de timbrado, 

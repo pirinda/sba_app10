@@ -141,7 +141,7 @@ public class DFormItemPrices extends DBeanFormDialog implements ActionListener {
 
         moFields.setFormButton(jbSave);
 
-        jtbTaxIncluded.setSelected(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isTaxIncluded());
+        jtbTaxIncluded.setSelected(configCompany.isTaxIncluded());
         jtbTaxIncluded.setToolTipText(jtbTaxIncluded.isSelected() ? DMyGridFilterSwitchTax.TAX_Y : DMyGridFilterSwitchTax.TAX_N);
 
         moTaxGroupConfigRow = DTrnUtils.getTaxGroupConfigRowDefault(miClient.getSession());

@@ -5,6 +5,7 @@
 
 package sba.mod.trn.db;
 
+import cfd.DCfdConsts;
 import cfd.ver33.DCfdi33Consts;
 import cfd.ver33.DCfdi33Utils;
 import java.awt.Cursor;
@@ -40,6 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.text.WordUtils;
+import sa.lib.db.SDbRegistry;
 import sba.gui.DGuiClientApp;
 import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
@@ -207,7 +209,7 @@ public abstract class DTrnEmissionUtils {
                 + "FROM " + DModConsts.TablesMap.get(DModConsts.T_XSR) + " "
                 + "WHERE NOT b_del AND id_dfr = " + dfrId + ";";
         try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
-            if (resultSet.next() && resultSet.getInt(1) != DLibConsts.UNDEFINED) {
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
                 xsr = (DDbXmlSignatureRequest) session.readRegistry(DModConsts.T_XSR, new int[] { dfrId, resultSet.getInt(1) });
             }
         }
@@ -324,6 +326,7 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static void printDps(final DGuiClient client, final DGridRowView gridRow, final int printMode) {
         boolean print = true;
         boolean printed = false;
@@ -398,7 +401,7 @@ public abstract class DTrnEmissionUtils {
                         if (series != null && series.isTaxImprovement()) {
                             bizPartner = (DDbBizPartner) client.getSession().readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
                             if (dps.getFkEmissionTypeId() == DModSysConsts.TS_EMI_TP_PUB || dps.getFkEmissionTypeId() == DModSysConsts.TS_EMI_TP_PUB_NAM ||
-                                    bizPartner.getFiscalId().compareTo(((DDbConfigCompany) client.getSession().getConfigCompany()).getFiscalIdCountry()) == 0) {
+                                    bizPartner.getFiscalId().equals(DCfdConsts.RFC_GEN_NAC)) {
                                 map.put("bTaxImprovement", true);
                             }
                         }
@@ -423,6 +426,11 @@ public abstract class DTrnEmissionUtils {
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_33:
                                 DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
+                                printed = true;
+                                break;
+                                
+                            case DModSysConsts.TS_XML_TP_CFDI_40:
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
                                 printed = true;
                                 break;
                                 
@@ -475,6 +483,10 @@ public abstract class DTrnEmissionUtils {
 
                     case DModSysConsts.TS_XML_TP_CFDI_33:
                         DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap(client.getSession(), dfr));
+                        break;
+
+                    case DModSysConsts.TS_XML_TP_CFDI_40:
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_10, DTrnDfrPrinting.createPrintingMap(client.getSession(), dfr));
                         break;
 
                     default:
@@ -865,7 +877,9 @@ public abstract class DTrnEmissionUtils {
             }
 
             if (!cancel) {
-                throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no se puede cancelar.");
+                String message = doc instanceof SDbRegistry ? ((SDbRegistry) doc).getQueryResult() : "";
+                throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no se puede cancelar."
+                        + (message.isEmpty() ? "" : "\n" + message));
             }
             else {
                 // Proceed with cancellation:

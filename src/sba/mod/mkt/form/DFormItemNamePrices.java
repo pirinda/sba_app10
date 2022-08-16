@@ -22,7 +22,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JButton;
-import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -214,7 +213,7 @@ public class DFormItemNamePrices extends DBeanFormDialog implements ActionListen
 
         moFields.setFormButton(jbSave);
 
-        jtbTaxIncluded.setSelected(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isTaxIncluded());
+        jtbTaxIncluded.setSelected(configCompany.isTaxIncluded());
         jtbTaxIncluded.setToolTipText(jtbTaxIncluded.isSelected() ? DMyGridFilterSwitchTax.TAX_Y : DMyGridFilterSwitchTax.TAX_N);
 
         moTaxGroupConfigRow = DTrnUtils.getTaxGroupConfigRowDefault(miClient.getSession());

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="No aplica" term_start="2022-01-01" term_end=""/>
+<Entry id="2" code="02" name="Definitiva con clave A1" term_start="2022-01-01" term_end=""/>
+<Entry id="3" code="03" name="Temporal" term_start="2022-01-01" term_end=""/>
+<Entry id="4" code="04" name="Definitiva con clave distinta a A1 o cuando no existe enajenación en términos del CFF" term_start="2022-02-25" term_end=""/>
+</Catalog>

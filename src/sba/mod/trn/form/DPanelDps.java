@@ -448,9 +448,14 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
             moCurBalanceCy.setCurrencyKey(moRegistry.getCurrencyKey());
             
             jbShowCardex.setEnabled(mbEnableCardex);
+            
+            if (moRegistry.isRegistryNew()) {
+                
+            }
+            else {
+                
+            }
         }
-        
-        if (moRegistry.isRegistryNew()) { } else { }
 
         mnYear = 0; // reset year every time
 

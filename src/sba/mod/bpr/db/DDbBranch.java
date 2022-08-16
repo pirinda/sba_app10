@@ -103,19 +103,6 @@ public class DDbBranch extends DDbRegistryUser {
     public int getActualFkAddressFormatTypeId(DGuiSession session) { return mnFkAddressFormatTypeId_n != DLibConsts.UNDEFINED ? mnFkAddressFormatTypeId_n : ((DDbConfigCompany) session.getConfigCompany()).getFkAddressFormatTypeId(); }
     public int getActualFkTaxRegionId(DGuiSession session) { return mnFkTaxRegionId_n != DLibConsts.UNDEFINED ? mnFkTaxRegionId_n : ((DDbConfigBranch) session.getConfigBranch()).getFkTaxRegionId(); }
 
-    public DDbBranchAddress getChildDefaultAddress() {
-        DDbBranchAddress defaultChild = null;
-
-        for (DDbBranchAddress child : mvChildAddresses) {
-            if (child.isDefault()) {
-                defaultChild = child;
-                break;
-            }
-        }
-
-        return defaultChild;
-    }
-
     public DDbBranchAddress getChildAddress(int[] key) {
         DDbBranchAddress desiredChild = null;
 
@@ -127,6 +114,23 @@ public class DDbBranch extends DDbRegistryUser {
         }
 
         return desiredChild;
+    }
+
+    public DDbBranchAddress getChildAddressOfficial() {
+        return mvChildAddresses.size() > 0 ? mvChildAddresses.get(0) : null;
+    }
+
+    public DDbBranchAddress getChildAddressDefault() {
+        DDbBranchAddress defaultChild = null;
+
+        for (DDbBranchAddress child : mvChildAddresses) {
+            if (child.isDefault()) {
+                defaultChild = child;
+                break;
+            }
+        }
+
+        return defaultChild;
     }
 
     public DDbBranchBankAccount getChildBankAccount(int[] key) {
