@@ -7,6 +7,7 @@ package sba.gui.cat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JComboBox;
 import org.w3c.dom.Document;
@@ -27,17 +28,50 @@ public class DXmlCatalog {
     
     private String msName;
     private String msFilePath;
-    private boolean mbApplyEntity;
+    private boolean mbApplyEntityAttribute;
+    private String msBelongingAttribute;
+    private String msSearchingAttributes;
+    private String[] maExtraAttributes;
     private ArrayList<DXmlCatalogEntry> maEntries;
     
-    public DXmlCatalog(String name, String file) throws Exception {
-        this(name, file, false);
+    /**
+     * Create and load XML catalog.
+     * @param name Catalog name.
+     * @param filePath Catalog filepath, including file extension.
+     * @throws Exception 
+     */
+    public DXmlCatalog(String name, String filePath) throws Exception {
+        this(name, filePath, false, "", "", null);
     }
     
-    public DXmlCatalog(String name, String filePath, boolean isApplyEntity) throws Exception {
+    /**
+     * Create and load XML catalog.
+     * @param name Catalog name.
+     * @param filePath Catalog filepath, including file extension.
+     * @param applyEntityAttributes Flag to indicate if catalog has apply-entity (for persons and organizations) attributes.
+     * @throws Exception 
+     */
+    public DXmlCatalog(String name, String filePath, boolean applyEntityAttributes) throws Exception {
+        this(name, filePath, applyEntityAttributes, "", "", null);
+    }
+    
+    /**
+     * Create and load XML catalog.
+     * @param name Catalog name.
+     * @param filePath Catalog filepath, including file extension.
+     * @param applyEntityAttributes Flag to indicate if catalog has apply-entity (for persons and organizations) attributes.
+     * @param belongingAttribute If applies, name of belonging attribute, used for grouping catalog options when needed; otherwise an empty string must be given.
+     * @param searchingAttribute If applies, name of searching attribute, used for looking up catalog options when needed; otherwise an empty string must be given.
+     * @param extraAttributes List of other extra attributes that the catalog may have; othersise <code>null</code> must be given.
+     * @throws Exception 
+     */
+    public DXmlCatalog(String name, String filePath, boolean applyEntityAttributes, String belongingAttribute, String searchingAttribute, String[] extraAttributes) throws Exception {
         msName = name;
         msFilePath = filePath;
-        mbApplyEntity = isApplyEntity;
+        mbApplyEntityAttribute = applyEntityAttributes;
+        msBelongingAttribute = belongingAttribute;
+        msSearchingAttributes = searchingAttribute;
+        maExtraAttributes = extraAttributes;
         maEntries = new ArrayList<>();
         populate();
     }
@@ -59,13 +93,23 @@ public class DXmlCatalog {
             Date termEndDate = termEnd.isEmpty() ? null : DLibUtils.DbmsDateFormatDate.parse(termEnd);
             boolean applyEntityPer = false;
             boolean applyEntityOrg = false;
+            String belongingCode = msBelongingAttribute.isEmpty() ? "" : DXmlUtils.extractAttributeValue(node.getAttributes(), msBelongingAttribute, true);
+            String searchingCode = msSearchingAttributes.isEmpty() ? "" : DXmlUtils.extractAttributeValue(node.getAttributes(), msSearchingAttributes, true);
             
-            if (mbApplyEntity) {
+            if (mbApplyEntityAttribute) {
                 applyEntityPer = DXmlUtils.extractAttributeValue(node.getAttributes(), DXmlCatalogEntry.ApplyEntityPer, true).compareTo("1") == 0;
                 applyEntityOrg = DXmlUtils.extractAttributeValue(node.getAttributes(), DXmlCatalogEntry.ApplyEntityOrg, true).compareTo("1") == 0;
             }
             
-            maEntries.add(new DXmlCatalogEntry(id, code, name, termStartDate, termEndDate, applyEntityPer, applyEntityOrg));
+            DXmlCatalogEntry entry = new DXmlCatalogEntry(id, code, name, termStartDate, termEndDate, applyEntityPer, applyEntityOrg, belongingCode, searchingCode);
+            
+            if (maExtraAttributes != null) {
+                for (String extraAttribute : maExtraAttributes) {
+                    entry.getExtraAttributesMap().put(extraAttribute, DXmlUtils.extractAttributeValue(node.getAttributes(), extraAttribute, true));
+                }
+            }
+            
+            maEntries.add(entry);
         }
     }
 
@@ -84,8 +128,15 @@ public class DXmlCatalog {
         
         for (DXmlCatalogEntry entry : maEntries) {
             DGuiItem item = new DGuiItem(new int[] { entry.getId() }, entry.getCode() + " - " + entry.getName());
+            
             item.setCode(entry.getCode());
             item.setCodeVisible(false);
+            
+            if (!entry.getExtraAttributesMap().isEmpty()) {
+                HashMap<String, String> attributes = new HashMap<>(entry.getExtraAttributesMap());
+                item.setComplement(attributes);
+            }
+            
             items.add(item);
         }
         
@@ -101,10 +152,31 @@ public class DXmlCatalog {
     }
     
     public int getId(final String code) {
+        return getId(code, "");
+    }
+    
+    public int getId(final String code, final String belongCode) {
         int id = 0;
         
         for (DXmlCatalogEntry entry : maEntries) {
-            if (entry.getCode().compareTo(code) == 0) {
+            if (entry.getCode().equals(code) && entry.getBelongingCode().equals(belongCode)) {
+                id = entry.getId();
+                break;
+            }
+        }
+        
+        return id;
+    }
+    
+    public int getIdBySearchCode(final String searchCode) {
+        return getIdBySearchCode(searchCode, "");
+    }
+    
+    public int getIdBySearchCode(final String searchCode, final String belongCode) {
+        int id = 0;
+        
+        for (DXmlCatalogEntry entry : maEntries) {
+            if (entry.getSearchingCode().equals(searchCode) && entry.getBelongingCode().equals(belongCode)) {
                 id = entry.getId();
                 break;
             }

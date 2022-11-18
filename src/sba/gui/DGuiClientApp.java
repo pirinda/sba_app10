@@ -71,6 +71,7 @@ import sba.mod.DModModuleBpr;
 import sba.mod.DModModuleCfg;
 import sba.mod.DModModuleFin;
 import sba.mod.DModModuleItm;
+import sba.mod.DModModuleLad;
 import sba.mod.DModModuleMkt;
 import sba.mod.DModModulePos;
 import sba.mod.DModModuleSrv;
@@ -95,7 +96,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 028.0"; // release date: 2022-06-10
+    public static final String APP_RELEASE = "SBA 1.0 028.0"; // release date: 2022-10-31
     public static final String APP_COPYRIGHT = "Copyright © 2011-2022 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -185,6 +186,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleMkt = new javax.swing.JToggleButton();
         jtbModulePos = new javax.swing.JToggleButton();
         jtbModuleSrv = new javax.swing.JToggleButton();
+        jtbModuleLad = new javax.swing.JToggleButton();
         jtpTabbedPane = new javax.swing.JTabbedPane();
         jpStatusBar = new javax.swing.JPanel();
         jpStatusBar1 = new javax.swing.JPanel();
@@ -225,6 +227,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleMkt = new javax.swing.JMenuItem();
         jmiViewModulePos = new javax.swing.JMenuItem();
         jmiViewModuleSrv = new javax.swing.JMenuItem();
+        jmiViewModuleLad = new javax.swing.JMenuItem();
         jmHelp = new javax.swing.JMenu();
         jmiHelpHelp = new javax.swing.JMenuItem();
         jsHelp1 = new javax.swing.JPopupMenu.Separator();
@@ -346,6 +349,19 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleSrv.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/mod_srv.png"))); // NOI18N
         jtbModuleSrv.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jtbToolBar.add(jtbModuleSrv);
+
+        jbgModules.add(jtbModuleLad);
+        jtbModuleLad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/mod_lad_bw.png"))); // NOI18N
+        jtbModuleLad.setToolTipText("Traslados");
+        jtbModuleLad.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jtbModuleLad.setFocusable(false);
+        jtbModuleLad.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jtbModuleLad.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jtbModuleLad.setPreferredSize(new java.awt.Dimension(64, 64));
+        jtbModuleLad.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/mod_lad.png"))); // NOI18N
+        jtbModuleLad.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/mod_lad.png"))); // NOI18N
+        jtbModuleLad.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jtbToolBar.add(jtbModuleLad);
 
         getContentPane().add(jtbToolBar, java.awt.BorderLayout.NORTH);
         getContentPane().add(jtpTabbedPane, java.awt.BorderLayout.CENTER);
@@ -539,6 +555,10 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleSrv.setText("Módulo servicios");
         jmView.add(jmiViewModuleSrv);
 
+        jmiViewModuleLad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_9, java.awt.event.InputEvent.CTRL_MASK));
+        jmiViewModuleLad.setText("Módulo traslados");
+        jmView.add(jmiViewModuleLad);
+
         jmbMenu.add(jmView);
 
         jmHelp.setText("Ayuda");
@@ -576,7 +596,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
      */
 
     private void initComponentsCustom() {
-        int result = DLibConsts.UNDEFINED;
+        int result = 0;
         String xml = "";
         TimeZone zone = null;
 
@@ -713,6 +733,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleMkt.addActionListener(this);
         jtbModulePos.addActionListener(this);
         jtbModuleSrv.addActionListener(this);
+        jtbModuleLad.addActionListener(this);
 
         jmiFileWorkingDate.addActionListener(this);
         jmiFileSessionSettings.addActionListener(this);
@@ -731,6 +752,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleMkt.addActionListener(this);
         jmiViewModulePos.addActionListener(this);
         jmiViewModuleSrv.addActionListener(this);
+        jmiViewModuleLad.addActionListener(this);
         jmiHelpHelp.addActionListener(this);
         jmiHelpAbout.addActionListener(this);
 
@@ -815,7 +837,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         Statement statement = moSession.getStatement().getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(sql);  // local variable declaration for be considered as efectively final
         while (resultSet.next()) {
-            if (resultSet.getInt("fk_cer_n") != DLibConsts.UNDEFINED) {
+            if (resultSet.getInt("fk_cer_n") != 0) {
                 signature = new DGuiEdsSignature() {
 
                     private final int mnCompanyId = resultSet.getInt(1);
@@ -898,6 +920,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleMkt.setEnabled(false);
         jmiViewModulePos.setEnabled(false);
         jmiViewModuleSrv.setEnabled(false);
+        jmiViewModuleLad.setEnabled(false);
 
         //jmiViewModuleCfg.setVisible(false);
         jmiViewModuleFin.setVisible(false);
@@ -907,6 +930,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jmiViewModuleMkt.setVisible(false);
         jmiViewModulePos.setVisible(false);
         jmiViewModuleSrv.setVisible(false);
+        jmiViewModuleLad.setVisible(false);
 
         jbWorkingDate.setEnabled(false);
         jbSessionSettings.setEnabled(false);
@@ -918,6 +942,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleMkt.setEnabled(false);
         jtbModulePos.setEnabled(false);
         jtbModuleSrv.setEnabled(false);
+        jtbModuleLad.setEnabled(false);
 
         //jtbModuleCfg.setVisible(false);
         jtbModuleFin.setVisible(false);
@@ -927,6 +952,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtbModuleMkt.setVisible(false);
         jtbModulePos.setVisible(false);
         jtbModuleSrv.setVisible(false);
+        jtbModuleLad.setVisible(false);
 
         jbgModules.clearSelection();
     }
@@ -1002,6 +1028,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 moSession.getModules().add(new DModModuleMkt(this));
                 moSession.getModules().add(new DModModulePos(this));
                 moSession.getModules().add(new DModModuleSrv(this));
+                moSession.getModules().add(new DModModuleLad(this));
 
                 moSession.getUser().computeAccess(moSession);
                 moSession.setSessionCustom(moSession.getUser().createDefaultUserSession(this, mnTerminal));
@@ -1030,6 +1057,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 jtbModuleMkt.setVisible(configCompany.isModuleMarketing());
                 jtbModulePos.setVisible(configCompany.isModulePointOfSale());
                 jtbModuleSrv.setVisible(configCompany.isModuleServices());
+                jtbModuleLad.setVisible(configCompany.isModuleLadings());
 
                 //jmiViewModuleCfg.setVisible(jtbModuleCfg.isVisible());
                 jmiViewModuleFin.setVisible(jtbModuleFin.isVisible());
@@ -1039,6 +1067,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 jmiViewModuleMkt.setVisible(jtbModuleMkt.isVisible());
                 jmiViewModulePos.setVisible(jtbModulePos.isVisible());
                 jmiViewModuleSrv.setVisible(jtbModuleSrv.isVisible());
+                jmiViewModuleLad.setVisible(jtbModuleLad.isVisible());
 
                 if (user.hasModuleAccess(DModSysConsts.CS_MOD_CFG)) {
                     modulesAccessed++;
@@ -1106,6 +1135,14 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                     }
                 }
 
+                if (user.hasModuleAccess(DModSysConsts.CS_MOD_LAD)) {
+                    modulesAccessed++;
+                    jtbModuleLad.setEnabled(true);
+                    if (defaultToggleButton == null) {
+                        defaultToggleButton = jtbModuleLad;
+                    }
+                }
+
                 jmiFileWorkingDate.setEnabled(jbWorkingDate.isEnabled());
                 jmiFileSessionSettings.setEnabled(jbSessionSettings.isEnabled());
                 jmiViewModuleCfg.setEnabled(jtbModuleCfg.isEnabled());
@@ -1116,6 +1153,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 jmiViewModuleMkt.setEnabled(jtbModuleMkt.isEnabled());
                 jmiViewModulePos.setEnabled(jtbModulePos.isEnabled());
                 jmiViewModuleSrv.setEnabled(jtbModuleSrv.isEnabled());
+                jmiViewModuleLad.setEnabled(jtbModuleLad.isEnabled());
 
                 moDialogUserSession.setRegistry((DDbUser) moSession.getUser());
 
@@ -1320,6 +1358,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiViewModuleCfg;
     private javax.swing.JMenuItem jmiViewModuleFin;
     private javax.swing.JMenuItem jmiViewModuleInv;
+    private javax.swing.JMenuItem jmiViewModuleLad;
     private javax.swing.JMenuItem jmiViewModuleMkt;
     private javax.swing.JMenuItem jmiViewModulePos;
     private javax.swing.JMenuItem jmiViewModulePur;
@@ -1335,6 +1374,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JToggleButton jtbModuleCfg;
     private javax.swing.JToggleButton jtbModuleFin;
     private javax.swing.JToggleButton jtbModuleInv;
+    private javax.swing.JToggleButton jtbModuleLad;
     private javax.swing.JToggleButton jtbModuleMkt;
     private javax.swing.JToggleButton jtbModulePos;
     private javax.swing.JToggleButton jtbModulePur;
@@ -1673,10 +1713,10 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             JToggleButton toggleButton = (JToggleButton) e.getSource();
 
             if (toggleButton == jtbModuleCfg) {
-                actionToggleViewModule(DModConsts.MOD_CFG, DLibConsts.UNDEFINED);
+                actionToggleViewModule(DModConsts.MOD_CFG, 0);
             }
             else if (toggleButton == jtbModuleFin) {
-                actionToggleViewModule(DModConsts.MOD_FIN, DLibConsts.UNDEFINED);
+                actionToggleViewModule(DModConsts.MOD_FIN, 0);
             }
             else if (toggleButton == jtbModulePur) {
                 actionToggleViewModule(DModConsts.MOD_TRN, DModSysConsts.CS_MOD_PUR);
@@ -1688,13 +1728,16 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 actionToggleViewModule(DModConsts.MOD_TRN, DModSysConsts.CS_MOD_INV);
             }
             else if (toggleButton == jtbModuleMkt) {
-                actionToggleViewModule(DModConsts.MOD_MKT, DLibConsts.UNDEFINED);
+                actionToggleViewModule(DModConsts.MOD_MKT, 0);
             }
             else if (toggleButton == jtbModulePos) {
-                actionToggleViewModule(DModConsts.MOD_POS, DLibConsts.UNDEFINED);
+                actionToggleViewModule(DModConsts.MOD_POS, 0);
             }
             else if (toggleButton == jtbModuleSrv) {
-                actionToggleViewModule(DModConsts.MOD_SRV, DLibConsts.UNDEFINED);
+                actionToggleViewModule(DModConsts.MOD_SRV, 0);
+            }
+            else if (toggleButton == jtbModuleLad) {
+                actionToggleViewModule(DModConsts.MOD_LAD, 0);
             }
         }
         else if (e.getSource() instanceof JMenuItem) {
@@ -1750,6 +1793,9 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             }
             else if (menuItem == jmiViewModuleSrv) {
                 actionViewModule(jtbModuleSrv);
+            }
+            else if (menuItem == jmiViewModuleLad) {
+                actionViewModule(jtbModuleLad);
             }
             else if (menuItem == jmiHelpHelp) {
                 actionHelpHelp();

@@ -1,5 +1,5 @@
 ================================================================================
-CFDI 3.3: catálogos SAT en formato XML e implementados en la base de datos
+CFDI 3.3 y 4.0: catálogos SAT en formato XML e implementados en la base de datos.
 ================================================================================
 --------------------------------------------------------------------------------
 DDbDps (Document of Purchases and Sales)
@@ -12,8 +12,8 @@ c_UsoCFDI.xml
 Los catálogos SAT implementados en la base de datos de SBA, utilizados por sba.mod.trn.db.DDbDps, son:
 cs_cty: países		(la clave del catálogo del SAT está en la columna código)
 cs_cur: monedas		(la clave del catálogo del SAT está en la columna código)
-cs_tax_reg: régimen fiscal	(ID = clave del catálogo del SAT)
-fs_mop_tp: forma de pago	(ID <> clave del catálogo del SAT)
+cs_tax_reg: régimenes fiscales	(ID = clave del catálogo del SAT)
+fs_mop_tp: formas de pago	(ID <> clave del catálogo del SAT)
 
 --------------------------------------------------------------------------------
 DDbDfr (Digital Fiscal Receipt)
@@ -24,7 +24,28 @@ c_FormaPago.xml
 c_Moneda.xml
 
 Los catálogos SAT implementados en la base de datos de SBA, utilizados por sba.mod.trn.db.DDbDfr, son:
-cs_tax_reg: régimen fiscal	(ID = clave del catálogo del SAT)
+cs_tax_reg: régimenes fiscales	(ID = clave del catálogo del SAT)
+
+--------------------------------------------------------------------------------
+DDbBol (Bill Of Lading)
+--------------------------------------------------------------------------------
+Los catálogos SAT utilizados por sba.mod.shp.db.DDbBol son:
+c_UsoCFDI.xml
+c_Moneda.xml
+c_CartaPorte_MaterialPeligroso.xml
+c_CartaPorte_TipoEmbalaje.xml
+c_CartaPorte_TipoPermiso.xml
+c_CartaPorte_Localidad.xml
+c_CartaPorte_Municipio.xml
+c_CartaPorte_ConfigAutotransporte.xml
+c_CartaPorte_SubTipoRem.xml
+
+Los catálogos SAT implementados en la base de datos de SBA, utilizados por sba.mod.shp.db.DDbBol, son:
+cs_tax_reg: régimenes fiscales	(ID = clave del catálogo del SAT)
+ls_tpt_tp: tipos de transporte
+ls_loc_tp: tipos de ubicación
+ls_tpt_figure_tp: tipos de figura de transporte
+ls_tpt_part_tp: tipos de parte de transporte
 
 ================================================================================
 #eof

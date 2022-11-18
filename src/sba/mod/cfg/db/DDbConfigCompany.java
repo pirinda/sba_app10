@@ -39,6 +39,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected boolean mbModuleMarketing;
     protected boolean mbModulePointOfSale;
     protected boolean mbModuleServices;
+    protected boolean mbModuleLadings;
     protected int mnAccountLevel;
     protected String msAccountFormat;
     protected boolean mbDateVendorApplying;
@@ -116,6 +117,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     protected String msDfrEmsSubject;
     protected String msDfrEmsBody;
     protected String msRepSnrGenuses;
+    protected String msBolSeries;
     protected java.sql.Blob moImage_n;
     protected boolean mbDevelopment;
     /*
@@ -191,6 +193,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setModuleMarketing(boolean b) { mbModuleMarketing = b; }
     public void setModulePointOfSale(boolean b) { mbModulePointOfSale = b; }
     public void setModuleServices(boolean b) { mbModuleServices = b; }
+    public void setModuleLadings(boolean b) { mbModuleLadings = b; }
     public void setAccountLevel(int n) { mnAccountLevel = n; }
     public void setAccountFormat(String s) { msAccountFormat = s; }
     public void setDateVendorApplying(boolean b) { mbDateVendorApplying = b; }
@@ -292,6 +295,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public void setDfrEmsSubject(String s) { msDfrEmsSubject = s; }
     public void setDfrEmsBody(String s) { msDfrEmsBody = s; }
     public void setRepSnrGenuses(String s) { msRepSnrGenuses = s; }
+    public void setBolSeries(String s) { msBolSeries = s; }
     public void setImage_n(java.sql.Blob o) { moImage_n = o; }
     public void setDevelopment(boolean b) { mbDevelopment = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -353,6 +357,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public boolean isModuleMarketing() { return mbModuleMarketing; }
     public boolean isModulePointOfSale() { return mbModulePointOfSale; }
     public boolean isModuleServices() { return mbModuleServices; }
+    public boolean isModuleLadings() { return mbModuleLadings; }
     public int getAccountLevel() { return mnAccountLevel; }
     public String getAccountFormat() { return msAccountFormat; }
     public boolean isDateVendorApplying() { return mbDateVendorApplying; }
@@ -430,6 +435,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
     public String getDfrEmsSubject() { return msDfrEmsSubject; }
     public String getDfrEmsBody() { return msDfrEmsBody; }
     public String getRepSnrGenuses() { return msRepSnrGenuses; }
+    public String getBolSeries() { return msBolSeries; }
     public java.sql.Blob getImage_n() { return moImage_n; }
     public boolean isDevelopment() { return mbDevelopment; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -515,6 +521,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mbModuleMarketing = false;
         mbModulePointOfSale = false;
         mbModuleServices = false;
+        mbModuleLadings = false;
         mnAccountLevel = 0;
         msAccountFormat = "";
         mbDateVendorApplying = false;
@@ -592,6 +599,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         msDfrEmsSubject = "";
         msDfrEmsBody = "";
         msRepSnrGenuses = "";
+        msBolSeries = "";
         moImage_n = null;
         mbDevelopment = false;
         mbUpdatable = false;
@@ -693,6 +701,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             mbModuleMarketing = resultSet.getBoolean("b_mod_mkt");
             mbModulePointOfSale = resultSet.getBoolean("b_mod_pos");
             mbModuleServices = resultSet.getBoolean("b_mod_srv");
+            mbModuleLadings = resultSet.getBoolean("b_mod_lad");
             mnAccountLevel = resultSet.getInt("acc_lev");
             msAccountFormat = resultSet.getString("acc_fmt");
             mbDateVendorApplying = resultSet.getBoolean("b_dt_ven");
@@ -770,6 +779,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
             msDfrEmsSubject = resultSet.getString("dfr_ems_subj");
             msDfrEmsBody = resultSet.getString("dfr_ems_body");
             msRepSnrGenuses = resultSet.getString("rep_snr_gen");
+            msBolSeries = resultSet.getString("bol_ser");
             moImage_n = resultSet.getBlob("img_n");
             mbDevelopment = resultSet.getBoolean("b_dev");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -864,6 +874,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     (mbModuleMarketing ? 1 : 0) + ", " +
                     (mbModulePointOfSale ? 1 : 0) + ", " +
                     (mbModuleServices ? 1 : 0) + ", " +
+                    (mbModuleLadings ? 1 : 0) + ", " + 
                     mnAccountLevel + ", " +
                     "'" + msAccountFormat + "', " +
                     (mbDateVendorApplying ? 1 : 0) + ", " +
@@ -941,6 +952,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "'" + msDfrEmsSubject + "', " +
                     "'" + msDfrEmsBody + "', " +
                     "'" + msRepSnrGenuses + "', " + 
+                    "'" + msBolSeries + "', " + 
                     "NULL, " +
                     (mbDevelopment ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -1007,6 +1019,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "b_mod_mkt = " + (mbModuleMarketing ? 1 : 0) + ", " +
                     "b_mod_pos = " + (mbModulePointOfSale ? 1 : 0) + ", " +
                     "b_mod_srv = " + (mbModuleServices ? 1 : 0) + ", " +
+                    "b_mod_lad = " + (mbModuleLadings ? 1 : 0) + ", " +
                     "acc_lev = " + mnAccountLevel + ", " +
                     "acc_fmt = '" + msAccountFormat + "', " +
                     "b_dt_ven = " + (mbDateVendorApplying ? 1 : 0) + ", " +
@@ -1084,6 +1097,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
                     "dfr_ems_subj = '" + msDfrEmsSubject + "', " +
                     "dfr_ems_body = '" + msDfrEmsBody + "', " +
                     "rep_snr_gen = '" + msRepSnrGenuses + "', " +
+                    "bol_ser = '" + msBolSeries + "', " +
                     //"img_n = " + moImage_n + ", " +
                     "b_dev = " + (mbDevelopment ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -1157,6 +1171,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setModuleMarketing(this.isModuleMarketing());
         registry.setModulePointOfSale(this.isModulePointOfSale());
         registry.setModuleServices(this.isModuleServices());
+        registry.setModuleLadings(this.isModuleLadings());
         registry.setAccountLevel(this.getAccountLevel());
         registry.setAccountFormat(this.getAccountFormat());
         registry.setDateVendorApplying(this.isDateVendorApplying());
@@ -1234,6 +1249,7 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         registry.setDfrEmsSubject(this.getDfrEmsSubject());
         registry.setDfrEmsBody(this.getDfrEmsBody());
         registry.setRepSnrGenuses(this.getRepSnrGenuses());
+        registry.setBolSeries(this.getBolSeries());
         registry.setImage_n(this.getImage_n());
         registry.setDevelopment(this.isDevelopment());
         registry.setUpdatable(this.isUpdatable());

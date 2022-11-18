@@ -43,8 +43,11 @@ public class DModUtils implements DGuiModuleUtils {
         else if (type >= DModConsts.MS_PRC_TP && type < DModConsts.SS_SRV_TP) {
             module = DModConsts.MOD_MKT;
         }
-        else if (type >= DModConsts.SS_SRV_TP) {
+        else if (type >= DModConsts.SS_SRV_TP && type < DModConsts.LS_TPT_TP) {
             module = DModConsts.MOD_SRV;
+        }
+        else if (type >= DModConsts.LS_TPT_TP) {
+            module = DModConsts.MOD_LAD;
         }
 
         return module;
@@ -84,7 +87,10 @@ public class DModUtils implements DGuiModuleUtils {
             else if (type >= DModConsts.MS_PRC_TP && type < DModConsts.SS_SRV_TP) {
 
             }
-            else if (type >= DModConsts.SS_SRV_TP) {
+            else if (type >= DModConsts.SS_SRV_TP && type < DModConsts.LS_TPT_TP) {
+
+            }
+            else if (type >= DModConsts.LS_TPT_TP) {
 
             }
         }

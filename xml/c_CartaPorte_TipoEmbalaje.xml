@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="1A1" name="Bidones (Tambores) de Acero 1 de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="2" code="1A2" name="Bidones (Tambores) de Acero 1 de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="3" code="1B1" name="Bidones (Tambores) de Aluminio de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="4" code="1B2" name="Bidones (Tambores) de Aluminio de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="5" code="1D" name="Bidones (Tambores) de Madera contrachapada" term_start="2021-06-01" term_end=""/>
+<Entry id="6" code="1G" name="Bidones (Tambores) de Cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="7" code="1H1" name="Bidones (Tambores) de Plástico de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="8" code="1H2" name="Bidones (Tambores) de Plástico de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="9" code="1N1" name="Bidones (Tambores) de Metal que no sea acero ni aluminio de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="10" code="1N2" name="Bidones (Tambores) de Metal que no sea acero ni aluminio de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="11" code="3A1" name="Jerricanes (Porrones) de Acero de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="12" code="3A2" name="Jerricanes (Porrones) de Acero de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="13" code="3B1" name="Jerricanes (Porrones) de Aluminio de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="14" code="3B2" name="Jerricanes (Porrones) de Aluminio de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="15" code="3H1" name="Jerricanes (Porrones) de Plástico de tapa no desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="16" code="3H2" name="Jerricanes (Porrones) de Plástico de tapa desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="17" code="4A" name="Cajas de Acero" term_start="2021-06-01" term_end=""/>
+<Entry id="18" code="4B" name="Cajas de Aluminio" term_start="2021-06-01" term_end=""/>
+<Entry id="19" code="4C1" name="Cajas de Madera natural ordinaria" term_start="2021-06-01" term_end=""/>
+<Entry id="20" code="4C2" name="Cajas de Madera natural de paredes a prueba de polvos (estancas a los pulverulentos)" term_start="2021-06-01" term_end=""/>
+<Entry id="21" code="4D" name="Cajas de Madera contrachapada" term_start="2021-06-01" term_end=""/>
+<Entry id="22" code="4F" name="Cajas de Madera reconstituida" term_start="2021-06-01" term_end=""/>
+<Entry id="23" code="4G" name="Cajas de Cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="24" code="4H1" name="Cajas de Plástico Expandido" term_start="2021-06-01" term_end=""/>
+<Entry id="25" code="4H2" name="Cajas de Plástico Rígido" term_start="2021-06-01" term_end=""/>
+<Entry id="26" code="5H1" name="Sacos (Bolsas) de Tejido de plástico sin forro ni revestimientos interiores" term_start="2021-06-01" term_end=""/>
+<Entry id="27" code="5H2" name="Sacos (Bolsas) de Tejido de plástico a prueba de polvos (estancos a los pulverulentos)" term_start="2021-06-01" term_end=""/>
+<Entry id="28" code="5H3" name="Sacos (Bolsas) de Tejido de plástico resistente al agua" term_start="2021-06-01" term_end=""/>
+<Entry id="29" code="5H4" name="Sacos (Bolsas) de Película de plástico" term_start="2021-06-01" term_end=""/>
+<Entry id="30" code="5L1" name="Sacos (Bolsas) de Tela sin forro ni revestimientos interiores" term_start="2021-06-01" term_end=""/>
+<Entry id="31" code="5L2" name="Sacos (Bolsas) de Tela a prueba de polvos (estancos a los pulverulentos)" term_start="2021-06-01" term_end=""/>
+<Entry id="32" code="5L3" name="Sacos (Bolsas) de Tela resistentes al agua" term_start="2021-06-01" term_end=""/>
+<Entry id="33" code="5M1" name="Sacos (Bolsas) de Papel de varias hojas" term_start="2021-06-01" term_end=""/>
+<Entry id="34" code="5M2" name="Sacos (Bolsas) de Papel de varias hojas, resistentes al agua" term_start="2021-06-01" term_end=""/>
+<Entry id="35" code="6HA1" name="Envases y embalajes compuestos de Recipiente de plástico, con bidón (tambor) de acero" term_start="2021-06-01" term_end=""/>
+<Entry id="36" code="6HA2" name="Envases y embalajes compuestos de Recipiente de plástico, con una jaula o caja de acero" term_start="2021-06-01" term_end=""/>
+<Entry id="37" code="6HB1" name="Envases y embalajes compuestos de Recipiente de plástico, con un bidón (tambor) exterior de aluminio" term_start="2021-06-01" term_end=""/>
+<Entry id="38" code="6HB2" name="Envases y embalajes compuestos de Recipiente de plástico, con una jaula o caja de aluminio" term_start="2021-06-01" term_end=""/>
+<Entry id="39" code="6HC" name="Envases y embalajes compuestos de Recipiente de plástico, con una caja de madera" term_start="2021-06-01" term_end=""/>
+<Entry id="40" code="6HD1" name="Envases y embalajes compuestos de Recipiente de plástico, con un bidón (tambor) de madera contrachapada" term_start="2021-06-01" term_end=""/>
+<Entry id="41" code="6HD2" name="Envases y embalajes compuestos de Recipiente de plástico, con una caja de madera contrachapada" term_start="2021-06-01" term_end=""/>
+<Entry id="42" code="6HG1" name="Envases y embalajes compuestos de Recipiente de plástico, con un bidón (tambor) de cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="43" code="6HG2" name="Envases y embalajes compuestos de Recipiente de plástico, con una caja de cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="44" code="6HH1" name="Envases y embalajes compuestos de Recipiente de plástico, con un bidón (tambor) de plástico" term_start="2021-06-01" term_end=""/>
+<Entry id="45" code="6HH2" name="Envases y embalajes compuestos de Recipiente de plástico, con caja de plástico rígido" term_start="2021-06-01" term_end=""/>
+<Entry id="46" code="6PA1" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con un bidón (tambor) de acero" term_start="2021-06-01" term_end=""/>
+<Entry id="47" code="6PA2" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con una jaula o una caja de acero" term_start="2021-06-01" term_end=""/>
+<Entry id="48" code="6PB1" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con un bidón (tambor) exterior de aluminio" term_start="2021-06-01" term_end=""/>
+<Entry id="49" code="6PB2" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con una jaula o una caja de aluminio" term_start="2021-06-01" term_end=""/>
+<Entry id="50" code="6PC" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con una caja de madera" term_start="2021-06-01" term_end=""/>
+<Entry id="51" code="6PD1" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con bidón (tambor) de madera contrachapada" term_start="2021-06-01" term_end=""/>
+<Entry id="52" code="6PD2" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con canasta de mimbre" term_start="2021-06-01" term_end=""/>
+<Entry id="53" code="6PG1" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con un bidón (tambor) de cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="54" code="6PG2" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con una caja de cartón" term_start="2021-06-01" term_end=""/>
+<Entry id="55" code="6PH1" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con un envase y embalaje de plástico expandido" term_start="2021-06-01" term_end=""/>
+<Entry id="56" code="6PH2" name="Envases y embalajes compuestos de Recipiente de vidrio, porcelana o de gres, con un envase y embalaje de plástico rígido" term_start="2021-06-01" term_end=""/>
+<Entry id="57" code="7H1" name="Bultos de Plástico" term_start="2021-06-01" term_end=""/>
+<Entry id="58" code="7L1" name="Bultos de Tela" term_start="2021-06-01" term_end=""/>
+<Entry id="59" code="Z01" name="No aplica" term_start="2021-06-01" term_end=""/>
+</Catalog>

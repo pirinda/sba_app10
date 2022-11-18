@@ -22,6 +22,7 @@ public abstract class DModConsts {
     public static final int MOD_MKT = 7;
     public static final int MOD_POS = 11;
     public static final int MOD_SRV = 12;
+    public static final int MOD_LAD = 13;
 
     public static final int SU_SYS = 110001;
     public static final int SU_CO = 110002;
@@ -351,6 +352,31 @@ public abstract class DModConsts {
     public static final int SR_REP_NEW = 850001;
     public static final int SR_REP_DVY = 850002;
 
+    public static final int LS_TPT_TP = 910001;
+    public static final int LS_LOC_TP = 910002;
+    public static final int LS_TPT_FIGURE_TP = 910011;
+    public static final int LS_TPT_PART_TP = 910012;
+
+    public static final int LU_LOC = 920002;
+    public static final int LU_LOC_DIST = 920003;
+    public static final int LU_TPT_FIGURE = 920011;
+    public static final int LU_TRAIL = 920021;
+    public static final int LU_TRUCK = 920022;
+    public static final int LU_TRUCK_TRAIL = 920026;
+    public static final int LU_TRUCK_TPT_FIGURE = 920027;
+    public static final int LU_TRUCK_TPT_FIGURE_TPT_PART = 920028;
+
+    public static final int L_BOL = 930001;
+    public static final int L_BOL_LOC = 930002;
+    public static final int L_BOL_MERCH = 930006;
+    public static final int L_BOL_MERCH_MOVE = 930007;
+    public static final int L_BOL_TRUCK = 930022;
+    public static final int L_BOL_TRUCK_TRAIL = 930026;
+    public static final int L_BOL_TPT_FIGURE = 930027;
+    public static final int L_BOL_TPT_FIGURE_TPT_PART = 930028;
+    
+    public static final int LR_BOL = 950001;
+
     public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 
     static {
@@ -564,5 +590,28 @@ public abstract class DModConsts {
 
         TablesMap.put(S_REP, "s_rep");
         TablesMap.put(S_REP_LOG, "s_rep_log");
+        
+        TablesMap.put(LS_TPT_TP, "ls_tpt_tp");
+        TablesMap.put(LS_LOC_TP, "ls_loc_tp");
+        TablesMap.put(LS_TPT_FIGURE_TP, "ls_tpt_figure_tp");
+        TablesMap.put(LS_TPT_PART_TP, "ls_tpt_part_tp");
+
+        TablesMap.put(LU_LOC, "lu_loc");
+        TablesMap.put(LU_LOC_DIST, "lu_loc_dist");
+        TablesMap.put(LU_TPT_FIGURE, "lu_tpt_figure");
+        TablesMap.put(LU_TRAIL, "lu_trail");
+        TablesMap.put(LU_TRUCK, "lu_truck");
+        TablesMap.put(LU_TRUCK_TRAIL, "lu_truck_trail");
+        TablesMap.put(LU_TRUCK_TPT_FIGURE, "lu_truck_tpt_figure");
+        TablesMap.put(LU_TRUCK_TPT_FIGURE_TPT_PART, "lu_truck_tpt_figure_tpt_part");
+
+        TablesMap.put(L_BOL, "l_bol");
+        TablesMap.put(L_BOL_LOC, "l_bol_loc");
+        TablesMap.put(L_BOL_MERCH, "l_bol_merch");
+        TablesMap.put(L_BOL_MERCH_MOVE, "l_bol_merch_move");
+        TablesMap.put(L_BOL_TRUCK, "l_bol_truck");
+        TablesMap.put(L_BOL_TRUCK_TRAIL, "l_bol_truck_trail");
+        TablesMap.put(L_BOL_TPT_FIGURE, "l_bol_tpt_figure");
+        TablesMap.put(L_BOL_TPT_FIGURE_TPT_PART, "l_bol_tpt_figure_tpt_part");
     }
 }

@@ -347,7 +347,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jpHeaderMain1.add(moTextSeries);
 
         moIntNumber.setEditable(false);
-        moIntNumber.setText("999999");
+        moIntNumber.setText("999999999");
         moIntNumber.setToolTipText("Folio");
         moIntNumber.setPreferredSize(new java.awt.Dimension(75, 23));
         jpHeaderMain1.add(moIntNumber);

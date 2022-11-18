@@ -6,6 +6,7 @@
 package sba.gui.cat;
 
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  *
@@ -13,14 +14,26 @@ import java.util.Date;
  */
 public class DXmlCatalogEntry {
     
-    static final String Entry = "Entry";
-    static final String Id = "id";
-    static final String Code = "code";
-    static final String Name = "name";
-    static final String TermStart = "term_start";
-    static final String TermEnd = "term_end";
-    static final String ApplyEntityPer = "app_per";
-    static final String ApplyEntityOrg = "app_org";
+    public static final String Entry = "Entry";
+    public static final String Id = "id";
+    public static final String Code = "code";
+    public static final String Name = "name";
+    public static final String TermStart = "term_start";
+    public static final String TermEnd = "term_end";
+    public static final String ApplyEntityPer = "app_per";
+    public static final String ApplyEntityOrg = "app_org";
+    
+    public static final String VAL_NEEDED_NO = "0";
+    public static final String VAL_NEEDED_YES = "1";
+    public static final String VAL_NEEDED_OPT = "0, 1";
+    
+    public static final String TXT_NEEDED_NO = "No requerido";
+    public static final String TXT_NEEDED_YES = "Requerido";
+    public static final String TXT_NEEDED_OPT = "Opcional";
+    
+    public static final int NEEDED_NO = 0;
+    public static final int NEEDED_YES = 1;
+    public static final int NEEDED_OPT = 2;
     
     private int mnId;
     private String msCode;
@@ -29,12 +42,19 @@ public class DXmlCatalogEntry {
     private Date mtTermEnd;
     private boolean mbApplyEntityPer;
     private boolean mbApplyEntityOrg;
+    private String msBelongingCode;
+    private String msSearchingCode;
+    private HashMap<String, String> moExtraAttributesMap;
     
     public DXmlCatalogEntry(int id, String code, String name, Date termStart, Date termEnd) {
-        this (id, code, name, termStart, termEnd, false, false);
+        this(id, code, name, termStart, termEnd, false, false, "", "");
     }
     
     public DXmlCatalogEntry(int id, String code, String name, Date termStart, Date termEnd, boolean isApplyEntityPer, boolean isApplyEntityOrg) {
+        this(id, code, name, termStart, termEnd, isApplyEntityPer, isApplyEntityOrg, "", "");
+    }
+    
+    public DXmlCatalogEntry(int id, String code, String name, Date termStart, Date termEnd, boolean isApplyEntityPer, boolean isApplyEntityOrg, String belongingCode, String searchingCode) {
         mnId = id;
         msCode = code;
         msName = name;
@@ -42,6 +62,9 @@ public class DXmlCatalogEntry {
         mtTermEnd = termEnd;
         mbApplyEntityPer = isApplyEntityPer;
         mbApplyEntityOrg = isApplyEntityOrg;
+        msBelongingCode = belongingCode;
+        msSearchingCode = searchingCode;
+        moExtraAttributesMap = new HashMap<>();
     }
 
     public int getId() {
@@ -70,5 +93,17 @@ public class DXmlCatalogEntry {
 
     public boolean isApplyEntityOrg() {
         return mbApplyEntityOrg;
+    }
+    
+    public String getBelongingCode() {
+        return msBelongingCode;
+    }
+    
+    public String getSearchingCode() {
+        return msSearchingCode;
+    }
+
+    public HashMap<String, String> getExtraAttributesMap() {
+        return moExtraAttributesMap;
     }
 }

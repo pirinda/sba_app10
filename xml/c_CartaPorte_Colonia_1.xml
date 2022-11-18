@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1227" code="1672" name="Lomas Quebradas" zip="10000" term_start="2017-01-01" term_end=""/>
+<Entry id="1228" code="1673" name="La Malinche" zip="10010" term_start="2017-01-01" term_end=""/>
+<Entry id="1229" code="1674" name="San Bartolo Ameyalco" zip="10010" term_start="2017-01-01" term_end=""/>
+<Entry id="1230" code="1675" name="Cuauhtémoc" zip="10020" term_start="2017-01-01" term_end=""/>
+<Entry id="1231" code="1677" name="Unidad Independencia IMSS" zip="10100" term_start="2017-01-01" term_end=""/>
+<Entry id="1232" code="1679" name="Puente Sierra" zip="10110" term_start="2017-01-01" term_end=""/>
+<Entry id="1233" code="1681" name="Batan Viejo" zip="10130" term_start="2017-01-01" term_end=""/>
+<Entry id="1234" code="1682" name="San Jerónimo Lídice" zip="10200" term_start="2017-01-01" term_end=""/>
+<Entry id="1235" code="1684" name="Los Capulines" zip="10210" term_start="2017-01-01" term_end=""/>
+<Entry id="1236" code="1685" name="Bosques de La Magdalena" zip="10290" term_start="2017-01-01" term_end=""/>
+<Entry id="1237" code="1686" name="San Bernabé Ocotepec" zip="10300" term_start="2017-01-01" term_end=""/>
+<Entry id="1238" code="1687" name="El Oasis de San Bernabé" zip="10309" term_start="2017-01-01" term_end=""/>
+<Entry id="1239" code="1690" name="El Tanque" zip="10320" term_start="2017-01-01" term_end=""/>
+<Entry id="1240" code="1691" name="Las Cruces" zip="10330" term_start="2017-01-01" term_end=""/>
+<Entry id="1241" code="1692" name="Los Padres" zip="10340" term_start="2017-01-01" term_end=""/>
+<Entry id="1242" code="1693" name="Lomas de San Bernabé" zip="10350" term_start="2017-01-01" term_end=""/>
+<Entry id="1243" code="1694" name="Huayatla" zip="10360" term_start="2017-01-01" term_end=""/>
+<Entry id="1244" code="1695" name="Ampliación Potrerillo" zip="10368" term_start="2017-01-01" term_end=""/>
+<Entry id="1245" code="1696" name="Ampliación Lomas de San Bernabé" zip="10369" term_start="2017-01-01" term_end=""/>
+<Entry id="1246" code="2669" name="Tierra Unida" zip="10369" term_start="2017-01-01" term_end=""/>
+<Entry id="1247" code="1697" name="Palmas" zip="10370" term_start="2017-01-01" term_end=""/>
+<Entry id="1248" code="1698" name="Atacaxco" zip="10378" term_start="2017-01-01" term_end=""/>
+<Entry id="1249" code="1700" name="Vista Hermosa" zip="10379" term_start="2017-01-01" term_end=""/>
+<Entry id="1250" code="1701" name="Barros Sierra" zip="10380" term_start="2017-01-01" term_end=""/>
+<Entry id="1251" code="1702" name="San Jerónimo Aculco" zip="10400" term_start="2017-01-01" term_end=""/>
+<Entry id="1252" code="1703" name="Barrio San Francisco" zip="10500" term_start="2017-01-01" term_end=""/>
+<Entry id="1253" code="1707" name="Barranca Seca" zip="10580" term_start="2017-01-01" term_end=""/>
+<Entry id="1254" code="1710" name="El Rosal" zip="10600" term_start="2017-01-01" term_end=""/>
+<Entry id="1255" code="1713" name="El Toro" zip="10610" term_start="2017-01-01" term_end=""/>
+<Entry id="1256" code="1714" name="Potrerillo" zip="10620" term_start="2017-01-01" term_end=""/>
+<Entry id="1257" code="2706" name="El Ocotal" zip="10630" term_start="2017-01-01" term_end=""/>
+<Entry id="1258" code="1716" name="La Carbonera" zip="10640" term_start="2017-01-01" term_end=""/>
+<Entry id="1259" code="1717" name="Pueblo Nuevo Alto" zip="10640" term_start="2017-01-01" term_end=""/>
+<Entry id="1260" code="1718" name="Pueblo Nuevo Bajo" zip="10640" term_start="2017-01-01" term_end=""/>
+<Entry id="1261" code="1719" name="Rancho Pachita" zip="10650" term_start="2017-01-01" term_end=""/>
+<Entry id="1262" code="1720" name="El Ermitaño" zip="10660" term_start="2017-01-01" term_end=""/>
+<Entry id="1263" code="1721" name="Héroes de Padierna" zip="10700" term_start="2017-01-01" term_end=""/>
+<Entry id="1264" code="1723" name="Santa Teresa" zip="10710" term_start="2017-01-01" term_end=""/>
+<Entry id="1265" code="1725" name="Pedregal 2" zip="10720" term_start="2017-01-01" term_end=""/>
+<Entry id="1266" code="1726" name="Santa Teresa" zip="10730" term_start="2017-01-01" term_end=""/>
+<Entry id="1267" code="1727" name="Santa Teresa" zip="10740" term_start="2017-01-01" term_end=""/>
+<Entry id="1268" code="1728" name="La Cruz" zip="10800" term_start="2017-01-01" term_end=""/>
+<Entry id="1269" code="1730" name="San Francisco" zip="10810" term_start="2017-01-01" term_end=""/>
+<Entry id="1270" code="1731" name="La Guadalupe" zip="10820" term_start="2017-01-01" term_end=""/>
+<Entry id="1271" code="1732" name="La Concepción" zip="10830" term_start="2017-01-01" term_end=""/>
+<Entry id="1272" code="1733" name="Las Calles" zip="10840" term_start="2017-01-01" term_end=""/>
+<Entry id="1273" code="1734" name="Plazuela del Pedregal" zip="10840" term_start="2017-01-01" term_end=""/>
+<Entry id="1274" code="1735" name="San Nicolás Totolapan" zip="10900" term_start="2017-01-01" term_end=""/>
+<Entry id="1275" code="1737" name="La Magdalena" zip="10910" term_start="2017-01-01" term_end=""/>
+<Entry id="1276" code="1738" name="Las Huertas" zip="10920" term_start="2017-01-01" term_end=""/>
+<Entry id="1277" code="1739" name="Tierra Colorada" zip="10926" term_start="2017-01-01" term_end=""/>
+<Entry id="1278" code="1745" name="Lomas de Chapultepec I Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1279" code="2775" name="Lomas de Chapultepec II Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1280" code="2776" name="Lomas de Chapultepec III Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1281" code="2777" name="Lomas de Chapultepec IV Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1282" code="2778" name="Lomas de Chapultepec V Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1283" code="2779" name="Lomas de Chapultepec VI Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1284" code="2780" name="Lomas de Chapultepec VII Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1285" code="2774" name="Lomas de Chapultepec VIII Sección" zip="11000" term_start="2017-01-01" term_end=""/>
+<Entry id="1286" code="1752" name="Molino del Rey" zip="11040" term_start="2017-01-01" term_end=""/>
+<Entry id="1287" code="1754" name="Bosque de Chapultepec II Sección" zip="11100" term_start="2017-01-01" term_end=""/>
+<Entry id="1288" code="2772" name="Bosque de Chapultepec III Sección" zip="11100" term_start="2017-01-01" term_end=""/>
+<Entry id="1289" code="1755" name="Residencia Oficial de los Pinos" zip="11109" term_start="2017-01-01" term_end=""/>
+<Entry id="1290" code="1758" name="Lomas de Sotelo" zip="11200" term_start="2017-01-01" term_end=""/>
+<Entry id="1291" code="1757" name="Lomas Hermosa" zip="11200" term_start="2017-01-01" term_end=""/>
+<Entry id="1292" code="1761" name="San Lorenzo Tlaltenango" zip="11210" term_start="2017-01-01" term_end=""/>
+<Entry id="1293" code="1763" name="Hermanos Serdán" zip="11220" term_start="2017-01-01" term_end=""/>
+<Entry id="1294" code="1764" name="Periodista" zip="11220" term_start="2017-01-01" term_end=""/>
+<Entry id="1295" code="1765" name="Argentina Poniente" zip="11230" term_start="2017-01-01" term_end=""/>
+<Entry id="1296" code="1766" name="México Tacuba" zip="11239" term_start="2017-01-01" term_end=""/>
+<Entry id="1297" code="1767" name="Ignacio Manuel Altamirano" zip="11240" term_start="2017-01-01" term_end=""/>
+<Entry id="1298" code="1768" name="10 de Abril" zip="11250" term_start="2017-01-01" term_end=""/>
+<Entry id="1299" code="1769" name="Lázaro Tata" zip="11259" term_start="2017-01-01" term_end=""/>
+<Entry id="1300" code="1770" name="México Nuevo" zip="11260" term_start="2017-01-01" term_end=""/>
+<Entry id="1301" code="1771" name="San Joaquín" zip="11260" term_start="2017-01-01" term_end=""/>
+<Entry id="1302" code="1772" name="Argentina Antigua" zip="11270" term_start="2017-01-01" term_end=""/>
+<Entry id="1303" code="1773" name="Torre Blanca" zip="11280" term_start="2017-01-01" term_end=""/>
+<Entry id="1304" code="1774" name="Ampliación Torre Blanca" zip="11289" term_start="2017-01-01" term_end=""/>
+<Entry id="1305" code="1775" name="Huíchapan" zip="11290" term_start="2017-01-01" term_end=""/>
+<Entry id="1306" code="1776" name="San Diego Ocoyoacac" zip="11290" term_start="2017-01-01" term_end=""/>
+<Entry id="1307" code="1777" name="Verónica Anzures" zip="11300" term_start="2017-01-01" term_end=""/>
+<Entry id="1308" code="1780" name="Mariano Escobedo" zip="11310" term_start="2017-01-01" term_end=""/>
+<Entry id="1309" code="1782" name="Anáhuac I Sección" zip="11320" term_start="2017-01-01" term_end=""/>
+<Entry id="1310" code="2771" name="Anáhuac II Sección" zip="11320" term_start="2017-01-01" term_end=""/>
+<Entry id="1311" code="1784" name="Un Hogar Para Nosotros" zip="11330" term_start="2017-01-01" term_end=""/>
+<Entry id="1312" code="1785" name="Santo Tomas" zip="11340" term_start="2017-01-01" term_end=""/>
+<Entry id="1313" code="1786" name="Plutarco Elías Calles" zip="11350" term_start="2017-01-01" term_end=""/>
+<Entry id="1314" code="1787" name="Agricultura" zip="11360" term_start="2017-01-01" term_end=""/>
+<Entry id="1315" code="1789" name="Tlaxpana" zip="11370" term_start="2017-01-01" term_end=""/>
+<Entry id="1316" code="1791" name="Popotla" zip="11400" term_start="2017-01-01" term_end=""/>
+<Entry id="1317" code="1793" name="Legaria" zip="11410" term_start="2017-01-01" term_end=""/>
+<Entry id="1318" code="1794" name="Tacuba" zip="11410" term_start="2017-01-01" term_end=""/>
+<Entry id="1319" code="1796" name="Nextitla" zip="11420" term_start="2017-01-01" term_end=""/>
+<Entry id="1320" code="1797" name="Pensil Norte" zip="11430" term_start="2017-01-01" term_end=""/>
+<Entry id="1321" code="1798" name="Ventura Pérez de Alva" zip="11430" term_start="2017-01-01" term_end=""/>
+<Entry id="1322" code="1799" name="Reforma Pensil" zip="11440" term_start="2017-01-01" term_end=""/>
+<Entry id="1323" code="1800" name="San Juanico" zip="11440" term_start="2017-01-01" term_end=""/>
+<Entry id="1324" code="1801" name="Ahuehuetes Anáhuac" zip="11450" term_start="2017-01-01" term_end=""/>
+<Entry id="1325" code="1802" name="Modelo Pensil" zip="11450" term_start="2017-01-01" term_end=""/>
+<Entry id="1326" code="1803" name="Peralitos" zip="11450" term_start="2017-01-01" term_end=""/>
+<Entry id="1327" code="1804" name="Dos Lagos" zip="11460" term_start="2017-01-01" term_end=""/>
+<Entry id="1328" code="1805" name="Lago Norte" zip="11460" term_start="2017-01-01" term_end=""/>
+<Entry id="1329" code="1806" name="Lago Sur" zip="11460" term_start="2017-01-01" term_end=""/>
+<Entry id="1330" code="1807" name="Los Manzanos" zip="11460" term_start="2017-01-01" term_end=""/>
+<Entry id="1331" code="1808" name="5 de Mayo" zip="11470" term_start="2017-01-01" term_end=""/>
+<Entry id="1332" code="1809" name="Deportivo Pensil" zip="11470" term_start="2017-01-01" term_end=""/>
+<Entry id="1333" code="1810" name="Unidad Legaria IMSS" zip="11479" term_start="2017-01-01" term_end=""/>
+<Entry id="1334" code="1811" name="Francisco I Madero" zip="11480" term_start="2017-01-01" term_end=""/>
+<Entry id="1335" code="1812" name="Popo" zip="11480" term_start="2017-01-01" term_end=""/>
+<Entry id="1336" code="1813" name="Ampliación Popo" zip="11489" term_start="2017-01-01" term_end=""/>
+<Entry id="1337" code="1814" name="Cuauhtémoc Pensil" zip="11490" term_start="2017-01-01" term_end=""/>
+<Entry id="1338" code="1815" name="Pensil Sur" zip="11490" term_start="2017-01-01" term_end=""/>
+<Entry id="1339" code="1816" name="Irrigación" zip="11500" term_start="2017-01-01" term_end=""/>
+<Entry id="1340" code="2781" name="Polanco I Sección" zip="11510" term_start="2017-01-01" term_end=""/>
+<Entry id="1341" code="1822" name="Granada" zip="11520" term_start="2017-01-01" term_end=""/>
+<Entry id="1342" code="1823" name="Ampliación Granada" zip="11529" term_start="2017-01-01" term_end=""/>
+<Entry id="1343" code="2782" name="Polanco II Sección" zip="11530" term_start="2017-01-01" term_end=""/>
+<Entry id="1344" code="2783" name="Polanco III Sección" zip="11540" term_start="2017-01-01" term_end=""/>
+<Entry id="1345" code="2784" name="Polanco IV Sección" zip="11550" term_start="2017-01-01" term_end=""/>
+<Entry id="1346" code="2785" name="Polanco V Sección" zip="11560" term_start="2017-01-01" term_end=""/>
+<Entry id="1347" code="1833" name="Bosque de Chapultepec I Sección" zip="11580" term_start="2017-01-01" term_end=""/>
+<Entry id="1348" code="1838" name="Anzures" zip="11590" term_start="2017-01-01" term_end=""/>
+<Entry id="1349" code="1843" name="Residencial Militar" zip="11600" term_start="2017-01-01" term_end=""/>
+<Entry id="1350" code="1844" name="Manuel Avila Camacho" zip="11610" term_start="2017-01-01" term_end=""/>
+<Entry id="1351" code="1846" name="Campo Militar 1" zip="11619" term_start="2017-01-01" term_end=""/>
+<Entry id="1352" code="1854" name="Hospital Central Militar" zip="11649" term_start="2017-01-01" term_end=""/>
+<Entry id="1353" code="1855" name="Reforma Social" zip="11650" term_start="2017-01-01" term_end=""/>
+<Entry id="1354" code="1856" name="Bosque de las Lomas" zip="11700" term_start="2017-01-01" term_end=""/>
+<Entry id="1355" code="1858" name="Escandón I Sección" zip="11800" term_start="2017-01-01" term_end=""/>
+<Entry id="1356" code="2773" name="Escandón II Sección" zip="11800" term_start="2017-01-01" term_end=""/>
+<Entry id="1357" code="1860" name="16 de Septiembre" zip="11810" term_start="2017-01-01" term_end=""/>
+<Entry id="1358" code="1861" name="América" zip="11820" term_start="2017-01-01" term_end=""/>
+<Entry id="1359" code="1862" name="Daniel Garza" zip="11830" term_start="2017-01-01" term_end=""/>
+<Entry id="1360" code="1863" name="Ampliación Daniel Garza" zip="11840" term_start="2017-01-01" term_end=""/>
+<Entry id="1361" code="1864" name="San Miguel Chapultepec I Sección" zip="11850" term_start="2017-01-01" term_end=""/>
+<Entry id="1362" code="2786" name="San Miguel Chapultepec II Sección" zip="11850" term_start="2017-01-01" term_end=""/>
+<Entry id="1363" code="1865" name="Observatorio" zip="11860" term_start="2017-01-01" term_end=""/>
+<Entry id="1364" code="1867" name="Tacubaya" zip="11870" term_start="2017-01-01" term_end=""/>
+<Entry id="1365" code="1869" name="Lomas de Bezares" zip="11910" term_start="2017-01-01" term_end=""/>
+<Entry id="1366" code="1870" name="Real de las Lomas" zip="11920" term_start="2017-01-01" term_end=""/>
+<Entry id="1367" code="2789" name="Lomas de Reforma" zip="11930" term_start="2017-01-01" term_end=""/>
+<Entry id="1368" code="1874" name="Lomas Altas" zip="11950" term_start="2017-01-01" term_end=""/>
+<Entry id="1369" code="1877" name="La Concepción" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1370" code="1878" name="La Luz" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1371" code="1879" name="Los Ángeles" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1372" code="1881" name="San Mateo" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1373" code="1882" name="Santa Cruz" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1374" code="1883" name="Santa Martha" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1375" code="1884" name="Villa Milpa Alta Centro" zip="12000" term_start="2017-01-01" term_end=""/>
+<Entry id="1376" code="1889" name="San Agustin" zip="12070" term_start="2017-01-01" term_end=""/>
+<Entry id="1377" code="1890" name="San Agustin Ohtenco" zip="12080" term_start="2017-01-01" term_end=""/>
+<Entry id="1378" code="1891" name="Cruztitla" zip="12100" term_start="2017-01-01" term_end=""/>
+<Entry id="1379" code="1893" name="Tecaxtitla" zip="12100" term_start="2017-01-01" term_end=""/>
+<Entry id="1380" code="1894" name="Tenantitla" zip="12100" term_start="2017-01-01" term_end=""/>
+<Entry id="1381" code="1895" name="Xaltipac" zip="12100" term_start="2017-01-01" term_end=""/>
+<Entry id="1382" code="1896" name="Xochitepec" zip="12100" term_start="2017-01-01" term_end=""/>
+<Entry id="1383" code="2010" name="Emiliano Zapata" zip="12110" term_start="2017-01-01" term_end=""/>
+<Entry id="1384" code="2011" name="La Conchita" zip="12110" term_start="2017-01-01" term_end=""/>
+<Entry id="1385" code="1897" name="Nochtla" zip="12200" term_start="2017-01-01" term_end=""/>
+<Entry id="1386" code="1898" name="Ocotitla" zip="12200" term_start="2017-01-01" term_end=""/>
+<Entry id="1387" code="1899" name="Panchimalco" zip="12200" term_start="2017-01-01" term_end=""/>
+<Entry id="1388" code="1901" name="Tula" zip="12200" term_start="2017-01-01" term_end=""/>
+<Entry id="1389" code="1903" name="San Bartolomé Xicomulco" zip="12250" term_start="2017-01-01" term_end=""/>
+<Entry id="1390" code="1904" name="San Salvador Cuauhtenco" zip="12300" term_start="2017-01-01" term_end=""/>
+<Entry id="1391" code="1905" name="Centro" zip="12400" term_start="2017-01-01" term_end=""/>
+<Entry id="1392" code="1906" name="San Juan" zip="12400" term_start="2017-01-01" term_end=""/>
+<Entry id="1393" code="1907" name="San Miguel" zip="12400" term_start="2017-01-01" term_end=""/>
+<Entry id="1394" code="2870" name="Chalmita" zip="12410" term_start="2017-01-01" term_end=""/>
+<Entry id="1395" code="1910" name="San Lorenzo Tlacoyucan" zip="12500" term_start="2017-01-01" term_end=""/>
+<Entry id="1396" code="1911" name="San Jerónimo Miacatlán" zip="12600" term_start="2017-01-01" term_end=""/>
+<Entry id="1397" code="1912" name="San Francisco Tecoxpa" zip="12700" term_start="2017-01-01" term_end=""/>
+<Entry id="1398" code="1913" name="San Juan Tepenahuac" zip="12800" term_start="2017-01-01" term_end=""/>
+<Entry id="1399" code="2871" name="La Lupita Teticpac" zip="12910" term_start="2017-01-01" term_end=""/>
+<Entry id="1400" code="1880" name="San Marcos" zip="12920" term_start="2017-01-01" term_end=""/>
+<Entry id="1401" code="2873" name="San Miguel" zip="12930" term_start="2017-01-01" term_end=""/>
+<Entry id="1402" code="2874" name="San José" zip="12940" term_start="2017-01-01" term_end=""/>
+<Entry id="1403" code="2872" name="La Lupita Xolco" zip="12950" term_start="2017-01-01" term_end=""/>
+<Entry id="1404" code="1919" name="La Asunción" zip="13000" term_start="2017-01-01" term_end=""/>
+<Entry id="1405" code="1923" name="Santa Cecilia" zip="13010" term_start="2017-01-01" term_end=""/>
+<Entry id="1406" code="1924" name="San José" zip="13020" term_start="2017-01-01" term_end=""/>
+<Entry id="1407" code="1925" name="San Juan" zip="13030" term_start="2017-01-01" term_end=""/>
+<Entry id="1408" code="1926" name="San Mateo" zip="13040" term_start="2017-01-01" term_end=""/>
+<Entry id="1409" code="1928" name="La Habana" zip="13050" term_start="2017-01-01" term_end=""/>
+<Entry id="1410" code="2571" name="Hombres de la Reforma" zip="13060" term_start="2017-01-01" term_end=""/>
+<Entry id="1411" code="1929" name="La Guadalupe" zip="13060" term_start="2017-01-01" term_end=""/>
+<Entry id="1412" code="1930" name="Santa Ana" zip="13060" term_start="2017-01-01" term_end=""/>
+<Entry id="1413" code="2572" name="Geovillas de Xochimilco" zip="13063" term_start="2017-01-01" term_end=""/>
+<Entry id="1414" code="1931" name="La Magdalena" zip="13070" term_start="2017-01-01" term_end=""/>
+<Entry id="1415" code="1932" name="San Miguel" zip="13070" term_start="2017-01-01" term_end=""/>
+<Entry id="1416" code="1933" name="Los Reyes" zip="13080" term_start="2017-01-01" term_end=""/>
+<Entry id="1417" code="1934" name="Quiahuatla" zip="13090" term_start="2017-01-01" term_end=""/>
+<Entry id="1418" code="2497" name="San Sebastián" zip="13093" term_start="2017-01-01" term_end=""/>
+<Entry id="1419" code="2898" name="San Isidro" zip="13094" term_start="2017-01-01" term_end=""/>
+<Entry id="1420" code="1935" name="San Andrés" zip="13099" term_start="2017-01-01" term_end=""/>
+<Entry id="1421" code="2574" name="El Mirador" zip="13100" term_start="2017-01-01" term_end=""/>
+<Entry id="1422" code="1937" name="La Guadalupe" zip="13100" term_start="2017-01-01" term_end=""/>
+<Entry id="1423" code="1939" name="Cañada" zip="13110" term_start="2017-01-01" term_end=""/>
+<Entry id="1424" code="1940" name="La Poblanita" zip="13119" term_start="2017-01-01" term_end=""/>
+<Entry id="1425" code="1942" name="Ampliación Santa Catarina" zip="13120" term_start="2017-01-01" term_end=""/>
+<Entry id="1426" code="2577" name="Chichilaula" zip="13120" term_start="2017-01-01" term_end=""/>
+<Entry id="1427" code="2576" name="La Mesa" zip="13120" term_start="2017-01-01" term_end=""/>
+<Entry id="1428" code="1943" name="Santiago" zip="13120" term_start="2017-01-01" term_end=""/>
+<Entry id="1429" code="2575" name="Teozoma" zip="13120" term_start="2017-01-01" term_end=""/>
+<Entry id="1430" code="2693" name="La Joyita" zip="13123" term_start="2017-01-01" term_end=""/>
+<Entry id="1431" code="1944" name="San Francisco Apolocalco" zip="13129" term_start="2017-01-01" term_end=""/>
+<Entry id="1432" code="1945" name="La Concepción" zip="13150" term_start="2017-01-01" term_end=""/>
+<Entry id="1433" code="1946" name="San Miguel" zip="13180" term_start="2017-01-01" term_end=""/>
+<Entry id="1434" code="1947" name="Miguel Hidalgo" zip="13200" term_start="2017-01-01" term_end=""/>
+<Entry id="1435" code="1948" name="Zapotitlán" zip="13209" term_start="2017-01-01" term_end=""/>
+<Entry id="1436" code="1949" name="Los Olivos" zip="13210" term_start="2017-01-01" term_end=""/>
+<Entry id="1437" code="1951" name="Ampliación Los Olivos" zip="13219" term_start="2017-01-01" term_end=""/>
+<Entry id="1438" code="1950" name="Las Arboledas" zip="13219" term_start="2017-01-01" term_end=""/>
+<Entry id="1439" code="1952" name="La Nopalera" zip="13220" term_start="2017-01-01" term_end=""/>
+<Entry id="1440" code="1954" name="Tláhuac 2" zip="13229" term_start="2017-01-01" term_end=""/>
+<Entry id="1441" code="1955" name="Granjas Cabrera" zip="13230" term_start="2017-01-01" term_end=""/>
+<Entry id="1442" code="1957" name="La Turba" zip="13250" term_start="2017-01-01" term_end=""/>
+<Entry id="1443" code="2661" name="Cooperativa C.I.A.N.I." zip="13270" term_start="2017-01-01" term_end=""/>
+<Entry id="1444" code="1958" name="Del Mar" zip="13270" term_start="2017-01-01" term_end=""/>
+<Entry id="1445" code="2580" name="La Draga" zip="13273" term_start="2017-01-01" term_end=""/>
+<Entry id="1446" code="2589" name="Nueva Tenochtitlán" zip="13278" term_start="2017-01-01" term_end=""/>
+<Entry id="1447" code="1959" name="Villa Centro Americana" zip="13278" term_start="2017-01-01" term_end=""/>
+<Entry id="1448" code="1960" name="Villas Trabajadores del Gobierno del Distrito Federal" zip="13278" term_start="2017-01-01" term_end=""/>
+<Entry id="1449" code="1962" name="Agrícola Metropolitana" zip="13280" term_start="2017-01-01" term_end=""/>
+<Entry id="1450" code="2581" name="Manuel M López III" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1451" code="1963" name="Santa Ana Centro" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1452" code="2893" name="Santa Ana Norte" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1453" code="2891" name="Santa Ana Poniente" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1454" code="1964" name="Santiago Centro" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1455" code="2894" name="Santiago Norte" zip="13300" term_start="2017-01-01" term_end=""/>
+<Entry id="1456" code="1966" name="Zapotitla" zip="13310" term_start="2017-01-01" term_end=""/>
+<Entry id="1457" code="2897" name="Ampliación Zapotitla" zip="13315" term_start="2017-01-01" term_end=""/>
+<Entry id="1458" code="2583" name="Los Volcanes" zip="13316" term_start="2017-01-01" term_end=""/>
+<Entry id="1459" code="1967" name="Manuel Gutierrez Najera" zip="13316" term_start="2017-01-01" term_end=""/>
+<Entry id="1460" code="2582" name="Manuel M López II" zip="13316" term_start="2017-01-01" term_end=""/>
+<Entry id="1461" code="1968" name="Aurorita" zip="13317" term_start="2017-01-01" term_end=""/>
+<Entry id="1462" code="2584" name="Nueva Tenochtitlán" zip="13317" term_start="2017-01-01" term_end=""/>
+<Entry id="1463" code="1969" name="La Herradura" zip="13318" term_start="2017-01-01" term_end=""/>
+<Entry id="1464" code="2585" name="Benito Quezada" zip="13319" term_start="2017-01-01" term_end=""/>
+<Entry id="1465" code="1970" name="La Estación" zip="13319" term_start="2017-01-01" term_end=""/>
+<Entry id="1466" code="1971" name="La Conchita Zapotitlán" zip="13360" term_start="2017-01-01" term_end=""/>
+<Entry id="1467" code="2895" name="Santa Ana Sur" zip="13360" term_start="2017-01-01" term_end=""/>
+<Entry id="1468" code="2896" name="Santiago Sur" zip="13360" term_start="2017-01-01" term_end=""/>
+<Entry id="1469" code="2586" name="Tempiluli" zip="13363" term_start="2017-01-01" term_end=""/>
+<Entry id="1470" code="1972" name="San Francisco Tlaltenco" zip="13400" term_start="2017-01-01" term_end=""/>
+<Entry id="1471" code="2588" name="La Orilla" zip="13410" term_start="2017-01-01" term_end=""/>
+<Entry id="1472" code="1973" name="López Portillo" zip="13410" term_start="2017-01-01" term_end=""/>
+<Entry id="1473" code="1975" name="Ampliación José López Portillo" zip="13419" term_start="2017-01-01" term_end=""/>
+<Entry id="1474" code="1976" name="Selene" zip="13420" term_start="2017-01-01" term_end=""/>
+<Entry id="1475" code="1977" name="3 de Mayo" zip="13429" term_start="2017-01-01" term_end=""/>
+<Entry id="1476" code="1978" name="Ampliación Selene" zip="13430" term_start="2017-01-01" term_end=""/>
+<Entry id="1477" code="2591" name="Géminis" zip="13440" term_start="2017-01-01" term_end=""/>
+<Entry id="1478" code="1980" name="Zacatenco" zip="13440" term_start="2017-01-01" term_end=""/>
+<Entry id="1479" code="2590" name="Zacatenco" zip="13440" term_start="2017-01-01" term_end=""/>
+<Entry id="1480" code="1981" name="Guadalupe Tlaltenco" zip="13450" term_start="2017-01-01" term_end=""/>
+<Entry id="1481" code="1982" name="Ojo de Agua" zip="13450" term_start="2017-01-01" term_end=""/>
+<Entry id="1482" code="1983" name="El Triángulo" zip="13460" term_start="2017-01-01" term_end=""/>
+<Entry id="1483" code="2593" name="La Soledad" zip="13508" term_start="2017-01-01" term_end=""/>
+<Entry id="1484" code="1985" name="San Agustín" zip="13508" term_start="2017-01-01" term_end=""/>
+<Entry id="1485" code="1986" name="La Concepción" zip="13509" term_start="2017-01-01" term_end=""/>
+<Entry id="1486" code="1987" name="La Lupita" zip="13510" term_start="2017-01-01" term_end=""/>
+<Entry id="1487" code="1988" name="Francisco Villa" zip="13520" term_start="2017-01-01" term_end=""/>
+<Entry id="1488" code="1989" name="La Loma" zip="13529" term_start="2017-01-01" term_end=""/>
+<Entry id="1489" code="1990" name="Jaime Torres Bodet" zip="13530" term_start="2017-01-01" term_end=""/>
+<Entry id="1490" code="1991" name="La Asunción" zip="13530" term_start="2017-01-01" term_end=""/>
+<Entry id="1491" code="1992" name="El Rosario" zip="13540" term_start="2017-01-01" term_end=""/>
+<Entry id="1492" code="1994" name="Tierra Blanca" zip="13540" term_start="2017-01-01" term_end=""/>
+<Entry id="1493" code="2587" name="Ampliación La Conchita" zip="13545" term_start="2017-01-01" term_end=""/>
+<Entry id="1494" code="2916" name="Olivar Santa María" zip="13546" term_start="2017-01-01" term_end=""/>
+<Entry id="1495" code="1995" name="Peña Alta" zip="13549" term_start="2017-01-01" term_end=""/>
+<Entry id="1496" code="1997" name="Jardines del Llano" zip="13550" term_start="2017-01-01" term_end=""/>
+<Entry id="1497" code="1998" name="Potrero del Llano" zip="13550" term_start="2017-01-01" term_end=""/>
+<Entry id="1498" code="1999" name="Villa Tlatempa" zip="13559" term_start="2017-01-01" term_end=""/>
+<Entry id="1499" code="2002" name="San Bartolomé" zip="13600" term_start="2017-01-01" term_end=""/>
+<Entry id="1500" code="2004" name="Los Reyes" zip="13610" term_start="2017-01-01" term_end=""/>
+<Entry id="1501" code="2005" name="Santa Cruz" zip="13625" term_start="2017-01-01" term_end=""/>
+<Entry id="1502" code="2007" name="San Agustín" zip="13630" term_start="2017-01-01" term_end=""/>
+<Entry id="1503" code="2008" name="San Miguel" zip="13640" term_start="2017-01-01" term_end=""/>
+<Entry id="1504" code="2009" name="San Nicolás Tetelco" zip="13700" term_start="2017-01-01" term_end=""/>
+<Entry id="1505" code="2892" name="Tepantitlamilco" zip="13700" term_start="2017-01-01" term_end=""/>
+<Entry id="1506" code="2876" name="Tlalpan" zip="14000" term_start="2017-01-01" term_end=""/>
+<Entry id="1507" code="2027" name="Tlalpan Centro" zip="14000" term_start="2017-01-01" term_end=""/>
+<Entry id="1508" code="2029" name="Parque del Pedregal" zip="14010" term_start="2017-01-01" term_end=""/>
+<Entry id="1509" code="2035" name="Villa Olímpica" zip="14020" term_start="2017-01-01" term_end=""/>
+<Entry id="1510" code="2036" name="Isidro Fabela" zip="14030" term_start="2017-01-01" term_end=""/>
+<Entry id="1511" code="2702" name="Luis Donaldo Colosio" zip="14038" term_start="2017-01-01" term_end=""/>
+<Entry id="1512" code="2037" name="Zapote 1" zip="14038" term_start="2017-01-01" term_end=""/>
+<Entry id="1513" code="2041" name="Ampliación Isidro Fabela" zip="14039" term_start="2017-01-01" term_end=""/>
+<Entry id="1514" code="2040" name="Cuitlahuac" zip="14039" term_start="2017-01-01" term_end=""/>
+<Entry id="1515" code="2042" name="Cantera Puente de Piedra" zip="14040" term_start="2017-01-01" term_end=""/>
+<Entry id="1516" code="2043" name="Pueblo Quieto" zip="14040" term_start="2017-01-01" term_end=""/>
+<Entry id="1517" code="2044" name="Comuneros de Santa Úrsula" zip="14049" term_start="2017-01-01" term_end=""/>
+<Entry id="1518" code="2045" name="Toriello Guerra" zip="14050" term_start="2017-01-01" term_end=""/>
+<Entry id="1519" code="2046" name="Peña Pobre" zip="14060" term_start="2017-01-01" term_end=""/>
+<Entry id="1520" code="2049" name="Barrio San Fernando" zip="14070" term_start="2017-01-01" term_end=""/>
+<Entry id="1521" code="2047" name="Paseos de Mendoza" zip="14070" term_start="2017-01-01" term_end=""/>
+<Entry id="1522" code="2048" name="Rómulo Sánchez Mireles" zip="14070" term_start="2017-01-01" term_end=""/>
+<Entry id="1523" code="2050" name="San Pedro Apóstol" zip="14070" term_start="2017-01-01" term_end=""/>
+<Entry id="1524" code="2052" name="Barrio del Niño Jesús" zip="14080" term_start="2017-01-01" term_end=""/>
+<Entry id="1525" code="2051" name="Belisario Domínguez Sección XVI" zip="14080" term_start="2017-01-01" term_end=""/>
+<Entry id="1526" code="2054" name="La Joya" zip="14090" term_start="2017-01-01" term_end=""/>
+<Entry id="1527" code="2057" name="Torres Tlalpan FOVISSSTE" zip="14098" term_start="2017-01-01" term_end=""/>
+<Entry id="1528" code="2060" name="Pedregal de San Nicolás 1A Sección" zip="14100" term_start="2017-01-01" term_end=""/>
+<Entry id="1529" code="2061" name="Pedregal de San Nicolás 2A Sección" zip="14100" term_start="2017-01-01" term_end=""/>
+<Entry id="1530" code="2062" name="Pedregal de San Nicolás 3A Sección" zip="14100" term_start="2017-01-01" term_end=""/>
+<Entry id="1531" code="2063" name="Pedregal de San Nicolás 4A Sección" zip="14100" term_start="2017-01-01" term_end=""/>
+<Entry id="1532" code="2064" name="Pedregal de San Nicolás 5A Sección" zip="14100" term_start="2017-01-01" term_end=""/>
+<Entry id="1533" code="2067" name="Chichicaspatl" zip="14108" term_start="2017-01-01" term_end=""/>
+<Entry id="1534" code="2068" name="Pedregal Chichicaspatl" zip="14108" term_start="2017-01-01" term_end=""/>
+<Entry id="1535" code="2881" name="Ampliación Fuentes del Pedregal" zip="14110" term_start="2017-01-01" term_end=""/>
+<Entry id="1536" code="2070" name="Pedregal del Lago" zip="14110" term_start="2017-01-01" term_end=""/>
+<Entry id="1537" code="2071" name="Rincón del Pedregal" zip="14120" term_start="2017-01-01" term_end=""/>
+<Entry id="1538" code="2072" name="Residencial Pedregal Picacho" zip="14129" term_start="2017-01-01" term_end=""/>
+<Entry id="1539" code="2073" name="Lic. Emilio Portes Gil 'PEMEX'" zip="14130" term_start="2017-01-01" term_end=""/>
+<Entry id="1540" code="2074" name="Fuentes del Pedregal" zip="14140" term_start="2017-01-01" term_end=""/>
+<Entry id="1541" code="2076" name="Retornos del Pedregal" zip="14148" term_start="2017-01-01" term_end=""/>
+<Entry id="1542" code="2078" name="Lomas del Pedregal Framboyanes" zip="14150" term_start="2017-01-01" term_end=""/>
+<Entry id="1543" code="2079" name="Popular Santa Teresa" zip="14160" term_start="2017-01-01" term_end=""/>
+<Entry id="1544" code="2080" name="Héroes de Padierna" zip="14200" term_start="2017-01-01" term_end=""/>
+<Entry id="1545" code="2081" name="Jardines del Ajusco" zip="14200" term_start="2017-01-01" term_end=""/>
+<Entry id="1546" code="2083" name="Colinas del Ajusco" zip="14208" term_start="2017-01-01" term_end=""/>
+<Entry id="1547" code="2084" name="Torres de Padierna" zip="14209" term_start="2017-01-01" term_end=""/>
+<Entry id="1548" code="2085" name="Jardines en la Montaña" zip="14210" term_start="2017-01-01" term_end=""/>
+<Entry id="1549" code="2187" name="Parque Nacional Bosque del Pedregal" zip="14219" term_start="2017-01-01" term_end=""/>
+<Entry id="1550" code="2087" name="Six Flags (Reino Aventura)" zip="14219" term_start="2017-01-01" term_end=""/>
+<Entry id="1551" code="2088" name="Cuchilla de Padierna" zip="14220" term_start="2017-01-01" term_end=""/>
+<Entry id="1552" code="2090" name="Lomas del Pedregal" zip="14220" term_start="2017-01-01" term_end=""/>
+<Entry id="1553" code="2091" name="Cultura Maya" zip="14230" term_start="2017-01-01" term_end=""/>
+<Entry id="1554" code="2093" name="Los Encinos" zip="14239" term_start="2017-01-01" term_end=""/>
+<Entry id="1555" code="2094" name="Lomas de Padierna" zip="14240" term_start="2017-01-01" term_end=""/>
+<Entry id="1556" code="2095" name="Lomas Hidalgo" zip="14240" term_start="2017-01-01" term_end=""/>
+<Entry id="1557" code="2096" name="Cruz del Farol" zip="14248" term_start="2017-01-01" term_end=""/>
+<Entry id="1558" code="2101" name="Miguel Hidalgo" zip="14250" term_start="2017-01-01" term_end=""/>
+<Entry id="1559" code="2098" name="Miguel Hidalgo 2A Sección" zip="14250" term_start="2017-01-01" term_end=""/>
+<Entry id="1560" code="2099" name="Miguel Hidalgo 3A Sección" zip="14250" term_start="2017-01-01" term_end=""/>
+<Entry id="1561" code="2100" name="Miguel Hidalgo 4A Sección" zip="14250" term_start="2017-01-01" term_end=""/>
+<Entry id="1562" code="2102" name="Barrio El Capulín" zip="14260" term_start="2017-01-01" term_end=""/>
+<Entry id="1563" code="2103" name="Miguel Hidalgo 1A Sección" zip="14260" term_start="2017-01-01" term_end=""/>
+<Entry id="1564" code="2106" name="Zacayucan Peña Pobre" zip="14266" term_start="2017-01-01" term_end=""/>
+<Entry id="1565" code="2107" name="Barrio de Caramagüey" zip="14267" term_start="2017-01-01" term_end=""/>
+<Entry id="1566" code="2108" name="Barrio La Lonja" zip="14268" term_start="2017-01-01" term_end=""/>
+<Entry id="1567" code="2109" name="Barrio La Fama" zip="14269" term_start="2017-01-01" term_end=""/>
+<Entry id="1568" code="2110" name="Primavera" zip="14270" term_start="2017-01-01" term_end=""/>
+<Entry id="1569" code="2694" name="Solidaridad" zip="14273" term_start="2017-01-01" term_end=""/>
+<Entry id="1570" code="2111" name="Paraje 38" zip="14275" term_start="2017-01-01" term_end=""/>
+<Entry id="1571" code="2112" name="Verano" zip="14276" term_start="2017-01-01" term_end=""/>
+<Entry id="1572" code="2113" name="Nueva Oriental Coapa" zip="14300" term_start="2017-01-01" term_end=""/>
+<Entry id="1573" code="2114" name="Residencial Acoxpa" zip="14300" term_start="2017-01-01" term_end=""/>
+<Entry id="1574" code="2115" name="Residencial Miramontes" zip="14300" term_start="2017-01-01" term_end=""/>
+<Entry id="1575" code="2117" name="Villa del Sur" zip="14307" term_start="2017-01-01" term_end=""/>
+<Entry id="1576" code="2879" name="Ex Hacienda Coapa" zip="14308" term_start="2017-01-01" term_end=""/>
+<Entry id="1577" code="2118" name="Real del Sur" zip="14308" term_start="2017-01-01" term_end=""/>
+<Entry id="1578" code="2119" name="3 Fuentes" zip="14309" term_start="2017-01-01" term_end=""/>
+<Entry id="1579" code="2120" name="Belisario Domínguez" zip="14310" term_start="2017-01-01" term_end=""/>
+<Entry id="1580" code="2121" name="Floresta Coyoacán" zip="14310" term_start="2017-01-01" term_end=""/>
+<Entry id="1581" code="2122" name="Vergel Tlalpan" zip="14310" term_start="2017-01-01" term_end=""/>
+<Entry id="1582" code="2123" name="Vergel Coapa" zip="14320" term_start="2017-01-01" term_end=""/>
+<Entry id="1583" code="2125" name="Rinconada Coapa 2A Sección" zip="14325" term_start="2017-01-01" term_end=""/>
+<Entry id="1584" code="2126" name="Tenorios" zip="14326" term_start="2017-01-01" term_end=""/>
+<Entry id="1585" code="2127" name="Tenorios INFONAVIT" zip="14326" term_start="2017-01-01" term_end=""/>
+<Entry id="1586" code="2128" name="Tenorios 2" zip="14327" term_start="2017-01-01" term_end=""/>
+<Entry id="1587" code="2129" name="Lotería Nacional" zip="14328" term_start="2017-01-01" term_end=""/>
+<Entry id="1588" code="2130" name="Villa Valbadena" zip="14328" term_start="2017-01-01" term_end=""/>
+<Entry id="1589" code="2131" name="Tenorios FOVISSSTE" zip="14329" term_start="2017-01-01" term_end=""/>
+<Entry id="1590" code="2132" name="Granjas Coapa" zip="14330" term_start="2017-01-01" term_end=""/>
+<Entry id="1591" code="2133" name="Residencial Hacienda Coapa" zip="14330" term_start="2017-01-01" term_end=""/>
+<Entry id="1592" code="2134" name="Rinconada Coapa 1A Sección" zip="14330" term_start="2017-01-01" term_end=""/>
+<Entry id="1593" code="2135" name="Sauzales Cebadales" zip="14334" term_start="2017-01-01" term_end=""/>
+<Entry id="1594" code="2137" name="Villa del Puente" zip="14335" term_start="2017-01-01" term_end=""/>
+<Entry id="1595" code="2138" name="Villa Cuemanco INFONAVIT" zip="14336" term_start="2017-01-01" term_end=""/>
+<Entry id="1596" code="2141" name="Urbano Coapa" zip="14337" term_start="2017-01-01" term_end=""/>
+<Entry id="1597" code="2143" name="FOVISSSTE Periférico" zip="14338" term_start="2017-01-01" term_end=""/>
+<Entry id="1598" code="2142" name="Fuerza Armada de México" zip="14338" term_start="2017-01-01" term_end=""/>
+<Entry id="1599" code="2145" name="Vergel de Coyoacán" zip="14340" term_start="2017-01-01" term_end=""/>
+<Entry id="1600" code="2146" name="Vergel del Sur" zip="14340" term_start="2017-01-01" term_end=""/>
+<Entry id="1601" code="2147" name="Prado Coapa 1A Sección" zip="14350" term_start="2017-01-01" term_end=""/>
+<Entry id="1602" code="2148" name="Jardines Villa Coapa" zip="14356" term_start="2017-01-01" term_end=""/>
+<Entry id="1603" code="2149" name="Prado Coapa 2A Sección" zip="14357" term_start="2017-01-01" term_end=""/>
+<Entry id="1604" code="2150" name="Prado Coapa 3A Sección" zip="14357" term_start="2017-01-01" term_end=""/>
+<Entry id="1605" code="2151" name="Residencial Villa Prado Coapa" zip="14358" term_start="2017-01-01" term_end=""/>
+<Entry id="1606" code="2153" name="Magisterial" zip="14360" term_start="2017-01-01" term_end=""/>
+<Entry id="1607" code="2877" name="Magisterial Coapa" zip="14360" term_start="2017-01-01" term_end=""/>
+<Entry id="1608" code="2154" name="Villa Cuemanco" zip="14360" term_start="2017-01-01" term_end=""/>
+<Entry id="1609" code="2156" name="Hacienda de San Juan de Tlalpan 2a Sección" zip="14370" term_start="2017-01-01" term_end=""/>
+<Entry id="1610" code="2155" name="Residencial Chimali" zip="14370" term_start="2017-01-01" term_end=""/>
+<Entry id="1611" code="2157" name="San Lorenzo Huipulco" zip="14370" term_start="2017-01-01" term_end=""/>
+<Entry id="1612" code="2158" name="Villa Lázaro Cárdenas" zip="14370" term_start="2017-01-01" term_end=""/>
+<Entry id="1613" code="2159" name="Arboledas del Sur" zip="14376" term_start="2017-01-01" term_end=""/>
+<Entry id="1614" code="2161" name="Hacienda San Juan" zip="14377" term_start="2017-01-01" term_end=""/>
+<Entry id="1615" code="2162" name="Rincón de San Juan" zip="14378" term_start="2017-01-01" term_end=""/>
+<Entry id="1616" code="2163" name="A.M.S.A" zip="14380" term_start="2017-01-01" term_end=""/>
+<Entry id="1617" code="2167" name="San Bartolo El Chico" zip="14380" term_start="2017-01-01" term_end=""/>
+<Entry id="1618" code="2168" name="Rancho los Colorines" zip="14386" term_start="2017-01-01" term_end=""/>
+<Entry id="1619" code="2169" name="Ex Hacienda San Juan de Dios" zip="14387" term_start="2017-01-01" term_end=""/>
+<Entry id="1620" code="2170" name="Guadalupe" zip="14388" term_start="2017-01-01" term_end=""/>
+<Entry id="1621" code="2172" name="Arenal de Guadalupe" zip="14389" term_start="2017-01-01" term_end=""/>
+<Entry id="1622" code="2175" name="Narciso Mendoza" zip="14390" term_start="2017-01-01" term_end=""/>
+<Entry id="1623" code="2176" name="Residencial Villa Coapa" zip="14390" term_start="2017-01-01" term_end=""/>
+<Entry id="1624" code="2174" name="Rinconada Las Hadas" zip="14390" term_start="2017-01-01" term_end=""/>
+<Entry id="1625" code="2878" name="Villa Coapa" zip="14390" term_start="2017-01-01" term_end=""/>
+<Entry id="1626" code="2178" name="Villa Royale" zip="14399" term_start="2017-01-01" term_end=""/>
+<Entry id="1627" code="2179" name="San Andrés Totoltepec" zip="14400" term_start="2017-01-01" term_end=""/>
+<Entry id="1628" code="2182" name="Divisadero" zip="14406" term_start="2017-01-01" term_end=""/>
+<Entry id="1629" code="2183" name="Nuevo Renacimiento de Axalco" zip="14408" term_start="2017-01-01" term_end=""/>
+<Entry id="1630" code="2184" name="Tecorral" zip="14409" term_start="2017-01-01" term_end=""/>
+<Entry id="1631" code="2186" name="Fuentes Brotantes" zip="14410" term_start="2017-01-01" term_end=""/>
+<Entry id="1632" code="2188" name="Cumbres de Tepetongo" zip="14420" term_start="2017-01-01" term_end=""/>
+<Entry id="1633" code="2190" name="Mesa de los Hornos" zip="14420" term_start="2017-01-01" term_end=""/>
+<Entry id="1634" code="2192" name="Santa Úrsula Xitla" zip="14420" term_start="2017-01-01" term_end=""/>
+<Entry id="1635" code="2194" name="Texcaltenco" zip="14426" term_start="2017-01-01" term_end=""/>
+<Entry id="1636" code="2195" name="Tlaxcaltenco la Mesa" zip="14426" term_start="2017-01-01" term_end=""/>
+<Entry id="1637" code="2196" name="San Juan Tepeximilpa" zip="14427" term_start="2017-01-01" term_end=""/>
+<Entry id="1638" code="2197" name="Tepeximilpa la Paz" zip="14427" term_start="2017-01-01" term_end=""/>
+<Entry id="1639" code="2199" name="Cantera" zip="14428" term_start="2017-01-01" term_end=""/>
+<Entry id="1640" code="2200" name="Santísima Trinidad" zip="14429" term_start="2017-01-01" term_end=""/>
+<Entry id="1641" code="2201" name="Barrio El Truenito" zip="14430" term_start="2017-01-01" term_end=""/>
+<Entry id="1642" code="2203" name="Tlalcoligia" zip="14430" term_start="2017-01-01" term_end=""/>
+<Entry id="1643" code="2205" name="Pedregal de Santa Úrsula Xitla" zip="14438" term_start="2017-01-01" term_end=""/>
+<Entry id="1644" code="2206" name="Pedregal de las Águilas" zip="14439" term_start="2017-01-01" term_end=""/>
+<Entry id="1645" code="2207" name="Los Volcanes" zip="14440" term_start="2017-01-01" term_end=""/>
+<Entry id="1646" code="2208" name="El Mirador 1A Sección" zip="14449" term_start="2017-01-01" term_end=""/>
+<Entry id="1647" code="2209" name="El Mirador 2A Sección" zip="14449" term_start="2017-01-01" term_end=""/>
+<Entry id="1648" code="2210" name="El Mirador 3A Sección" zip="14449" term_start="2017-01-01" term_end=""/>
+<Entry id="1649" code="2211" name="Jardines de Xitle" zip="14450" term_start="2017-01-01" term_end=""/>
+<Entry id="1650" code="2212" name="Atocpa" zip="14456" term_start="2017-01-01" term_end=""/>
+<Entry id="1651" code="2213" name="Tlalpuente" zip="14460" term_start="2017-01-01" term_end=""/>
+<Entry id="1652" code="2214" name="Plan de Ayala" zip="14470" term_start="2017-01-01" term_end=""/>
+<Entry id="1653" code="2454" name="Tepetitla" zip="14470" term_start="2017-01-01" term_end=""/>
+<Entry id="1654" code="2216" name="La Palma" zip="14476" term_start="2017-01-01" term_end=""/>
+<Entry id="1655" code="2219" name="Viveros Coatectlán" zip="14479" term_start="2017-01-01" term_end=""/>
+<Entry id="1656" code="2220" name="La Magdalena Petlacalco" zip="14480" term_start="2017-01-01" term_end=""/>
+<Entry id="1657" code="2221" name="San Miguel Xicalco" zip="14490" term_start="2017-01-01" term_end=""/>
+<Entry id="1658" code="2222" name="San Miguel Topilejo" zip="14500" term_start="2017-01-01" term_end=""/>
+<Entry id="1659" code="2223" name="La Quinta" zip="14520" term_start="2017-01-01" term_end=""/>
+<Entry id="1660" code="2224" name="Estación Ajusco" zip="14529" term_start="2017-01-01" term_end=""/>
+<Entry id="1661" code="2227" name="Estrella Mora" zip="14550" term_start="2017-01-01" term_end=""/>
+<Entry id="1662" code="2229" name="Valle Escondido" zip="14600" term_start="2017-01-01" term_end=""/>
+<Entry id="1663" code="2231" name="Colinas del Bosque" zip="14608" term_start="2017-01-01" term_end=""/>
+<Entry id="1664" code="2232" name="Las Tórtolas" zip="14609" term_start="2017-01-01" term_end=""/>
+<Entry id="1665" code="2233" name="Arenal Tepepan" zip="14610" term_start="2017-01-01" term_end=""/>
+<Entry id="1666" code="2741" name="Club de Golf México" zip="14620" term_start="2017-01-01" term_end=""/>
+<Entry id="1667" code="2236" name="San Buenaventura" zip="14629" term_start="2017-01-01" term_end=""/>
+<Entry id="1668" code="2237" name="Chimalcoyoc" zip="14630" term_start="2017-01-01" term_end=""/>
+<Entry id="1669" code="2238" name="Villa Tlalpan" zip="14630" term_start="2017-01-01" term_end=""/>
+<Entry id="1670" code="2239" name="San Pedro Mártir FOVISSSTE" zip="14639" term_start="2017-01-01" term_end=""/>
+<Entry id="1671" code="2240" name="Ejidos de San Pedro Mártir" zip="14640" term_start="2017-01-01" term_end=""/>
+<Entry id="1672" code="2241" name="Fuentes de Tepepan" zip="14643" term_start="2017-01-01" term_end=""/>
+<Entry id="1673" code="2245" name="Valle de Tepepan" zip="14646" term_start="2017-01-01" term_end=""/>
+<Entry id="1674" code="2246" name="Juventud Unida" zip="14647" term_start="2017-01-01" term_end=""/>
+<Entry id="1675" code="2247" name="Movimiento Organizado de Tlalpan" zip="14647" term_start="2017-01-01" term_end=""/>
+<Entry id="1676" code="2880" name="Rinconada El Mirador" zip="14647" term_start="2017-01-01" term_end=""/>
+<Entry id="1677" code="2252" name="San Pedro Mártir" zip="14650" term_start="2017-01-01" term_end=""/>
+<Entry id="1678" code="2882" name="Heróico Colegio Militar" zip="14653" term_start="2017-01-01" term_end=""/>
+<Entry id="1679" code="2453" name="Dolores Tlali" zip="14654" term_start="2017-01-01" term_end=""/>
+<Entry id="1680" code="2255" name="La Magueyera" zip="14654" term_start="2017-01-01" term_end=""/>
+<Entry id="1681" code="2256" name="Valle Verde o Lomas Verdes" zip="14655" term_start="2017-01-01" term_end=""/>
+<Entry id="1682" code="2258" name="Tlalmille" zip="14657" term_start="2017-01-01" term_end=""/>
+<Entry id="1683" code="2259" name="Mirador del Valle" zip="14658" term_start="2017-01-01" term_end=""/>
+<Entry id="1684" code="2260" name="María Esther Zuno de Echeverría" zip="14659" term_start="2017-01-01" term_end=""/>
+<Entry id="1685" code="2261" name="San Miguel Ajusco" zip="14700" term_start="2017-01-01" term_end=""/>
+<Entry id="1686" code="2262" name="Santo Tomas Ajusco" zip="14710" term_start="2017-01-01" term_end=""/>
+<Entry id="1687" code="2263" name="Belvedere Ajusco" zip="14720" term_start="2017-01-01" term_end=""/>
+<Entry id="1688" code="2265" name="Lomas de Cuilotepec" zip="14730" term_start="2017-01-01" term_end=""/>
+<Entry id="1689" code="2266" name="Zacatón" zip="14734" term_start="2017-01-01" term_end=""/>
+<Entry id="1690" code="2695" name="Lomas de Tepemecatl" zip="14735" term_start="2017-01-01" term_end=""/>
+<Entry id="1691" code="2267" name="San Nicolás 2" zip="14735" term_start="2017-01-01" term_end=""/>
+<Entry id="1692" code="2268" name="Vistas del Pedregal" zip="14737" term_start="2017-01-01" term_end=""/>
+<Entry id="1693" code="2269" name="Bosques del Pedregal" zip="14738" term_start="2017-01-01" term_end=""/>
+<Entry id="1694" code="2270" name="2 de Octubre" zip="14739" term_start="2017-01-01" term_end=""/>
+<Entry id="1695" code="2272" name="Lomas de Padierna Sur" zip="14740" term_start="2017-01-01" term_end=""/>
+<Entry id="1696" code="2273" name="Mirador I" zip="14748" term_start="2017-01-01" term_end=""/>
+<Entry id="1697" code="2274" name="Mirador II" zip="14748" term_start="2017-01-01" term_end=""/>
+<Entry id="1698" code="2275" name="Chimilli" zip="14749" term_start="2017-01-01" term_end=""/>
+<Entry id="1699" code="2277" name="Rancho Viejo" zip="14750" term_start="2017-01-01" term_end=""/>
+<Entry id="1700" code="2278" name="Héroes de 1910" zip="14760" term_start="2017-01-01" term_end=""/>
+<Entry id="1701" code="2279" name="El Charco" zip="14780" term_start="2017-01-01" term_end=""/>
+<Entry id="1702" code="2280" name="San Jorge" zip="14790" term_start="2017-01-01" term_end=""/>
+<Entry id="1703" code="2286" name="Parres El Guarda" zip="14900" term_start="2017-01-01" term_end=""/>
+<Entry id="1704" code="2287" name="General Ignacio Zaragoza" zip="15000" term_start="2017-01-01" term_end=""/>
+<Entry id="1705" code="2289" name="Valentín Gómez Farias" zip="15010" term_start="2017-01-01" term_end=""/>
+<Entry id="1706" code="2290" name="Puebla" zip="15020" term_start="2017-01-01" term_end=""/>
+<Entry id="1707" code="2291" name="Zona Centro" zip="15100" term_start="2017-01-01" term_end=""/>
+<Entry id="1708" code="2292" name="Candelaria de los Patos FOVISSSTE" zip="15120" term_start="2017-01-01" term_end=""/>
+<Entry id="1709" code="2293" name="Janitzio" zip="15200" term_start="2017-01-01" term_end=""/>
+<Entry id="1710" code="2294" name="Valle Gómez" zip="15210" term_start="2017-01-01" term_end=""/>
+<Entry id="1711" code="2295" name="Nicolás Bravo" zip="15220" term_start="2017-01-01" term_end=""/>
+<Entry id="1712" code="2296" name="Popular Rastro" zip="15220" term_start="2017-01-01" term_end=""/>
+<Entry id="1713" code="2297" name="Emilio Carranza" zip="15230" term_start="2017-01-01" term_end=""/>
+<Entry id="1714" code="2298" name="Michoacana" zip="15240" term_start="2017-01-01" term_end=""/>
+<Entry id="1715" code="2299" name="Ampliación Michoacana" zip="15250" term_start="2017-01-01" term_end=""/>
+<Entry id="1716" code="2300" name="Ampliación 20 de Noviembre" zip="15260" term_start="2017-01-01" term_end=""/>
+<Entry id="1717" code="2301" name="Morelos" zip="15270" term_start="2017-01-01" term_end=""/>
+<Entry id="1718" code="2302" name="Penitenciaria" zip="15280" term_start="2017-01-01" term_end=""/>
+<Entry id="1719" code="2303" name="10 de Mayo" zip="15290" term_start="2017-01-01" term_end=""/>
+<Entry id="1720" code="2304" name="Emiliano Zapata" zip="15299" term_start="2017-01-01" term_end=""/>
+<Entry id="1721" code="2305" name="20 de Noviembre" zip="15300" term_start="2017-01-01" term_end=""/>
+<Entry id="1722" code="2307" name="5o Tramo 20 de Noviembre" zip="15309" term_start="2017-01-01" term_end=""/>
+<Entry id="1723" code="2308" name="Felipe Ángeles" zip="15310" term_start="2017-01-01" term_end=""/>
+<Entry id="1724" code="2309" name="Azteca" zip="15320" term_start="2017-01-01" term_end=""/>
+<Entry id="1725" code="2310" name="Tres Mosqueteros" zip="15330" term_start="2017-01-01" term_end=""/>
+<Entry id="1726" code="2311" name="Ampliación Venustiano Carranza" zip="15339" term_start="2017-01-01" term_end=""/>
+<Entry id="1727" code="2312" name="Venustiano Carranza" zip="15340" term_start="2017-01-01" term_end=""/>
+<Entry id="1728" code="2313" name="Ampliación Penitenciaria" zip="15350" term_start="2017-01-01" term_end=""/>
+<Entry id="1729" code="2315" name="Progresista" zip="15370" term_start="2017-01-01" term_end=""/>
+<Entry id="1730" code="2316" name="Escuela de Tiro" zip="15380" term_start="2017-01-01" term_end=""/>
+<Entry id="1731" code="2319" name="7 de Julio" zip="15390" term_start="2017-01-01" term_end=""/>
+<Entry id="1732" code="2320" name="Romero Rubio" zip="15400" term_start="2017-01-01" term_end=""/>
+<Entry id="1733" code="2321" name="Simón Bolívar" zip="15410" term_start="2017-01-01" term_end=""/>
+<Entry id="1734" code="2322" name="Ampliación Simón Bolívar" zip="15420" term_start="2017-01-01" term_end=""/>
+<Entry id="1735" code="2323" name="Aquiles Serdán" zip="15430" term_start="2017-01-01" term_end=""/>
+<Entry id="1736" code="2324" name="1° de Mayo" zip="15440" term_start="2017-01-01" term_end=""/>
+<Entry id="1737" code="2325" name="Damián Carmona" zip="15450" term_start="2017-01-01" term_end=""/>
+<Entry id="1738" code="2326" name="Revolución" zip="15460" term_start="2017-01-01" term_end=""/>
+<Entry id="1739" code="2327" name="Miguel Hidalgo" zip="15470" term_start="2017-01-01" term_end=""/>
+<Entry id="1740" code="2328" name="Moctezuma 1a Sección" zip="15500" term_start="2017-01-01" term_end=""/>
+<Entry id="1741" code="2330" name="Pensador Mexicano" zip="15510" term_start="2017-01-01" term_end=""/>
+<Entry id="1742" code="2331" name="Peñón de los Baños" zip="15520" term_start="2017-01-01" term_end=""/>
+<Entry id="1743" code="2332" name="Moctezuma 2a Sección" zip="15530" term_start="2017-01-01" term_end=""/>
+<Entry id="1744" code="2333" name="Santa Cruz Aviación" zip="15540" term_start="2017-01-01" term_end=""/>
+<Entry id="1745" code="2334" name="Arenal 1a Sección" zip="15600" term_start="2017-01-01" term_end=""/>
+<Entry id="1746" code="2335" name="Cuchilla Pantitlán" zip="15610" term_start="2017-01-01" term_end=""/>
+<Entry id="1747" code="2336" name="México (Lic. Benito Juárez)" zip="15620" term_start="2017-01-01" term_end=""/>
+<Entry id="1748" code="2340" name="Caracol" zip="15630" term_start="2017-01-01" term_end=""/>
+<Entry id="1749" code="2342" name="Arenal 4a Sección" zip="15640" term_start="2017-01-01" term_end=""/>
+<Entry id="1750" code="2351" name="Arenal Puerto Aéreo" zip="15640" term_start="2017-01-01" term_end=""/>
+<Entry id="1751" code="2343" name="Ampliación Caracol" zip="15650" term_start="2017-01-01" term_end=""/>
+<Entry id="1752" code="2344" name="Arenal 3a Sección" zip="15660" term_start="2017-01-01" term_end=""/>
+<Entry id="1753" code="2346" name="Adolfo López Mateos" zip="15670" term_start="2017-01-01" term_end=""/>
+<Entry id="1754" code="2347" name="Arenal 2a Sección" zip="15680" term_start="2017-01-01" term_end=""/>
+<Entry id="1755" code="2349" name="Federal" zip="15700" term_start="2017-01-01" term_end=""/>
+<Entry id="1756" code="2350" name="Industrial Puerto Aéreo" zip="15710" term_start="2017-01-01" term_end=""/>
+<Entry id="1757" code="2352" name="Zaragoza Bahía" zip="15720" term_start="2017-01-01" term_end=""/>
+<Entry id="1758" code="2353" name="4 Árboles" zip="15730" term_start="2017-01-01" term_end=""/>
+<Entry id="1759" code="2354" name="Aviación Civil" zip="15740" term_start="2017-01-01" term_end=""/>
+<Entry id="1760" code="2355" name="Ampliación Aviación Civil" zip="15750" term_start="2017-01-01" term_end=""/>
+<Entry id="1761" code="2356" name="Jamaica" zip="15800" term_start="2017-01-01" term_end=""/>
+<Entry id="1762" code="2358" name="Merced Balbuena" zip="15810" term_start="2017-01-01" term_end=""/>
+<Entry id="1763" code="2359" name="Lorenzo Boturini" zip="15820" term_start="2017-01-01" term_end=""/>
+<Entry id="1764" code="2360" name="Artes Gráficas" zip="15830" term_start="2017-01-01" term_end=""/>
+<Entry id="1765" code="2361" name="Sevilla" zip="15840" term_start="2017-01-01" term_end=""/>
+<Entry id="1766" code="2362" name="Magdalena Mixiuhca" zip="15850" term_start="2017-01-01" term_end=""/>
+<Entry id="1767" code="2363" name="Pueblo de La Magdalena Mixiuhca" zip="15860" term_start="2017-01-01" term_end=""/>
+<Entry id="1768" code="2364" name="Aarón Sáenz" zip="15870" term_start="2017-01-01" term_end=""/>
+<Entry id="1769" code="2365" name="Jardín Balbuena" zip="15900" term_start="2017-01-01" term_end=""/>
+<Entry id="1770" code="2370" name="Morelos" zip="15940" term_start="2017-01-01" term_end=""/>
+<Entry id="1771" code="2371" name="Unidad Kennedy" zip="15950" term_start="2017-01-01" term_end=""/>
+<Entry id="1772" code="2372" name="Del Parque" zip="15960" term_start="2017-01-01" term_end=""/>
+<Entry id="1773" code="2373" name="Tribunales de La Suprema Corte de Justicia" zip="15968" term_start="2017-01-01" term_end=""/>
+<Entry id="1774" code="2376" name="Aeronáutica Militar" zip="15970" term_start="2017-01-01" term_end=""/>
+<Entry id="1775" code="2377" name="24 de Abril" zip="15980" term_start="2017-01-01" term_end=""/>
+<Entry id="1776" code="2378" name="Álvaro Obregón" zip="15990" term_start="2017-01-01" term_end=""/>
+<Entry id="1777" code="2379" name="Barrio La Concepción Tlacoapa" zip="16000" term_start="2017-01-01" term_end=""/>
+<Entry id="1778" code="2380" name="Barrio San Antonio" zip="16000" term_start="2017-01-01" term_end=""/>
+<Entry id="1779" code="2381" name="Barrio San Juan" zip="16000" term_start="2017-01-01" term_end=""/>
+<Entry id="1780" code="2389" name="Aldama" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1781" code="2383" name="Arcos del Sur" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1782" code="2385" name="Bosque Residencial del Sur" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1783" code="2386" name="Las Peritas" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1784" code="2388" name="Paseos del Sur" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1785" code="2832" name="San Bartolo El Chico" zip="16010" term_start="2017-01-01" term_end=""/>
+<Entry id="1786" code="2395" name="San Juan Tepepan" zip="16020" term_start="2017-01-01" term_end=""/>
+<Entry id="1787" code="2396" name="Santa María Tepepan" zip="16020" term_start="2017-01-01" term_end=""/>
+<Entry id="1788" code="2399" name="Ampliación Tepepan" zip="16029" term_start="2017-01-01" term_end=""/>
+<Entry id="1789" code="2919" name="Ampliación La Noria" zip="16030" term_start="2017-01-01" term_end=""/>
+<Entry id="1790" code="2400" name="División del Norte INFONAVIT" zip="16030" term_start="2017-01-01" term_end=""/>
+<Entry id="1791" code="2401" name="Huichapan" zip="16030" term_start="2017-01-01" term_end=""/>
+<Entry id="1792" code="2402" name="La Noria" zip="16030" term_start="2017-01-01" term_end=""/>
+<Entry id="1793" code="2403" name="Potrero de San Bernardino" zip="16030" term_start="2017-01-01" term_end=""/>
+<Entry id="1794" code="2405" name="Barrio 18" zip="16034" term_start="2017-01-01" term_end=""/>
+<Entry id="1795" code="2833" name="Rinconada Coapa" zip="16035" term_start="2017-01-01" term_end=""/>
+<Entry id="1796" code="2407" name="San Lorenzo La Cebada" zip="16035" term_start="2017-01-01" term_end=""/>
+<Entry id="1797" code="2408" name="Mercado de Flores Plantas y Hortalizas" zip="16036" term_start="2017-01-01" term_end=""/>
+<Entry id="1798" code="2409" name="Ampliación San Marcos Norte" zip="16038" term_start="2017-01-01" term_end=""/>
+<Entry id="1799" code="2410" name="San Marcos" zip="16039" term_start="2017-01-01" term_end=""/>
+<Entry id="1800" code="2411" name="Barrio La Asunción" zip="16040" term_start="2017-01-01" term_end=""/>
+<Entry id="1801" code="2412" name="Barrio San Lorenzo" zip="16040" term_start="2017-01-01" term_end=""/>
+<Entry id="1802" code="2414" name="Barrio San Marcos" zip="16050" term_start="2017-01-01" term_end=""/>
+<Entry id="1803" code="2413" name="Jardines del Sur" zip="16050" term_start="2017-01-01" term_end=""/>
+<Entry id="1804" code="2415" name="Tierra Nueva" zip="16050" term_start="2017-01-01" term_end=""/>
+<Entry id="1805" code="2416" name="Redención" zip="16057" term_start="2017-01-01" term_end=""/>
+<Entry id="1806" code="2418" name="Villa Xochimilco" zip="16058" term_start="2017-01-01" term_end=""/>
+<Entry id="1807" code="2419" name="Las Gárgolas" zip="16059" term_start="2017-01-01" term_end=""/>
+<Entry id="1808" code="2420" name="Pblo. Stgo.Tepalcatlalpan, U. H. Rinconada del Sur" zip="16059" term_start="2017-01-01" term_end=""/>
+<Entry id="1809" code="2421" name="El Mirador" zip="16060" term_start="2017-01-01" term_end=""/>
+<Entry id="1810" code="2423" name="Barrio Belén" zip="16070" term_start="2017-01-01" term_end=""/>
+<Entry id="1811" code="2424" name="Barrio El Rosario" zip="16070" term_start="2017-01-01" term_end=""/>
+<Entry id="1812" code="2425" name="Barrio La Guadalupita" zip="16070" term_start="2017-01-01" term_end=""/>
+<Entry id="1813" code="2426" name="Barrio Santa Crucita" zip="16070" term_start="2017-01-01" term_end=""/>
+<Entry id="1814" code="2427" name="Barrio La Santísima" zip="16080" term_start="2017-01-01" term_end=""/>
+<Entry id="1815" code="2428" name="Barrio San Cristóbal" zip="16080" term_start="2017-01-01" term_end=""/>
+<Entry id="1816" code="2429" name="Barrio San Diego" zip="16080" term_start="2017-01-01" term_end=""/>
+<Entry id="1817" code="2430" name="Barrio San Esteban" zip="16080" term_start="2017-01-01" term_end=""/>
+<Entry id="1818" code="2432" name="Barrio San Pedro" zip="16090" term_start="2017-01-01" term_end=""/>
+<Entry id="1819" code="2434" name="Barrio Xaltocan" zip="16090" term_start="2017-01-01" term_end=""/>
+<Entry id="1820" code="2431" name="Caltongo" zip="16090" term_start="2017-01-01" term_end=""/>
+<Entry id="1821" code="2433" name="Tablas de San Lorenzo" zip="16090" term_start="2017-01-01" term_end=""/>
+<Entry id="1822" code="2437" name="Los Geranios" zip="16098" term_start="2017-01-01" term_end=""/>
+<Entry id="1823" code="2438" name="Nativitas INFONAVIT" zip="16099" term_start="2017-01-01" term_end=""/>
+<Entry id="1824" code="2439" name="Santa Cruz Xochitepec" zip="16100" term_start="2017-01-01" term_end=""/>
+<Entry id="1825" code="2441" name="Rinconada San Pablo" zip="16105" term_start="2017-01-01" term_end=""/>
+<Entry id="1826" code="2443" name="Santiago Tepalcatlalpan" zip="16200" term_start="2017-01-01" term_end=""/>
+<Entry id="1827" code="2444" name="La Concha" zip="16210" term_start="2017-01-01" term_end=""/>
+<Entry id="1828" code="2445" name="San José Zacatepec" zip="16220" term_start="2017-01-01" term_end=""/>
+<Entry id="1829" code="2448" name="Tlaxopan  2a Sección" zip="16240" term_start="2017-01-01" term_end=""/>
+<Entry id="1830" code="2447" name="Tlaxopan 1a Sección" zip="16240" term_start="2017-01-01" term_end=""/>
+<Entry id="1831" code="2452" name="Tlaxopan Norte" zip="16244" term_start="2017-01-01" term_end=""/>
+<Entry id="1832" code="2455" name="Paraje Tlalatlaco" zip="16247" term_start="2017-01-01" term_end=""/>
+<Entry id="1833" code="2456" name="Ocotitla" zip="16248" term_start="2017-01-01" term_end=""/>
+<Entry id="1834" code="2458" name="San Lucas Xochimanca" zip="16300" term_start="2017-01-01" term_end=""/>
+<Entry id="1835" code="2459" name="La Cañada" zip="16310" term_start="2017-01-01" term_end=""/>
+<Entry id="1836" code="2460" name="San Lucas Oriente" zip="16320" term_start="2017-01-01" term_end=""/>
+<Entry id="1837" code="2461" name="Loreto y Peña Pobre" zip="16330" term_start="2017-01-01" term_end=""/>
+<Entry id="1838" code="2462" name="Texmic" zip="16340" term_start="2017-01-01" term_end=""/>
+<Entry id="1839" code="2464" name="San Lorenzo Atemoaya" zip="16400" term_start="2017-01-01" term_end=""/>
+<Entry id="1840" code="2465" name="Lomas de Tonalco" zip="16410" term_start="2017-01-01" term_end=""/>
+<Entry id="1841" code="2466" name="San Jerónimo" zip="16420" term_start="2017-01-01" term_end=""/>
+<Entry id="1842" code="2467" name="El Jazmín" zip="16428" term_start="2017-01-01" term_end=""/>
+<Entry id="1843" code="2468" name="Rancho Tejomulco" zip="16429" term_start="2017-01-01" term_end=""/>
+<Entry id="1844" code="2470" name="Xochipilli" zip="16430" term_start="2017-01-01" term_end=""/>
+<Entry id="1845" code="2471" name="Año de Juárez" zip="16440" term_start="2017-01-01" term_end=""/>
+<Entry id="1846" code="2899" name="Barrio Pocitos" zip="16443" term_start="2017-01-01" term_end=""/>
+<Entry id="1847" code="2472" name="Santa María Nativitas" zip="16450" term_start="2017-01-01" term_end=""/>
+<Entry id="1848" code="2480" name="Lomas de Nativitas" zip="16457" term_start="2017-01-01" term_end=""/>
+<Entry id="1849" code="2473" name="Ampliación Nativitas" zip="16459" term_start="2017-01-01" term_end=""/>
+<Entry id="1850" code="2475" name="Santa Cruz Acalpixca" zip="16500" term_start="2017-01-01" term_end=""/>
+<Entry id="1851" code="2476" name="Tecacalanco" zip="16510" term_start="2017-01-01" term_end=""/>
+<Entry id="1852" code="2900" name="Barrio Apatlaco" zip="16513" term_start="2017-01-01" term_end=""/>
+<Entry id="1853" code="2901" name="Barrio del Puente" zip="16513" term_start="2017-01-01" term_end=""/>
+<Entry id="1854" code="2904" name="Barrio Calpulco" zip="16514" term_start="2017-01-01" term_end=""/>
+<Entry id="1855" code="2902" name="Barrio La Gallera" zip="16514" term_start="2017-01-01" term_end=""/>
+<Entry id="1856" code="2903" name="Barrio Tetitla" zip="16514" term_start="2017-01-01" term_end=""/>
+<Entry id="1857" code="0001" name="Tetitla la Gallera" zip="16514" term_start="2017-01-01" term_end=""/>
+<Entry id="1858" code="2477" name="San José Obrero" zip="16515" term_start="2017-01-01" term_end=""/>
+<Entry id="1859" code="2478" name="Barrio La Planta" zip="16520" term_start="2017-01-01" term_end=""/>
+<Entry id="1860" code="2595" name="Tiziclipa" zip="16520" term_start="2017-01-01" term_end=""/>
+<Entry id="1861" code="2479" name="Barrio Las Cruces" zip="16530" term_start="2017-01-01" term_end=""/>
+<Entry id="1862" code="2834" name="Barrio Las Flores" zip="16530" term_start="2017-01-01" term_end=""/>
+<Entry id="1863" code="2905" name="Barrio Ahualapa" zip="16533" term_start="2017-01-01" term_end=""/>
+<Entry id="1864" code="2597" name="Tototitla" zip="16550" term_start="2017-01-01" term_end=""/>
+<Entry id="1865" code="2481" name="Valle de Santa María" zip="16550" term_start="2017-01-01" term_end=""/>
+<Entry id="1866" code="2482" name="San Gregorio Atlapulco" zip="16600" term_start="2017-01-01" term_end=""/>
+<Entry id="1867" code="2906" name="Barrio San Andrés" zip="16604" term_start="2017-01-01" term_end=""/>
+<Entry id="1868" code="2907" name="Barrio Los Reyes" zip="16605" term_start="2017-01-01" term_end=""/>
+<Entry id="1869" code="2908" name="Barrio 3 de Mayo" zip="16606" term_start="2017-01-01" term_end=""/>
+<Entry id="1870" code="2909" name="Barrio San Antonio" zip="16607" term_start="2017-01-01" term_end=""/>
+<Entry id="1871" code="2483" name="Barrio La Candelaria" zip="16609" term_start="2017-01-01" term_end=""/>
+<Entry id="1872" code="2484" name="San Luis Tlaxialtemalco" zip="16610" term_start="2017-01-01" term_end=""/>
+<Entry id="1873" code="2910" name="Barrio Niños Héroes" zip="16614" term_start="2017-01-01" term_end=""/>
+<Entry id="1874" code="2911" name="Barrio La Asunción" zip="16615" term_start="2017-01-01" term_end=""/>
+<Entry id="1875" code="2913" name="Barrio Santa Cecilia" zip="16616" term_start="2017-01-01" term_end=""/>
+<Entry id="1876" code="2912" name="Barrio San Sebastián" zip="16617" term_start="2017-01-01" term_end=""/>
+<Entry id="1877" code="2485" name="Barrio San José" zip="16620" term_start="2017-01-01" term_end=""/>
+<Entry id="1878" code="2487" name="Barrio La Guadalupana" zip="16629" term_start="2017-01-01" term_end=""/>
+<Entry id="1879" code="2489" name="Barrio San Juan" zip="16629" term_start="2017-01-01" term_end=""/>
+<Entry id="1880" code="2490" name="Barrio San Juan Moyotepec" zip="16630" term_start="2017-01-01" term_end=""/>
+<Entry id="1881" code="2491" name="Barrio San Juan Minas" zip="16640" term_start="2017-01-01" term_end=""/>
+<Entry id="1882" code="2494" name="Quirino Mendoza" zip="16710" term_start="2017-01-01" term_end=""/>
+<Entry id="1883" code="2495" name="Del Carmen" zip="16720" term_start="2017-01-01" term_end=""/>
+<Entry id="1884" code="2498" name="San Isidro" zip="16739" term_start="2017-01-01" term_end=""/>
+<Entry id="1885" code="2499" name="Guadalupita" zip="16740" term_start="2017-01-01" term_end=""/>
+<Entry id="1886" code="2500" name="Las Animas" zip="16749" term_start="2017-01-01" term_end=""/>
+<Entry id="1887" code="2501" name="Barrio Calyequita" zip="16750" term_start="2017-01-01" term_end=""/>
+<Entry id="1888" code="2502" name="San Felipe" zip="16770" term_start="2017-01-01" term_end=""/>
+<Entry id="1889" code="2600" name="El Mirador" zip="16776" term_start="2017-01-01" term_end=""/>
+<Entry id="1890" code="2503" name="Santiaguito" zip="16776" term_start="2017-01-01" term_end=""/>
+<Entry id="1891" code="2599" name="Tecoloxtitla" zip="16776" term_start="2017-01-01" term_end=""/>
+<Entry id="1892" code="2504" name="Cerrillos Primera Sección" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1893" code="2835" name="Cerrillos Segunda Sección" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1894" code="2836" name="Cerrillos Tercera Sección" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1895" code="2604" name="Cristo Rey" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1896" code="2602" name="El Sacrificio" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1897" code="2603" name="San Francisco Chiquimola" zip="16780" term_start="2017-01-01" term_end=""/>
+<Entry id="1898" code="2508" name="Nativitas" zip="16797" term_start="2017-01-01" term_end=""/>
+<Entry id="1899" code="2509" name="Las Mesitas" zip="16799" term_start="2017-01-01" term_end=""/>
+<Entry id="1900" code="2510" name="San Mateo Xalpa" zip="16800" term_start="2017-01-01" term_end=""/>
+<Entry id="1901" code="2512" name="El Arenal" zip="16808" term_start="2017-01-01" term_end=""/>
+<Entry id="1902" code="2668" name="Cerro Grande" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1903" code="2514" name="El Mirador 2a Sección" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1904" code="2606" name="Nueva Tenochtitlán" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1905" code="2607" name="Rosario Tlali" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1906" code="2515" name="San Andrés Ahuayucan" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1907" code="2516" name="Santa Inés" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1908" code="2605" name="Santa Inés" zip="16810" term_start="2017-01-01" term_end=""/>
+<Entry id="1909" code="2914" name="Barrio El Calvario" zip="16813" term_start="2017-01-01" term_end=""/>
+<Entry id="1910" code="2608" name="Axcallote" zip="16819" term_start="2017-01-01" term_end=""/>
+<Entry id="1911" code="2517" name="Tetlatilco" zip="16819" term_start="2017-01-01" term_end=""/>
+<Entry id="1912" code="2519" name="Santa Cruz Chavarrieta" zip="16840" term_start="2017-01-01" term_end=""/>
+<Entry id="1913" code="2742" name="Tlaltepetla" zip="16840" term_start="2017-01-01" term_end=""/>
+<Entry id="1914" code="2610" name="Atocle" zip="16850" term_start="2017-01-01" term_end=""/>
+<Entry id="1915" code="2520" name="Barrio Chapultepec" zip="16850" term_start="2017-01-01" term_end=""/>
+<Entry id="1916" code="2521" name="Santa Cruz de Guadalupe" zip="16860" term_start="2017-01-01" term_end=""/>
+<Entry id="1917" code="2746" name="Tecalipa" zip="16866" term_start="2017-01-01" term_end=""/>
+<Entry id="1918" code="2523" name="San Juan de los Lagos" zip="16869" term_start="2017-01-01" term_end=""/>
+<Entry id="1919" code="2524" name="El Cedral" zip="16870" term_start="2017-01-01" term_end=""/>
+<Entry id="1920" code="2613" name="El Capulín" zip="16880" term_start="2017-01-01" term_end=""/>
+<Entry id="1921" code="2525" name="La Herradura Hueytepec" zip="16880" term_start="2017-01-01" term_end=""/>
+<Entry id="1922" code="2527" name="Santa Cecilia Tepetlapa" zip="16880" term_start="2017-01-01" term_end=""/>
+<Entry id="1923" code="2614" name="El Teoca" zip="16888" term_start="2017-01-01" term_end=""/>
+<Entry id="1924" code="2528" name="Paraje Tlachiultepec" zip="16888" term_start="2017-01-01" term_end=""/>
+<Entry id="1925" code="2699" name="Rinconada del Teoca" zip="16888" term_start="2017-01-01" term_end=""/>
+<Entry id="1926" code="2529" name="Villa San Isidro" zip="16889" term_start="2017-01-01" term_end=""/>
+<Entry id="1927" code="2530" name="San Francisco Tlalnepantla" zip="16900" term_start="2017-01-01" term_end=""/>
+<Entry id="1928" code="2531" name="Los Capulines" zip="16908" term_start="2017-01-01" term_end=""/>
+<Entry id="1929" code="2533" name="Club Monte Sur" zip="16909" term_start="2017-01-01" term_end=""/>
+<Entry id="1930" code="2535" name="Pedregal de San Francisco" zip="16910" term_start="2017-01-01" term_end=""/>
+</Catalog>

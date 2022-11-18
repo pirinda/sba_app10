@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="AGU" name="Aguascalientes" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="2" code="BCN" name="Baja California" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="3" code="BCS" name="Baja California Sur" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="4" code="CAM" name="Campeche" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="5" code="CHP" name="Chiapas" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="6" code="CHH" name="Chihuahua" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="7" code="COA" name="Coahuila" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="8" code="COL" name="Colima" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="9" code="CMX" name="Ciudad de México" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="10" code="DUR" name="Durango" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="11" code="GUA" name="Guanajuato" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="12" code="GRO" name="Guerrero" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="13" code="HID" name="Hidalgo" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="14" code="JAL" name="Jalisco" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="15" code="MEX" name="Estado de México" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="16" code="MIC" name="Michoacán" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="17" code="MOR" name="Morelos" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="18" code="NAY" name="Nayarit" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="19" code="NLE" name="Nuevo León" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="20" code="OAX" name="Oaxaca" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="21" code="PUE" name="Puebla" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="22" code="QUE" name="Querétaro" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="23" code="ROO" name="Quintana Roo" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="24" code="SLP" name="San Luis Potosí" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="25" code="SIN" name="Sinaloa" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="26" code="SON" name="Sonora" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="27" code="TAB" name="Tabasco" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="28" code="TAM" name="Tamaulipas" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="29" code="TLA" name="Tlaxcala" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="30" code="VER" name="Veracruz" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="31" code="YUC" name="Yucatán" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="32" code="ZAC" name="Zacatecas" country="MEX" term_start="2022-01-01" term_end=""/>
+<Entry id="33" code="AL" name="Alabama" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="34" code="AK" name="Alaska" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="35" code="AZ" name="Arizona" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="36" code="AR" name="Arkansas" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="37" code="CA" name="California" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="38" code="NC" name="Carolina del Norte" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="39" code="SC" name="Carolina del Sur" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="40" code="CO" name="Colorado" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="41" code="CT" name="Connecticut" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="42" code="ND" name="Dakota del Norte" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="43" code="SD" name="Dakota del Sur" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="44" code="DE" name="Delaware" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="45" code="FL" name="Florida" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="46" code="GA" name="Georgia" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="47" code="HI" name="Hawái" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="48" code="ID" name="Idaho" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="49" code="IL" name="Illinois" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="50" code="IN" name="Indiana" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="51" code="IA" name="Iowa" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="52" code="KS" name="Kansas" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="53" code="KY" name="Kentucky" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="54" code="LA" name="Luisiana" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="55" code="ME" name="Maine" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="56" code="MD" name="Maryland" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="57" code="MA" name="Massachusetts" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="58" code="MI" name="Míchigan" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="59" code="MN" name="Minnesota" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="60" code="MS" name="Misisipi" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="61" code="MO" name="Misuri" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="62" code="MT" name="Montana" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="63" code="NE" name="Nebraska" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="64" code="NV" name="Nevada" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="65" code="NJ" name="Nueva Jersey" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="66" code="NY" name="Nueva York" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="67" code="NH" name="Nuevo Hampshire" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="68" code="NM" name="Nuevo México" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="69" code="OH" name="Ohio" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="70" code="OK" name="Oklahoma" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="71" code="OR" name="Oregón" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="72" code="PA" name="Pensilvania" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="73" code="RI" name="Rhode Island" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="74" code="TN" name="Tennessee" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="75" code="TX" name="Texas" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="76" code="UT" name="Utah" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="77" code="VT" name="Vermont" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="78" code="VA" name="Virginia" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="79" code="WV" name="Virginia Occidental" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="80" code="WA" name="Washington" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="81" code="WI" name="Wisconsin" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="82" code="WY" name="Wyoming" country="USA" term_start="2022-01-01" term_end=""/>
+<Entry id="83" code="ON" name="Ontario " country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="84" code="QC" name="Quebec" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="85" code="NS" name="Nueva Escocia" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="86" code="NB" name="Nuevo Brunswick " country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="87" code="MB" name="Manitoba" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="88" code="BC" name="Columbia Británica" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="89" code="PE" name="Isla del Príncipe Eduardo" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="90" code="SK" name="Saskatchewan" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="91" code="AB" name="Alberta" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="92" code="NL" name="Terranova y Labrador" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="93" code="NT" name="Territorios del Noroeste" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="94" code="YT" name="Yukón" country="CAN" term_start="2022-01-01" term_end=""/>
+<Entry id="95" code="UN" name="Nunavut" country="CAN" term_start="2022-01-01" term_end=""/>
+</Catalog>

@@ -54,6 +54,7 @@ public abstract class DModSysConsts {
     public static final int CS_MOD_HRS = 19;
     public static final int CS_MOD_POS = 21;
     public static final int CS_MOD_SRV = 22;
+    public static final int CS_MOD_LAD = 23;
 
     public static final int CS_PRV_SYS_DAT_WKG = 101;
     public static final int CS_PRV_SYS_DAT_OTH = 102;
@@ -158,12 +159,17 @@ public abstract class DModSysConsts {
     public static final int CS_PRV_SRV_SRV = 2202;
     public static final int CS_PRV_SRV_ADM = 2291;
     public static final int CS_PRV_SRV_REP = 2299;
+    public static final int CS_PRV_LAD_CAT = 2301;
+    public static final int CS_PRV_LAD_LAD = 2302;
+    public static final int CS_PRV_LAD_ADM = 2391;
+    public static final int CS_PRV_LAD_REP = 2399;
 
     public static final int CS_LEV_NA = 1;
     public static final int CS_LEV_REA = 2;
     public static final int CS_LEV_EDT = 3;
 
     public static final int CS_CTY_NA = 1;
+    public static final int CS_CTY_MEX = 143;
 
     public static final int CS_CUR_NA = 1;
     public static final int CS_CUR_EUR = 51;
@@ -526,9 +532,9 @@ public abstract class DModSysConsts {
     public static final int FS_PAY_TP_CSH = 2;
     public static final int FS_PAY_TP_CDT = 3;
 
-    public static final int FS_MOP_TP_NA = 1;       // non-applying
-    public static final int FS_MOP_TP_CSH = 101;    // cash
-    public static final int FS_MOP_TP_CHK = 102;    // check
+    public static final int FS_MOP_TP_NA = 1; // non-applying
+    public static final int FS_MOP_TP_CSH = 101; // cash
+    public static final int FS_MOP_TP_CHK = 102; // check
     public static final int FS_MOP_TP_TO_DEF = 199; // to be defined
 
     public static final int FS_VAL_TP_NA = 1;
@@ -616,6 +622,9 @@ public abstract class DModSysConsts {
     public static final int TS_BLK_TP_IGN = 1;
     public static final int TS_BLK_TP_CON = 2;
     public static final int TS_BLK_TP_BLK = 3;
+
+    public static final int TS_XML_TP_PAY_PUE = 1;
+    public static final int TS_XML_TP_PAY_PPD = 2;
 
     public static final int TS_XML_TP_NA = 1;
     public static final int TS_XML_TP_CFD = 2;
@@ -783,6 +792,21 @@ public abstract class DModSysConsts {
     public static final int SX_SRV_ST_REP_DVY = 5;
     public static final int SX_SRV_DVY_BY_REP = 51; // delivery by date of reparation (original date)
     public static final int SX_SRV_DVY_BY_DVY = 52; // delivery by date of delivery
+
+    public static final int LS_TPT_TP_NA = 0; // Not applicable
+    public static final int LS_TPT_TP_TRUCK = 1; // Truck
+    public static final int LS_TPT_TP_SEA = 2; // Sea
+    public static final int LS_TPT_TP_AIR = 3; // Air
+    public static final int LS_TPT_TP_RAIL = 4; // Rail
+
+    public static final int LS_LOC_TP_NA = 0; // Not applicable
+    public static final int LS_LOC_TP_SRC = 1; // Source
+    public static final int LS_LOC_TP_DES = 2; // Destiny
+
+    public static final int LS_TPT_FIGURE_TP_DRIVER = 1; // Driver
+    public static final int LS_TPT_FIGURE_TP_OWNER = 2; // Owner
+    public static final int LS_TPT_FIGURE_TP_LEASER = 3; // Leaser
+    public static final int LS_TPT_FIGURE_TP_NOTIFIED = 4; // Notified
 
     public static final int PARAM_YEAR = 101;
     public static final int PARAM_DATE = 102;

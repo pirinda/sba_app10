@@ -1,11 +1,16 @@
 ================================================================================
+SBA 1.0 029.0
+2022-10-05/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de Complemento Carta Porte 2.0, tipo "T".
+
+================================================================================
 SBA 1.0 028.0
-2021-06-08/ Sergio Abraham FLORES GUTIÉRREZ
+2022-06-08/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de CFDI 4.0.
 
 ================================================================================
 SBA 1.0 027.0
-2021-06-01/ Sergio Abraham FLORES GUTIÉRREZ
+2022-06-01/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de nueva función de cancelación de CFDI 2022 y refactorización general al proceso de timbrado, 
     cancelación y demás funcionalidades relacionadas con la emisión de CFDI.
 2) Implementación de envío mail de CFDI con Gmail API debido a obsolescencia de tecnología de conexión directa (usuario y contraseña) al 30 de mayo de 2022.
