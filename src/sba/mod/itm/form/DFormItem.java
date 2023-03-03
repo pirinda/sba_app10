@@ -95,6 +95,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moTextItemCode = new sba.lib.gui.bean.DBeanFieldText();
         jlCfdItemKey = new javax.swing.JLabel();
         moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKeyHint = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jlItemName = new javax.swing.JLabel();
         moTextItemName = new sba.lib.gui.bean.DBeanFieldText();
@@ -310,6 +311,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(moTextCfdItemKey);
+
+        jlCfdItemKeyHint.setForeground(java.awt.Color.gray);
+        jlCfdItemKeyHint.setText("(SAT)");
+        jlCfdItemKeyHint.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel3.add(jlCfdItemKeyHint);
 
         jPanel5.add(jPanel3);
 
@@ -1819,6 +1825,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlBarcode;
     private javax.swing.JLabel jlBrand;
     private javax.swing.JLabel jlCfdItemKey;
+    private javax.swing.JLabel jlCfdItemKeyHint;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
     private javax.swing.JLabel jlDepartment;

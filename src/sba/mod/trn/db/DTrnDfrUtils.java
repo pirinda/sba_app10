@@ -20,9 +20,11 @@ import cfd.ext.continental.DElementPo;
 import cfd.ext.continental.DElementPosicion;
 import cfd.ext.continental.DElementPosicionesPo;
 import cfd.ext.continental.DElementTipoProv;
+import cfd.ver3.ccp20.DElementPedimentos;
 import cfd.ver32.DCfdiVer32Consts;
 import cfd.ver33.DCfdi33Consts;
 import cfd.ver40.DCfdi40Catalogs;
+import cfd.ver40.DElementInformacionGlobal;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +61,16 @@ import sba.mod.cfg.db.DDbCertificate;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.fin.db.DFinConsts;
+import sba.mod.itm.db.DDbUnit;
+import sba.mod.lad.db.DDbBol;
+import sba.mod.lad.db.DDbBolLocation;
+import sba.mod.lad.db.DDbBolMerchandise;
+import sba.mod.lad.db.DDbBolMerchandiseMove;
+import sba.mod.lad.db.DDbBolTransportFigure;
+import sba.mod.lad.db.DDbBolTransportFigureTransportPart;
+import sba.mod.lad.db.DDbBolTruck;
+import sba.mod.lad.db.DDbBolTruckTrailer;
+import sba.mod.lad.form.DBolUtils;
 
 /**
  * Utilities related to CFD generation and PAC transaction control for CFD signing and cancelling.
@@ -735,7 +747,6 @@ public abstract class DTrnDfrUtils {
         DDbBranch braReceptor = null;
         
         // Check company branch emission configuration:
-        
 
         // Emisor:
 
@@ -1153,7 +1164,7 @@ public abstract class DTrnDfrUtils {
         return comprobante;
     }
     
-    public static cfd.ver40.DElementComprobante createCfdi40(final DGuiSession session, final DDbDps dps, final DGuiEdsSignature signature) throws Exception {
+    public static cfd.ver40.DElementComprobante createCfdi40FromDps(final DGuiSession session, final DDbDps dps, final DGuiEdsSignature signature) throws Exception {
         int decs = DLibUtils.getDecimalFormatAmount().getMaximumFractionDigits();
         int decsTax = 6;
         Date tDate = null;
@@ -1171,7 +1182,6 @@ public abstract class DTrnDfrUtils {
         DDbBranch braReceptor = null;
         
         // Check company branch emission configuration:
-        
 
         // Emisor:
 
@@ -1235,7 +1245,9 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttCertificado().setString(signature.getCertificateBase64());
 
         comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
-        comprobante.getAttCondicionesDePago().setString(dps.getXtaDfr().getPaymentTerms());
+        if (!dps.getXtaDfr().isGlobal()) {
+            comprobante.getAttCondicionesDePago().setString(dps.getXtaDfr().getPaymentTerms());
+        }
         
         comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
 
@@ -1259,6 +1271,14 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttConfirmacion().setString(dps.getXtaDfr().getConfirmation());
         comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica); // fixed value, exportations not supported yet!
         
+        if (dps.getXtaDfr().isGlobal()) {
+            cfd.ver40.DElementInformacionGlobal informacionGlobal = new DElementInformacionGlobal();
+            informacionGlobal.getAttPeriodicidad().setString(dps.getXtaDfr().getGlobalPeriodicity());
+            informacionGlobal.getAttMeses().setString(dps.getXtaDfr().getGlobalMonths());
+            informacionGlobal.getAttAño().setInteger(dps.getXtaDfr().getGlobalYear());
+            comprobante.setEltOpcInformacionGlobal(informacionGlobal);
+        }
+        
         // element 'CfdiRelacionados':
         if (dps.getXtaDfr().getCfdRelations() != null && !dps.getXtaDfr().getCfdRelations().getRelatedCfds().isEmpty()) {
             ArrayList<cfd.ver40.DElementCfdiRelacionados> cfdiRelacionadoses = new ArrayList<>();
@@ -1280,14 +1300,14 @@ public abstract class DTrnDfrUtils {
 
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
-        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getNameFiscal());
         comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfr().getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
-        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getProperName());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
         comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(dps.getXtaDfr().getReceiverTaxRegime());
-        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(dps.getXtaDfr().getReceiverFiscalAddress());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(!dps.getXtaDfr().isGlobal() ? dps.getXtaDfr().getReceiverFiscalAddress() : braAddressEmisor.getZipCode());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
         comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfr().getCfdUsage());
@@ -1317,8 +1337,13 @@ public abstract class DTrnDfrUtils {
                 concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
                 concepto.getAttCantidad().setDecimals(configCompany.getDecimalsQuantity());
                 concepto.getAttClaveUnidad().setString(dpsRow.getDfrUnitKey());
-                concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
-                concepto.getAttDescripcion().setString(dpsRow.getName() + (notes.isEmpty() ? "" : " " + notes));
+                if (!dps.getXtaDfr().isGlobal()) {
+                    concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
+                    concepto.getAttDescripcion().setString(dpsRow.getName() + (notes.isEmpty() ? "" : " " + notes));
+                }
+                else {
+                    concepto.getAttDescripcion().setString(DCfdi40Catalogs.ConceptoFacturaGlobal);
+                }
                 concepto.getAttValorUnitario().setDecimals(configCompany.getDecimalsPriceUnitary());
                 concepto.getAttValorUnitario().setDouble(dpsRow.getPriceUnitaryCy());
                 concepto.getAttImporte().setDouble(dpsRow.getSubtotalProvCy_r());
@@ -1331,9 +1356,9 @@ public abstract class DTrnDfrUtils {
                 
                 cfd.ver40.DElementConceptoImpuestosTraslados impuestosTraslados = null;
                 
-                //go through the 3 possible taxes on each document row:
+                // go through the 3 possible taxes on each document row:
                 
-                for (int index = 1; index <= 3; index++) {
+                for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
                     int taxId = DLibConsts.UNDEFINED;
                     double taxRate = 0;
                     double taxAmount = 0;
@@ -1359,18 +1384,19 @@ public abstract class DTrnDfrUtils {
                             taxAmount = dpsRow.getTaxCharged3Cy();
                             break;
                         default:
+                            // nothing
                     }
                     
                     if (taxId != DLibConsts.UNDEFINED) {
                         switch (taxId) {
-                            case 1: // (N/A)
+                            case DFinConsts.TAX_NA:
                                 break;
-                            case 2: // IVA
+                            case DFinConsts.TAX_IVA:
                                 taxCode = DCfdi40Catalogs.IMP_IVA;
                                 mapTax = mapTaxIva;
                                 mapBase = mapBaseIva;
                                 break;
-                            case 3: // ISR
+                            case DFinConsts.TAX_ISR:
                                 break;
                             default:
                                 throw new Exception (DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1416,7 +1442,7 @@ public abstract class DTrnDfrUtils {
                 
                 //go through the 3 possible taxes on each document row:
                 
-                for (int index = 1; index <= 3; index++) {
+                for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
                     int retId = DLibConsts.UNDEFINED;
                     double retRate = 0;
                     double retAmount = 0;
@@ -1440,17 +1466,18 @@ public abstract class DTrnDfrUtils {
                             retAmount = dpsRow.getTaxRetained3Cy();
                             break;
                         default:
+                            // nothing
                     }
                     
                     if (retId != DLibConsts.UNDEFINED) {
                         switch (retId) {
-                            case 1: // (N/A)
+                            case DFinConsts.TAX_NA:
                                 break;
-                            case 2: // IVA
+                            case DFinConsts.TAX_IVA:
                                 retCode = DCfdi40Catalogs.IMP_IVA;
                                 mapRet = mapRetIva;
                                 break;
-                            case 3: // ISR
+                            case DFinConsts.TAX_ISR:
                                 retCode = DCfdi40Catalogs.IMP_ISR;
                                 mapRet = mapRetIsr;
                                 break;
@@ -1617,6 +1644,369 @@ public abstract class DTrnDfrUtils {
         return comprobante;
     }
     
+    public static cfd.ver40.DElementComprobante createCfdi40FromBol(final DGuiSession session, final DDbBol bol, final DGuiEdsSignature signature) throws Exception {
+        Date tDate = null;
+        Date tUpdateTs = bol.getTsUserUpdate() != null ? bol.getTsUserUpdate() : new Date();
+        int[] anDateDps = DLibTimeUtils.digestDate(bol.getDate());
+        int[] anDateEdit = DLibTimeUtils.digestDate(tUpdateTs);
+        GregorianCalendar oGregorianCalendar = null;
+        DDbConfigCompany configCompany = (DDbConfigCompany) session.getConfigCompany();
+        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
+        DDbBizPartner bprEmisor = null;
+        DDbBranch braEmisor = null;
+        DDbBranchAddress braAddressEmisor = null;
+        DDbBizPartner bprReceptor = null;
+        DDbBizPartner bprReceptorName = null;
+        DDbBranch braReceptor = null;
+        
+        // Check company branch emission configuration:
+
+        // Emisor:
+
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() == DLibConsts.UNDEFINED) {
+            // Document's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, bol.getCompanyKey());
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, bol.getCompanyBranchKey());
+        }
+        else {
+            // Company branch's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n(), DUtilConsts.BPR_BRA_ID });
+        }
+
+        // Receptor:
+
+        bprReceptor = bprEmisor;
+        braReceptor = braEmisor;
+        bprReceptorName = bprReceptor;
+
+        if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
+            tDate = tUpdateTs;
+        }
+        else {
+            oGregorianCalendar = new GregorianCalendar();
+            oGregorianCalendar.setTime(tUpdateTs);
+            oGregorianCalendar.set(GregorianCalendar.YEAR, anDateDps[0]);
+            oGregorianCalendar.set(GregorianCalendar.MONTH, anDateDps[1] - 1); // January is month 0
+            oGregorianCalendar.set(GregorianCalendar.DATE, anDateDps[2]);
+            tDate = oGregorianCalendar.getTime();
+        }
+        
+        // Create XML's main element 'Comprobante':
+
+        cfd.ver40.DElementComprobante comprobante = new cfd.ver40.DElementComprobante(); // include Addenda1 only if explicitly defined and CFD is already signed
+
+        comprobante.getAttSerie().setString(bol.getSeries());
+        comprobante.getAttFolio().setString("" + bol.getNumber());
+        comprobante.getAttFecha().setDatetime(tDate);
+        
+        comprobante.getAttSello().setString("");
+        comprobante.getAttNoCertificado().setString(signature.getCertificateNumber());
+        comprobante.getAttCertificado().setString(signature.getCertificateBase64());
+
+        comprobante.getAttFormaPago().setString("");
+        comprobante.getAttCondicionesDePago().setString("");
+        
+        comprobante.getAttSubTotal().setDouble(0);
+        comprobante.getAttSubTotal().setDecimals(0);
+
+        comprobante.getAttMoneda().setString(DCfdi40Catalogs.ClaveMonedaXxx);
+        
+        comprobante.getAttTotal().setDouble(0);
+        comprobante.getAttTotal().setDecimals(0);
+
+        comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_T);
+        comprobante.getAttMetodoPago().setString("");
+        
+        braAddressEmisor = braEmisor.getChildAddressOfficial();
+        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        
+        comprobante.getAttConfirmacion().setString("");
+        comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica); // fixed value, exportations not supported yet!
+        
+        // element 'CfdiRelacionados':
+        /* Not supported yet!
+        if (bol.getXtaDfr().getCfdRelations() != null && !bol.getXtaDfr().getCfdRelations().getRelatedCfds().isEmpty()) {
+            ArrayList<cfd.ver40.DElementCfdiRelacionados> cfdiRelacionadoses = new ArrayList<>();
+            for (DDfrCfdRelations.RelatedCfd relatedCfd : bol.getXtaDfr().getCfdRelations().getRelatedCfds()) {
+                cfd.ver40.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver40.DElementCfdiRelacionados();
+                cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
+
+                for (String uuid : relatedCfd.Uuids) {
+                    cfd.ver40.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver40.DElementCfdiRelacionado();
+                    cfdiRelacionado.getAttUuid().setString(uuid);
+                    cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
+                }
+                
+                cfdiRelacionadoses.add(cfdiRelacionados);
+            }
+            
+            comprobante.setEltOpcCfdiRelacionados(cfdiRelacionadoses);
+        }
+        */
+
+        // element 'Emisor':
+        comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getNameFiscal());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bprEmisor.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+
+        // element 'Receptor':
+        comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
+        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bprEmisor.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(bprEmisor.getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+        //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
+        //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales);
+
+        // element 'Conceptos':
+
+        for (DDbBolMerchandise bolMerchandise : bol.getChildMerchandises()) {
+            // "Concepto" node:
+
+            cfd.ver40.DElementConcepto concepto = new cfd.ver40.DElementConcepto();
+
+            concepto.getAttClaveProdServ().setString(bolMerchandise.getOwnItem().getActualCfdItemKey());
+            concepto.getAttNoIdentificacion().setString(bolMerchandise.getOwnItem().getCode());
+            concepto.getAttCantidad().setDouble(bolMerchandise.getQuantity());
+            concepto.getAttCantidad().setDecimals(configCompany.getDecimalsQuantity());
+            concepto.getAttClaveUnidad().setString(bolMerchandise.getOwnUnit().getCfdUnitKey());
+            concepto.getAttUnidad().setString(bolMerchandise.getOwnUnit().getCode());
+            concepto.getAttDescripcion().setString(bolMerchandise.getDescriptionItem());
+            concepto.getAttValorUnitario().setDecimals(configCompany.getDecimalsPriceUnitary());
+            concepto.getAttValorUnitario().setDouble(0);
+            concepto.getAttImporte().setDouble(0);
+            concepto.getAttDescuento().setDouble(0);
+            concepto.getAttObjetoImp().setString(DCfdi40Catalogs.ClaveObjetoImpNo);
+
+            comprobante.getEltConceptos().getEltConceptos().add(concepto);
+        }
+        
+        // complemento carta porte:
+        
+        cfd.ver3.ccp20.DElementCartaPorte cartaPorte = new cfd.ver3.ccp20.DElementCartaPorte();
+        
+        //cartaPorte.getAttVersion().setString(...); // attribute has default value
+        
+        if (bol.getIntlTransport().equals(DCfdi40Catalogs.TextoNo)) {
+            cartaPorte.getAttTransInternac().setString(DCfdi40Catalogs.TextoNo);
+        }
+        else {
+            cartaPorte.getAttTransInternac().setString(DCfdi40Catalogs.TextoSí);
+            cartaPorte.getAttEntradaSalidaMerc().setString(bol.getIntlTransportDirection());
+            cartaPorte.getAttViaEntradaSalida().setString((String) session.readField(DModConsts.LS_TPT_TP, new int[] { bol.getFkIntlWayTransportTypeId() }, DDbRegistry.FIELD_CODE));
+            cartaPorte.getAttPaisOrigenDestino().setString((String) session.readField(DModConsts.CS_CTY, new int[] { bol.getFkIntlTransportCountryId()}, DDbRegistry.FIELD_CODE));
+        }
+        
+        cartaPorte.getAttTotalDistRec().setDouble(bol.getDistanceKm());
+        
+        // ubicaciones:
+        
+        for (DDbBolLocation bolLocation : bol.getChildLocations()) {
+            cfd.ver3.ccp20.DElementUbicacion ubicacion = new cfd.ver3.ccp20.DElementUbicacion();
+            
+            ubicacion.getAttTipoUbicacion().setString((String) session.readField(DModConsts.LS_LOC_TP, new int[] { bolLocation.getFkLocationTypeId() }, DDbRegistry.FIELD_NAME));
+            ubicacion.getAttIDUbicacion().setString(bolLocation.getLocationId());
+            ubicacion.getAttRFCRemitenteDestinatario().setString(bprEmisor.getFiscalId());
+            ubicacion.getAttNombreRemitenteDestinatario().setString(bprEmisor.getName());
+            
+            ubicacion.getAttNumRegIdTrib().setString("");
+            ubicacion.getAttResidenciaFiscal().setString("");
+            
+            ubicacion.getAttFechaHoraSalidaLlegada().setDatetime(bolLocation.getArrivalDepartureDatetime());
+            
+            ubicacion.getAttDistanciaRecorrida().setDouble(bolLocation.getDistanceKm());
+            
+            ubicacion.getEltDomicilio().getAttCalle().setString(bolLocation.getAddressStreet());
+            ubicacion.getEltDomicilio().getAttNumeroExteror().setString(bolLocation.getAddressNumberExt());
+            ubicacion.getEltDomicilio().getAttNumeroInterior().setString(bolLocation.getAddressNumberInt());
+            ubicacion.getEltDomicilio().getAttReferencia().setString(bolLocation.getAddressReference());
+            ubicacion.getEltDomicilio().getAttCodigoPostal().setString(bolLocation.getAddressZipCode());
+            
+            String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolLocation.getFkAddressCountryId() });
+            ubicacion.getEltDomicilio().getAttPais().setString(countryCode);
+            
+            if (DBolUtils.applyStateCatalog(countryCode)) {
+                ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateCode());
+            }
+            else {
+                ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateName());
+            }
+            
+            if (DBolUtils.applyAddressCatalogs(countryCode)) {
+                ubicacion.getEltDomicilio().getAttColonia().setString(bolLocation.getAddressDistrictCode());
+                ubicacion.getEltDomicilio().getAttLocalidad().setString(bolLocation.getAddressLocalityCode());
+                ubicacion.getEltDomicilio().getAttMunicipio().setString(bolLocation.getAddressCountyCode());
+            }
+            else {
+                ubicacion.getEltDomicilio().getAttColonia().setString(bolLocation.getAddressDistrictName());
+                ubicacion.getEltDomicilio().getAttLocalidad().setString(bolLocation.getAddressLocalityName());
+                ubicacion.getEltDomicilio().getAttMunicipio().setString(bolLocation.getAddressCountyName());
+            }
+            
+            cartaPorte.getEltUbicaciones().getEltUbicaciones().add(ubicacion);
+        }
+        
+        // mercancías:
+        
+        DDbUnit unitWeight = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { bol.getFkMerchandiseWeightUnitId() });
+        
+        cartaPorte.getEltMercancias().getAttPesoBrutoTotal().setDouble(bol.getMerchandiseWeight());
+        cartaPorte.getEltMercancias().getAttUnidadPeso().setString(unitWeight.getCfdUnitKey());
+        cartaPorte.getEltMercancias().getAttNumTotalMercancias().setInteger(bol.getMerchandiseNumber());
+        
+        for (DDbBolMerchandise bolMerchandise : bol.getChildMerchandises()) {
+            cfd.ver3.ccp20.DElementMercancia mercancia = new cfd.ver3.ccp20.DElementMercancia();
+            
+            mercancia.getAttBienesTransp().setString(bolMerchandise.getOwnItem().getActualCfdItemKey());
+            mercancia.getAttClaveSTCC().setString(""); // XXX ???
+            mercancia.getAttDescripcion().setString(bolMerchandise.getDescriptionItem());
+            mercancia.getAttCantidad().setDouble(bolMerchandise.getQuantity());
+            mercancia.getAttClaveUnidad().setString(bolMerchandise.getOwnUnit().getCfdUnitKey());
+            mercancia.getAttUnidad().setString(bolMerchandise.getDescriptionUnit());
+            mercancia.getAttDimensiones().setString(bolMerchandise.getDimensions());
+            mercancia.getAttMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialName());
+            mercancia.getAttCveMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialCode());
+            mercancia.getAttEmbalaje().setString(bolMerchandise.getPackagingCode());
+            mercancia.getAttDescripEmbalaje().setString(bolMerchandise.getPackagingName());
+            mercancia.getAttPesoEnKg().setDouble(bolMerchandise.getWeightKg());
+            
+            if (bolMerchandise.getFkCurrencyId() != DModSysConsts.CS_CUR_NA) {
+                mercancia.getAttValorMercancia().setDouble(bolMerchandise.getValue());
+                mercancia.getAttMoneda().setString(session.getSessionCustom().getCurrencyCode(new int[] { bolMerchandise.getFkCurrencyId() }));
+            }
+            
+            mercancia.getAttFraccionArancelaria().setString(bolMerchandise.getTariff());
+            mercancia.getAttUUIDComercioExt().setString("");
+            
+            for (DDbBolMerchandiseMove bolMerchandiseMove : bolMerchandise.getChildMoves()) {
+                cfd.ver3.ccp20.DElementCantidadTransporta cantidadTransporta = new cfd.ver3.ccp20.DElementCantidadTransporta();
+                
+                cantidadTransporta.getAttCantidad().setDouble(bolMerchandiseMove.getQuantity());
+                
+                DDbBolLocation source = bol.getChildLocation(bolMerchandiseMove.getSourceLocationKey());
+                cantidadTransporta.getAttIDOrigen().setString(source != null ? source.getLocationId() : "");
+                
+                DDbBolLocation destiny = bol.getChildLocation(bolMerchandiseMove.getDestinyLocationKey());
+                cantidadTransporta.getAttIDDestino().setString(destiny != null ? destiny.getLocationId() : "");
+                
+                cantidadTransporta.getAttCvesTransporte().setString("");
+                
+                mercancia.getEltCantidadTransporta().add(cantidadTransporta);
+            }
+            
+            if (!bolMerchandise.getImportRequest().isEmpty()) {
+                cfd.ver3.ccp20.DElementPedimentos elementPedimentos = new DElementPedimentos();
+                elementPedimentos.getAttPedimento().setString(bolMerchandise.getImportRequest());
+                
+                ArrayList<cfd.ver3.ccp20.DElementPedimentos> elementPedimentoses = new ArrayList<>();
+                elementPedimentoses.add(elementPedimentos);
+                
+                mercancia.setEltPedimentos(elementPedimentoses);
+            }
+
+            cartaPorte.getEltMercancias().getEltMercancias().add(mercancia);
+        }
+        
+        DDbBolTruck bolTruck = bol.getChildTrucks().get(0);
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getAttPermSCT().setString(bolTruck.getPermissionTypeCode());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getAttNumPermisoSCT().setString(bolTruck.getPermissionNumber());
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttConfigVehicular().setString(bolTruck.getTransportConfigCode());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPlacaVM().setString(bolTruck.getPlate());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttAnioModeloVM().setInteger(bolTruck.getModel());
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraRespCivil().setString(bolTruck.getCivilInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaRespCivil().setString(bolTruck.getCivilPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraMedAmbiente().setString(bolTruck.getEnvironmentInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaMedAmbiente().setString(bolTruck.getEnvironmentPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraCarga().setString(bolTruck.getCargoInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaCarga().setString(bolTruck.getCargoPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPrimaSeguro().setDouble(bolTruck.getPrime());
+
+        if (!bolTruck.getChildTrailers().isEmpty()) {
+            cfd.ver3.ccp20.DElementRemolques remolques = new cfd.ver3.ccp20.DElementRemolques();
+            
+            for (DDbBolTruckTrailer bolTruckTrailer : bolTruck.getChildTrailers()) {
+                cfd.ver3.ccp20.DElementRemolque remolque = new cfd.ver3.ccp20.DElementRemolque();
+                
+                remolque.getAttSubTipoRem().setString(bolTruckTrailer.getTrailerSubtypeCode());
+                remolque.getAttPlaca().setString(bolTruckTrailer.getPlate());
+                
+                remolques.getEltRemolques().add(remolque);
+            }
+            
+            cartaPorte.getEltMercancias().getEltAutotransporte().setEltRemolques(remolques);
+        }
+
+        // figuras de transporte:
+        
+        for (DDbBolTransportFigure bolTptFigure : bol.getChildTransportFigures()) {
+            cfd.ver3.ccp20.DElementTiposFigura tiposFigura = new cfd.ver3.ccp20.DElementTiposFigura();
+            
+            tiposFigura.getAttTipoFigura().setString((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
+            tiposFigura.getAttRFCFigura().setString(bolTptFigure.getFiscalId());
+            tiposFigura.getAttNumLicencia().setString(bolTptFigure.getDriverLicense());
+            tiposFigura.getAttNombreFigura().setString(bolTptFigure.getName());
+            
+            if (bolTptFigure.getFkFigureCountryId() != DModSysConsts.CS_CTY_NA) {
+                String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolTptFigure.getFkFigureCountryId() });
+                tiposFigura.getAttNumRegIdTribFigura().setString(bolTptFigure.getForeignId());
+                tiposFigura.getAttResidenciaFiscalFigura().setString(countryCode);
+            }
+            
+            cfd.ver3.ccp20.DElementDomicilio domicilio = new cfd.ver3.ccp20.DElementDomicilio();
+
+            domicilio.getAttCalle().setString(bolTptFigure.getAddressStreet());
+            domicilio.getAttNumeroExteror().setString(bolTptFigure.getAddressNumberExt());
+            domicilio.getAttNumeroInterior().setString(bolTptFigure.getAddressNumberInt());
+            domicilio.getAttReferencia().setString(bolTptFigure.getAddressReference());
+            domicilio.getAttCodigoPostal().setString(bolTptFigure.getAddressZipCode());
+            
+            String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolTptFigure.getFkAddressCountryId() });
+            domicilio.getAttPais().setString(countryCode);
+            
+            if (DBolUtils.applyStateCatalog(countryCode)) {
+                domicilio.getAttEstado().setString(bolTptFigure.getAddressStateCode());
+            }
+            else {
+                domicilio.getAttEstado().setString(bolTptFigure.getAddressStateName());
+            }
+            
+            if (DBolUtils.applyAddressCatalogs(countryCode)) {
+                domicilio.getAttColonia().setString(bolTptFigure.getAddressDistrictCode());
+                domicilio.getAttLocalidad().setString(bolTptFigure.getAddressLocalityCode());
+                domicilio.getAttMunicipio().setString(bolTptFigure.getAddressCountyCode());
+            }
+            else {
+                domicilio.getAttColonia().setString(bolTptFigure.getAddressDistrictName());
+                domicilio.getAttLocalidad().setString(bolTptFigure.getAddressLocalityName());
+                domicilio.getAttMunicipio().setString(bolTptFigure.getAddressCountyName());
+            }
+            
+            tiposFigura.setEltDomicilio(domicilio);
+            
+            for (DDbBolTransportFigureTransportPart bolTptFigureTptPart : bolTptFigure.getChildTransportParts()) {
+                cfd.ver3.ccp20.DElementPartesTransporte partesTransporte = new cfd.ver3.ccp20.DElementPartesTransporte();
+                
+                partesTransporte.getAttParteTransporte().setString((String) session.readField(DModConsts.LS_TPT_PART_TP, new int[] { bolTptFigureTptPart.getFkTransportPartTypeId() }, DDbRegistry.FIELD_CODE));
+                
+                tiposFigura.getEltPartesTransporte().add(partesTransporte);
+            }
+            
+            cartaPorte.getEltFiguraTransporte().getEltTiposFigura().add(tiposFigura);
+        }
+        
+        cfd.ver40.DElementComplemento complemento = new cfd.ver40.DElementComplemento();
+        complemento.getElements().add(cartaPorte);
+        comprobante.setEltOpcComplemento(complemento);
+
+        return comprobante;
+    }
+    
     /**
      * Extracts DFR addenda.
      * @param xmlAddenda
@@ -1702,14 +2092,14 @@ public abstract class DTrnDfrUtils {
     }
 
     /**
-     * Creates new Digital Fiscal Receipt for provided document and type.
+     * Creates new Digital Fiscal Receipt for provided DPS and XML type (CFD, CFDI 3.2, 3.3 or 4.0).
      * @param session Current GUI user session.
-     * @param dps Document.
+     * @param dps Document for purchases and sales.
      * @param xmlType CFD type.
      * @return
      * @throws Exception 
      */
-    public static DDbDfr createDfr(final DGuiSession session, final DDbDps dps, final int xmlType) throws Exception {
+    public static DDbDfr createDfrFromDps(final DGuiSession session, final DDbDps dps, final int xmlType) throws Exception {
         int xmlStatus = DLibConsts.UNDEFINED;
         String textToSign;
         String textSigned;
@@ -1774,7 +2164,7 @@ public abstract class DTrnDfrUtils {
             case DModSysConsts.TS_XML_TP_CFDI_40:
                 // Create DFR:
                 signature = session.getEdsSignature(dps.getCompanyBranchKey());
-                cfd.ver40.DElementComprobante comprobante40 = createCfdi40(session, dps, signature);
+                cfd.ver40.DElementComprobante comprobante40 = createCfdi40FromDps(session, dps, signature);
                 
                 // Append to DFR the very addenda previously added to DPS if any:
                 if (dps.getChildDfr() != null && !dps.getChildDfr().getDocXmlAddenda().isEmpty()) {
@@ -1828,7 +2218,8 @@ public abstract class DTrnDfrUtils {
         registry.setSystem();
         */
         dfr.setFkXmlTypeId(xmlType);
-        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_CFDI_FAC); // invoice
+        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_FAC[0]); // invoice
+        dfr.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_FAC[1]); // invoice
         dfr.setFkXmlStatusId(xmlStatus);
         dfr.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
         dfr.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);
@@ -1837,6 +2228,102 @@ public abstract class DTrnDfrUtils {
         dfr.setFkOwnerBranchId(dps.getFkOwnerBranchId());
         dfr.setFkBizPartnerId(dps.getFkBizPartnerBizPartnerId());
         dfr.setFkDpsId_n(dps.getPkDpsId());
+        dfr.setFkBolId_n(0);
+        /*
+        dfr.setFkBookkeepingYearId_n();
+        dfr.setFkBookkeepingNumberId_n();
+        dfr.setFkUserIssuedId();    // will be set as needed when saved!
+        dfr.setFkUserAnnulledId();  // will be set as needed when saved!
+        dfr.setFkUserInsertId();    // will be set as needed when saved!
+        dfr.setFkUserUpdateId();    // will be set as needed when saved!
+        */
+        dfr.setAuxJustIssued(true);
+
+        return dfr;
+    }
+
+    /**
+     * Creates new Digital Fiscal Receipt for provided BOL and XML type (CFDI 3.3 or 4.0).
+     * @param session Current GUI user session.
+     * @param bol Bill of lading.
+     * @param xmlType CFD type.
+     * @return
+     * @throws Exception 
+     */
+    public static DDbDfr createDfrFromBol(final DGuiSession session, final DDbBol bol, final int xmlType) throws Exception {
+        int xmlStatus = DLibConsts.UNDEFINED;
+        String textToSign;
+        String textSigned;
+        DGuiEdsSignature signature;
+        DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, bol.getCompanyBranchKey());
+        DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
+        cfd.DCfd cfd = new cfd.DCfd(configBranch.getDfrDirectory());
+        cfd.DSubelementAddenda extAddenda = null;
+
+        switch (xmlType) {
+            case DModSysConsts.TS_XML_TP_CFD:
+            case DModSysConsts.TS_XML_TP_CFDI_32:
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+            case DModSysConsts.TS_XML_TP_CFDI_40:
+                // Create DFR:
+                signature = session.getEdsSignature(bol.getCompanyBranchKey());
+                cfd.ver40.DElementComprobante comprobante40 = createCfdi40FromBol(session, bol, signature);
+                
+                // Sign DFR:
+                textToSign = comprobante40.getElementForOriginalString();
+                textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(bol.getDate())[0]);
+                cfd.write(comprobante40, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
+
+                // Set DFR status:
+                xmlStatus = DModSysConsts.TS_XML_ST_PEN;
+                break;
+
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+
+        // Create or update DFR:
+        DDbDfr dfr;
+        
+        if (bol.getChildDfr() == null) {
+            dfr = new DDbDfr();
+        }
+        else {
+            dfr = bol.getChildDfr();
+        }
+        
+        //dfr.setPkDfrId(...);
+        dfr.setCertificateNumber(session.getEdsSignature(bol.getCompanyBranchKey()).getCertificateNumber());
+        dfr.setSignedText(cfd.getLastStringSigned());
+        dfr.setSignature(cfd.getLastSignature());
+        dfr.setUuid("");
+        dfr.setDocTs(cfd.getLastTimestamp());
+        dfr.setDocXml(cfd.getLastXml());
+        dfr.setDocXmlRaw("");
+        dfr.setDocXmlAddenda(extAddenda == null ? "" : extAddenda.getElementForXml());
+        dfr.setDocXmlName(cfd.getLastXmlFileName());
+        dfr.setCancelStatus("");
+        dfr.setCancelXml("");
+        dfr.setCancelPdf_n(null);
+        /*
+        dfr.setBookeept();
+        registry.setDeleted();
+        registry.setSystem();
+        */
+        dfr.setFkXmlTypeId(xmlType);
+        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CCP_2[0]); // bill of lading
+        dfr.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CCP_2[1]); // bill of lading
+        dfr.setFkXmlStatusId(xmlStatus);
+        dfr.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
+        dfr.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);
+        dfr.setFkCertificateId(session.getEdsSignature(bol.getCompanyBranchKey()).getCertificateId());
+        dfr.setFkOwnerBizPartnerId(bol.getFkOwnerBizPartnerId());
+        dfr.setFkOwnerBranchId(bol.getFkOwnerBranchId());
+        dfr.setFkBizPartnerId(bol.getFkOwnerBizPartnerId());
+        dfr.setFkDpsId_n(0);
+        dfr.setFkBolId_n(bol.getPkBolId());
         /*
         dfr.setFkBookkeepingYearId_n();
         dfr.setFkBookkeepingNumberId_n();
@@ -2870,10 +3357,10 @@ public abstract class DTrnDfrUtils {
                 dfr.setAuxJustAnnulled(true);
 
                 switch (dfr.getFkXmlSubtypeId()) {
-                    case DModSysConsts.TS_XML_STP_CFDI_FAC:
+                    case DModSysConsts.TS_XML_STP_FAC:
                         ((DDbDps) doc).updateDfr(session, dfr);
                         break;
-                    case DModSysConsts.TS_XML_STP_CFDI_CRP:
+                    case DModSysConsts.TS_XML_STP_CRP:
                         dfr.setAuxComputeBookkeeping(true);
                         dfr.save(session);
                         break;
@@ -2881,7 +3368,7 @@ public abstract class DTrnDfrUtils {
                 }
             }
             
-            if (dfr.getFkXmlSubtypeId() == DModSysConsts.TS_XML_STP_CFDI_FAC) {
+            if (dfr.getFkXmlSubtypeId() == DModSysConsts.TS_XML_STP_FAC) {
                 if (((DDbDps) doc).getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
                     ((DDbDps) doc).disable(session);
                 }

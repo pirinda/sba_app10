@@ -29,6 +29,10 @@ public class DViewBizPartner extends DGridPaneView {
         super(client, DGridConsts.GRID_VIEW_TAB, DModConsts.BU_BPR, subtype, title);
         mnBizPartnerClass = mnGridSubtype;
     }
+    
+    private boolean isCustomer() {
+        return mnBizPartnerClass == DModSysConsts.BS_BPR_CL_CUS;
+    }
 
     @Override
     public void prepareSqlQuery() {
@@ -53,6 +57,9 @@ public class DViewBizPartner extends DGridPaneView {
                 "v.id_bpr AS " + DDbConsts.FIELD_ID + "1, " +
                 "bc.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "v.name AS " + DDbConsts.FIELD_NAME + ", " +
+                "v.name_fis, " +
+                "v.name_cap_reg, " +
+                "IF(v.name_prt_pol = '" + DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL + "', 'Nombre fiscal', 'Razón social') AS _name_prt_pol, " +
                 "v.nick, " +
                 "v.fis_id, " +
                 "v.alt_id, " +
@@ -106,10 +113,18 @@ public class DViewBizPartner extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[22];
+        DGridColumnView[] columns = null;
+        String bizPartner = DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase();
+        
+        if (isCustomer()) {
+            columns = new DGridColumnView[25];
+        }
+        else {
+            columns = new DGridColumnView[22];
+        }
 
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME + " " + DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase());
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE + " " + DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase());
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME + " " + bizPartner);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_BPR, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE + " " + bizPartner);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "bt.name", DGridConsts.COL_TITLE_TYPE);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vt.name", DGridConsts.COL_TITLE_TYPE + " persona");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "et.name", DGridConsts.COL_TITLE_TYPE + " emisión");
@@ -119,10 +134,17 @@ public class DViewBizPartner extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, "v.b_ven", DBprUtils.getBizPartnerClassNameSng(DModSysConsts.BS_BPR_CL_VEN));
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, "v.b_dbr", DBprUtils.getBizPartnerClassNameSng(DModSysConsts.BS_BPR_CL_DBR));
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, "v.b_cdr", DBprUtils.getBizPartnerClassNameSng(DModSysConsts.BS_BPR_CL_CDR));
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "v.nick", "Alias");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "f_days", "Días última transacción");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "v.nick", "Alias");
+        
+        if (isCustomer()) {
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.name_fis", "Nombre fiscal", 200);
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.name_cap_reg", "Régimen capital", 75);
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "_name_prt_pol", "Nombre impresión", 75);
+        }
+        
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_tax_reg", "Régimen fiscal");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "xat.name", "Tipo addenda");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xat.name", "Tipo addenda");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

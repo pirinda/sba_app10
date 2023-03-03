@@ -17,7 +17,7 @@ import sba.mod.DModConsts;
  *
  * @author Sergio Flores
  */
-public class DDbTransportPartType extends DDbRegistrySys {
+public class DDbSysTransportPartType extends DDbRegistrySys {
 
     protected int mnPkTypeId;
     protected String msCode;
@@ -29,7 +29,7 @@ public class DDbTransportPartType extends DDbRegistrySys {
     protected Date mtTsUser;
     */
 
-    public DDbTransportPartType() {
+    public DDbSysTransportPartType() {
         super(DModConsts.LS_TPT_PART_TP);
         initRegistry();
     }
@@ -132,46 +132,12 @@ public class DDbTransportPartType extends DDbRegistrySys {
 
     @Override
     public void save(DGuiSession session) throws SQLException, Exception {
-        initQueryMembers();
-        mnQueryResultId = DDbConsts.SAVE_ERROR;
-
-        if (mbRegistryNew) {
-            computePrimaryKey(session);
-            mbDeleted = false;
-            mnFkUserId = session.getUser().getPkUserId();
-
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkTypeId + ", " + 
-                    "'" + msCode + "', " + 
-                    "'" + msName + "', " + 
-                    mnSortingPos + ", " + 
-                    (mbDeleted ? 1 : 0) + ", " + 
-                    mnFkUserId + ", " + 
-                    "NOW()" + " " + 
-                    ")";
-        }
-        else {
-            mnFkUserId = session.getUser().getPkUserId();
-
-            msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_tpt_part_tp = " + mnPkTypeId + ", " +
-                    "code = '" + msCode + "', " +
-                    "name = '" + msName + "', " +
-                    "sort = " + mnSortingPos + ", " +
-                    "b_del = " + (mbDeleted ? 1 : 0) + ", " +
-                    "fk_usr = " + mnFkUserId + ", " +
-                    "ts_usr = " + "NOW()" + " " +
-                    getSqlWhere();
-        }
-
-        session.getStatement().execute(msSql);
-        mbRegistryNew = false;
-        mnQueryResultId = DDbConsts.SAVE_OK;
+        throw new Exception(DDbConsts.ERR_MSG_REG_NON_UPDATABLE);
     }
 
     @Override
-    public DDbTransportPartType clone() throws CloneNotSupportedException {
-        DDbTransportPartType registry = new DDbTransportPartType();
+    public DDbSysTransportPartType clone() throws CloneNotSupportedException {
+        DDbSysTransportPartType registry = new DDbSysTransportPartType();
 
         registry.setPkTypeId(this.getPkTypeId());
         registry.setCode(this.getCode());

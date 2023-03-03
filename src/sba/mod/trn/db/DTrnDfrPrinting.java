@@ -79,6 +79,7 @@ public abstract class DTrnDfrPrinting {
      * @return 
      * @throws java.lang.Exception 
      */
+    @SuppressWarnings("deprecation")
     public static HashMap<String, Object> createPrintingMap(final DGuiSession session, final DDbDfr dfr) throws Exception {
         DElementComprobante comprobante = DCfdUtils.getCfdi33(dfr.getSuitableDocXml());
         HashMap<String, Object> map = new HashMap<>();

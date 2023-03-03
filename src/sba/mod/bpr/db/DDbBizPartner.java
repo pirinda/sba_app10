@@ -6,6 +6,7 @@
 package sba.mod.bpr.db;
 
 import cfd.DCfdConsts;
+import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,6 +31,9 @@ public class DDbBizPartner extends DDbRegistryUser {
     protected String msName;
     protected String msLastname;
     protected String msFirstname;
+    protected String msNameFiscal;
+    protected String msNameCapitalRegime;
+    protected String msNamePrintingPolicy;
     protected String msNickname;
     protected String msFiscalId;
     protected String msAlternativeId;
@@ -78,7 +82,7 @@ public class DDbBizPartner extends DDbRegistryUser {
      */
 
     private String computeName() {
-        return mnFkIdentityTypeId == DModSysConsts.BS_IDY_TP_PER ? msLastname + ", " + msFirstname : msName;
+        return isEntityPerson() ? msLastname + ", " + msFirstname : msName;
     }
 
     /*
@@ -89,6 +93,9 @@ public class DDbBizPartner extends DDbRegistryUser {
     public void setName(String s) { msName = s; }
     public void setLastname(String s) { msLastname = s; }
     public void setFirstname(String s) { msFirstname = s; }
+    public void setNameFiscal(String s) { msNameFiscal = s; }
+    public void setNameCapitalRegime(String s) { msNameCapitalRegime = s; }
+    public void setNamePrintingPolicy(String s) { msNamePrintingPolicy = s; }
     public void setNickname(String s) { msNickname = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setAlternativeId(String s) { msAlternativeId = s; }
@@ -121,6 +128,9 @@ public class DDbBizPartner extends DDbRegistryUser {
     public String getName() { return msName; }
     public String getLastname() { return msLastname; }
     public String getFirstname() { return msFirstname; }
+    public String getNameFiscal() { return msNameFiscal; }
+    public String getNameCapitalRegime() { return msNameCapitalRegime; }
+    public String getNamePrintingPolicy() { return msNamePrintingPolicy; }
     public String getNickname() { return msNickname; }
     public String getFiscalId() { return msFiscalId; }
     public String getAlternativeId() { return msAlternativeId; }
@@ -185,11 +195,11 @@ public class DDbBizPartner extends DDbRegistryUser {
     }
 
     public String getProperName() {
-        return DLibUtils.textTrim(mnFkIdentityTypeId == DModSysConsts.BS_IDY_TP_ORG ? msName : msFirstname + " " + msLastname);
+        return DLibUtils.textTrim(isEntityPerson() ? msFirstname + " " + msLastname : msName);
     }
     
     public boolean isPublic() {
-        return isPublicDomestic()|| isPublicInternational();
+        return isPublicDomestic() || isPublicInternational();
     }
 
     public boolean isPublicDomestic() {
@@ -198,6 +208,22 @@ public class DDbBizPartner extends DDbRegistryUser {
 
     public boolean isPublicInternational() {
         return msFiscalId.equals(DCfdConsts.RFC_GEN_INT);
+    }
+    
+    public boolean isPublicForDfr() {
+        return isPublicDomestic() && msName.equals(DCfdi40Catalogs.DescripciónPublicoGeneral);
+    }
+
+    public boolean isEntityPerson() {
+        return mnFkIdentityTypeId == DModSysConsts.BS_IDY_TP_PER;
+    }
+
+    public boolean isEntityOrganization() {
+        return mnFkIdentityTypeId == DModSysConsts.BS_IDY_TP_ORG;
+    }
+    
+    public boolean isNamePrintingPolicyForFiscal() {
+        return msNamePrintingPolicy.equals(DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL);
     }
 
     @Override
@@ -218,6 +244,9 @@ public class DDbBizPartner extends DDbRegistryUser {
         msName = "";
         msLastname = "";
         msFirstname = "";
+        msNameFiscal = "";
+        msNameCapitalRegime = "";
+        msNamePrintingPolicy = "";
         msNickname = "";
         msFiscalId = "";
         msAlternativeId = "";
@@ -298,6 +327,9 @@ public class DDbBizPartner extends DDbRegistryUser {
             msName = resultSet.getString("name");
             msLastname = resultSet.getString("name_lst");
             msFirstname = resultSet.getString("name_fst");
+            msNameFiscal = resultSet.getString("name_fis");
+            msNameCapitalRegime = resultSet.getString("name_cap_reg");
+            msNamePrintingPolicy = resultSet.getString("name_prt_pol");
             msNickname = resultSet.getString("nick");
             msFiscalId = resultSet.getString("fis_id");
             msAlternativeId = resultSet.getString("alt_id");
@@ -367,7 +399,13 @@ public class DDbBizPartner extends DDbRegistryUser {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
-        msName = computeName();
+        if (isEntityPerson()) {
+            msName = computeName();
+            
+            msNameFiscal = getProperName();
+            msNameCapitalRegime = "";
+            msNamePrintingPolicy = DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL;
+        }
 
         if (mbRegistryNew) {
             computePrimaryKey(session);
@@ -385,6 +423,9 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "'" + msName + "', " +
                     "'" + msLastname + "', " +
                     "'" + msFirstname + "', " +
+                    "'" + msNameFiscal + "', " + 
+                    "'" + msNameCapitalRegime + "', " + 
+                    "'" + msNamePrintingPolicy + "', " + 
                     "'" + msNickname + "', " +
                     "'" + msFiscalId + "', " +
                     "'" + msAlternativeId + "', " +
@@ -424,6 +465,9 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "name = '" + msName + "', " +
                     "name_lst = '" + msLastname + "', " +
                     "name_fst = '" + msFirstname + "', " +
+                    "name_fis = '" + msNameFiscal + "', " +
+                    "name_cap_reg = '" + msNameCapitalRegime + "', " +
+                    "name_prt_pol = '" + msNamePrintingPolicy + "', " +
                     "nick = '" + msNickname + "', " +
                     "fis_id = '" + msFiscalId + "', " +
                     "alt_id = '" + msAlternativeId + "', " +
@@ -487,6 +531,9 @@ public class DDbBizPartner extends DDbRegistryUser {
         registry.setName(this.getName());
         registry.setLastname(this.getLastname());
         registry.setFirstname(this.getFirstname());
+        registry.setNameFiscal(this.getNameFiscal());
+        registry.setNameCapitalRegime(this.getNameCapitalRegime());
+        registry.setNamePrintingPolicy(this.getNamePrintingPolicy());
         registry.setNickname(this.getNickname());
         registry.setFiscalId(this.getFiscalId());
         registry.setAlternativeId(this.getAlternativeId());
@@ -581,7 +628,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     if (resultSet.next()) {
                         if (resultSet.getInt(1) > 0) {
                             can = false;
-                            msQueryResult = DDbConsts.ERR_MSG_UNIQUE_FIELD + " " + DUtilConsts.TXT_FISCAL_ID + " (" + msFiscalId + ").";
+                            msQueryResult = DDbConsts.ERR_MSG_UNIQUE_FIELD + " RFC '" + msFiscalId + "'.";
                         }
                     }
                 }

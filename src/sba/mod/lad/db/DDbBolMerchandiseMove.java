@@ -34,7 +34,7 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
     /** Location indirectly corresponding to members mnFkDestinyBolId and mnFkDestinyLocationId. */
     protected DDbLocation moOwnDestinyLocation;
     
-    protected int mnAuxSortingPos;
+    protected int mnBolSortingPos;
     
     /** Helps maintaining relations between other BOL elements when creating in GUI and saving new BOL registries. */
     protected int mnTempSourceBolLocationId;
@@ -66,7 +66,7 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
     public int getFkTransportTypeId() { return mnFkTransportTypeId; }
     
     public int[] getSourceLocationKey() { return new int[] { mnFkSourceBolId, mnFkSourceLocationId }; }
-    public int[] getDestinyLocationId() { return new int[] { mnFkDestinyBolId, mnFkDestinyLocationId }; }
+    public int[] getDestinyLocationKey() { return new int[] { mnFkDestinyBolId, mnFkDestinyLocationId }; }
 
     public void setOwnSourceLocation(DDbLocation o) { moOwnSourceLocation = o; }
     public void setOwnDestinyLocation(DDbLocation o) { moOwnDestinyLocation = o; }
@@ -74,9 +74,15 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
     public DDbLocation getOwnSourceLocation() { return moOwnSourceLocation; }
     public DDbLocation getOwnDestinyLocation() { return moOwnDestinyLocation; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return false; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
     
     public void setTempSourceBolLocationId(int n) { mnTempSourceBolLocationId = n; }
     public void setTempDestinyBolLocationId(int n) { mnTempDestinyBolLocationId = n; }
@@ -113,7 +119,7 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
         moOwnSourceLocation = null;
         moOwnDestinyLocation = null;
         
-        mnAuxSortingPos = 0;
+        mnBolSortingPos = 0;
         
         mnTempSourceBolLocationId = 0;
         mnTempDestinyBolLocationId = 0;
@@ -179,8 +185,8 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
             mnFkTransportTypeId = resultSet.getInt("fk_tpt_tp");
             
             msSql = "SELECT fk_loc "
-                    + "FROM " + getSqlTable() + " "
-                    + "WHERE fk_src_bol_n = " + mnFkSourceBolId + " AND fk_src_loc_n = " + mnFkSourceLocationId + ";";
+                    + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_LOC) + " "
+                    + "WHERE id_bol = " + mnFkSourceBolId + " AND id_loc = " + mnFkSourceLocationId + ";";
 
             resultSet = session.getStatement().executeQuery(msSql);
             if (!resultSet.next()) {
@@ -191,8 +197,8 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
             }
 
             msSql = "SELECT fk_loc "
-                    + "FROM " + getSqlTable() + " "
-                    + "WHERE fk_des_bol_n = " + mnFkDestinyBolId + " AND fk_des_loc_n = " + mnFkDestinyLocationId + ";";
+                    + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_LOC) + " "
+                    + "WHERE id_bol = " + mnFkDestinyBolId + " AND id_loc = " + mnFkDestinyLocationId + ";";
 
             resultSet = session.getStatement().executeQuery(msSql);
             if (!resultSet.next()) {
@@ -202,7 +208,10 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
                 moOwnDestinyLocation = (DDbLocation) session.readRegistry(DModConsts.LU_LOC, new int[] { resultSet.getInt("fk_loc") });
             }
             
-            mnAuxSortingPos = mnPkMoveId;
+            mnBolSortingPos = mnPkMoveId;
+            
+            mnTempSourceBolLocationId = mnFkSourceLocationId;
+            mnTempDestinyBolLocationId = mnFkDestinyLocationId;
 
             mbRegistryNew = false;
         }
@@ -268,7 +277,8 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
         registry.setOwnSourceLocation(this.getOwnSourceLocation()); // clone shares the same "read-only" object
         registry.setOwnDestinyLocation(this.getOwnDestinyLocation()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
         
         registry.setTempSourceBolLocationId(this.getTempSourceBolLocationId());
         registry.setTempDestinyBolLocationId(this.getTempDestinyBolLocationId());
@@ -318,7 +328,7 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = moOwnSourceLocation.getName();

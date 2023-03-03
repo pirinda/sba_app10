@@ -54,7 +54,8 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
     protected String msDbmsTransportFigureTypeCode;
     protected String msDbmsTransportFigureTypeName;
     
-    protected int mnAuxSortingPos;
+    protected boolean mbBolUpdateOwnRegistry;
+    protected int mnBolSortingPos;
 
     public DDbBolTransportFigure() {
         super(DModConsts.L_BOL_TPT_FIGURE);
@@ -122,9 +123,15 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
     public String getDbmsTransportFigureTypeCode() { return msDbmsTransportFigureTypeCode; }
     public String getDbmsTransportFigureTypeName() { return msDbmsTransportFigureTypeName; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { mbBolUpdateOwnRegistry = update; }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return mbBolUpdateOwnRegistry; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -172,7 +179,8 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
         msDbmsTransportFigureTypeCode = "";
         msDbmsTransportFigureTypeName = "";
         
-        mnAuxSortingPos = 0;
+        mbBolUpdateOwnRegistry = false;
+        mnBolSortingPos = 0;
     }
 
     @Override
@@ -264,7 +272,7 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
             msDbmsTransportFigureTypeCode = (String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { mnFkTransportFigureTypeId }, DDbRegistry.FIELD_CODE);
             msDbmsTransportFigureTypeName = (String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { mnFkTransportFigureTypeId }, DDbRegistry.FIELD_NAME);
             
-            mnAuxSortingPos = mnPkTransportFigureId;
+            mnBolSortingPos = mnPkTransportFigureId;
 
             mbRegistryNew = false;
         }
@@ -282,7 +290,7 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
         if (moOwnTransportFigure == null) {
             throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbTransportFigure.class.getName() + ")");
         }
-        else if (moOwnTransportFigure.isRegistryNew() || moOwnTransportFigure.isRegistryEdited()) {
+        else if (moOwnTransportFigure.isRegistryNew() || (moOwnTransportFigure.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
             moOwnTransportFigure.save(session);
         }
         
@@ -406,7 +414,8 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
         
         registry.setOwnTransportFigure(this.getOwnTransportFigure()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
         
         registry.setDbmsTransportFigureTypeCode(this.getDbmsTransportFigureTypeCode());
         registry.setDbmsTransportFigureTypeName(this.getDbmsTransportFigureTypeName());
@@ -483,7 +492,7 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = msName;

@@ -23,17 +23,17 @@ public class DXmlCatalogEntry {
     public static final String ApplyEntityPer = "app_per";
     public static final String ApplyEntityOrg = "app_org";
     
-    public static final String VAL_NEEDED_NO = "0";
-    public static final String VAL_NEEDED_YES = "1";
-    public static final String VAL_NEEDED_OPT = "0, 1";
+    public static final String VAL_REQUIRED_NO = "0";
+    public static final String VAL_REQUIRED_YES = "1";
+    public static final String VAL_REQUIRED_OPT = "0, 1";
     
-    public static final String TXT_NEEDED_NO = "No requerido";
-    public static final String TXT_NEEDED_YES = "Requerido";
-    public static final String TXT_NEEDED_OPT = "Opcional";
+    public static final String TXT_REQUIRED_NO = "No requerido";
+    public static final String TXT_REQUIRED_YES = "Requerido";
+    public static final String TXT_REQUIRED_OPT = "Opcional";
     
-    public static final int NEEDED_NO = 0;
-    public static final int NEEDED_YES = 1;
-    public static final int NEEDED_OPT = 2;
+    public static final int REQUIRED_NO = 0;
+    public static final int REQUIRED_YES = 1;
+    public static final int REQUIRED_OPT = 2;
     
     private int mnId;
     private String msCode;

@@ -5,7 +5,7 @@
  */
 package sba.mod.trn.db;
 
-import cfd.ver33.crp10.DElementDoctoRelacionado;
+import cfd.ver40.crp20.DIntDoctoRelacionado;
 import sba.lib.grid.DGridRow;
 
 /**
@@ -14,13 +14,13 @@ import sba.lib.grid.DGridRow;
  */
 public class DRowDfrPaymentDoc implements DGridRow {
     
-    private final DElementDoctoRelacionado moDoctoRelacionado;
+    private final DIntDoctoRelacionado moDoctoRelacionado;
     
-    public DRowDfrPaymentDoc(DElementDoctoRelacionado doctoRelacionado) {
+    public DRowDfrPaymentDoc(DIntDoctoRelacionado doctoRelacionado) {
         moDoctoRelacionado = doctoRelacionado;
     }
     
-    public DElementDoctoRelacionado getDoctoRelacionado() {
+    public DIntDoctoRelacionado getDoctoRelacionado() {
         return moDoctoRelacionado;
     }
 
@@ -89,7 +89,7 @@ public class DRowDfrPaymentDoc implements DGridRow {
                 value = moDoctoRelacionado.getAttNumParcialidad().getInteger();
                 break;
             case 8:
-                value = moDoctoRelacionado.getAttTipoCambioDR().getDouble();
+                value = moDoctoRelacionado.getAttEquivalenciaDR().getDouble();
                 break;
             default:
         }

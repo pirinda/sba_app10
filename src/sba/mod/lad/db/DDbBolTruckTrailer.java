@@ -30,7 +30,8 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
     
     protected DDbTrailer moOwnTrailer;
     
-    protected int mnAuxSortingPos;
+    protected boolean mbBolUpdateOwnRegistry;
+    protected int mnBolSortingPos;
 
     public DDbBolTruckTrailer() {
         super(DModConsts.L_BOL_TRUCK_TRAIL);
@@ -57,9 +58,15 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
     
     public DDbTrailer getOwnTrailer() { return moOwnTrailer; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { mbBolUpdateOwnRegistry = update; }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return mbBolUpdateOwnRegistry; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -87,7 +94,8 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
         
         moOwnTrailer = null;
         
-        mnAuxSortingPos = 0;
+        mbBolUpdateOwnRegistry = false;
+        mnBolSortingPos = 0;
     }
 
     @Override
@@ -149,7 +157,7 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
             
             moOwnTrailer = (DDbTrailer) session.readRegistry(DModConsts.LU_TRAIL, new int[] { mnFkTrailerId });
             
-            mnAuxSortingPos = mnPkTrailerId;
+            mnBolSortingPos = mnPkTrailerId;
 
             mbRegistryNew = false;
         }
@@ -167,7 +175,7 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
         if (moOwnTrailer == null) {
             throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbTrailer.class.getName() + ")");
         }
-        else if (moOwnTrailer.isRegistryNew() || moOwnTrailer.isRegistryEdited()) {
+        else if (moOwnTrailer.isRegistryNew() || (moOwnTrailer.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
             moOwnTrailer.save(session);
         }
         
@@ -221,7 +229,8 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
         
         registry.setOwnTrailer(this.getOwnTrailer()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
@@ -278,7 +287,7 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = msPlate;

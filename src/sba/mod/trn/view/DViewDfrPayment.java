@@ -197,9 +197,12 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "ui.name AS " + DDbConsts.FIELD_USER_INS_NAME + ", " +
                 "uu.name AS " + DDbConsts.FIELD_USER_UPD_NAME + " " +
                 "FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " AS v " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_TP) + " AS xtp ON v.fk_xml_tp = xtp.id_xml_tp " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_STP) + " AS xstp ON v.fk_xml_stp = xstp.id_xml_stp " +
-                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ST) + " AS xst ON v.fk_xml_st = xst.id_xml_st " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_TP) + " AS xtp ON " +
+                "v.fk_xml_tp = xtp.id_xml_tp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_STP) + " AS xstp ON " +
+                "v.fk_xml_stp = xstp.id_xml_stp " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.TS_XML_ST) + " AS xst ON " +
+                "v.fk_xml_st = xst.id_xml_st " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR) + " AS b ON " +
                 "v.fk_bpr = b.id_bpr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_CFG) + " AS bc ON " +
@@ -212,14 +215,14 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "v.fk_usr_upd = uu.id_usr " +
-                "WHERE v.fk_xml_stp = " + DModSysConsts.TS_XML_STP_CFDI_CRP + " " + (sql.isEmpty() ? "" : "AND " + sql) +
+                "WHERE v.fk_xml_stp = " + DModSysConsts.TS_XML_STP_CRP + " " + (sql.isEmpty() ? "" : "AND " + sql) +
                 "ORDER BY v.ser, v.num, v.id_dfr;";
     }
 
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[20];
+        DGridColumnView[] columns = new DGridColumnView[21];
 
         String catetory = DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(DModSysConsts.BS_BPR_CL_CUS)).toLowerCase();
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", DGridConsts.COL_TITLE_NUM + " docto");

@@ -21,7 +21,7 @@ import sba.mod.DModConsts;
  */
 public abstract class DTrnDfrCatalogs {
     
-    private static String getCatalogEntry(final DGuiSession session, final int table, final String code) throws Exception {
+    private static String getDatabaseCatalogEntry(final DGuiSession session, final int table, final String code) throws Exception {
         String entry = "";
         
         String sql = "SELECT CONCAT(code, ' - ', name) FROM " + DModConsts.TablesMap.get(table) + " WHERE NOT b_del AND code = '" + code + "';";
@@ -57,20 +57,20 @@ public abstract class DTrnDfrCatalogs {
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;
             case DCfdi40Catalogs.CAT_REG_FISC:
-                entry = getCatalogEntry(client.getSession(), DModConsts.CS_TAX_REG, code);
+                entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.CS_TAX_REG, code);
                 break;
             case DCfdi40Catalogs.CAT_MDP:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;
             case DCfdi40Catalogs.CAT_FDP:
-                entry = getCatalogEntry(client.getSession(), DModConsts.FS_MOP_TP, code);
+                entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.FS_MOP_TP, code);
                 break;
             case DCfdi40Catalogs.CAT_MON:
-                entry = getCatalogEntry(client.getSession(), DModConsts.CS_CUR, code);
+                entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.CS_CUR, code);
                 break;
             case DCfdi40Catalogs.CAT_PAIS:
-                entry = getCatalogEntry(client.getSession(), DModConsts.CS_CTY, code);
+                entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.CS_CTY, code);
                 break;
             case DCfdi40Catalogs.CAT_IMP:
                 entry = code + " - " + DCfdi40Catalogs.Impuesto.get(code);
@@ -79,9 +79,21 @@ public abstract class DTrnDfrCatalogs {
                 entry = code;
                 break;
             case DCfdi40Catalogs.CAT_REL_TP:
+                entry = code + " - " + DCfdi40Catalogs.TipoRelación.get(code);
+                break;
+            case DCfdi40Catalogs.CAT_EXP:
+                entry = code + " - " + DCfdi40Catalogs.Exportación.get(code);
+                break;
+            case DCfdi40Catalogs.CAT_GBL_PER:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
                 entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
                 break;
+            case DCfdi40Catalogs.CAT_GBL_MES:
+                xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
+                entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
+                break;
+            case DCfdi40Catalogs.CAT_OBJ_IMP:
+                entry = code + " - " + DCfdi40Catalogs.ObjetoImp.get(code);
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }

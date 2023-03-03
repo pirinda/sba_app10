@@ -132,7 +132,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jlName.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry11.add(jlName);
 
-        moTextName.setPreferredSize(new java.awt.Dimension(175, 23));
+        moTextName.setPreferredSize(new java.awt.Dimension(200, 23));
         jpRegistry11.add(moTextName);
 
         moBoolDefault.setText("Default");
@@ -147,15 +147,15 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jpRegistry12.add(jlStreet);
 
         moTextStreet.setToolTipText("Calle");
-        moTextStreet.setPreferredSize(new java.awt.Dimension(175, 23));
+        moTextStreet.setPreferredSize(new java.awt.Dimension(200, 23));
         jpRegistry12.add(moTextStreet);
 
         moTextNumberExterior.setToolTipText("Número exterior");
-        moTextNumberExterior.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextNumberExterior.setPreferredSize(new java.awt.Dimension(60, 23));
         jpRegistry12.add(moTextNumberExterior);
 
         moTextNumberInterior.setToolTipText("Número interior");
-        moTextNumberInterior.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextNumberInterior.setPreferredSize(new java.awt.Dimension(60, 23));
         jpRegistry12.add(moTextNumberInterior);
 
         jpRegistry1.add(jpRegistry12);
@@ -167,11 +167,11 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jpRegistry13.add(jlNeighborhood);
 
         moTextNeighborhood.setToolTipText("Colonia");
-        moTextNeighborhood.setPreferredSize(new java.awt.Dimension(175, 23));
+        moTextNeighborhood.setPreferredSize(new java.awt.Dimension(200, 23));
         jpRegistry13.add(moTextNeighborhood);
 
         moTextReference.setToolTipText("Referencia");
-        moTextReference.setPreferredSize(new java.awt.Dimension(105, 23));
+        moTextReference.setPreferredSize(new java.awt.Dimension(125, 23));
         jpRegistry13.add(moTextReference);
 
         jpRegistry1.add(jpRegistry13);
@@ -183,11 +183,11 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jpRegistry14.add(jlLocality);
 
         moTextLocality.setToolTipText("Localidad");
-        moTextLocality.setPreferredSize(new java.awt.Dimension(175, 23));
+        moTextLocality.setPreferredSize(new java.awt.Dimension(200, 23));
         jpRegistry14.add(moTextLocality);
 
         moTextCounty.setToolTipText("Municipio");
-        moTextCounty.setPreferredSize(new java.awt.Dimension(105, 23));
+        moTextCounty.setPreferredSize(new java.awt.Dimension(125, 23));
         jpRegistry14.add(moTextCounty);
 
         jpRegistry1.add(jpRegistry14);
@@ -199,7 +199,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jpRegistry15.add(jlState);
 
         moTextState.setToolTipText("Estado");
-        moTextState.setPreferredSize(new java.awt.Dimension(175, 23));
+        moTextState.setPreferredSize(new java.awt.Dimension(200, 23));
         jpRegistry15.add(moTextState);
 
         jpRegistry1.add(jpRegistry15);
@@ -215,11 +215,11 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jpRegistry16.add(moTextZipCode);
 
         moTextPostOfficeBox.setToolTipText("Apartado postal");
-        moTextPostOfficeBox.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextPostOfficeBox.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry16.add(moTextPostOfficeBox);
 
         moKeyCountry.setToolTipText("País");
-        moKeyCountry.setPreferredSize(new java.awt.Dimension(122, 23));
+        moKeyCountry.setPreferredSize(new java.awt.Dimension(162, 23));
         jpRegistry16.add(moKeyCountry);
 
         jbCountry.setText("<");
@@ -236,7 +236,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         jlNote.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry17.add(jlNote);
 
-        moTextNote.setPreferredSize(new java.awt.Dimension(285, 23));
+        moTextNote.setPreferredSize(new java.awt.Dimension(350, 23));
         jpRegistry17.add(moTextNote);
 
         jpRegistry1.add(jpRegistry17);

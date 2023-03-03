@@ -5,7 +5,7 @@
  */
 package sba.mod.trn.db;
 
-import cfd.ver33.crp10.DElementPagosPago;
+import cfd.ver40.crp20.DIntPagosPago;
 import sba.lib.grid.DGridRow;
 
 /**
@@ -14,13 +14,13 @@ import sba.lib.grid.DGridRow;
  */
 public class DRowDfrPayment implements DGridRow {
     
-    private final DElementPagosPago moPago;
+    private final DIntPagosPago moPago;
     
-    public DRowDfrPayment(DElementPagosPago pago) {
+    public DRowDfrPayment(DIntPagosPago pago) {
         moPago = pago;
     }
     
-    public DElementPagosPago getPago() {
+    public DIntPagosPago getPago() {
         return moPago;
     }
     

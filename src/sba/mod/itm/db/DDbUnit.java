@@ -28,6 +28,7 @@ public class DDbUnit extends DDbRegistryUser {
     protected int mnPkUnitId;
     protected String msCode;
     protected String msName;
+    protected double mdRatioKg;
     protected String msCfdUnitKey;
     /*
     protected boolean mbUpdatable;
@@ -50,6 +51,7 @@ public class DDbUnit extends DDbRegistryUser {
     public void setPkUnitId(int n) { mnPkUnitId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setRatioKg(double d) { mdRatioKg = d; }
     public void setCfdUnitKey(String s) { msCfdUnitKey = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -65,6 +67,7 @@ public class DDbUnit extends DDbRegistryUser {
     public int getPkUnitId() { return mnPkUnitId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public double getRatioKg() { return mdRatioKg; }
     public String getCfdUnitKey() { return msCfdUnitKey; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -94,6 +97,7 @@ public class DDbUnit extends DDbRegistryUser {
         mnPkUnitId = 0;
         msCode = "";
         msName = "";
+        mdRatioKg = 0;
         msCfdUnitKey = "";
         mbUpdatable = false;
         mbDisableable = false;
@@ -152,6 +156,7 @@ public class DDbUnit extends DDbRegistryUser {
             mnPkUnitId = resultSet.getInt("id_unt");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            mdRatioKg = resultSet.getDouble("rat_kg");
             msCfdUnitKey = resultSet.getString("cfd_unt_key");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -190,6 +195,7 @@ public class DDbUnit extends DDbRegistryUser {
                     mnPkUnitId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
+                    mdRatioKg + ", " + 
                     "'" + msCfdUnitKey + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -210,6 +216,7 @@ public class DDbUnit extends DDbRegistryUser {
                     //"id_unt = " + mnPkUnitId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "rat_kg = " + mdRatioKg + ", " +
                     "cfd_unt_key = '" + msCfdUnitKey + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -236,6 +243,7 @@ public class DDbUnit extends DDbRegistryUser {
         registry.setPkUnitId(this.getPkUnitId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setRatioKg(this.getRatioKg());
         registry.setCfdUnitKey(this.getCfdUnitKey());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

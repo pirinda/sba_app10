@@ -44,7 +44,8 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     
     protected DDbTruck moOwnTruck;
     
-    protected int mnAuxSortingPos;
+    protected boolean mbBolUpdateOwnRegistry;
+    protected int mnBolSortingPos;
 
     public DDbBolTruck() {
         super(DModConsts.L_BOL_TRUCK);
@@ -94,9 +95,15 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     
     public DDbTruck getOwnTruck() { return moOwnTruck; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { mbBolUpdateOwnRegistry = update; }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return mbBolUpdateOwnRegistry; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
     
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -135,7 +142,8 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         
         moOwnTruck = null;
         
-        mnAuxSortingPos = 0;
+        mbBolUpdateOwnRegistry = false;
+        mnBolSortingPos = 0;
     }
 
     @Override
@@ -218,7 +226,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
             
             moOwnTruck = (DDbTruck) session.readRegistry(DModConsts.LU_TRUCK, new int[] { mnFkTruckId });
             
-            mnAuxSortingPos = mnPkTruckId;
+            mnBolSortingPos = mnPkTruckId;
 
             mbRegistryNew = false;
         }
@@ -236,7 +244,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         if (moOwnTruck == null) {
             throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbTruck.class.getName() + ")");
         }
-        else if (moOwnTruck.isRegistryNew() || moOwnTruck.isRegistryEdited()) {
+        else if (moOwnTruck.isRegistryNew() || (moOwnTruck.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
             moOwnTruck.save(session);
         }
         
@@ -342,7 +350,8 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         
         registry.setOwnTruck(this.getOwnTruck()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
         
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
@@ -410,7 +419,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = moOwnTruck != null ? moOwnTruck.getName() : "";

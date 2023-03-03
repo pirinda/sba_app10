@@ -77,6 +77,8 @@ public class DDfr {
     public int getGlobalYear() { return mnGlobalYear; }
     public DDfrCfdRelations getCfdRelations() { return moCfdRelations; }
     
+    public boolean isGlobal() { return !msGlobalPeriodicity.isEmpty(); }
+    
     @Override
     public DDfr clone() throws CloneNotSupportedException {
         DDfr clone = new DDfr();

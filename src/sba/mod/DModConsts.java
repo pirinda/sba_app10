@@ -171,6 +171,7 @@ public abstract class DModConsts {
     public static final int TS_BLK_TP = 610010;
     public static final int TS_XML_TP = 610011;
     public static final int TS_XML_STP = 610022;
+    public static final int TS_XML_STP_VER = 610023;
     public static final int TS_XML_ST = 610012;
     public static final int TS_XML_ADD_TP = 610021;
     public static final int TS_XSM_CL = 610013;
@@ -501,6 +502,7 @@ public abstract class DModConsts {
         TablesMap.put(TS_BLK_TP, "ts_blk_tp");
         TablesMap.put(TS_XML_TP, "ts_xml_tp");
         TablesMap.put(TS_XML_STP, "ts_xml_stp");
+        TablesMap.put(TS_XML_STP_VER, "ts_xml_stp_ver");
         TablesMap.put(TS_XML_ST, "ts_xml_st");
         TablesMap.put(TS_XML_ADD_TP, "ts_xml_add_tp");
         TablesMap.put(TS_XSM_CL, "ts_xsm_cl");

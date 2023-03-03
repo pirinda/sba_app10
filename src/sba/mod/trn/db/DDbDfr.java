@@ -10,11 +10,6 @@ import cfd.DCfdUtils;
 import cfd.DElement;
 import cfd.DSubelementAddenda;
 import cfd.ext.continental.DElementAddendaContinentalTire;
-import cfd.ver33.DElementComplemento;
-import cfd.ver33.DElementComprobante;
-import cfd.ver33.crp10.DElementDoctoRelacionado;
-import cfd.ver33.crp10.DElementPagos;
-import cfd.ver33.crp10.DElementPagosPago;
 import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,6 +44,7 @@ import sba.mod.fin.db.DDbBookkeepingMove;
 import sba.mod.fin.db.DDbBookkeepingMoveCustom;
 import sba.mod.fin.db.DDbBookkeepingNumber;
 import sba.mod.fin.db.DFinUtils;
+import sba.mod.lad.db.DDbBol;
 
 /**
  * Digital Fiscal Receipt (DFR)
@@ -83,6 +79,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     */
     protected int mnFkXmlTypeId;
     protected int mnFkXmlSubtypeId;
+    protected int mnFkXmlSubtypeVersionId;
     protected int mnFkXmlStatusId;
     protected int mnFkXmlAddendaTypeId;
     protected int mnFkXmlSignatureProviderId;
@@ -91,6 +88,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     protected int mnFkOwnerBranchId;
     protected int mnFkBizPartnerId;
     protected int mnFkDpsId_n;
+    protected int mnFkBolId_n;
     protected int mnFkCashBizPartnerId_n;
     protected int mnFkCashBranchId_n;
     protected int mnFkCashCashId_n;
@@ -111,7 +109,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     
     protected DDfr moXtaDfr;
     
-    protected DElementPagos moDfrPagos;
+    protected cfd.ver33.crp10.DElementPagos moDfrPagos10;
+    protected cfd.ver40.crp20.DElementPagos moDfrPagos20;
 
     protected boolean mbAuxJustIssued;
     protected boolean mbAuxJustAnnulled;
@@ -143,7 +142,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         }
     }
     
-    private ArrayList<DDbBookkeepingMove> createPaymentMoves(final DGuiSession session, final DElementPagosPago pago, final DDbAbpBranchCash abpBranchCash) throws Exception {
+    private ArrayList<DDbBookkeepingMove> createPaymentMoves10(final DGuiSession session, final cfd.ver33.crp10.DElementPagosPago pago10, final DDbAbpBranchCash abpBranchCash) throws Exception {
         ArrayList<DDbBookkeepingMove> moves = new ArrayList<>();
         
         DDbBookkeepingMove bkkMoveCash = new DDbBookkeepingMove();
@@ -151,14 +150,14 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         bkkMoveCash.setPkYearId(mnFkBookkeepingYearId_n);
         bkkMoveCash.setPkMoveId(0);
         //moBookkeepingMove.setDate(?);     // value will be set by bookkeeping custom move object
-        bkkMoveCash.setSupporting(pago.getAttNumOperacion().getString());
+        bkkMoveCash.setSupporting(pago10.getAttNumOperacion().getString());
         bkkMoveCash.setReference("");
         bkkMoveCash.setText("CFDI " + getDfrNumber());
 
-        double xrt = pago.getAttTipoCambioP().getDouble() == 0 ? 1d : pago.getAttTipoCambioP().getDouble();
-        bkkMoveCash.setDebit(DLibUtils.roundAmount(pago.getAttMonto().getDouble() * xrt));
+        double xrt = pago10.getAttTipoCambioP().getDouble() == 0 ? 1d : pago10.getAttTipoCambioP().getDouble();
+        bkkMoveCash.setDebit(DLibUtils.roundAmount(pago10.getAttMonto().getDouble() * xrt));
         bkkMoveCash.setCredit(0);
-        bkkMoveCash.setDebitCy(pago.getAttMonto().getDouble());
+        bkkMoveCash.setDebitCy(pago10.getAttMonto().getDouble());
         bkkMoveCash.setCreditCy(0);
         
         DXmlCatalog xmlCatalogCurrency = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_MON);
@@ -176,9 +175,9 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         bkkMoveCash.setFkSystemMoveClassId(DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY[0]);
         bkkMoveCash.setFkSystemMoveTypeId(DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY[1]);
         bkkMoveCash.setFkDiverseMoveTypeId(DModSysConsts.FS_DIV_MOV_TP_NA);
-        bkkMoveCash.setFkCurrencyId(xmlCatalogCurrency.getId(pago.getAttMonedaP().getString()));
+        bkkMoveCash.setFkCurrencyId(xmlCatalogCurrency.getId(pago10.getAttMonedaP().getString()));
         bkkMoveCash.setFkPaymentTypeId(DModSysConsts.FS_PAY_TP_NA);
-        bkkMoveCash.setFkModeOfPaymentTypeId(xmlCatalogModeOfPayment.getId(pago.getAttFormaDePagoP().getString()));
+        bkkMoveCash.setFkModeOfPaymentTypeId(xmlCatalogModeOfPayment.getId(pago10.getAttFormaDePagoP().getString()));
         bkkMoveCash.setFkValueTypeId(DModSysConsts.FS_VAL_TP_CSH);
         //moBkkMoveCash.setFkOwnerBizPartnerId(?);      // value will be set by bookkeeping custom move object
         //moBkkMoveCash.setFkOwnerBranchId(?);          // value will be set by bookkeeping custom move object
@@ -207,10 +206,95 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         moves.add(bkkMoveCash);
         
-        for (DElementDoctoRelacionado doctoRelacionado : pago.getEltDoctoRelacionados()) {
+        for (cfd.ver33.crp10.DElementDoctoRelacionado doctoRelacionado : pago10.getEltDoctoRelacionados()) {
             DDbBookkeepingMove bkkMovePayment = bkkMoveCash.createComplement(session);
             
             double xrtDr = doctoRelacionado.getAttTipoCambioDR().getDouble() == 0 ? 1d : doctoRelacionado.getAttTipoCambioDR().getDouble();
+            bkkMovePayment.setDebit(0);
+            bkkMovePayment.setCredit(DLibUtils.roundAmount(doctoRelacionado.getAttImpPagado().getDouble() / xrtDr));
+            bkkMovePayment.setDebitCy(0);
+            bkkMovePayment.setCreditCy(doctoRelacionado.getAttImpPagado().getDouble());
+            bkkMovePayment.setExchangeRate(bkkMovePayment.getCreditCy() == 0 ? 0d : DLibUtils.round(bkkMovePayment.getCredit() / bkkMovePayment.getCreditCy(), DLibUtils.getDecimalFormatExchangeRate().getMaximumFractionDigits()));
+            bkkMovePayment.setFkCurrencyId(xmlCatalogCurrency.getId(doctoRelacionado.getAttMonedaDR().getString()));
+            
+            DDbDps dps = DTrnUtils.getDpsByUuid(session, doctoRelacionado.getAttIdDocumento().getString());
+            bkkMovePayment.setReference(dps.getDpsReference(session));
+            bkkMovePayment.setFkDpsInvId_n(dps.getPkDpsId());
+            
+            moves.add(bkkMovePayment);
+        }
+        
+        return moves;
+    }
+    
+    private ArrayList<DDbBookkeepingMove> createPaymentMoves20(final DGuiSession session, final cfd.ver40.crp20.DElementPagosPago pago20, final DDbAbpBranchCash abpBranchCash) throws Exception {
+        ArrayList<DDbBookkeepingMove> moves = new ArrayList<>();
+        
+        DDbBookkeepingMove bkkMoveCash = new DDbBookkeepingMove();
+
+        bkkMoveCash.setPkYearId(mnFkBookkeepingYearId_n);
+        bkkMoveCash.setPkMoveId(0);
+        //moBookkeepingMove.setDate(?);     // value will be set by bookkeeping custom move object
+        bkkMoveCash.setSupporting(pago20.getAttNumOperacion().getString());
+        bkkMoveCash.setReference("");
+        bkkMoveCash.setText("CFDI " + getDfrNumber());
+
+        double xrt = pago20.getAttTipoCambioP().getDouble() == 0 ? 1d : pago20.getAttTipoCambioP().getDouble();
+        bkkMoveCash.setDebit(DLibUtils.roundAmount(pago20.getAttMonto().getDouble() * xrt));
+        bkkMoveCash.setCredit(0);
+        bkkMoveCash.setDebitCy(pago20.getAttMonto().getDouble());
+        bkkMoveCash.setCreditCy(0);
+        
+        DXmlCatalog xmlCatalogCurrency = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_MON);
+        DXmlCatalog xmlCatalogModeOfPayment = ((DGuiClientApp) session.getClient()).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_FDP);
+
+        bkkMoveCash.setExchangeRate(xrt);
+        bkkMoveCash.setUnits(0);
+        //moBkkMoveCash.setSortingPos(?);               // value will be set by bookkeeping custom move object
+        bkkMoveCash.setExchangeRateDifference(false);   // XXX Code for future versions
+        bkkMoveCash.setAvailable(true);
+        bkkMoveCash.setDeleted(false);
+        bkkMoveCash.setSystem(false);
+        bkkMoveCash.setFkAccountId(abpBranchCash.getFkAccountCashId());
+        bkkMoveCash.setFkSystemAccountTypeId(DModSysConsts.FS_SYS_ACC_TP_ENT_CSH);
+        bkkMoveCash.setFkSystemMoveClassId(DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY[0]);
+        bkkMoveCash.setFkSystemMoveTypeId(DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY[1]);
+        bkkMoveCash.setFkDiverseMoveTypeId(DModSysConsts.FS_DIV_MOV_TP_NA);
+        bkkMoveCash.setFkCurrencyId(xmlCatalogCurrency.getId(pago20.getAttMonedaP().getString()));
+        bkkMoveCash.setFkPaymentTypeId(DModSysConsts.FS_PAY_TP_NA);
+        bkkMoveCash.setFkModeOfPaymentTypeId(xmlCatalogModeOfPayment.getId(pago20.getAttFormaDePagoP().getString()));
+        bkkMoveCash.setFkValueTypeId(DModSysConsts.FS_VAL_TP_CSH);
+        //moBkkMoveCash.setFkOwnerBizPartnerId(?);      // value will be set by bookkeeping custom move object
+        //moBkkMoveCash.setFkOwnerBranchId(?);          // value will be set by bookkeeping custom move object
+        bkkMoveCash.setFkCashBizPartnerId_n(mnFkCashBizPartnerId_n);
+        bkkMoveCash.setFkCashBranchId_n(mnFkCashBranchId_n);
+        bkkMoveCash.setFkCashCashId_n(mnFkCashCashId_n);
+        bkkMoveCash.setFkWarehouseBizPartnerId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkWarehouseBranchId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkWarehouseWarehouseId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkBizPartnerBizPartnerId_n(mnFkBizPartnerId);
+        bkkMoveCash.setFkBizPartnerBranchId_n(DUtilConsts.BPR_BRA_ID);
+        bkkMoveCash.setFkDpsInvId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkDpsAdjId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkDfrId_n(mnPkDfrId);
+        bkkMoveCash.setFkIogId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkIomId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkPusId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkItemId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkItemAuxId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkUnitId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkRecordYearId_n(DLibConsts.UNDEFINED);
+        bkkMoveCash.setFkRecordRecordId_n(DLibConsts.UNDEFINED);
+        //moBookkeepingMove.setFkBookkeepingYearId_n(?);    // value will be set by bookkeeping custom move object
+        //moBookkeepingMove.setFkBookkeepingNumberId_n(?);  // value will be set by bookkeeping custom move object
+        bkkMoveCash.setFkUserAvailableId(session.getUser().getPkUserId());
+        
+        moves.add(bkkMoveCash);
+        
+        for (cfd.ver40.crp20.DElementDoctoRelacionado doctoRelacionado : pago20.getEltDoctoRelacionados()) {
+            DDbBookkeepingMove bkkMovePayment = bkkMoveCash.createComplement(session);
+            
+            double xrtDr = doctoRelacionado.getAttEquivalenciaDR().getDouble() == 0 ? 1d : doctoRelacionado.getAttEquivalenciaDR().getDouble();
             bkkMovePayment.setDebit(0);
             bkkMovePayment.setCredit(DLibUtils.roundAmount(doctoRelacionado.getAttImpPagado().getDouble() / xrtDr));
             bkkMovePayment.setDebitCy(0);
@@ -293,22 +377,46 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                 bkkMoveCustom.setFkSystemMoveTypeId(DModSysConsts.FS_SYS_MOV_TP_MI_CUS_PAY[1]);
                 bkkMoveCustom.setFkOwnerBizPartnerId(mnFkOwnerBizPartnerId);
                 bkkMoveCustom.setFkOwnerBranchId(mnFkOwnerBranchId);
-
-                DElementComprobante comprobante33 = getElementComprobante33();
+                
                 DDbAbpBranchCash abpBranchCash = DFinUtils.readAbpBranchCash(session, getBranchCashKey_n());
+                
+                switch (mnFkXmlTypeId) {
+                    case DModSysConsts.TS_XML_TP_CFDI_33:
+                        cfd.ver33.DElementComprobante comprobante33 = getElementComprobante33();
 
-                if (comprobante33.getEltOpcComplemento() != null) {
-                    for (DElement element : comprobante33.getEltOpcComplemento().getElements()) {
-                        if (element instanceof DElementPagos) {
-                            DElementPagos pagos = (DElementPagos) element;
-                            for (DElementPagosPago pago : pagos.getEltPagos()) {
-                                bkkMoveCustom.getChildMoves().addAll(createPaymentMoves(session, pago, abpBranchCash));
+                        if (comprobante33.getEltOpcComplemento() != null) {
+                            for (DElement element : comprobante33.getEltOpcComplemento().getElements()) {
+                                if (element instanceof cfd.ver33.crp10.DElementPagos) {
+                                    cfd.ver33.crp10.DElementPagos pagos10 = (cfd.ver33.crp10.DElementPagos) element;
+                                    for (cfd.ver33.crp10.DElementPagosPago pago10 : pagos10.getEltPagos()) {
+                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves10(session, pago10, abpBranchCash));
+                                    }
+                                    break;
+                                }
                             }
-                            break;
                         }
-                    }
-                }
+                        break;
+                        
+                    case DModSysConsts.TS_XML_TP_CFDI_40:
+                        cfd.ver40.DElementComprobante comprobante40 = getElementComprobante40();
 
+                        if (comprobante40.getEltOpcComplemento() != null) {
+                            for (DElement element : comprobante40.getEltOpcComplemento().getElements()) {
+                                if (element instanceof cfd.ver40.crp20.DElementPagos) {
+                                    cfd.ver40.crp20.DElementPagos pagos20 = (cfd.ver40.crp20.DElementPagos) element;
+                                    for (cfd.ver40.crp20.DElementPagosPago pago20 : pagos20.getEltPagos()) {
+                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves20(session, pago20, abpBranchCash));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                        
+                    default:
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                
                 bkkMoveCustom.save(session);
             }
         }
@@ -406,6 +514,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkXmlTypeId(int n) { mnFkXmlTypeId = n; }
     public void setFkXmlSubtypeId(int n) { mnFkXmlSubtypeId = n; }
+    public void setFkXmlSubtypeVersionId(int n) { mnFkXmlSubtypeVersionId = n; }
     public void setFkXmlStatusId(int n) { mnFkXmlStatusId = n; }
     public void setFkXmlAddendaTypeId(int n) { mnFkXmlAddendaTypeId = n; }
     public void setFkXmlSignatureProviderId(int n) { mnFkXmlSignatureProviderId = n; }
@@ -414,6 +523,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public void setFkOwnerBranchId(int n) { mnFkOwnerBranchId = n; }
     public void setFkBizPartnerId(int n) { mnFkBizPartnerId = n; }
     public void setFkDpsId_n(int n) { mnFkDpsId_n = n; }
+    public void setFkBolId_n(int n) { mnFkBolId_n = n; }
     public void setFkCashBizPartnerId_n(int n) { mnFkCashBizPartnerId_n = n; }
     public void setFkCashBranchId_n(int n) { mnFkCashBranchId_n = n; }
     public void setFkCashCashId_n(int n) { mnFkCashCashId_n = n; }
@@ -448,6 +558,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public boolean isSystem() { return mbSystem; }
     public int getFkXmlTypeId() { return mnFkXmlTypeId; }
     public int getFkXmlSubtypeId() { return mnFkXmlSubtypeId; }
+    public int getFkXmlSubtypeVersionId() { return mnFkXmlSubtypeVersionId; }
     public int getFkXmlStatusId() { return mnFkXmlStatusId; }
     public int getFkXmlAddendaTypeId() { return mnFkXmlAddendaTypeId; }
     public int getFkXmlSignatureProviderId() { return mnFkXmlSignatureProviderId; }
@@ -456,6 +567,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public int getFkOwnerBranchId() { return mnFkOwnerBranchId; }
     public int getFkBizPartnerId() { return mnFkBizPartnerId; }
     public int getFkDpsId_n() { return mnFkDpsId_n; }
+    public int getFkBolId_n() { return mnFkBolId_n; }
     public int getFkCashBizPartnerId_n() { return mnFkCashBizPartnerId_n; }
     public int getFkCashBranchId_n() { return mnFkCashBranchId_n; }
     public int getFkCashCashId_n() { return mnFkCashCashId_n; }
@@ -472,11 +584,13 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
 
     public void setXtaDfr(DDfr o) { moXtaDfr = o; }
     
-    public void setDfrPagos(DElementPagos o) { moDfrPagos = o; }
+    public void setDfrPagos10(cfd.ver33.crp10.DElementPagos o) { moDfrPagos10 = o; }
+    public void setDfrPagos20(cfd.ver40.crp20.DElementPagos o) { moDfrPagos20 = o; if (moDfrPagos20 != null) moDfrPagos20.computePagos(); }
     
     public DDfr getXtaDfr() { return moXtaDfr; }
     
-    public DElementPagos getDfrPagos() { return moDfrPagos; }
+    public cfd.ver33.crp10.DElementPagos getDfrPagos10() { return moDfrPagos10; }
+    public cfd.ver40.crp20.DElementPagos getDfrPagos20() { return moDfrPagos20; }
     
     public void setAuxJustIssued(boolean b) { mbAuxJustIssued = b; }
     public void setAuxJustAnnulled(boolean b) { mbAuxJustAnnulled = b; }
@@ -511,19 +625,26 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         return mnFkXmlStatusId >= DModSysConsts.TS_XML_ST_ISS && !msDocXmlRaw.isEmpty() ? msDocXmlRaw : msDocXml;
     }
     
-    public DElementComprobante getElementComprobante33() throws Exception {
+    @SuppressWarnings("deprecation")
+    public cfd.ver33.DElementComprobante getElementComprobante33() throws Exception {
         String xml = getSuitableDocXml();
         return xml.isEmpty() ? null : DCfdUtils.getCfdi33(xml);
+    }
+    
+    public cfd.ver40.DElementComprobante getElementComprobante40() throws Exception {
+        String xml = getSuitableDocXml();
+        return xml.isEmpty() ? null : DCfdUtils.getCfdi40(xml);
     }
     
     public double getDfrTotal(DGuiSession session) throws Exception {
         double total = 0;
         
         switch (mnFkXmlSubtypeId) {
-            case DModSysConsts.TS_XML_STP_CFDI_FAC:
+            case DModSysConsts.TS_XML_STP_FAC:
                 total = ((DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnFkDpsId_n })).getTotalCy_r();
                 break;
-            case DModSysConsts.TS_XML_STP_CFDI_CRP:
+            case DModSysConsts.TS_XML_STP_CRP:
+            case DModSysConsts.TS_XML_STP_CCP:
                 break;
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -566,6 +687,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         mbSystem = false;
         mnFkXmlTypeId = 0;
         mnFkXmlSubtypeId = 0;
+        mnFkXmlSubtypeVersionId = 0;
         mnFkXmlStatusId = 0;
         mnFkXmlAddendaTypeId = 0;
         mnFkXmlSignatureProviderId = 0;
@@ -574,6 +696,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         mnFkOwnerBranchId = 0;
         mnFkBizPartnerId = 0;
         mnFkDpsId_n = 0;
+        mnFkBolId_n = 0;
         mnFkCashBizPartnerId_n = 0;
         mnFkCashBranchId_n = 0;
         mnFkCashCashId_n = 0;
@@ -590,7 +713,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         moXtaDfr = null;
         
-        moDfrPagos = null;
+        moDfrPagos10 = null;
+        moDfrPagos20 = null;
         
         mbAuxJustIssued = false;
         mbAuxJustAnnulled = false;
@@ -664,6 +788,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkXmlTypeId = resultSet.getInt("fk_xml_tp");
             mnFkXmlSubtypeId = resultSet.getInt("fk_xml_stp");
+            mnFkXmlSubtypeVersionId = resultSet.getInt("fk_xml_stp_ver");
             mnFkXmlStatusId = resultSet.getInt("fk_xml_st");
             mnFkXmlAddendaTypeId = resultSet.getInt("fk_xml_add_tp");
             mnFkXmlSignatureProviderId = resultSet.getInt("fk_xsp");
@@ -672,6 +797,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             mnFkOwnerBranchId = resultSet.getInt("fk_own_bra");
             mnFkBizPartnerId = resultSet.getInt("fk_bpr");
             mnFkDpsId_n = resultSet.getInt("fk_dps_n");
+            mnFkBolId_n = resultSet.getInt("fk_bol_n");
             mnFkCashBizPartnerId_n = resultSet.getInt("fk_csh_bpr_n");
             mnFkCashBranchId_n = resultSet.getInt("fk_csh_bra_n");
             mnFkCashCashId_n = resultSet.getInt("fk_csh_csh_n");
@@ -827,14 +953,17 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             }
         }
         
-        if (mnFkXmlSubtypeId == DModSysConsts.TS_XML_STP_CFDI_CRP) {
-            // generate CFDI 3.3 with CRP 1.0:
+        if (mnFkXmlSubtypeId == DModSysConsts.TS_XML_STP_CRP) {
+            // generate CFDI 3.3 with CRP 1.0 of CFDI 4.0 with CRP 2.0:
+            
             if (msSeries.isEmpty()) {
                 msSeries = DCfdi40Catalogs.CFD_TP_P; // default series if no one provided
             }
+            
             if (mnNumber == 0) {
                 computeNextNumber(session);
             }
+            
             prepareDfr(session);
         }
         
@@ -867,6 +996,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkXmlTypeId + ", " + 
                     mnFkXmlSubtypeId + ", " + 
+                    mnFkXmlSubtypeVersionId + ", " + 
                     mnFkXmlStatusId + ", " + 
                     mnFkXmlAddendaTypeId + ", " + 
                     mnFkXmlSignatureProviderId + ", " + 
@@ -875,6 +1005,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     mnFkOwnerBranchId + ", " + 
                     mnFkBizPartnerId + ", " + 
                     (mnFkDpsId_n == 0 ? "NULL" : "" + mnFkDpsId_n) + ", " +
+                    (mnFkBolId_n == 0 ? "NULL" : "" + mnFkBolId_n) + ", " +
                     (mnFkCashBizPartnerId_n == 0 ? "NULL" : "" + mnFkCashBizPartnerId_n) + ", " + 
                     (mnFkCashBranchId_n == 0 ? "NULL" : "" + mnFkCashBranchId_n) + ", " + 
                     (mnFkCashCashId_n == 0 ? "NULL" : "" + mnFkCashCashId_n) + ", " + 
@@ -916,6 +1047,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_xml_tp = " + mnFkXmlTypeId + ", " +
                     "fk_xml_stp = " + mnFkXmlSubtypeId + ", " +
+                    "fk_xml_stp_ver = " + mnFkXmlSubtypeVersionId + ", " +
                     "fk_xml_st = " + mnFkXmlStatusId + ", " +
                     "fk_xml_add_tp = " + mnFkXmlAddendaTypeId + ", " +
                     "fk_xsp = " + mnFkXmlSignatureProviderId + ", " +
@@ -924,6 +1056,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     "fk_own_bra = " + mnFkOwnerBranchId + ", " +
                     "fk_bpr = " + mnFkBizPartnerId + ", " +
                     "fk_dps_n = " + (mnFkDpsId_n == 0 ? "NULL" : "" + mnFkDpsId_n) + ", " +
+                    "fk_bol_n = " + (mnFkBolId_n == 0 ? "NULL" : "" + mnFkBolId_n) + ", " +
                     "fk_csh_bpr_n = " + (mnFkCashBizPartnerId_n == 0 ? "NULL" : "" + mnFkCashBizPartnerId_n) + ", " +
                     "fk_csh_bra_n = " + (mnFkCashBranchId_n == 0 ? "NULL" : "" + mnFkCashBranchId_n) + ", " +
                     "fk_csh_csh_n = " + (mnFkCashCashId_n == 0 ? "NULL" : "" + mnFkCashCashId_n) + ", " +
@@ -947,9 +1080,14 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             // XML must be regenerated, so save new XML file:
             
             DDbConfigBranch configBranch = null;
+            
             if (mnFkDpsId_n != 0) {
                 DDbDps dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnFkDpsId_n });
                 configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+            }
+            else if (mnFkBolId_n != 0) {
+                DDbBol bol = (DDbBol) session.readRegistry(DModConsts.L_BOL, new int[] { mnFkBolId_n });
+                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
             }
             else {
                 configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
@@ -995,6 +1133,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setSystem(this.isSystem());
         registry.setFkXmlTypeId(this.getFkXmlTypeId());
         registry.setFkXmlSubtypeId(this.getFkXmlSubtypeId());
+        registry.setFkXmlSubtypeVersionId(this.getFkXmlSubtypeVersionId());
         registry.setFkXmlStatusId(this.getFkXmlStatusId());
         registry.setFkXmlAddendaTypeId(this.getFkXmlAddendaTypeId());
         registry.setFkXmlSignatureProviderId(this.getFkXmlSignatureProviderId());
@@ -1003,6 +1142,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setFkOwnerBranchId(this.getFkOwnerBranchId());
         registry.setFkBizPartnerId(this.getFkBizPartnerId());
         registry.setFkDpsId_n(this.getFkDpsId_n());
+        registry.setFkBolId_n(this.getFkBolId_n());
         registry.setFkCashBizPartnerId_n(this.getFkCashBizPartnerId_n());
         registry.setFkCashBranchId_n(this.getFkCashBranchId_n());
         registry.setFkCashCashId_n(this.getFkCashCashId_n());
@@ -1019,7 +1159,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         registry.setXtaDfr(this.getXtaDfr() == null ? null : this.getXtaDfr().clone());
         
-        registry.setDfrPagos(this.getDfrPagos() == null ? null : this.getDfrPagos()); // not cloned!, because clone is not supported for this class!
+        registry.setDfrPagos10(this.getDfrPagos10() == null ? null : this.getDfrPagos10()); // not cloned!, because clone is not supported for this class!
+        registry.setDfrPagos20(this.getDfrPagos20() == null ? null : this.getDfrPagos20()); // not cloned!, because clone is not supported for this class!
 
         registry.setAuxJustIssued(this.isAuxJustIssued());
         registry.setAuxJustAnnulled(this.isAuxJustAnnulled());
@@ -1116,19 +1257,21 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     }
     
     /**
-     * By now supports only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0.
+     * Create CFDI 3.3 with Complemento de Recepción de Pagos 1.0.
      * @param session
      * @param signature
      * @return
      * @throws Exception 
      */
+    @Deprecated
     private cfd.ver33.DElementComprobante createCfdi33(final DGuiSession session, final DGuiEdsSignature signature) throws Exception {
         // validate supported subtype of CFDI:
         switch (mnFkXmlSubtypeId) {
-            case DModSysConsts.TS_XML_STP_CFDI_CRP:
+            case DModSysConsts.TS_XML_STP_CRP:
                 break;
             case DModSysConsts.TS_XML_STP_NA:
-            case DModSysConsts.TS_XML_STP_CFDI_FAC:
+            case DModSysConsts.TS_XML_STP_FAC:
+            case DModSysConsts.TS_XML_STP_CCP:
                 // falls through
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1258,9 +1401,161 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
 
         comprobante.getEltConceptos().getEltConceptos().add(concepto);
         
-        if (moDfrPagos != null) {
-            DElementComplemento complemento = new DElementComplemento();
-            complemento.getElements().add(moDfrPagos);
+        if (moDfrPagos10 != null) {
+            cfd.ver33.DElementComplemento complemento = new cfd.ver33.DElementComplemento();
+            complemento.getElements().add(moDfrPagos10);
+            comprobante.setEltOpcComplemento(complemento);
+        }
+
+        return comprobante;
+    }
+    
+    /**
+     * Create CFDI 4.0 with Complemento de Recepción de Pagos 2.0.
+     * @param session
+     * @param signature
+     * @return
+     * @throws Exception 
+     */
+    private cfd.ver40.DElementComprobante createCfdi40(final DGuiSession session, final DGuiEdsSignature signature) throws Exception {
+        // validate supported CFDI:
+        
+        if (mnFkXmlSubtypeId != DModSysConsts.TS_XML_STP_CRP) {
+            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " (Subtipo de XML.)");
+        }
+        else if (moDfrPagos20 == null) {
+            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + " (Complemento de recepción de pagos 2.0.)");
+        }
+        
+        Date tDate = null;
+        Date tUpdateTs = mtTsUserUpdate != null ? mtTsUserUpdate : new Date();
+        int[] anDateDps = DLibTimeUtils.digestDate(mtDocTs);
+        int[] anDateEdit = DLibTimeUtils.digestDate(tUpdateTs);
+        GregorianCalendar oGregorianCalendar = null;
+        DDbConfigBranch configBranch = null;
+        DDbBizPartner bprEmisor = null;
+        DDbBranch braEmisor = null;
+        DDbBranchAddress braAddressEmisor = null;
+        DDbBizPartner bprReceptor = null;
+                
+        // Check company branch emission configuration:
+        
+        configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+
+        // Emisor:
+
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() == DLibConsts.UNDEFINED) {
+            // Document's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getCompanyKey());
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, getCompanyBranchKey());
+        }
+        else {
+            // Company branch's emisor:
+            
+            bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n(), DUtilConsts.BPR_BRA_ID });
+        }
+
+        // Receptor:
+
+        bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getBizPartnerKey());
+
+        if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
+            tDate = tUpdateTs;
+        }
+        else {
+            oGregorianCalendar = new GregorianCalendar();
+            oGregorianCalendar.setTime(tUpdateTs);
+            oGregorianCalendar.set(GregorianCalendar.YEAR, anDateDps[0]);
+            oGregorianCalendar.set(GregorianCalendar.MONTH, anDateDps[1] - 1);  // January is month 0
+            oGregorianCalendar.set(GregorianCalendar.DATE, anDateDps[2]);
+            tDate = oGregorianCalendar.getTime();
+        }
+        
+        // Create XML's main element 'Comprobante':
+
+        cfd.ver40.DElementComprobante comprobante = new cfd.ver40.DElementComprobante(); // include Addenda1 only if explicitly defined and CFD is already signed
+
+        comprobante.getAttSerie().setString(msSeries);
+        comprobante.getAttFolio().setString("" + mnNumber);
+        comprobante.getAttFecha().setDatetime(tDate);
+        
+        comprobante.getAttSello().setString("");
+        comprobante.getAttNoCertificado().setString(signature.getCertificateNumber());
+        comprobante.getAttCertificado().setString(signature.getCertificateBase64());
+
+        //comprobante.getAttFormaPago().setString();
+        //comprobante.getAttCondicionesDePago().setString();
+        
+        comprobante.getAttSubTotal().setDouble(0);
+        comprobante.getAttSubTotal().setDecimals(0);
+
+        comprobante.getAttMoneda().setString(DCfdi40Catalogs.ClaveMonedaXxx);
+        //comprobante.getAttTipoCambio().setDouble();
+        
+        comprobante.getAttTotal().setDouble(0);
+        comprobante.getAttTotal().setDecimals(0);
+
+        comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_P);
+        //comprobante.getAttMetodoPago().setString();
+        
+        braAddressEmisor = braEmisor.getChildAddressOfficial();
+        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        
+        comprobante.getAttConfirmacion().setString(moXtaDfr.getConfirmation());
+        
+        // element 'CfdiRelacionados':
+        if (moXtaDfr.getCfdRelations() != null && !moXtaDfr.getCfdRelations().getRelatedCfds().isEmpty()) {
+            DDfrCfdRelations.RelatedCfd relatedCfd = moXtaDfr.getCfdRelations().getRelatedCfds().get(0);
+            cfd.ver40.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver40.DElementCfdiRelacionados();
+            cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
+            
+            for (String uuid : relatedCfd.Uuids) {
+                cfd.ver40.DElementCfdiRelacionado cfdiRelacionado = new cfd.ver40.DElementCfdiRelacionado();
+                cfdiRelacionado.getAttUuid().setString(uuid);
+                cfdiRelacionados.getEltCfdiRelacionados().add(cfdiRelacionado);
+            }
+            
+            ArrayList<cfd.ver40.DElementCfdiRelacionados> arrayCfdiRelacionados = new ArrayList<>();
+            arrayCfdiRelacionados.add(cfdiRelacionados);
+            comprobante.setEltOpcCfdiRelacionados(arrayCfdiRelacionados);
+        }
+
+        // element 'Emisor':
+        comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getNameFiscal());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfr.getIssuerTaxRegime());
+
+        // element 'Receptor':
+        comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getNameFiscal());
+        //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
+        //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfr.getCfdUsage());
+
+        // element 'Conceptos':
+        
+        cfd.ver40.DElementConcepto concepto = new cfd.ver40.DElementConcepto();
+
+        concepto.getAttClaveProdServ().setString(DCfdi40Catalogs.ClaveProdServServsFacturacion);
+        //concepto.getAttNoIdentificacion().setString();
+        concepto.getAttCantidad().setDouble(1);
+        concepto.getAttCantidad().setDecimals(0);
+        concepto.getAttClaveUnidad().setString(DCfdi40Catalogs.ClaveUnidadAct);
+        //concepto.getAttUnidad().setString();
+        concepto.getAttDescripcion().setString(DCfdi40Catalogs.ConceptoPago);
+        concepto.getAttValorUnitario().setDouble(0);
+        concepto.getAttValorUnitario().setDecimals(0);
+        concepto.getAttImporte().setDouble(0);
+        concepto.getAttImporte().setDecimals(0);
+        //concepto.getAttDescuento().setDouble();
+
+        comprobante.getEltConceptos().getEltConceptos().add(concepto);
+        
+        if (moDfrPagos20 != null) {
+            cfd.ver40.DElementComplemento complemento = new cfd.ver40.DElementComplemento();
+            complemento.getElements().add(moDfrPagos20);
             comprobante.setEltOpcComplemento(complemento);
         }
 
@@ -1325,6 +1620,30 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     xmlStatus = DModSysConsts.TS_XML_ST_PEN;
                     break;
 
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    // Create DFR:
+                    signature = session.getEdsSignature(getCompanyBranchKey());
+                    cfd.ver40.DElementComprobante comprobante40 = createCfdi40(session, signature);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
+                        if (extAddenda != null) {
+                            cfd.ver4.DElementAddenda addenda = new cfd.ver4.DElementAddenda();
+                            addenda.getElements().add(extAddenda);
+                            comprobante40.setEltOpcAddenda(addenda);
+                        }
+                    }
+
+                    // Sign DFR:
+                    textToSign = comprobante40.getElementForOriginalString();
+                    textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(mtDocTs)[0]);
+                    cfd.write(comprobante40, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
+
+                    // Set DFR status:
+                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
+                    break;
+
                 default:
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
@@ -1352,7 +1671,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             mbSystem;
             */
             //mnFkXmlTypeId; // should be already provided
-            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_CFDI_CRP;
+            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_VER_CRP_2[0];
+            mnFkXmlSubtypeVersionId = DModSysConsts.TS_XML_STP_VER_CRP_2[1];
             mnFkXmlStatusId = xmlStatus;
             mnFkXmlAddendaTypeId = msDocXmlAddenda.isEmpty() ? DModSysConsts.TS_XML_ADD_TP_NA : bizPartner.getFkXmlAddendaTypeId();
             mnFkXmlSignatureProviderId = DModSysConsts.CS_XSP_NA;
@@ -1361,6 +1681,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             //mnFkOwnerBranchId;        // should be already provided
             //mnFkBizPartnerId;         // should be already provided
             mnFkDpsId_n = 0;
+            mnFkBolId_n = 0;
             //mnFkCashBizPartnerId_n;       // should be already provided
             //mnFkCashBranchId_n;           // should be already provided
             //mnFkCashCashId_n;             // should be already provided

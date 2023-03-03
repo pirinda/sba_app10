@@ -13,12 +13,10 @@ package sba.mod.trn.form;
 
 import cfd.DCfdConsts;
 import cfd.DElement;
-import cfd.ver33.DElementComprobante;
-import cfd.ver33.crp10.DElementDoctoRelacionado;
-import cfd.ver33.crp10.DElementPagos;
-import cfd.ver33.crp10.DElementPagosPago;
 import cfd.ver4.DCfdVer4Consts;
 import cfd.ver40.DCfdi40Catalogs;
+import cfd.ver40.crp20.DIntDoctoRelacionado;
+import cfd.ver40.crp20.DIntPagosPago;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +24,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,13 +69,16 @@ import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DLockUtils;
+import sba.mod.fin.db.DFinConsts;
 import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
+import sba.mod.trn.db.DDbDpsRow;
 import sba.mod.trn.db.DDfr;
 import sba.mod.trn.db.DDfrCfdRelations;
 import sba.mod.trn.db.DRowDfrPayment;
 import sba.mod.trn.db.DRowDfrPaymentDoc;
 import sba.mod.trn.db.DTrnAmount;
+import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnUtils;
 
 /**
@@ -114,8 +116,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     
     private int mnModePayment;      // current edition mode of payment
     private int mnModePaymentDoc;   // current edition mode of payment of document
-    private DDbDps moDoc;           // current DPS in edition of payment of document, if any, CFDI can be a third-party's
-    private DElementDoctoRelacionado moDoctoRelacionado; // current edited DoctoRelacionado, if new, then it is null
+    private DDbDps moDps;           // current DPS in edition of payment of document, if any, CFDI can be a third-party's
+    private DIntDoctoRelacionado moDoctoRelacionado; // current edited DoctoRelacionado, if new, then it is null
     private double mdDocTotalPayment;
 
     /** Creates new form DFormDfrPayment
@@ -1185,6 +1187,23 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         return DLibUtils.DateFormatDatetime.parse(DLibUtils.DateFormatDate.format(moDatePayDate.getValue()) + " " + moTextPayTime.getValue());
     }
     
+    private ArrayList<DIntDoctoRelacionado> getDoctoRelacionados(final DIntPagosPago pago) {
+        ArrayList<DIntDoctoRelacionado> doctoRelacionados = new ArrayList<>();
+
+        switch (moRegistry.getFkXmlTypeId()) {
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                doctoRelacionados.addAll(((cfd.ver33.crp10.DElementPagosPago) pago).getEltDoctoRelacionados());
+                break;
+            case DModSysConsts.TS_XML_TP_CFDI_40:
+                doctoRelacionados.addAll(((cfd.ver40.crp20.DElementPagosPago) pago).getEltDoctoRelacionados());
+                break;
+            default:
+                // nothing
+        }
+        
+        return doctoRelacionados;
+    }
+    
     private void initFieldsPayment() {
         moDatePayDate.setValue(miClient.getSession().getWorkingDate());
         moTextPayTime.setValue("12:00:00");
@@ -1355,7 +1374,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         fields.add(moCurDocBalancePrevDoc.getField());
         fields.add(moCurDocPaymentDoc.getField());
         
-        DGuiValidation validation;
+        DGuiValidation validation = null;
+        
         for (DGuiField field : fields) {
             validation = field.validateField();
             if (!validation.isValid() && field.isEnabled()) {
@@ -1364,29 +1384,37 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             }
         }
         
-        if (moDoc != null) {
-            validation = new DGuiValidation();
-            if (!moTextDocSeries.getValue().equals(moDoc.getSeries())) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moTextDocSeries.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDoc.getSeries() + "'");
-                validation.setComponent(moTextDocSeries);
-            }
-            else if (moIntDocNumber.getValue() != moDoc.getNumber()) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moIntDocNumber.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDoc.getNumber()+ "'");
-                validation.setComponent(moIntDocNumber);
-            }
-            else if (moDoc.getChildDfr() != null && !moTextDocUuid.getValue().equals(moDoc.getChildDfr().getUuid())) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moTextDocUuid.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDoc.getChildDfr().getUuid()+ "'");
+        validation = new DGuiValidation();
+        
+        if (moDps == null) {
+            if (miClient.showMsgBoxConfirm("El documento relacionado no existe en el sistema. No se podrán integrar al comprobante los impuestos pagados.\n"
+                    + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                validation.setMessage("Asegurarse de que el documento relacionado exista en el sistema.");
                 validation.setComponent(moTextDocUuid);
             }
-            else if (moKeyDocCurrency.getValue()[0] != moDoc.getFkCurrencyId()) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moKeyDocCurrency.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + miClient.getSession().getSessionCustom().getCurrency(new int[] { moDoc.getFkCurrencyId() }) + "'");
+        }
+        else {
+            if (!moTextDocSeries.getValue().equals(moDps.getSeries())) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moTextDocSeries.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDps.getSeries() + "'");
+                validation.setComponent(moTextDocSeries);
+            }
+            else if (moIntDocNumber.getValue() != moDps.getNumber()) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moIntDocNumber.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDps.getNumber()+ "'");
+                validation.setComponent(moIntDocNumber);
+            }
+            else if (moDps.getChildDfr() != null && !moTextDocUuid.getValue().equals(moDps.getChildDfr().getUuid())) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moTextDocUuid.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + moDps.getChildDfr().getUuid()+ "'");
+                validation.setComponent(moTextDocUuid);
+            }
+            else if (moKeyDocCurrency.getValue()[0] != moDps.getFkCurrencyId()) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moKeyDocCurrency.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + "'" + miClient.getSession().getSessionCustom().getCurrency(new int[] { moDps.getFkCurrencyId() }) + "'");
                 validation.setComponent(moKeyDocCurrency);
             }
-            
-            if (!validation.isValid()) {
-                DGuiUtils.computeValidation(miClient, validation);
-                return false;
-            }
+        }
+        
+        if (!validation.isValid()) {
+            DGuiUtils.computeValidation(miClient, validation);
+            return false;
         }
         
         return true;
@@ -1411,7 +1439,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moTextPayRecipientsAccount.resetField();
         }
         else {
-            DElementPagosPago pago = ((DRowDfrPayment) row).getPago();
+            DIntPagosPago pago = ((DRowDfrPayment) row).getPago();
+            
             moDatePayDate.setValue(pago.getAttFechaPago().getDatetime());
             moTextPayTime.setValue(DLibUtils.DateFormatTime.format(pago.getAttFechaPago().getDatetime()));
             moKeyPayModeOfPaymentType.setValue(new int[] { moXmlCatalogModeOfPayment.getId(pago.getAttFormaDePagoP().getString()) });
@@ -1426,8 +1455,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moTextPayRecipientsBankFiscalId.setValue(pago.getAttRfcEmisorCtaBen().getString());
             moTextPayRecipientsAccount.setValue(pago.getAttCtaBeneficiario().getString());
             
-            for (DElementDoctoRelacionado doctoRelacionado : pago.getEltDoctoRelacionados()) {
-                double xrtDoc = doctoRelacionado.getAttTipoCambioDR().getDouble(); // 0 means that currency of payment and payed document is the same
+            for (DIntDoctoRelacionado doctoRelacionado : getDoctoRelacionados(pago)) {
+                double xrtDoc = doctoRelacionado.getAttEquivalenciaDR().getDouble(); // 0 means that currency of payment and payed document is the same
 
                 mdDocTotalPayment = DLibUtils.roundAmount(mdDocTotalPayment + 
                         (doctoRelacionado.getAttImpPagado().getDouble() / (xrtDoc == 0 ? 1d : xrtDoc)));
@@ -1455,15 +1484,15 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moCurDocPaymentDoc.getField().resetField();
             moCurDocBalancePendDoc.getField().resetField();
             
-            moDoc = null;
+            moDps = null;
         }
         else {
-            DElementDoctoRelacionado doctoRelacionado = ((DRowDfrPaymentDoc) row).getDoctoRelacionado();
+            DIntDoctoRelacionado doctoRelacionado = ((DRowDfrPaymentDoc) row).getDoctoRelacionado();
             moTextDocSeries.setValue(doctoRelacionado.getAttSerie().getString());
             moIntDocNumber.setValue(DLibUtils.parseInt(doctoRelacionado.getAttFolio().getString()));
             moTextDocUuid.setValue(doctoRelacionado.getAttIdDocumento().getString());
             moKeyDocCurrency.setValue(new int[] { moXmlCatalogCurrency.getId(doctoRelacionado.getAttMonedaDR().getString()) });
-            double xrt = doctoRelacionado.getAttTipoCambioDR().getDouble();
+            double xrt = doctoRelacionado.getAttEquivalenciaDR().getDouble();
             moDecDocExchangeRate.setValue(xrt == 0 ? 1 : xrt);
             moIntDocInstallment.setValue(doctoRelacionado.getAttNumParcialidad().getInteger());
             moCurDocBalancePrevDoc.getField().setValue(doctoRelacionado.getAttImpSaldoAnt().getDouble());
@@ -1471,7 +1500,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moCurDocBalancePendDoc.getField().setValue(doctoRelacionado.getAttImpSaldoInsoluto().getDouble());
             
             try {
-                moDoc = DTrnUtils.getDpsByUuid(miClient.getSession(), moTextDocUuid.getText());
+                moDps = DTrnUtils.getDpsByUuid(miClient.getSession(), moTextDocUuid.getText());
             }
             catch (Exception e) {
                 // do not show exception, maybe CFDI belogs to thir parties
@@ -1480,7 +1509,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     }
     
     private void renderDoc() {
-        if (moDoc == null) {
+        if (moDps == null) {
             moTextDocSeries.resetField();
             moIntDocNumber.resetField();
             moTextDocUuid.resetField();
@@ -1490,21 +1519,21 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moCurDocPaymentDoc.getField().resetField();
         }
         else {
-            moTextDocSeries.setValue(moDoc.getSeries());
-            moIntDocNumber.setValue(moDoc.getNumber());
-            moTextDocUuid.setValue(moDoc.getChildDfr() == null ? "" : moDoc.getChildDfr().getUuid());
-            moKeyDocCurrency.setValue(new int[] { moDoc.getFkCurrencyId() });
+            moTextDocSeries.setValue(moDps.getSeries());
+            moIntDocNumber.setValue(moDps.getNumber());
+            moTextDocUuid.setValue(moDps.getChildDfr() == null ? "" : moDps.getChildDfr().getUuid());
+            moKeyDocCurrency.setValue(new int[] { moDps.getFkCurrencyId() });
             
             int installment = 0;
             try {
-                installment = DTrnUtils.getDpsPaymentsCount(miClient.getSession(), DModSysConsts.BS_BPR_CL_CUS, moDoc.getPkDpsId(), moRegistry.getBookkeepingNumberKey_n());
+                installment = DTrnUtils.getDpsPaymentsCount(miClient.getSession(), DModSysConsts.BS_BPR_CL_CUS, moDps.getPkDpsId(), moRegistry.getBookkeepingNumberKey_n());
             }
             catch (Exception e) {
                 DLibUtils.showException(this, e);
             }
             moIntDocInstallment.setValue(installment + 1);
             
-            DTrnAmount amount = DTrnUtils.getBalanceForDps(miClient.getSession(), miClient.getSession().getSystemYear(), moDoc.getPrimaryKey());
+            DTrnAmount amount = DTrnUtils.getBalanceForDps(miClient.getSession(), miClient.getSession().getSystemYear(), moDps.getPrimaryKey());
             moCurDocBalancePrevDoc.getField().setValue(amount.getAmountCy());
             
             if (DLibUtils.compareKeys(moKeyPayCurrency.getValue(), moKeyDocCurrency.getValue())) {
@@ -1604,7 +1633,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         HashMap<Integer, String> currencies = new HashMap<>();
         
         for (DGridRow row : moGridPayments.getModel().getGridRows()) {
-            DElementPagosPago pago = ((DRowDfrPayment) row).getPago();
+            DIntPagosPago pago = ((DRowDfrPayment) row).getPago();
             double xrt = pago.getAttTipoCambioP().getDouble(); // 0 means that currency of payment is local currency
             
             int currency = moXmlCatalogCurrency.getId(pago.getAttMonedaP().getString());
@@ -1638,8 +1667,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         }
         
         for (DGridRow row : moGridPaymentDocs.getModel().getGridRows()) {
-            DElementDoctoRelacionado doctoRelacionado = ((DRowDfrPaymentDoc) row).getDoctoRelacionado();
-            double xrtDoc = doctoRelacionado.getAttTipoCambioDR().getDouble(); // 0 means that currency of payment and payed document is the same
+            DIntDoctoRelacionado doctoRelacionado = ((DRowDfrPaymentDoc) row).getDoctoRelacionado();
+            double xrtDoc = doctoRelacionado.getAttEquivalenciaDR().getDouble(); // 0 means that currency of payment and payed document is the same
             
             mdDocTotalPayment = DLibUtils.roundAmount(mdDocTotalPayment + 
                     (doctoRelacionado.getAttImpPagado().getDouble() / (xrtDoc == 0 ? 1d : xrtDoc)));
@@ -1649,6 +1678,137 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         
         moCurTotalPaymentPay.getField().setValue(mdDocTotalPayment);
         moCurTotalPaymentLoc.getField().setValue(paymentLoc);
+    }
+    
+    private void computeDocTaxes20(final cfd.ver40.crp20.DElementDoctoRelacionado doctoRelacionado) {
+        // clear taxes
+        doctoRelacionado.setEltImpuestosDR(null);
+        
+        if (moDps != null && moDps.getSubtotalCy_r() > 0 && doctoRelacionado.getAttImpPagado().getDouble() > 0) {
+            double payPct = doctoRelacionado.getAttImpPagado().getDouble() / moDps.getSubtotalCy_r();
+                    
+            DecimalFormat rateFormat = new DecimalFormat("#.000000");
+            cfd.ver40.crp20.DElementImpuestosDR impuestosDr = null;
+            cfd.ver40.crp20.DElementTrasladosDR trasladosDr = null;
+            cfd.ver40.crp20.DElementRetencionesDR retencionesDr = null;
+            HashMap<String, cfd.ver40.crp20.DElementTrasladoDR> trasladosDrMap = new HashMap<>(); // key = tax_code + tax_rate
+            HashMap<String, cfd.ver40.crp20.DElementRetencionDR> retencionesDrMap = new HashMap<>(); // key = tax_code + tax_rate
+            
+            for (DDbDpsRow dpsRow : moDps.getChildRows()) {
+                if (!dpsRow.isDeleted()) {
+                    for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
+                        int taxId = 0;
+                        double taxRate = 0;
+                        double tax = 0;
+                        
+                        // taxes charged:
+                        
+                        switch (index) {
+                            case 1:
+                                taxId = dpsRow.getFkTaxCharged1Id();
+                                taxRate = dpsRow.getTaxChargedRate1();
+                                tax = dpsRow.getTaxCharged1Cy();
+                                break;
+                            case 2:
+                                taxId = dpsRow.getFkTaxCharged2Id();
+                                taxRate = dpsRow.getTaxChargedRate2();
+                                tax = dpsRow.getTaxCharged2Cy();
+                                break;
+                            case 3:
+                                taxId = dpsRow.getFkTaxCharged3Id();
+                                taxRate = dpsRow.getTaxChargedRate3();
+                                tax = dpsRow.getTaxCharged3Cy();
+                                break;
+                            default:
+                                // nothing
+                        }
+                        
+                        if (taxId == DFinConsts.TAX_IVA) {
+                            String key = DCfdi40Catalogs.IMP_IVA + rateFormat.format(taxRate);
+                            cfd.ver40.crp20.DElementTrasladoDR trasladoDr = trasladosDrMap.get(key);
+                            
+                            if (trasladoDr == null) {
+                                double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
+                                
+                                trasladoDr = new cfd.ver40.crp20.DElementTrasladoDR();
+                                trasladoDr.getAttBaseDR().setDouble(propBase);
+                                trasladoDr.getAttImpuestoDR().setString(DCfdi40Catalogs.IMP_IVA);
+                                trasladoDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
+                                trasladoDr.getAttTasaOCuotaDR().setDouble(taxRate);
+                                
+                                trasladosDrMap.put(key, trasladoDr);
+                            }
+                            
+                            double propTax = DLibUtils.roundAmount(tax * payPct);
+                            
+                            trasladoDr.getAttImporteDR().setDouble(DLibUtils.roundAmount(trasladoDr.getAttImporteDR().getDouble() + propTax));
+                        }
+                        
+                        // taxes withheld:
+                        
+                        switch (index) {
+                            case 1:
+                                taxId = dpsRow.getFkTaxRetained1Id();
+                                taxRate = dpsRow.getTaxRetainedRate1();
+                                tax = dpsRow.getTaxRetained1Cy();
+                                break;
+                            case 2:
+                                taxId = dpsRow.getFkTaxRetained2Id();
+                                taxRate = dpsRow.getTaxRetainedRate2();
+                                tax = dpsRow.getTaxRetained2Cy();
+                                break;
+                            case 3:
+                                taxId = dpsRow.getFkTaxRetained3Id();
+                                taxRate = dpsRow.getTaxRetainedRate3();
+                                tax = dpsRow.getTaxRetained3Cy();
+                                break;
+                            default:
+                                // nothing
+                        }
+                        
+                        if (taxId == DFinConsts.TAX_IVA || taxId == DFinConsts.TAX_ISR) {
+                            String taxCode = taxId == DFinConsts.TAX_IVA ? DCfdi40Catalogs.IMP_IVA : DCfdi40Catalogs.IMP_ISR;
+                            String key = taxCode + rateFormat.format(taxRate);
+                            cfd.ver40.crp20.DElementRetencionDR retencionDr = retencionesDrMap.get(key);
+                            
+                            if (retencionDr == null) {
+                                double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
+                                
+                                retencionDr = new cfd.ver40.crp20.DElementRetencionDR();
+                                retencionDr.getAttBaseDR().setDouble(propBase);
+                                retencionDr.getAttImpuestoDR().setString(taxCode);
+                                retencionDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
+                                retencionDr.getAttTasaOCuotaDR().setDouble(taxRate);
+                                
+                                retencionesDrMap.put(key, retencionDr);
+                            }
+                            
+                            double propTax = DLibUtils.roundAmount(tax * payPct);
+                            
+                            retencionDr.getAttImporteDR().setDouble(DLibUtils.roundAmount(retencionDr.getAttImporteDR().getDouble() + propTax));
+                        }
+                    }
+                }
+            }
+            
+            if (!trasladosDrMap.isEmpty()) {
+                trasladosDr = new cfd.ver40.crp20.DElementTrasladosDR();
+                trasladosDr.getEltTrasladoDRs().addAll(trasladosDrMap.values());
+            }
+            
+            if (!retencionesDrMap.isEmpty()) {
+                retencionesDr = new cfd.ver40.crp20.DElementRetencionesDR();
+                retencionesDr.getEltRetencionDRs().addAll(retencionesDrMap.values());
+            }
+            
+            if (trasladosDr != null) {
+                impuestosDr = new cfd.ver40.crp20.DElementImpuestosDR();
+                impuestosDr.setEltTrasladosDR(trasladosDr);
+                impuestosDr.setEltRetencionesDR(retencionesDr);
+            }
+            
+            doctoRelacionado.setEltImpuestosDR(impuestosDr);
+        }
     }
     
     /*
@@ -1758,7 +1918,20 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                 // no exception should be thrown!
             }
             
-            DElementPagosPago pago = new DElementPagosPago();
+            
+            DIntPagosPago pago = null;
+            
+            switch (moRegistry.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    pago = new cfd.ver33.crp10.DElementPagosPago();
+                    break;
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    pago = new cfd.ver40.crp20.DElementPagosPago();
+                    break;
+                default:
+                    // nothing
+            }
+            
             pago.getAttFechaPago().setDatetime(payDatetime);
             pago.getAttFormaDePagoP().setString(moKeyPayModeOfPaymentType.getSelectedItem().getCode());
             pago.getAttMonedaP().setString(moKeyPayCurrency.getSelectedItem().getCode());
@@ -1775,19 +1948,19 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             //pago.getAttCadPago().setString(...);
             //pago.getAttSelloPago().setString(...);
             
-            DRowDfrPayment row = new DRowDfrPayment(pago);
+            DRowDfrPayment rowDfrPayment = new DRowDfrPayment(pago);
             
             // update form grid:
             switch (mnModePayment) {
                 case MODE_ADD:
-                    moGridPayments.addGridRow(row);
+                    moGridPayments.addGridRow(rowDfrPayment);
                     moGridPayments.renderGridRows();
                     moGridPayments.setSelectedGridRow(moGridPayments.getTable().getRowCount() - 1);
                     break;
                     
                 case MODE_MODIFY:
                     int index = moGridPayments.getTable().getSelectedRow();
-                    moGridPayments.setGridRow(row, index);
+                    moGridPayments.setGridRow(rowDfrPayment, index);
                     moGridPayments.renderGridRows();
                     moGridPayments.setSelectedGridRow(index);
                     break;
@@ -1817,7 +1990,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moDialogDpsInvoicePicker.setVisible(true);
         if (moDialogDpsInvoicePicker.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
             try {
-                moDoc = moDialogDpsInvoicePicker.getRegistry();
+                moDps = moDialogDpsInvoicePicker.getRegistry();
                 renderDoc();
                 moIntDocInstallment.requestFocusInWindow();
             }
@@ -1863,7 +2036,18 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moGridPaymentDocs.setSelectedGridRow(index < moGridPaymentDocs.getTable().getRowCount() ? index : index - 1);
             
             // update array of DoctoRelacionados of current payment:
-            ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().remove(((DRowDfrPaymentDoc) removedRow).getDoctoRelacionado());
+            switch (moRegistry.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    ((cfd.ver33.crp10.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().remove(
+                            (cfd.ver33.crp10.DElementDoctoRelacionado) ((DRowDfrPaymentDoc) removedRow).getDoctoRelacionado());
+                    break;
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    ((cfd.ver40.crp20.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().remove(
+                            (cfd.ver40.crp20.DElementDoctoRelacionado) ((DRowDfrPaymentDoc) removedRow).getDoctoRelacionado());
+                    break;
+                default:
+                    // nothing
+            }
             
             // update GUI totals:
             computeTotalPayment();
@@ -1872,18 +2056,39 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
     private void actionPerformedDocOk() {
         if (validateFieldsPaymentDocs()) {
-            DElementDoctoRelacionado doctoRelacionado = new DElementDoctoRelacionado();
+            DIntDoctoRelacionado doctoRelacionado = null;
+            
+            switch (moRegistry.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    doctoRelacionado = new cfd.ver33.crp10.DElementDoctoRelacionado();
+                    break;
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    doctoRelacionado = new cfd.ver40.crp20.DElementDoctoRelacionado();
+                    break;
+                default:
+                    // nothing
+            }
             
             doctoRelacionado.getAttIdDocumento().setString(moTextDocUuid.getValue());
             doctoRelacionado.getAttSerie().setString(moTextDocSeries.getValue());
             doctoRelacionado.getAttFolio().setString(moIntDocNumber.getValue().toString());
             doctoRelacionado.getAttMonedaDR().setString(moKeyDocCurrency.getSelectedItem().getCode());
-            doctoRelacionado.getAttTipoCambioDR().setDouble(miClient.getSession().getSessionCustom().isLocalCurrency(moKeyDocCurrency.getValue()) ? 0d : moDecDocExchangeRate.getValue());
-            doctoRelacionado.getAttMetodoDePagoDR().setString(DCfdi40Catalogs.MDP_PPD);
+            doctoRelacionado.getAttEquivalenciaDR().setDouble(miClient.getSession().getSessionCustom().isLocalCurrency(moKeyDocCurrency.getValue()) ? 0d : moDecDocExchangeRate.getValue());
+            //doctoRelacionado.getAttMetodoDePagoDR().setString(DCfdi40Catalogs.MDP_PPD); // value set by default
             doctoRelacionado.getAttNumParcialidad().setInteger(moIntDocInstallment.getValue());
             doctoRelacionado.getAttImpSaldoAnt().setDouble(moCurDocBalancePrevDoc.getField().getValue());
             doctoRelacionado.getAttImpPagado().setDouble(moCurDocPaymentDoc.getField().getValue());
             doctoRelacionado.getAttImpSaldoInsoluto().setDouble(moCurDocBalancePendDoc.getField().getValue());
+            
+            switch (moRegistry.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    break;
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    computeDocTaxes20((cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado);
+                    break;
+                default:
+                    // nothing
+            }
             
             DRowDfrPaymentDoc row = new DRowDfrPaymentDoc(doctoRelacionado);
             
@@ -1895,7 +2100,18 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                     moGridPaymentDocs.setSelectedGridRow(moGridPaymentDocs.getTable().getRowCount() - 1);
                     
                     // update array of DoctoRelacionados of current payment:
-                    ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().add(doctoRelacionado);
+                    switch (moRegistry.getFkXmlTypeId()) {
+                        case DModSysConsts.TS_XML_TP_CFDI_33:
+                            ((cfd.ver33.crp10.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().add(
+                                    (cfd.ver33.crp10.DElementDoctoRelacionado) doctoRelacionado);
+                            break;
+                        case DModSysConsts.TS_XML_TP_CFDI_40:
+                            ((cfd.ver40.crp20.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().add(
+                                    (cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado);
+                            break;
+                        default:
+                            // nothing
+                    }
                     break;
                     
                 case MODE_MODIFY:
@@ -1905,8 +2121,23 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                     moGridPaymentDocs.setSelectedGridRow(index);
                     
                     // update array of DoctoRelacionados of current payment:
-                    int indexToReplace = ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().indexOf(moDoctoRelacionado);
-                    ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getEltDoctoRelacionados().set(indexToReplace, doctoRelacionado);
+                    int indexToReplace = -1;
+                    switch (moRegistry.getFkXmlTypeId()) {
+                        case DModSysConsts.TS_XML_TP_CFDI_33:
+                            indexToReplace = ((cfd.ver33.crp10.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().indexOf(
+                                    (cfd.ver33.crp10.DElementDoctoRelacionado) moDoctoRelacionado);
+                            ((cfd.ver33.crp10.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().set(
+                                    indexToReplace, (cfd.ver33.crp10.DElementDoctoRelacionado) doctoRelacionado);
+                            break;
+                        case DModSysConsts.TS_XML_TP_CFDI_40:
+                            indexToReplace = ((cfd.ver40.crp20.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().indexOf(
+                                    (cfd.ver40.crp20.DElementDoctoRelacionado) moDoctoRelacionado);
+                            ((cfd.ver40.crp20.DElementPagosPago) ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago()).getEltDoctoRelacionados().set(
+                                    indexToReplace, (cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado);
+                            break;
+                        default:
+                            // nothing
+                    }
                     break;
                     
                 default:
@@ -1937,7 +2168,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private void focusLostDocUuid() {
         if (moTextDocUuid.getText().length() == DCfdVer4Consts.LEN_UUID) {
             try {
-                moDoc = DTrnUtils.getDpsByUuid(miClient.getSession(), moTextDocUuid.getText());
+                moDps = DTrnUtils.getDpsByUuid(miClient.getSession(), moTextDocUuid.getText());
                 renderDoc();
             }
             catch (Exception e) {
@@ -2408,7 +2639,9 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             // finish setting up registry:
             
             moRegistry.setFkXmlTypeId(DModSysConsts.TS_XML_TP_CFDI_40);
-            moRegistry.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_CFDI_CRP);
+            moRegistry.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CRP_2[0]);
+            moRegistry.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CRP_2[1]);
+            moRegistry.setFkXmlStatusId(DModSysConsts.TS_XML_ST_PEN);
             
             DDfr dfr = new DDfr();
             dfr.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
@@ -2480,7 +2713,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jtfDfrVersion.setText(moRegistry.getXtaDfr().getVersion());
         jtfDfrVersion.setCaretPosition(0);
         
-        jtfDfrDatetime.setText(DLibUtils.DateFormatDatetime.format(moRegistry.getDocTs()));
+        jtfDfrDatetime.setText(moRegistry.getDocTs() == null ? "" : DLibUtils.DateFormatDatetime.format(moRegistry.getDocTs()));
         jtfDfrDatetime.setCaretPosition(0);
         
         jtfDfrUuid.setText(moRegistry.getUuid());
@@ -2498,19 +2731,40 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jtfBranchCash.setText((String) miClient.getSession().readField(DModConsts.CU_CSH, moBranchCash.getPrimaryKey(), DDbRegistry.FIELD_CODE));
         jtfBranchCash.setCaretPosition(0);
         
-        DElementComprobante comprobante33 = moRegistry.getElementComprobante33();
         Vector<DGridRow> payments = new Vector<>();
         
-        if (comprobante33 != null && comprobante33.getEltOpcComplemento() != null) {
-            for (DElement element : comprobante33.getEltOpcComplemento().getElements()) {
-                if (element instanceof DElementPagos) {
-                    DElementPagos pagos = (DElementPagos) element;
-                    for (DElementPagosPago pago : pagos.getEltPagos()) {
-                        payments.add(new DRowDfrPayment(pago));
+        switch (moRegistry.getFkXmlTypeId()) {
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                cfd.ver33.DElementComprobante comprobante33 = moRegistry.getElementComprobante33();
+
+                if (comprobante33 != null && comprobante33.getEltOpcComplemento() != null) {
+                    for (DElement element : comprobante33.getEltOpcComplemento().getElements()) {
+                        if (element instanceof cfd.ver33.crp10.DElementPagos) {
+                            cfd.ver33.crp10.DElementPagos pagos = (cfd.ver33.crp10.DElementPagos) element;
+                            for (cfd.ver33.crp10.DElementPagosPago pago : pagos.getEltPagos()) {
+                                payments.add(new DRowDfrPayment(pago));
+                            }
+                            break;
+                        }
                     }
-                    break;
                 }
-            }
+                break;
+                
+            case DModSysConsts.TS_XML_TP_CFDI_40:
+                cfd.ver40.DElementComprobante comprobante40 = moRegistry.getElementComprobante40();
+
+                if (comprobante40 != null && comprobante40.getEltOpcComplemento() != null) {
+                    for (DElement element : comprobante40.getEltOpcComplemento().getElements()) {
+                        if (element instanceof cfd.ver40.crp20.DElementPagos) {
+                            cfd.ver40.crp20.DElementPagos pagos = (cfd.ver40.crp20.DElementPagos) element;
+                            for (cfd.ver40.crp20.DElementPagosPago pago : pagos.getEltPagos()) {
+                                payments.add(new DRowDfrPayment(pago));
+                            }
+                            break;
+                        }
+                    }
+                }
+                break;
         }
         
         moGridPayments.populateGrid(payments, this);
@@ -2644,12 +2898,31 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         
         // add DFR complement:
         
-        DElementPagos pagos = new DElementPagos();
-        for (DGridRow row : moGridPayments.getModel().getGridRows()) {
-            pagos.getEltPagos().add(((DRowDfrPayment) row).getPago());
+        switch (moRegistry.getFkXmlTypeId()) {
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                cfd.ver33.crp10.DElementPagos pagos10 = new cfd.ver33.crp10.DElementPagos();
+
+                for (DGridRow row : moGridPayments.getModel().getGridRows()) {
+                    cfd.ver33.crp10.DElementPagosPago pago10 = (cfd.ver33.crp10.DElementPagosPago) ((DRowDfrPayment) row).getPago();
+                    pagos10.getEltPagos().add(pago10);
+                }
+
+                registry.setDfrPagos10(pagos10);
+                break;
+                
+            case DModSysConsts.TS_XML_TP_CFDI_40:
+                cfd.ver40.crp20.DElementPagos pagos20 = new cfd.ver40.crp20.DElementPagos();
+
+                for (DGridRow row : moGridPayments.getModel().getGridRows()) {
+                    cfd.ver40.crp20.DElementPagosPago pago20 = (cfd.ver40.crp20.DElementPagosPago) ((DRowDfrPayment) row).getPago();
+                    pagos20.getEltPagos().add(pago20);
+                }
+                
+                registry.setDfrPagos20(pagos20);
+                break;
+            default:
+                // nothing
         }
-        
-        registry.setDfrPagos(pagos);
                 
         return registry;
     }
@@ -2671,12 +2944,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             else {
                 // validate payments vs. payments applied to documents:
                 for (DGridRow row : moGridPayments.getModel().getGridRows()) {
-                    DElementPagosPago pago = ((DRowDfrPayment) row).getPago();
+                    DIntPagosPago pago = ((DRowDfrPayment) row).getPago();
                     double payment = DLibUtils.roundAmount(pago.getAttMonto().getDouble());
                     double paymentDocs = 0;
                     
-                    for (DElementDoctoRelacionado doctoRelacionado : pago.getEltDoctoRelacionados()) {
-                        double xrt = doctoRelacionado.getAttTipoCambioDR().getDouble();
+                    for (DIntDoctoRelacionado doctoRelacionado : getDoctoRelacionados(pago)) {
+                        double xrt = doctoRelacionado.getAttEquivalenciaDR().getDouble();
                         double paymentDoc = doctoRelacionado.getAttImpPagado().getDouble();
                         paymentDocs = DLibUtils.roundAmount(paymentDocs + (xrt == 0 ? paymentDoc : DLibUtils.roundAmount(paymentDoc / xrt)));
                     }

@@ -23,6 +23,7 @@ import sba.lib.gui.DGuiSession;
 import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBranch;
 import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
@@ -438,7 +439,6 @@ public class DTrnDpsPrinting {
         HashMap<String, Object> hashMap = new HashMap<>();
         DDbConfigCompany configCompany = (DDbConfigCompany) moSession.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moDps.getCompanyBranchKey());
-        NamedNodeMap namedNodeMap;
 
         hashMap.put("oDecimalFormatQuantity", configCompany.getDecimalFormatQuantity());
         hashMap.put("oDecimalFormatPriceUnitary", configCompany.getDecimalFormatPriceUnitary());
@@ -448,15 +448,17 @@ public class DTrnDpsPrinting {
         
         // XML parsing:
 
+        NamedNodeMap namedNodeMap;
         Document doc = DXmlUtils.parseDocument(moDps.getChildDfr().getSuitableDocXml());
 
         // Comprobante:
-
-        double dTotal;
-        String sMoneda;
-        Node nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
         
+        Node nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
         namedNodeMap = nodeComprobante.getAttributes();
+        
+        double total = DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true));
+        String currency = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true);
+        
         hashMap.put("sXmlVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
         hashMap.put("sXmlTipoDeComprobante", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_CFDI_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true)));
         hashMap.put("sXmlSerie", DXmlUtils.extractAttributeValue(namedNodeMap, "Serie", false));
@@ -468,83 +470,112 @@ public class DTrnDpsPrinting {
         hashMap.put("sXmlMetodoPago", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MDP, DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true)));
         hashMap.put("sXmlFormaPago", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_FDP, DXmlUtils.extractAttributeValue(namedNodeMap, "FormaPago", true)));
         hashMap.put("sXmlCondicionesDePago", DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
-        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MON, sMoneda = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
+        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MON, currency));
         hashMap.put("sXmlTipoCambio", DXmlUtils.extractAttributeValue(namedNodeMap, "TipoCambio", false));
         hashMap.put("dXmlSubTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "SubTotal", true)));
         hashMap.put("dXmlDescuento", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Descuento", false)));
-        hashMap.put("dXmlTotal", dTotal = DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true)));
+        hashMap.put("dXmlTotal", total);
+        hashMap.put("sXmlExportacion", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_EXP, DXmlUtils.extractAttributeValue(namedNodeMap, "Exportacion", true)));
         hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
-        hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", true));
         
-        // CFDI Relacionados:
+        // CFDI relacionados:
 
         if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:CfdiRelacionados")) {
             String cfdiRelacionados = "";
-            Node nodeCfdiRelacionados = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados").get(0);
-
-            namedNodeMap = nodeCfdiRelacionados.getAttributes();
-            hashMap.put("sXmlTipoRelacion", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_REL_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true)));
             
-            for (Node nodeCfdiRelacionado : DXmlUtils.extractChildElements(nodeCfdiRelacionados, "cfdi:CfdiRelacionado")) {
-                namedNodeMap = nodeCfdiRelacionado.getAttributes();
-                cfdiRelacionados += (cfdiRelacionados.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
+            Vector<Node> nodes = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados");
+            for (Node node : nodes) {
+                namedNodeMap = node.getAttributes();
+                
+                cfdiRelacionados += (cfdiRelacionados.isEmpty() ? "" : "/ ") + "Tipo relación: "
+                        + DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_REL_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true));
+
+                String uuids = "";
+                for (Node nodeCfdiRelacionado : DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionado")) {
+                    namedNodeMap = nodeCfdiRelacionado.getAttributes();
+                    uuids += (uuids.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true);
+                }
+                
+                cfdiRelacionados += "; UUID: " + uuids;
             }
+            
             hashMap.put("sXmlCfdiRelacionados", cfdiRelacionados);
+        }
+        
+        // Información global:
+        
+        if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:InformacionGlobal")) {
+            String informacionGlobal = "";
+            
+            Node node = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:InformacionGlobal").get(0);
+            namedNodeMap = node.getAttributes();
+
+            informacionGlobal = "Periodicidad: "
+                    + DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_GBL_PER, DXmlUtils.extractAttributeValue(namedNodeMap, "Periodicidad", true))
+                    + "; Meses: "
+                    + DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_GBL_MES, DXmlUtils.extractAttributeValue(namedNodeMap, "Meses", true))
+                    + "; Año: "
+                    + DXmlUtils.extractAttributeValue(namedNodeMap, "Año", true);
+            
+            hashMap.put("sDocGlobal", informacionGlobal);
         }
 
         // Emisor:
-                
-        String sEmiRfc;
-        String sEmiNombre;
-        String sLugarExpedicion;
-        Node nodeEmisor = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
         
+        Node nodeEmisor = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
         namedNodeMap = nodeEmisor.getAttributes();
-        hashMap.put("sXmlEmiRfc", sEmiRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
-        hashMap.put("sXmlEmiNombre", sEmiNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
+        
+        DDbBizPartner bizPartnerEmisor = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, moDps.getCompanyKey());
+        DDbBranchAddress addressEmisor = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), DUtilConsts.BRA_ADD_ID });
+        String emisorRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true);
+        String emisorNombre = bizPartnerEmisor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerEmisor.getProperName();
+        String lugarExpedicion = addressEmisor.composeLocality(moSession).toUpperCase();
+        
+        hashMap.put("sXmlEmiRfc", emisorRfc);
+        hashMap.put("sXmlEmiNombre", emisorNombre);
         hashMap.put("sXmlEmiRegimenFiscal", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true)));
         
-        DDbBranchAddress addressEmi = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), 1 });
-        hashMap.put("sEmiDomCalle", addressEmi.getAddress1());
-        hashMap.put("sEmiDomNoExterior", addressEmi.getNumberExterior());
-        hashMap.put("sEmiDomNoInterior", addressEmi.getNumberInterior());
-        hashMap.put("sEmiDomColonia", addressEmi.getAddress2());
-        hashMap.put("sEmiDomLocalidad", addressEmi.getLocality());
-        hashMap.put("sEmiDomReferencia", addressEmi.getAddress3());
-        hashMap.put("sEmiDomMunicipio", addressEmi.getCounty());
-        hashMap.put("sEmiDomEstado", addressEmi.getState());
-        hashMap.put("sEmiDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressEmi.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
-        hashMap.put("sEmiDomCodigoPostal", addressEmi.getZipCode());
-        hashMap.put("sEmiDomTels", addressEmi.getTelecommDevices());
-        hashMap.put("sEmiDomEmails", addressEmi.getTelecommElectronics());
-        sLugarExpedicion = addressEmi.composeLocality(moSession).toUpperCase();
+        hashMap.put("sEmiDomCalle", addressEmisor.getAddress1());
+        hashMap.put("sEmiDomNoExterior", addressEmisor.getNumberExterior());
+        hashMap.put("sEmiDomNoInterior", addressEmisor.getNumberInterior());
+        hashMap.put("sEmiDomColonia", addressEmisor.getAddress2());
+        hashMap.put("sEmiDomLocalidad", addressEmisor.getLocality());
+        hashMap.put("sEmiDomReferencia", addressEmisor.getAddress3());
+        hashMap.put("sEmiDomMunicipio", addressEmisor.getCounty());
+        hashMap.put("sEmiDomEstado", addressEmisor.getState());
+        hashMap.put("sEmiDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressEmisor.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
+        hashMap.put("sEmiDomCodigoPostal", addressEmisor.getZipCode());
+        hashMap.put("sEmiDomTels", addressEmisor.getTelecommDevices());
+        hashMap.put("sEmiDomEmails", addressEmisor.getTelecommElectronics());
         
         // Receptor:
         
-        String sRecRfc;
-        String sRecNombre;
         Node nodeReceptor = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
-        
         namedNodeMap = nodeReceptor.getAttributes();
-        hashMap.put("sXmlRecRfc", sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
-        hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
-        hashMap.put("sXmlRecDomicilioFiscal", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
-        hashMap.put("sXmlRecRegimenFiscal", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
+        
+        DDbBizPartner bizPartnerReceptor = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, moDps.getBizPartnerKey());
+        DDbBranchAddress addressReceptor = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, moDps.getBizPartnerBranchAddressKey());
+        String sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true);
+        String sRecNombre = bizPartnerReceptor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerReceptor.getProperName();
+        
+        hashMap.put("sXmlRecRfc", sRecRfc);
+        hashMap.put("sXmlRecNombre", sRecNombre);
+        hashMap.put("sXmlRecDomicilioFiscal", DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
+        hashMap.put("sXmlRecRegimenFiscal", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true)));
         hashMap.put("sXmlRecUsoCFDI", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true)));
-
-        DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkBizPartnerBizPartnerId(), moDps.getFkBizPartnerBranchId(), moDps.getFkBizPartnerAddressId() });
-        hashMap.put("sRecDomCalle", addressRec.getAddress1());
-        hashMap.put("sRecDomNoExterior", addressRec.getNumberExterior());
-        hashMap.put("sRecDomNoInterior", addressRec.getNumberInterior());
-        hashMap.put("sRecDomColonia", addressRec.getAddress2());
-        hashMap.put("sRecDomLocalidad", addressRec.getLocality());
-        hashMap.put("sRecDomReferencia", addressRec.getAddress3());
-        hashMap.put("sRecDomMunicipio", addressRec.getCounty());
-        hashMap.put("sRecDomEstado", addressRec.getState());
-        hashMap.put("sRecDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressRec.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
-        hashMap.put("sRecDomCodigoPostal", addressRec.getZipCode());
-        hashMap.put("sRecDomTels", addressRec.getTelecommDevices());
-        hashMap.put("sRecDomEmails", addressRec.getTelecommElectronics());
+        
+        hashMap.put("sRecDomCalle", addressReceptor.getAddress1());
+        hashMap.put("sRecDomNoExterior", addressReceptor.getNumberExterior());
+        hashMap.put("sRecDomNoInterior", addressReceptor.getNumberInterior());
+        hashMap.put("sRecDomColonia", addressReceptor.getAddress2());
+        hashMap.put("sRecDomLocalidad", addressReceptor.getLocality());
+        hashMap.put("sRecDomReferencia", addressReceptor.getAddress3());
+        hashMap.put("sRecDomMunicipio", addressReceptor.getCounty());
+        hashMap.put("sRecDomEstado", addressReceptor.getState());
+        hashMap.put("sRecDomPais", ((String) moSession.readField(DModConsts.CS_CTY, new int[] { addressReceptor.getActualFkCountryId_n(moSession) }, DDbRegistry.FIELD_NAME)).toUpperCase());
+        hashMap.put("sRecDomCodigoPostal", addressReceptor.getZipCode());
+        hashMap.put("sRecDomTels", addressReceptor.getTelecommDevices());
+        hashMap.put("sRecDomEmails", addressReceptor.getTelecommElectronics());
 
         // Impuestos:
 
@@ -574,7 +605,7 @@ public class DTrnDpsPrinting {
                 hashMap.put("sXmlTimSelloCfd", sSelloCfd = DXmlUtils.extractAttributeValue(namedNodeMap, "SelloCFD", true));
                 hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMap, "SelloSAT", true));
 
-                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi33(sUuid, sEmiRfc, sRecRfc, dTotal, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
+                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi33(sUuid, emisorRfc, sRecRfc, total, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
                 hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
             }
         }
@@ -592,11 +623,11 @@ public class DTrnDpsPrinting {
         hashMap.put("sDocUser", moSession.readField(DModConsts.CU_USR, new int[] { moDps.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));
 
         if (moDps.getFkPaymentTypeId() == DModSysConsts.FS_PAY_TP_CDT) {
-            hashMap.put("sDocPagare", "LUGAR DE EXPEDICIÓN: " + sLugarExpedicion + ", A " + DLibUtils.DateFormatDateLong.format(moDps.getDate()).toUpperCase() + ".\n" +
+            hashMap.put("sDocPagare", "LUGAR DE EXPEDICIÓN: " + lugarExpedicion + ", A " + DLibUtils.DateFormatDateLong.format(moDps.getDate()).toUpperCase() + ".\n" +
                     "POR ESTE PAGARÉ DEBO(EMOS) Y PAGARÉ(EMOS) INCONDICIONALMENTE A LA ORDEN DE \"" +
-                    sEmiNombre + "\", EL DÍA " + DLibUtils.DateFormatDateLong.format(DLibTimeUtils.addDate(moDps.getDateCredit(), 0, 0, moDps.getCreditDays())).toUpperCase() + ", " +
-                    "LA CANTIDAD DE $" + DLibUtils.getDecimalFormatAmount().format(moDps.getTotalCy_r()) + " " + sMoneda + ", " +
-                    "EN ESTA CIUDAD DE " + sLugarExpedicion + " O DONDE EXIJA EL TENEDOR, IMPORTE DE LA MERCANCÍA ARRIBA DESCRITA " +
+                    emisorNombre + "\", EL DÍA " + DLibUtils.DateFormatDateLong.format(DLibTimeUtils.addDate(moDps.getDateCredit(), 0, 0, moDps.getCreditDays())).toUpperCase() + ", " +
+                    "LA CANTIDAD DE $" + DLibUtils.getDecimalFormatAmount().format(moDps.getTotalCy_r()) + " " + currency + ", " +
+                    "EN ESTA CIUDAD DE " + lugarExpedicion + " O DONDE EXIJA EL TENEDOR, IMPORTE DE LA MERCANCÍA ARRIBA DESCRITA " +
                     "A MI(NUESTRA) ENTERA CONFORMIDAD. EN CASO DE MORA SE CONVIENE EN PACTAR UN INTERÉS MORATORIO DEL " +
                     DLibUtils.getDecimalFormatPercentageDiscount().format(((DDbConfigCompany) moSession.getConfigCompany()).getDelayInterestRate()) + " " +
                     "MENSUAL DESDE SU VENCIMIENTO HASTA SU TOTAL LIQUIDACIÓN.");

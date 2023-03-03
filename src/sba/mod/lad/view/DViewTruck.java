@@ -59,7 +59,7 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
 
         filter = (Boolean) moFiltersMap.get(DGridConsts.FILTER_DELETED);
         if ((Boolean) filter) {
-            sql += (sql.length() == 0 ? "" : "AND ") + "t.b_del = 0 ";
+            sql += (sql.isEmpty() ? "" : "AND ") + "t.b_del = 0 ";
         }
 
         msSql = "SELECT " +
@@ -92,7 +92,7 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
                 "ui.id_usr = t.fk_usr_ins " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "uu.id_usr = t.fk_usr_upd " +
-                (sql.length() == 0 ? "" : "WHERE " + sql) +
+                (sql.isEmpty() ? "" : "WHERE " + sql) +
                 "ORDER BY t.name, t.code, t.id_truck;";
     }
 

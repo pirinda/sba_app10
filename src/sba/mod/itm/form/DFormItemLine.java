@@ -89,6 +89,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moTextCode = new sba.lib.gui.bean.DBeanFieldText();
         jlCfdItemKey = new javax.swing.JLabel();
         moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKeyHint = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
@@ -219,6 +220,11 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(moTextCfdItemKey);
+
+        jlCfdItemKeyHint.setForeground(java.awt.Color.gray);
+        jlCfdItemKeyHint.setText("(SAT)");
+        jlCfdItemKeyHint.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel3.add(jlCfdItemKeyHint);
 
         jPanel1.add(jPanel3);
 
@@ -359,7 +365,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeItemLine();
 
-        DGuiUtils.setWindowBounds(this, 800, 500);
+        DGuiUtils.setWindowBounds(this, 880, 550);
 
         mnParamItemGenusId = DLibConsts.UNDEFINED;
 
@@ -569,6 +575,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private javax.swing.JLabel jlAbpItem;
     private javax.swing.JLabel jlBrand;
     private javax.swing.JLabel jlCfdItemKey;
+    private javax.swing.JLabel jlCfdItemKeyHint;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
     private javax.swing.JLabel jlDepartment;

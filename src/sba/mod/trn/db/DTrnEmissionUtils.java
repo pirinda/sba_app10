@@ -374,7 +374,7 @@ public abstract class DTrnEmissionUtils {
                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
                                 dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
                                 dps.setAuxLock(lock); // set transaction lock
-                                dfr = DTrnDfrUtils.createDfr(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
+                                dfr = DTrnDfrUtils.createDfrFromDps(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
                                 dps.updateDfr(client.getSession(), dfr);
                             }
                             
@@ -430,7 +430,7 @@ public abstract class DTrnEmissionUtils {
                                 break;
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_40:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi40());
                                 printed = true;
                                 break;
                                 
@@ -648,7 +648,7 @@ public abstract class DTrnEmissionUtils {
                                         // reissue document:
                                         dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, dps.getPrimaryKey()); // retrieve document again, it has been just updated
                                         dps.setAuxLock(lock); // set transaction lock
-                                        dfr = DTrnDfrUtils.createDfr(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
+                                        dfr = DTrnDfrUtils.createDfrFromDps(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
                                         dps.updateDfr(client.getSession(), dfr);
                                     }
                                     

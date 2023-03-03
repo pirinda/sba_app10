@@ -5,6 +5,7 @@
  */
 package sba.mod.lad.form;
 
+import cfd.ver40.DCfdi40Catalogs;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -31,9 +32,9 @@ import sba.mod.lad.db.DDbBolTransportFigureTransportPart;
 import sba.mod.lad.db.DDbBolTruck;
 import sba.mod.lad.db.DDbBolTruckTrailer;
 import sba.mod.lad.db.DDbLocation;
+import sba.mod.lad.db.DDbSysTransportPartType;
 import sba.mod.lad.db.DDbTrailer;
 import sba.mod.lad.db.DDbTransportFigure;
-import sba.mod.lad.db.DDbTransportPartType;
 import sba.mod.lad.db.DDbTruck;
 
 /**
@@ -88,6 +89,82 @@ public abstract class DBolUtils {
         }
         
         return xmlCatalog;
+    }
+
+    /**
+     * Check if contry code equals MEX, USA or CAN.
+     * @param countryCode Country code.
+     * @return <code>true</code> if contry code equals MEX, USA or CAN, otherwise <code>false</code>.
+     */
+    public static boolean applyStateCatalog(final String countryCode) {
+        return countryCode.equals(DCfdi40Catalogs.ClavePaísMex) || countryCode.equals(DCfdi40Catalogs.ClavePaísUsa) || countryCode.equals(DCfdi40Catalogs.ClavePaísCan);
+    }
+    
+    /**
+     * Check if contry code equals MEX.
+     * @param countryCode Country code.
+     * @return <code>true</code> if contry code equals MEX, otherwise <code>false</code>.
+     */
+    public static boolean applyAddressCatalogs(final String countryCode) {
+        return countryCode.equals(DCfdi40Catalogs.ClavePaísMex);
+    }
+
+    /**
+     * Get unit ID associated to kilogram.
+     * @param session GUI session.
+     * @return If found, unit ID associated to kilogram, otherwise <code>0</code>.
+     * @throws Exception
+     */
+    public static int getWeightUnitId(final DGuiSession session) throws Exception {
+        int unitId = 0;
+        String sql = "SELECT id_unt " + "FROM " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " " + "WHERE code = 'kg' AND NOT b_del " + "ORDER BY id_unt " + "LIMIT 1;";
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                unitId = resultSet.getInt(1);
+            }
+        }
+        return unitId;
+    }
+
+    /**
+     * Get BOL series for required transport type.
+     * BOL number series, e.g., 01=;02=A;03=B,C (code of transport type and number series, separated by semicolon).
+     * @param session GUI session.
+     * @param transportTypeCode SAT code for required transport type.
+     * @return If found, BOL series, otherwise <code>null</code>.
+     * @throws Exception
+     */
+    public static String[] getBolSeries(final DGuiSession session, final String transportTypeCode) throws Exception {
+        String[] series = null;
+        String bolSeries = "";
+        String sql = "SELECT bol_ser " + "FROM " + DModConsts.TablesMap.get(DModConsts.CU_CFG_CO) + " " + "WHERE id_bpr = " + DUtilConsts.BPR_CO_ID + ";";
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                bolSeries = resultSet.getString("bol_ser");
+            }
+        }
+        if (!bolSeries.isEmpty()) {
+            String[] configs = DLibUtils.textExplode(bolSeries, ";");
+            if (configs.length > 0) {
+                for (String config : configs) {
+                    String[] configByType = config.split("=");
+                    if (configByType.length > 0 && configByType[0].equals(transportTypeCode)) {
+                        switch (configByType.length) {
+                            case 1:
+                                series = new String[] { "" };
+                                break;
+                            case 2:
+                                series = DLibUtils.textExplode(configByType[1], ",");
+                                break;
+                            default:
+                                // nothing
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return series;
     }
     
     public static DGridPaneForm createGridLocations(final DGuiClient client, final DFormBol formBol) {
@@ -288,65 +365,6 @@ public abstract class DBolUtils {
         
         return grid;
     }
-
-    /**
-     * Get unit ID associated to kilogram.
-     * @param session GUI session.
-     * @return If found, unit ID associated to kilogram, otherwise <code>0</code>.
-     * @throws Exception
-     */
-    public static int getWeightUnitId(final DGuiSession session) throws Exception {
-        int unitId = 0;
-        String sql = "SELECT id_unt " + "FROM " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " " + "WHERE code = 'kg' AND NOT b_del " + "ORDER BY id_unt " + "LIMIT 1;";
-        try (final ResultSet resultSet = session.getStatement().executeQuery(sql)) {
-            if (resultSet.next()) {
-                unitId = resultSet.getInt(1);
-            }
-        }
-        return unitId;
-    }
-
-    /**
-     * Get BOL series for required transport type.
-     * BOL number series, e.g., 01=;02=A;03=B,C (code of transport type and number series, separated by semicolon).
-     * @param session GUI session.
-     * @param transportTypeCode SAT code for required transport type.
-     * @return If found, BOL series, otherwise <code>null</code>.
-     * @throws Exception
-     */
-    public static String[] getBolSeries(final DGuiSession session, final String transportTypeCode) throws Exception {
-        String[] series = null;
-        String bolSeries = "";
-        String sql = "SELECT bol_ser " + "FROM " + DModConsts.TablesMap.get(DModConsts.CU_CFG_CO) + " " + "WHERE id_bpr = " + DUtilConsts.BPR_CO_ID + ";";
-        try (final ResultSet resultSet = session.getStatement().executeQuery(sql)) {
-            if (resultSet.next()) {
-                bolSeries = resultSet.getString("bol_ser");
-            }
-        }
-        if (!bolSeries.isEmpty()) {
-            String[] configs = DLibUtils.textExplode(bolSeries, ";");
-            if (configs.length > 0) {
-                for (String config : configs) {
-                    String[] configByType = config.split("=");
-                    if (configByType.length > 0 && configByType[0].equals(transportTypeCode)) {
-                        switch (configByType.length) {
-                            case 1:
-                                series = new String[] { "" };
-                                break;
-                            case 2:
-                                series = DLibUtils.textExplode(configByType[1], ",");
-                                break;
-                            default:
-                                // nothing
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return series;
-    }
-    
     /**
      * Get next code for desired table.
      * @param session GUI session.
@@ -405,6 +423,21 @@ public abstract class DBolUtils {
                 }
             }
         }
+    }
+    
+    public static double getDistanceKm(final DGuiSession session, final DDbLocation source, final DDbLocation destiny) throws Exception {
+        double distanceKm = 0;
+        
+        String sql = "SELECT dist_km "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.LU_LOC_DIST) + " "
+                + "WHERE id_loc_src = " + source.getPkLocationId() + " AND id_loc_des = " + destiny.getPkLocationId() + " AND NOT b_del;";
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                distanceKm = resultSet.getDouble("dist_km");
+            }
+        }
+        
+        return distanceKm;
     }
     
     public static ArrayList<DDbBolLocation> createTestingBolLocations(final DGuiSession session) {
@@ -478,7 +511,7 @@ public abstract class DBolUtils {
         bolLocation1.setOwnLocation(location1);
         bolLocation1.setOwnSourceLocation(null);
         
-        bolLocation1.setAuxSortingPos(1);
+        bolLocation1.setBolSortingPos(1);
         
         bolLocation1.setTempBolLocationId(1);
         bolLocation1.setTempSourceBolLocationId(0);
@@ -553,7 +586,7 @@ public abstract class DBolUtils {
         bolLocation2.setOwnLocation(location2);
         bolLocation2.setOwnSourceLocation(location1);
         
-        bolLocation2.setAuxSortingPos(2);
+        bolLocation2.setBolSortingPos(2);
 
         bolLocation2.setTempBolLocationId(2);
         bolLocation2.setTempSourceBolLocationId(1);
@@ -604,7 +637,7 @@ public abstract class DBolUtils {
         bolMerchandiseMove1.setOwnSourceLocation(bolLocations.get(0).getOwnLocation());
         bolMerchandiseMove1.setOwnDestinyLocation(bolLocations.get(1).getOwnLocation());
         
-        bolMerchandiseMove1.setAuxSortingPos(1);
+        bolMerchandiseMove1.setBolSortingPos(1);
         
         bolMerchandiseMove1.setTempSourceBolLocationId(1);
         bolMerchandiseMove1.setTempDestinyBolLocationId(2);
@@ -617,7 +650,7 @@ public abstract class DBolUtils {
         DDbUnit unit1 = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { bolMerchandise1.getFkUnitId()});
         bolMerchandise1.setOwnUnit(unit1);
         
-        bolMerchandise1.setAuxSortingPos(1);
+        bolMerchandise1.setBolSortingPos(1);
         bolMerchandise1.computeQuantityMoved();
         
         bolMerchandises.add(bolMerchandise1);
@@ -660,7 +693,7 @@ public abstract class DBolUtils {
         bolMerchandiseMove2.setOwnSourceLocation(bolLocations.get(0).getOwnLocation());
         bolMerchandiseMove2.setOwnDestinyLocation(bolLocations.get(1).getOwnLocation());
         
-        bolMerchandiseMove2.setAuxSortingPos(1);
+        bolMerchandiseMove2.setBolSortingPos(1);
         
         bolMerchandiseMove2.setTempSourceBolLocationId(1);
         bolMerchandiseMove2.setTempDestinyBolLocationId(2);
@@ -673,7 +706,7 @@ public abstract class DBolUtils {
         DDbUnit unit2 = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { bolMerchandise2.getFkUnitId()});
         bolMerchandise2.setOwnUnit(unit2);
         
-        bolMerchandise2.setAuxSortingPos(2);
+        bolMerchandise2.setBolSortingPos(2);
         bolMerchandise2.computeQuantityMoved();
         
         bolMerchandises.add(bolMerchandise2);
@@ -738,7 +771,7 @@ public abstract class DBolUtils {
 
         bolTruck1.setOwnTruck(truck1);
         
-        bolTruck1.setAuxSortingPos(1);
+        bolTruck1.setBolSortingPos(1);
         
         // trailer 1
         
@@ -773,7 +806,7 @@ public abstract class DBolUtils {
         
         bolTruckTrailer1.setOwnTrailer(trailer1);
         
-        bolTruckTrailer1.setAuxSortingPos(1);
+        bolTruckTrailer1.setBolSortingPos(1);
         
         bolTruck1.getChildTrailers().add(bolTruckTrailer1);
         
@@ -850,7 +883,7 @@ public abstract class DBolUtils {
         
         bolTptFigure1.setOwnTransportFigure(tptFigure1);
         
-        bolTptFigure1.setAuxSortingPos(1);
+        bolTptFigure1.setBolSortingPos(1);
         
         bolTptFigure1.setDbmsTransportFigureTypeCode((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure1.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
         bolTptFigure1.setDbmsTransportFigureTypeName((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure1.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_NAME));
@@ -886,7 +919,7 @@ public abstract class DBolUtils {
         //tptFigure2.setDisabled(...);
         //tptFigure2.setDeleted(...);
         //tptFigure2.setSystem(...);
-        tptFigure2.setFkTransportFigureTypeId(DModSysConsts.LS_TPT_FIGURE_TP_DRIVER);
+        tptFigure2.setFkTransportFigureTypeId(DModSysConsts.LS_TPT_FIGURE_TP_OWNER);
         tptFigure2.setFkFigureCountryId(35); // BGR - Bulgaria
         tptFigure2.setFkAddressCountryId(35); // BGR - Bulgaria
         //tptFigure2.setFkUserInsertId(...);
@@ -920,7 +953,7 @@ public abstract class DBolUtils {
         //bolTptFigure2.setFkFigureCountryId(...); // set in setOwnTransportFigure()
         //bolTptFigure2.setFkAddressCountryId(...); // set in setOwnTransportFigure()
         
-        DDbTransportPartType tptPartType2 = (DDbTransportPartType) session.readRegistry(DModConsts.LS_TPT_PART_TP, new int[] { 4 }); // remolque
+        DDbSysTransportPartType sysTptPartType2 = (DDbSysTransportPartType) session.readRegistry(DModConsts.LS_TPT_PART_TP, new int[] { 4 }); // remolque
         
         DDbBolTransportFigureTransportPart tptFigureTptPart2 = new DDbBolTransportFigureTransportPart();
 
@@ -929,15 +962,15 @@ public abstract class DBolUtils {
         tptFigureTptPart2.setPkTransportPartId(0);
         //tptFigureTptPart1.setFkTransportPartTypeId(...); set in setOwnTransportPartType()
         
-        tptFigureTptPart2.setOwnTransportPartType(tptPartType2);
+        tptFigureTptPart2.setOwnSysTransportPartType(sysTptPartType2);
         
-        tptFigureTptPart2.setAuxSortingPos(1);
+        tptFigureTptPart2.setBolSortingPos(1);
         
         bolTptFigure2.getChildTransportParts().add(tptFigureTptPart2);
         
         bolTptFigure2.setOwnTransportFigure(tptFigure2);
         
-        bolTptFigure2.setAuxSortingPos(1);
+        bolTptFigure2.setBolSortingPos(1);
         
         bolTptFigure2.setDbmsTransportFigureTypeCode((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure2.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
         bolTptFigure2.setDbmsTransportFigureTypeName((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure2.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_NAME));

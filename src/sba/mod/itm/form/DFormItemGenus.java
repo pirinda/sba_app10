@@ -88,6 +88,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moTextCode = new sba.lib.gui.bean.DBeanFieldText();
         jlCfdItemKey = new javax.swing.JLabel();
         moTextCfdItemKey = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdItemKeyHint = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
@@ -292,6 +293,11 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         moTextCfdItemKey.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(moTextCfdItemKey);
+
+        jlCfdItemKeyHint.setForeground(java.awt.Color.gray);
+        jlCfdItemKeyHint.setText("(SAT)");
+        jlCfdItemKeyHint.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel3.add(jlCfdItemKeyHint);
 
         jPanel9.add(jPanel3);
 
@@ -617,8 +623,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeItemGenus();
 
-        DGuiUtils.setWindowBounds(this, 800, 505);
-
+        DGuiUtils.setWindowBounds(this, 880, 550);
+        
         moFieldKeyGroup = new DGuiFieldKeyGroup(miClient);
 
         moKeyItemCategory.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemCategory), true);
@@ -813,6 +819,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAbpItem;
     private javax.swing.JLabel jlCfdItemKey;
+    private javax.swing.JLabel jlCfdItemKeyHint;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlCodeOrderBrand;
     private javax.swing.JLabel jlCodeOrderItem;

@@ -11,7 +11,9 @@ package sba.mod.lad.db;
  */
 public interface DBolGridRow {
     
-    public void setAuxSortingPos(int n);
+    public void setBolUpdateOwnRegistry(boolean update);
+    public void setBolSortingPos(int n);
     
-    public int getAuxSortingPos();
+    public boolean isBolUpdateOwnRegistry();
+    public int getBolSortingPos();
 }

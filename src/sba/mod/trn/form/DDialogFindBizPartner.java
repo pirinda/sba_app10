@@ -244,7 +244,7 @@ public class DDialogFindBizPartner extends DBeanFormDialog implements DGridPaneF
 
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DGridConsts.COL_TITLE_NAME);
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DUtilConsts.TXT_FISCAL_ID);
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "RFC");
 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);
@@ -267,7 +267,7 @@ public class DDialogFindBizPartner extends DBeanFormDialog implements DGridPaneF
 
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DGridConsts.COL_TITLE_NAME);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DGridConsts.COL_TITLE_CODE);
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DUtilConsts.TXT_FISCAL_ID);
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "RFC");
 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);

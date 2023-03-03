@@ -175,11 +175,11 @@ public class DDbLocation extends DDbRegistryUser {
         msCodeDestiny = "";
         
         if (isLocationSource() || isLocationBidirectional()) {
-            msCodeSource = DCfdi40Catalogs.PrefijoClaveOrigen + msCode;
+            msCodeSource = DCfdi40Catalogs.CcpUbicaciónOrigenPrefijoId + msCode;
         }
         
         if (isLocationDestiny()|| isLocationBidirectional()) {
-            msCodeDestiny = DCfdi40Catalogs.PrefijoClaveDestino + msCode;
+            msCodeDestiny = DCfdi40Catalogs.CcpUbicaciónDestinoPrefijoId + msCode;
         }
     }
 
@@ -306,8 +306,8 @@ public class DDbLocation extends DDbRegistryUser {
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
             
-            msDbmsLocationTypeCode = (String) session.readField(DModConsts.LU_LOC, new int[] { mnFkLocationTypeId }, DDbRegistry.FIELD_CODE);
-            msDbmsLocationTypeName = (String) session.readField(DModConsts.LU_LOC, new int[] { mnFkLocationTypeId }, DDbRegistry.FIELD_NAME);
+            msDbmsLocationTypeCode = (String) session.readField(DModConsts.LS_LOC_TP, new int[] { mnFkLocationTypeId }, DDbRegistry.FIELD_CODE);
+            msDbmsLocationTypeName = (String) session.readField(DModConsts.LS_LOC_TP, new int[] { mnFkLocationTypeId }, DDbRegistry.FIELD_NAME);
 
             mbRegistryNew = false;
         }

@@ -52,7 +52,7 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
     /**
      * Creates new form DPickerElement.
      * @param client GUI client.
-     * @param element Element. Constants defined in DModConsts. Optsions supported: LU_LOC, LU_TPT_FIGURE, LU_TRAIL and LU_TRUCK.
+     * @param element Element. Constants defined in DModConsts. Optsions supported: LU_LOC, LU_TPT_FIGURE, LU_TRAIL, LU_TRUCK, LS_TPT_PART_TP, IU_ITM.
      */
     public DPickerElement(DGuiClient client, int element) {
         setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, element, 0, composeTitle());
@@ -149,6 +149,8 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
         moFields.addField(moTextElementCode);
         moFields.setFormButton(jbSave);
         
+        jbSave.setText(DGuiConsts.TXT_BTN_OK);
+        
         if (mnFormType == DModConsts.LU_LOC || mnFormType == DModConsts.LU_TPT_FIGURE) {
             jlFilter.setText("Tipo:*");
             jlFilter.setEnabled(true);
@@ -172,6 +174,12 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
                 break;
             case DModConsts.LU_TRUCK:
                 jlElement.setText("Autotransporte:");
+                break;
+            case DModConsts.LS_TPT_PART_TP:
+                jlElement.setText("Parte transporte:");
+                break;
+            case DModConsts.IU_ITM:
+                jlElement.setText("Ítem:");
                 break;
             default:
                 jlElement.setText(DUtilConsts.TXT_UNKNOWN + ":");
@@ -228,6 +236,19 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
                         columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Config. vehicular descripción");
                         break;
                         
+                    case DModConsts.LS_TPT_PART_TP:
+                        columns = new DGridColumnForm[2];
+                        columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Nombre");
+                        columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "Código");
+                        break;
+                        
+                    case DModConsts.IU_ITM:
+                        columns = new DGridColumnForm[3];
+                        columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Nombre");
+                        columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "Código");
+                        columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Unidad");
+                        break;
+                        
                     default:
                         // nothing
                 }
@@ -256,6 +277,12 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
                 break;
             case DModConsts.LU_TRUCK:
                 formTitle += " autotransporte";
+                break;
+            case DModConsts.LS_TPT_PART_TP:
+                formTitle += " parte de transporte";
+                break;
+            case DModConsts.IU_ITM:
+                formTitle += " ítem";
                 break;
             default:
                 formTitle += " " + DUtilConsts.TXT_UNKNOWN.toLowerCase();
@@ -401,6 +428,21 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
                         + "ORDER BY name, code, id_truck;";
                 break;
                 
+            case DModConsts.LS_TPT_PART_TP:
+                sql = "SELECT id_tpt_part_tp AS _id, code, name "
+                        + "FROM " + DModConsts.TablesMap.get(DModConsts.LS_TPT_PART_TP) + " "
+                        + "WHERE NOT b_del "
+                        + "ORDER BY name, code, id_tpt_part_tp;";
+                break;
+                
+            case DModConsts.IU_ITM:
+                sql = "SELECT i.id_itm AS _id, i.code, i.name, u.name AS _unit_name "
+                        + "FROM " + DModConsts.TablesMap.get(DModConsts.IU_ITM) + " AS i "
+                        + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " AS u ON u.id_unt = i.fk_unt "
+                        + "WHERE NOT i.b_del "
+                        + "ORDER BY i.name, i.code, i.id_itm;";
+                break;
+                
             default:
                 throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -448,8 +490,28 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
                         
                         row.getValues().add(resultSet.getString("name")); // 0
                         row.getValues().add(resultSet.getString("code")); // 1
-                        row.getValues().add(resultSet.getString("_type_code")); // 2
-                        row.getValues().add(resultSet.getString("_type_name")); // 3
+                        row.getValues().add(resultSet.getString("plate")); // 2
+                        row.getValues().add(resultSet.getString("_type_code")); // 3
+                        row.getValues().add(resultSet.getString("_type_name")); // 4
+                        
+                        maGridRows.add(row);
+                    }
+                    break;
+                    
+                case DModConsts.LS_TPT_PART_TP:
+                case DModConsts.IU_ITM:
+                    while (resultSet.next()) {
+                        DGridRowOptionPicker row = new DGridRowOptionPicker(new int[] { resultSet.getInt("_id") });
+                        
+                        row.setRowName(resultSet.getString("name"));
+                        row.setRowCode(resultSet.getString("code"));
+                        
+                        row.getValues().add(resultSet.getString("name")); // 0
+                        row.getValues().add(resultSet.getString("code")); // 1
+                        
+                        if (mnFormType == DModConsts.IU_ITM) {
+                            row.getValues().add(resultSet.getString("_unit_name")); // 2
+                        }
                         
                         maGridRows.add(row);
                     }
@@ -537,12 +599,12 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
 
     @Override
     public void setRegistry(DDbRegistry registry) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public DDbRegistry getRegistry() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -559,7 +621,7 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
 
     @Override
     public void setValue(final int type, final Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -584,6 +646,17 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
             
             if (button == jbClear) {
                 actionPerformedClear();
+            }
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() instanceof DBeanFieldKey && e.getStateChange() == ItemEvent.SELECTED) {
+            DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+            
+            if (field == moKeyFilter) {
+                itemStateChangedFilter();
             }
         }
     }
@@ -618,17 +691,6 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
             
             if (field == moTextElementName || field == moTextElementCode) {
                 keyReleasedElementNameCode(e);
-            }
-        }
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldKey && e.getStateChange() == ItemEvent.SELECTED) {
-            DBeanFieldKey field = (DBeanFieldKey) e.getSource();
-            
-            if (field == moKeyFilter) {
-                itemStateChangedFilter();
             }
         }
     }

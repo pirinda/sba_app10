@@ -31,9 +31,9 @@ import sba.mod.lad.db.DDbBolTruck;
 import sba.mod.lad.db.DDbBolTruckTrailer;
 import sba.mod.lad.db.DDbLocation;
 import sba.mod.lad.db.DDbLocationDistance;
+import sba.mod.lad.db.DDbSysTransportPartType;
 import sba.mod.lad.db.DDbTrailer;
 import sba.mod.lad.db.DDbTransportFigure;
-import sba.mod.lad.db.DDbTransportPartType;
 import sba.mod.lad.db.DDbTruck;
 import sba.mod.lad.db.DDbTruckTrailer;
 import sba.mod.lad.db.DDbTruckTransportFigure;
@@ -61,9 +61,10 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
     
     private JMenu mjLad;
     private JMenuItem mjLadBolReal;
-    private JMenuItem mjLadBolTemp;
+    private JMenuItem mjLadBolTemplate;
 
-    private DFormBol moFormBol;
+    private DFormBol moFormBolReal;
+    private DFormBol moFormBolTemplate;
 
     public DModModuleLad(DGuiClient client) {
         super(client, DModConsts.MOD_LAD, DLibConsts.UNDEFINED);
@@ -98,14 +99,14 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
 
         mjLad = new JMenu("Traslados");
         mjLadBolReal = new JMenuItem("Cartas porte");
-        mjLadBolTemp = new JMenuItem("Plantillas cartas porte");
+        mjLadBolTemplate = new JMenuItem("Plantillas cartas porte");
 
         mjLad.add(mjLadBolReal);
         mjLad.addSeparator();
-        mjLad.add(mjLadBolTemp);
+        mjLad.add(mjLadBolTemplate);
 
         mjLadBolReal.addActionListener(this);
-        mjLadBolTemp.addActionListener(this);
+        mjLadBolTemplate.addActionListener(this);
 
         mjCat.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { DModSysConsts.CS_PRV_LAD_ADM, DModSysConsts.CS_PRV_LAD_CAT }));
         mjLad.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { DModSysConsts.CS_PRV_LAD_ADM, DModSysConsts.CS_PRV_LAD_LAD }));
@@ -148,7 +149,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                 };
                 break;
             case DModConsts.LS_TPT_PART_TP:
-                registry = new DDbTransportPartType();
+                registry = new DDbSysTransportPartType();
                 break;
             case DModConsts.LU_LOC:
                 registry = new DDbLocation();
@@ -333,7 +334,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.LU_TRUCK_TPT_FIGURE_TPT_PART:
                 break;
             case DModConsts.L_BOL:
-                view = new DViewBol(miClient, subtype, "Cartas porte" + (subtype == DDbBol.BOL_TEMP ? " (plantillas)" : ""));
+                view = new DViewBol(miClient, subtype, subtype == DDbBol.BOL_TEMPLATE ? "Plantillas cartas porte" : "Cartas porte");
                 break;
             case DModConsts.L_BOL_LOC:
                 break;
@@ -391,8 +392,15 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.LU_TRUCK_TPT_FIGURE_TPT_PART:
                 break;
             case DModConsts.L_BOL:
-                if (moFormBol == null) moFormBol = new DFormBol(miClient, subtype, "Equipo");
-                form = moFormBol;
+                if (subtype == DDbBol.BOL_TEMPLATE) {
+                    if (moFormBolTemplate == null) moFormBolTemplate = new DFormBol(miClient, subtype, "Plantilla carta porte");
+                    form = moFormBolTemplate;
+                }
+                else {
+                    if (moFormBolReal == null) moFormBolReal = new DFormBol(miClient, subtype, "Carta porte");
+                    if (params != null && params.getSubtype() == DDbBol.BOL_TEMPLATE) moFormBolReal.setTemplateKey(params.getKey());
+                    form = moFormBolReal;
+                }
                 break;
             case DModConsts.L_BOL_LOC:
                 break;
@@ -453,8 +461,8 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             else if (menuItem == mjLadBolReal) {
                 showView(DModConsts.L_BOL, DDbBol.BOL_REAL, null);
             }
-            else if (menuItem == mjLadBolTemp) {
-                showView(DModConsts.L_BOL, DDbBol.BOL_TEMP, null);
+            else if (menuItem == mjLadBolTemplate) {
+                showView(DModConsts.L_BOL, DDbBol.BOL_TEMPLATE, null);
             }
         }
     }

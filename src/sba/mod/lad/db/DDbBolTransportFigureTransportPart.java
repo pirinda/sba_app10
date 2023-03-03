@@ -25,9 +25,10 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
     protected int mnPkTransportPartId;
     protected int mnFkTransportPartTypeId;
     
-    protected DDbTransportPartType moOwnTransportPartType;
+    protected DDbSysTransportPartType moOwnSysTransportPartType;
     
-    protected int mnAuxSortingPos;
+    protected boolean mbBolUpdateOwnRegistry;
+    protected int mnBolSortingPos;
 
     public DDbBolTransportFigureTransportPart() {
         super(DModConsts.L_BOL_TPT_FIGURE_TPT_PART);
@@ -44,13 +45,19 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
     public int getPkTransportPartId() { return mnPkTransportPartId; }
     public int getFkTransportPartTypeId() { return mnFkTransportPartTypeId; }
     
-    public void setOwnTransportPartType(DDbTransportPartType o) { moOwnTransportPartType = o; updateFromOwnTransportPartType(); }
+    public void setOwnSysTransportPartType(DDbSysTransportPartType o) { moOwnSysTransportPartType = o; updateFromOwnSysTransportPartType(); }
     
-    public DDbTransportPartType getOwnTransportPartType() { return moOwnTransportPartType; }
+    public DDbSysTransportPartType getOwnSysTransportPartType() { return moOwnSysTransportPartType; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { mbBolUpdateOwnRegistry = update; }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return mbBolUpdateOwnRegistry; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -73,9 +80,10 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
         mnPkTransportPartId = 0;
         mnFkTransportPartTypeId = 0;
         
-        moOwnTransportPartType = null;
+        moOwnSysTransportPartType = null;
         
-        mnAuxSortingPos = 0;
+        mbBolUpdateOwnRegistry = false;
+        mnBolSortingPos = 0;
     }
 
     @Override
@@ -132,9 +140,9 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
             mnPkTransportPartId = resultSet.getInt("id_tpt_part");
             mnFkTransportPartTypeId = resultSet.getInt("fk_tpt_part_tp");
             
-            moOwnTransportPartType = (DDbTransportPartType) session.readRegistry(DModConsts.LS_TPT_PART_TP, new int[] { mnFkTransportPartTypeId });
+            moOwnSysTransportPartType = (DDbSysTransportPartType) session.readRegistry(DModConsts.LS_TPT_PART_TP, new int[] { mnFkTransportPartTypeId });
             
-            mnAuxSortingPos = mnPkTransportPartId;
+            mnBolSortingPos = mnPkTransportPartId;
 
             mbRegistryNew = false;
         }
@@ -149,14 +157,14 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
 
         // prepare dependencies:
         
-        if (moOwnTransportPartType == null) {
-            throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbTransportPartType.class.getName() + ")");
+        if (moOwnSysTransportPartType == null) {
+            throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbSysTransportPartType.class.getName() + ")");
         }
-        else if (moOwnTransportPartType.isRegistryNew() || moOwnTransportPartType.isRegistryEdited()) {
-            throw new Exception(DDbConsts.MSG_REG_DENIED_UPDATE + " (Own " + DDbTransportPartType.class.getName() + ")");
+        else if (moOwnSysTransportPartType.isRegistryNew() || (moOwnSysTransportPartType.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
+            throw new Exception(DDbConsts.MSG_REG_DENIED_UPDATE + " (Own " + DDbSysTransportPartType.class.getName() + ")");
         }
         
-        mnFkTransportPartTypeId = moOwnTransportPartType.getPkTypeId();
+        mnFkTransportPartTypeId = moOwnSysTransportPartType.getPkTypeId();
         
         // save registry:
 
@@ -195,17 +203,18 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
         registry.setPkTransportPartId(this.getPkTransportPartId());
         registry.setFkTransportPartTypeId(this.getFkTransportPartTypeId());
         
-        registry.setOwnTransportPartType(this.getOwnTransportPartType()); // clone shares the same "read-only" object
+        registry.setOwnSysTransportPartType(this.getOwnSysTransportPartType()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }
     
-    public void updateFromOwnTransportPartType() {
-        if (moOwnTransportPartType != null) {
-            setFkTransportPartTypeId(moOwnTransportPartType.getPkTypeId());
+    public void updateFromOwnSysTransportPartType() {
+        if (moOwnSysTransportPartType != null) {
+            setFkTransportPartTypeId(moOwnSysTransportPartType.getPkTypeId());
         }
     }
 
@@ -216,7 +225,7 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
 
     @Override
     public String getRowCode() {
-        return moOwnTransportPartType != null ? moOwnTransportPartType.getCode() : "";
+        return moOwnSysTransportPartType != null ? moOwnSysTransportPartType.getCode() : "";
     }
 
     @Override
@@ -250,10 +259,10 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
-                value = moOwnTransportPartType != null ? moOwnTransportPartType.getCode() + " - " + moOwnTransportPartType.getName() : "";
+                value = moOwnSysTransportPartType != null ? moOwnSysTransportPartType.getCode() + " - " + moOwnSysTransportPartType.getName() : "";
                 break;
             default:
                 // nothing

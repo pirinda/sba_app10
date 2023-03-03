@@ -15,6 +15,10 @@ public abstract class DTrnConsts {
     public static final int ITEM_FILTER_INV = 2;
     public static final int ITEM_FILTER_INV_PAC = 3;
 
+    public static final String TXT_ITEM_FILTER_ALL = "Todos";
+    public static final String TXT_ITEM_FILTER_INV = "Inventariables";
+    public static final String TXT_ITEM_FILTER_INV_PAC = "Convertibles";
+
     public static final int FOUND_BY_CODE = 1;
     public static final int FOUND_BY_BARCODE = 2;
     public static final int FOUND_BY_SNR = 3;
@@ -26,10 +30,8 @@ public abstract class DTrnConsts {
     public static final int FIND_MODE_BY_CMP = 5;
     public static final int FIND_MODE_BY_DEP = 6;
 
-    public static final String TXT_ITEM_FILTER_ALL = "Todos";
-    public static final String TXT_ITEM_FILTER_INV = "Inventariables";
-    public static final String TXT_ITEM_FILTER_INV_PAC = "Convertibles";
-
+    public static final int DPS_ROW_TAXES = 3;
+    
     public static final String TXT_DPS_DOC = "F";
     public static final String TXT_DPS_ADJ_INC = "ND";
     public static final String TXT_DPS_ADJ_DEC = "NC";

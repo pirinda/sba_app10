@@ -57,11 +57,16 @@ public class DFormUnit extends DBeanForm {
         jPanel5 = new javax.swing.JPanel();
         jlCfdUnitKey = new javax.swing.JLabel();
         moTextCfdUnitKey = new sba.lib.gui.bean.DBeanFieldText();
+        jlCfdUnitKeyHint = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jlRatioKg = new javax.swing.JLabel();
+        moDecRatioKg = new sba.lib.gui.bean.DBeanFieldDecimal();
+        jlRatioKgHing = new javax.swing.JLabel();
 
         jpContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jpContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -81,7 +86,7 @@ public class DFormUnit extends DBeanForm {
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel4.add(jlName);
 
-        moTextName.setPreferredSize(new java.awt.Dimension(200, 23));
+        moTextName.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel4.add(moTextName);
 
         jPanel1.add(jPanel4);
@@ -95,7 +100,26 @@ public class DFormUnit extends DBeanForm {
         moTextCfdUnitKey.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel5.add(moTextCfdUnitKey);
 
+        jlCfdUnitKeyHint.setForeground(java.awt.Color.gray);
+        jlCfdUnitKeyHint.setText("(SAT)");
+        jlCfdUnitKeyHint.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel5.add(jlCfdUnitKeyHint);
+
         jPanel1.add(jPanel5);
+
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRatioKg.setText("Equivalencia kg:");
+        jlRatioKg.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel6.add(jlRatioKg);
+        jPanel6.add(moDecRatioKg);
+
+        jlRatioKgHing.setForeground(java.awt.Color.gray);
+        jlRatioKgHing.setText("(Razón de conversión a kg, si aplica)");
+        jlRatioKgHing.setPreferredSize(new java.awt.Dimension(225, 23));
+        jPanel6.add(jlRatioKgHing);
+
+        jPanel1.add(jPanel6);
 
         jpContainer.add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -103,14 +127,18 @@ public class DFormUnit extends DBeanForm {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponentsCustom() {
+        DGuiUtils.setWindowBounds(this, 480, 300);
+        
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), 10);
         moTextCode.setTextCaseType(DLibConsts.UNDEFINED);
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 50);
         moTextCfdUnitKey.setTextSettings(DGuiUtils.getLabelName(jlCfdUnitKey), 3);
+        moDecRatioKg.setDecimalSettings(DGuiUtils.getLabelName(jlRatioKg), DGuiConsts.GUI_TYPE_DEC, false);
         
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
         moFields.addField(moTextCfdUnitKey);
+        moFields.addField(moDecRatioKg);
         
         moFields.setFormButton(jbSave);
     }
@@ -120,10 +148,15 @@ public class DFormUnit extends DBeanForm {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JLabel jlCfdUnitKey;
+    private javax.swing.JLabel jlCfdUnitKeyHint;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlRatioKg;
+    private javax.swing.JLabel jlRatioKgHing;
     private javax.swing.JPanel jpContainer;
+    private sba.lib.gui.bean.DBeanFieldDecimal moDecRatioKg;
     private sba.lib.gui.bean.DBeanFieldText moTextCfdUnitKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
@@ -165,6 +198,7 @@ public class DFormUnit extends DBeanForm {
         moTextCode.setValue(moRegistry.getCode());
         moTextName.setValue(moRegistry.getName());
         moTextCfdUnitKey.setValue(moRegistry.getCfdUnitKey());
+        moDecRatioKg.setValue(moDecRatioKg.getValue());
 
         setFormEditable(true);
 
@@ -179,6 +213,7 @@ public class DFormUnit extends DBeanForm {
 
         registry.setCode(moTextCode.getValue());
         registry.setName(moTextName.getValue());
+        registry.setRatioKg(moDecRatioKg.getValue());
         registry.setCfdUnitKey(moTextCfdUnitKey.getValue());
 
         return registry;

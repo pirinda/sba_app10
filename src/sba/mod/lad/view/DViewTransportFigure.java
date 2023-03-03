@@ -59,7 +59,7 @@ public class DViewTransportFigure extends DGridPaneView implements ActionListene
 
         filter = (Boolean) moFiltersMap.get(DGridConsts.FILTER_DELETED);
         if ((Boolean) filter) {
-            sql += (sql.length() == 0 ? "" : "AND ") + "tf.b_del = 0 ";
+            sql += (sql.isEmpty() ? "" : "AND ") + "tf.b_del = 0 ";
         }
 
         msSql = "SELECT " +
@@ -106,7 +106,7 @@ public class DViewTransportFigure extends DGridPaneView implements ActionListene
                 "ui.id_usr = tf.fk_usr_ins " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
                 "uu.id_usr = tf.fk_usr_upd " +
-                (sql.length() == 0 ? "" : "WHERE " + sql) +
+                (sql.isEmpty() ? "" : "WHERE " + sql) +
                 "ORDER BY tf.name, tf.code, tf.id_tpt_figure;";
     }
 

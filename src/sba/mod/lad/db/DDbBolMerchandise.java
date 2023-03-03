@@ -55,7 +55,8 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     protected DDbItem moOwnItem;
     protected DDbUnit moOwnUnit;
     
-    protected int mnAuxSortingPos;
+    protected int mnBolSortingPos;
+    
     protected double mdAuxQuantityMoved;
 
     public DDbBolMerchandise() {
@@ -110,10 +111,18 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     public DDbItem getOwnItem() { return moOwnItem; }
     public DDbUnit getOwnUnit() { return moOwnUnit; }
     
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { }
+    @Override
+    public void setBolSortingPos(int n) { mnBolSortingPos = n; }
+    
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return false; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
+    
     public void setAuxQuantityMoved(double d) { mdAuxQuantityMoved = d; }
     
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
     public double getAuxQuantityMoved() { return mdAuxQuantityMoved; }
     
     public Dimensions createDimensions() throws Exception {
@@ -128,13 +137,13 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
                 int width = 0;
                 String unit = "";
 
-                if (sections[2].contains(DCfdi40Catalogs.DimensiónCm)) {
-                    width = DLibUtils.parseInt(sections[2].substring(0, sections[2].indexOf(DCfdi40Catalogs.DimensiónCm)));
-                    unit = DCfdi40Catalogs.DimensiónCm;
+                if (sections[2].contains(DCfdi40Catalogs.CcpDimensiónCm)) {
+                    width = DLibUtils.parseInt(sections[2].substring(0, sections[2].indexOf(DCfdi40Catalogs.CcpDimensiónCm)));
+                    unit = DCfdi40Catalogs.CcpDimensiónCm;
                 }
-                else if (sections[2].contains(DCfdi40Catalogs.DimensiónPlg)) {
-                    width = DLibUtils.parseInt(sections[2].substring(0, sections[2].indexOf(DCfdi40Catalogs.DimensiónPlg)));
-                    unit = DCfdi40Catalogs.DimensiónPlg;
+                else if (sections[2].contains(DCfdi40Catalogs.CcpDimensiónPlg)) {
+                    width = DLibUtils.parseInt(sections[2].substring(0, sections[2].indexOf(DCfdi40Catalogs.CcpDimensiónPlg)));
+                    unit = DCfdi40Catalogs.CcpDimensiónPlg;
                 }
                 else {
                     throw new Exception("Las dimensiones no tienen una unidad de medida conocida: " + msDimensions + ".");
@@ -241,7 +250,8 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         moOwnItem = null;
         moOwnUnit = null;
         
-        mnAuxSortingPos = 0;
+        mnBolSortingPos = 0;
+        
         mdAuxQuantityMoved = 0;
     }
 
@@ -327,7 +337,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
             moOwnItem = (DDbItem) session.readRegistry(DModConsts.IU_ITM, new int[] { mnFkItemId });
             moOwnUnit = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { mnFkUnitId});
             
-            mnAuxSortingPos = mnPkMerchandiseId;
+            mnBolSortingPos = mnPkMerchandiseId;
 
             mbRegistryNew = false;
         }
@@ -442,7 +452,9 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         registry.setOwnItem(this.getOwnItem()); // clone shares the same "read-only" object
         registry.setOwnUnit(this.getOwnUnit()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
+        
         registry.setAuxQuantityMoved(this.getAuxQuantityMoved());
         
         registry.setRegistryNew(this.isRegistryNew());
@@ -490,7 +502,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = msDescriptionItem;

@@ -10,23 +10,39 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
+import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
+import sba.lib.db.DDbRegistry;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.cfg.db.DDbConfigBranch;
+import sba.mod.cfg.db.DDbLock;
+import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDfr;
+import sba.mod.trn.db.DTrnBolPrinting;
+import sba.mod.trn.db.DTrnDfrUtils;
+import sba.mod.trn.db.DTrnDoc;
+import sba.mod.trn.db.DTrnUtils;
 
 /**
  *
  * @author Sergio Flores
  */
-public class DDbBol extends DDbRegistryUser {
+public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     
     public static final int BOL_REAL = 1; // real BOL
-    public static final int BOL_TEMP = 2; // template BOL
+    public static final int BOL_TEMPLATE = 2; // template BOL
+    
+    public static final int FIELD_TEMP_CODE = FIELD_BASE + 1;
+    public static final int FIELD_TEMP_NAME = FIELD_BASE + 2;
+
+    /** Timeout in minutes.  */
+    public static final int TIMEOUT = 3; // 3 min.
 
     protected int mnPkBolId;
     protected String msVersion;
@@ -46,6 +62,8 @@ public class DDbBol extends DDbRegistryUser {
     */
     protected int mnFkTransportTypeId;
     protected int mnFkBolStatusId;
+    protected int mnFkOwnerBizPartnerId;
+    protected int mnFkOwnerBranchId;
     protected int mnFkIntlTransportCountryId;
     protected int mnFkIntlWayTransportTypeId;
     protected int mnFkMerchandiseWeightUnitId;
@@ -62,7 +80,10 @@ public class DDbBol extends DDbRegistryUser {
     protected ArrayList<DDbBolTruck> maChildTrucks;
     protected ArrayList<DDbBolTransportFigure> maChildTransportFigures;
 
-    protected DDbDfr moOwnDfr;
+    protected DDbDfr moChildDfr;
+    
+    protected int mnAuxXmlTypeId;
+    protected DDbLock moAuxLock;
     
     public DDbBol() {
         super(DModConsts.L_BOL);
@@ -73,7 +94,11 @@ public class DDbBol extends DDbRegistryUser {
         initRegistry();
     }
     
-    public void computeNextNumber(final DGuiSession session) throws Exception {
+    /*
+     * Private methods
+     */
+    
+    private void computeNextNumber(final DGuiSession session) throws Exception {
         msSql = "SELECT MAX(num) "
                 + "FROM " + getSqlTable() + " "
                 + "WHERE ser = '" + msSeries + "' AND NOT b_del;";
@@ -83,6 +108,44 @@ public class DDbBol extends DDbRegistryUser {
             }
         }
     }
+    
+    private void computeDfr(final DGuiSession session) throws Exception {
+        boolean save = false;
+
+        if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_XML_ST_PEN && mnAuxXmlTypeId != 0) {
+            moChildDfr = DTrnDfrUtils.createDfrFromBol(session, this, mnAuxXmlTypeId);
+            save = true;
+        }
+
+        if (save) {
+            saveDfr(session, true);
+        }
+    }
+
+    private void saveDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
+        if (moChildDfr == null) {
+            msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
+                    + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
+                    + "WHERE fk_bol_n = " + mnPkBolId + ";";
+            session.getStatement().execute(msSql);
+        }
+        else {
+            moChildDfr.setFkOwnerBizPartnerId(mnFkOwnerBizPartnerId);
+            moChildDfr.setFkOwnerBranchId(mnFkOwnerBranchId);
+            moChildDfr.setFkBizPartnerId(mnFkOwnerBizPartnerId);
+            moChildDfr.setFkBolId_n(mnPkBolId);
+            moChildDfr.setDeleted(mbDeleted);
+            moChildDfr.save(session);
+
+            if (issueDfr) {
+                issueDfr(session);
+            }
+        }
+    }
+
+    /*
+     * Public methods
+     */
 
     public void setPkBolId(int n) { mnPkBolId = n; }
     public void setVersion(String s) { msVersion = s; }
@@ -100,6 +163,8 @@ public class DDbBol extends DDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkTransportTypeId(int n) { mnFkTransportTypeId = n; }
     public void setFkBolStatusId(int n) { mnFkBolStatusId = n; }
+    public void setFkOwnerBizPartnerId(int n) { mnFkOwnerBizPartnerId = n; }
+    public void setFkOwnerBranchId(int n) { mnFkOwnerBranchId = n; }
     public void setFkIntlTransportCountryId(int n) { mnFkIntlTransportCountryId = n; }
     public void setFkIntlWayTransportTypeId(int n) { mnFkIntlWayTransportTypeId = n; }
     public void setFkMerchandiseWeightUnitId(int n) { mnFkMerchandiseWeightUnitId = n; }
@@ -125,6 +190,8 @@ public class DDbBol extends DDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public int getFkTransportTypeId() { return mnFkTransportTypeId; }
     public int getFkBolStatusId() { return mnFkBolStatusId; }
+    public int getFkOwnerBizPartnerId() { return mnFkOwnerBizPartnerId; }
+    public int getFkOwnerBranchId() { return mnFkOwnerBranchId; }
     public int getFkIntlTransportCountryId() { return mnFkIntlTransportCountryId; }
     public int getFkIntlWayTransportTypeId() { return mnFkIntlWayTransportTypeId; }
     public int getFkMerchandiseWeightUnitId() { return mnFkMerchandiseWeightUnitId; }
@@ -139,9 +206,73 @@ public class DDbBol extends DDbRegistryUser {
     public ArrayList<DDbBolTruck> getChildTrucks() { return maChildTrucks; }
     public ArrayList<DDbBolTransportFigure> getChildTransportFigures() { return maChildTransportFigures; }
 
-    public void setOwnDfr(DDbDfr o) { moOwnDfr = o; }
+    public void setChildDfr(DDbDfr o) { moChildDfr = o; }
     
-    public DDbDfr getOwnDfr() { return moOwnDfr; }
+    public DDbDfr getChildDfr() { return moChildDfr; }
+    
+    public void setAuxXmlTypeId(int n) { mnAuxXmlTypeId = n; }
+    public void setAuxLock(DDbLock o) { moAuxLock = o; }
+    
+    public int getAuxXmlTypeId() { return mnAuxXmlTypeId; }
+    public DDbLock getAuxLock() { return moAuxLock; }
+    
+    public int[] getCompanyKey() { return new int[] { mnFkOwnerBizPartnerId }; }
+    public int[] getCompanyBranchKey() { return new int[] { mnFkOwnerBizPartnerId, mnFkOwnerBranchId }; }
+    public String getBolNumber() { return DTrnUtils.composeDpsNumber(msSeries, mnNumber); }
+    
+    public DDbBolLocation getChildLocation(final int[] key) {
+        DDbBolLocation bolLocation = null;
+        
+        for (DDbBolLocation bl : maChildLocations) {
+            if (DLibUtils.compareKeys(bl.getPrimaryKey(), key)) {
+                bolLocation = bl;
+                break;
+            }
+        }
+        
+        return bolLocation;
+    }
+    
+    public void initBolTemplate(final int bolTemplateId) {
+        mbTemplate = false;
+        msTemplateCode = "";
+        msTemplateName = "";
+        mnFkBolTemplateId_n = bolTemplateId;
+        
+        for (DDbBolLocation location : maChildLocations) {
+            location.setPkBolId(0);
+        }
+        
+        for (DDbBolMerchandise merchandise : maChildMerchandises) {
+            merchandise.setPkBolId(0);
+            
+            for (DDbBolMerchandiseMove merchandiseMove : merchandise.getChildMoves()) {
+                merchandiseMove.setPkBolId(0);
+            }
+        }
+        
+        for (DDbBolTruck truck : maChildTrucks) {
+            truck.setPkBolId(0);
+            
+            for (DDbBolTruckTrailer truckTrailer : truck.getChildTrailers()) {
+                truckTrailer.setPkBolId(0);
+            }
+        }
+        
+        for (DDbBolTransportFigure transportFigure : maChildTransportFigures) {
+            transportFigure.setPkBolId(0);
+            
+            for (DDbBolTransportFigureTransportPart transportFigureTransportPart : transportFigure.getChildTransportParts()) {
+                transportFigureTransportPart.setPkBolId(0);
+            }
+        }
+    }
+    
+    public void initBolLocations(final Date arrivalDepartureDatetime) {
+        for (DDbBolLocation location : maChildLocations) {
+            location.setArrivalDepartureDatetime(arrivalDepartureDatetime);
+        }
+    }
     
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -173,6 +304,8 @@ public class DDbBol extends DDbRegistryUser {
         mbDeleted = false;
         mnFkTransportTypeId = 0;
         mnFkBolStatusId = 0;
+        mnFkOwnerBizPartnerId = 0;
+        mnFkOwnerBranchId = 0;
         mnFkIntlTransportCountryId = 0;
         mnFkIntlWayTransportTypeId = 0;
         mnFkMerchandiseWeightUnitId = 0;
@@ -187,7 +320,10 @@ public class DDbBol extends DDbRegistryUser {
         maChildTrucks.clear();
         maChildTransportFigures.clear();
         
-        moOwnDfr = null;
+        moChildDfr = null;
+        
+        mnAuxXmlTypeId = 0;
+        moAuxLock = null;
     }
 
     @Override
@@ -249,6 +385,8 @@ public class DDbBol extends DDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkTransportTypeId = resultSet.getInt("fk_tpt_tp");
             mnFkBolStatusId = resultSet.getInt("fk_bol_st");
+            mnFkOwnerBizPartnerId = resultSet.getInt("fk_own_bpr");
+            mnFkOwnerBranchId = resultSet.getInt("fk_own_bra");
             mnFkIntlTransportCountryId = resultSet.getInt("fk_intl_tpt_cty");
             mnFkIntlWayTransportTypeId = resultSet.getInt("fk_intl_way_tpt_tp");
             mnFkMerchandiseWeightUnitId = resultSet.getInt("fk_merch_weigh_unt");
@@ -314,6 +452,19 @@ public class DDbBol extends DDbRegistryUser {
                 }
             }
 
+            // read as well child DFR:
+            
+            msSql = "SELECT id_dfr "
+                    + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
+                    + "WHERE fk_bol_n = " + mnPkBolId + ";";
+            
+            try (Statement statement = session.getStatement().getConnection().createStatement()) {
+                resultSet = statement.executeQuery(msSql);
+                if (resultSet.next()) {
+                    moChildDfr = (DDbDfr) session.readRegistry(DModConsts.T_DFR, new int[] { resultSet.getInt("id_dfr") });
+                }
+            }
+            
             mbRegistryNew = false;
         }
 
@@ -351,6 +502,8 @@ public class DDbBol extends DDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " + 
                     mnFkTransportTypeId + ", " + 
                     mnFkBolStatusId + ", " + 
+                    mnFkOwnerBizPartnerId + ", " + 
+                    mnFkOwnerBranchId + ", " + 
                     mnFkIntlTransportCountryId + ", " + 
                     mnFkIntlWayTransportTypeId + ", " + 
                     mnFkMerchandiseWeightUnitId + ", " + 
@@ -381,6 +534,8 @@ public class DDbBol extends DDbRegistryUser {
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "fk_tpt_tp = " + mnFkTransportTypeId + ", " +
                     "fk_bol_st = " + mnFkBolStatusId + ", " +
+                    "fk_own_bpr = " + mnFkOwnerBizPartnerId + ", " +
+                    "fk_own_bra = " + mnFkOwnerBranchId + ", " +
                     "fk_intl_tpt_cty = " + mnFkIntlTransportCountryId + ", " +
                     "fk_intl_way_tpt_tp = " + mnFkIntlWayTransportTypeId + ", " +
                     "fk_merch_weigh_unt = " + mnFkMerchandiseWeightUnitId + ", " +
@@ -439,10 +594,53 @@ public class DDbBol extends DDbRegistryUser {
             }
         }
 
-        // delete all child locations:
+        // delete all existing children:
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_MERCH_MOVE) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_MERCH) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.L_BOL_LOC) + " SET "
+                + "fk_src_bol_n = NULL, "
+                + "fk_src_loc_n = NULL "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
         
         msSql = "DELETE "
                 + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_LOC) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TRUCK_TRAIL) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TRUCK) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TPT_FIGURE_TPT_PART) + " "
+                + getSqlWhere();
+        
+        session.getStatement().execute(msSql);
+        
+        msSql = "DELETE "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TPT_FIGURE) + " "
                 + getSqlWhere();
         
         session.getStatement().execute(msSql);
@@ -469,18 +667,6 @@ public class DDbBol extends DDbRegistryUser {
         
         // save as well child merchandises:
         
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_MERCH_MOVE) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
-        
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_MERCH) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
-        
         for (DDbBolMerchandise bolMerchandise : maChildMerchandises) {
             bolMerchandise.setPkBolId(mnPkBolId);
             bolMerchandise.setRegistryNew(true);
@@ -488,18 +674,6 @@ public class DDbBol extends DDbRegistryUser {
         }
         
         // save as well child trucks:
-        
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TRUCK_TRAIL) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
-        
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TRUCK) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
         
         for (DDbBolTruck bolTruck : maChildTrucks) {
             bolTruck.setPkBolId(mnPkBolId);
@@ -509,23 +683,17 @@ public class DDbBol extends DDbRegistryUser {
         
         // save as well child transport figures:
         
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TPT_FIGURE_TPT_PART) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
-        
-        msSql = "DELETE "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TPT_FIGURE) + " "
-                + getSqlWhere();
-        
-        session.getStatement().execute(msSql);
-        
         for (DDbBolTransportFigure bolTransportFigure : maChildTransportFigures) {
             bolTransportFigure.setPkBolId(mnPkBolId);
             bolTransportFigure.setRegistryNew(true);
             bolTransportFigure.save(session);
         }
+        
+        // aditional processing:
+        
+        computeDfr(session);
+
+        // finish registry updating:
         
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
@@ -551,6 +719,8 @@ public class DDbBol extends DDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setFkTransportTypeId(this.getFkTransportTypeId());
         registry.setFkBolStatusId(this.getFkBolStatusId());
+        registry.setFkOwnerBizPartnerId(this.getFkOwnerBizPartnerId());
+        registry.setFkOwnerBranchId(this.getFkOwnerBranchId());
         registry.setFkIntlTransportCountryId(this.getFkIntlTransportCountryId());
         registry.setFkIntlWayTransportTypeId(this.getFkIntlWayTransportTypeId());
         registry.setFkMerchandiseWeightUnitId(this.getFkMerchandiseWeightUnitId());
@@ -584,9 +754,196 @@ public class DDbBol extends DDbRegistryUser {
             registry.getChildTransportFigures().add(transportFigure.clone());
         }
         
-        registry.setOwnDfr(this.getOwnDfr() == null ? null : this.getOwnDfr().clone());
+        registry.setChildDfr(this.getChildDfr() == null ? null : this.getChildDfr().clone());
+        
+        registry.setAuxXmlTypeId(this.getAuxXmlTypeId());
+        registry.setAuxLock(this.getAuxLock()); // locks cannot be clonned!
         
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+    
+    @Override
+    public Object readField(final Statement statement, final int[] pk, final int field) throws SQLException, Exception {
+        if (DLibUtils.belongsTo(field, new int[] { FIELD_TEMP_CODE, FIELD_TEMP_NAME })) {
+            Object value = null;
+            ResultSet resultSet = null;
+
+            initQueryMembers();
+            mnQueryResultId = DDbConsts.READ_ERROR;
+
+            msSql = "SELECT ";
+
+            switch (field) {
+                case FIELD_TEMP_CODE:
+                    msSql += "temp_code ";
+                    break;
+                case FIELD_TEMP_NAME:
+                    msSql += "temp_name ";
+                    break;
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+
+            msSql += getSqlFromWhere(pk);
+
+            resultSet = statement.executeQuery(msSql);
+            if (!resultSet.next()) {
+                throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
+            }
+            else {
+                switch (field) {
+                    case FIELD_TEMP_CODE:
+                    case FIELD_TEMP_NAME:
+                        value = resultSet.getString(1);
+                        break;
+                    default:
+                        // nothing
+                }
+            }
+
+            mnQueryResultId = DDbConsts.READ_OK;
+            return value;
+        }
+        else {
+            return super.readField(statement, pk, field);
+        }
+    }
+
+    @Override
+    public void issueDfr(DGuiSession session) throws Exception {
+        String fileName = "";
+        DDbConfigBranch configBranch = null;
+        
+        if (moChildDfr != null && moChildDfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
+            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+            fileName += configBranch.getDfrDirectory();
+            fileName += moChildDfr.getDocXmlName().replaceAll(".xml", ".pdf");
+
+            switch (moChildDfr.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
+    }
+
+    @Override
+    public String getDocName() {
+        return "carta porte";
+    }
+
+    @Override
+    public String getDocNumber() {
+        return getBolNumber();
+    }
+
+    @Override
+    public Date getDocDate() {
+        return getChildDfr() == null ? null : getChildDfr().getDocTs();
+    }
+
+    @Override
+    public int getDocStatus() {
+        return getFkBolStatusId();
+    }
+
+    @Override
+    public int getBizPartnerCategory() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getBizPartnerKey() {
+        return getCompanyKey();
+    }
+
+    @Override
+    public int[] getBizPartnerBranchAddressKey() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DDbDfr getDfr() {
+        return getChildDfr();
+    }
+
+    @Override
+    public DDbRegistry createDocSending() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean canAnnul(DGuiSession session) throws Exception {
+        return true;
+    }
+
+    /**
+     * Checks if registry is available, that is, not locked.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public boolean checkAvailability(final DGuiSession session) throws Exception {
+        boolean isAvailable = true;
+        
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, check only availabitity:
+                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkBolId);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+                isAvailable = true;
+            }
+        }
+        
+        return isAvailable;
+    }
+
+    /**
+     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @return 
+     * @throws Exception 
+     */
+    @Override
+    public DDbLock assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, create it:
+                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkBolId, TIMEOUT);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+            }
+        }
+        
+        return moAuxLock;
+    }
+
+    /**
+     * Frees current lock, if any, with by-update status.
+     * @param session GUI session.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
+     * @throws Exception 
+     */
+    @Override
+    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
+        if (moAuxLock != null) {
+            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
+            moAuxLock = null;
+        }
     }
 }

@@ -53,7 +53,8 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
     /** Location indirectly corresponding to members mnFkSourceBolId_n and mnFkSourceLocationId_n, when this is destiny BOL location. */
     protected DDbLocation moOwnSourceLocation;
     
-    protected int mnAuxSortingPos;
+    protected boolean mbBolUpdateOwnRegistry;
+    protected int mnBolSortingPos;
 
     /** Helps maintaining relations between other BOL elements when creating in GUI and saving new BOL registries. */
     protected int mnTempBolLocationId;
@@ -120,9 +121,15 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
     public DDbLocation getOwnLocation() { return moOwnLocation; }
     public DDbLocation getOwnSourceLocation() { return moOwnSourceLocation; }
 
-    public void setAuxSortingPos(int n) { mnAuxSortingPos = n; }
-    
-    public int getAuxSortingPos() { return mnAuxSortingPos; }
+    @Override
+    public void setBolUpdateOwnRegistry(boolean update) { mbBolUpdateOwnRegistry = update; }
+    @Override
+    public void setBolSortingPos(int pos) { mnBolSortingPos = pos; }
+
+    @Override
+    public boolean isBolUpdateOwnRegistry() { return mbBolUpdateOwnRegistry; }
+    @Override
+    public int getBolSortingPos() { return mnBolSortingPos; }
     
     public void setTempBolLocationId(int n) { mnTempBolLocationId = n; }
     public void setTempSourceBolLocationId(int n) { mnTempSourceBolLocationId = n; }
@@ -185,7 +192,8 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
         moOwnLocation = null;
         moOwnSourceLocation = null;
         
-        mnAuxSortingPos = 0;
+        mbBolUpdateOwnRegistry = false;
+        mnBolSortingPos = 0;
         
         mnTempBolLocationId = 0;
         mnTempSourceBolLocationId = 0;
@@ -278,7 +286,10 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
                 }
             }
             
-            mnAuxSortingPos = mnPkLocationId;
+            mnBolSortingPos = mnPkLocationId;
+            
+            mnTempBolLocationId = mnPkLocationId;
+            mnTempSourceBolLocationId = mnFkSourceLocationId_n;
             
             mbRegistryNew = false;
         }
@@ -296,7 +307,7 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
         if (moOwnLocation == null) {
             throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (" + DDbLocation.class.getName() + ")");
         }
-        else if (moOwnLocation.isRegistryNew() || moOwnLocation.isRegistryEdited()) {
+        else if (moOwnLocation.isRegistryNew() || (moOwnLocation.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
             moOwnLocation.save(session);
         }
         
@@ -443,7 +454,8 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
         registry.setOwnLocation(this.getOwnLocation()); // clone shares the same "read-only" object
         registry.setOwnSourceLocation(this.getOwnSourceLocation()); // clone shares the same "read-only" object
         
-        registry.setAuxSortingPos(this.getAuxSortingPos());
+        registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
+        registry.setBolSortingPos(this.getBolSortingPos());
         
         registry.setTempBolLocationId(this.getTempBolLocationId());
         registry.setTempSourceBolLocationId(this.getTempSourceBolLocationId());
@@ -532,7 +544,7 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
         
         switch (col) {
             case 0:
-                value = mnAuxSortingPos;
+                value = mnBolSortingPos;
                 break;
             case 1:
                 value = moOwnLocation.getDbmsLocationTypeName();

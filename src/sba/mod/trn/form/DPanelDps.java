@@ -122,7 +122,7 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
 
         jtfBizPartnerFiscalId.setEditable(false);
         jtfBizPartnerFiscalId.setText("TEXT");
-        jtfBizPartnerFiscalId.setToolTipText("Registro fiscal");
+        jtfBizPartnerFiscalId.setToolTipText("RFC");
         jtfBizPartnerFiscalId.setFocusable(false);
         jtfBizPartnerFiscalId.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanel2.add(jtfBizPartnerFiscalId);
@@ -266,7 +266,6 @@ public class DPanelDps extends DBeanPanel implements ActionListener {
     private void initComponentsCustom() {
         mbEnableCardex = false;
         moDialogCardexDps = null;
-        jtfBizPartnerFiscalId.setToolTipText(DUtilConsts.TXT_FISCAL_ID);
     }
 
     private void renderYear() {

@@ -513,7 +513,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
-    private void computeDfr(final DGuiSession session) throws Exception {
+    private void computeChildDfr(final DGuiSession session) throws Exception {
         boolean save = false;
 
         /*
@@ -521,7 +521,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
          */
 
         if ((mbAuxDfrRequired && mnAuxXmlTypeId != DModSysConsts.TS_XML_TP_NA) || (!mbDeleted && mnFkDpsStatusId == DModSysConsts.TS_DPS_ST_ISS && moChildDfr != null)) {
-            moChildDfr = DTrnDfrUtils.createDfr(session, this, mbAuxDfrRequired ? mnAuxXmlTypeId : moChildDfr.getFkXmlTypeId());
+            moChildDfr = DTrnDfrUtils.createDfrFromDps(session, this, mbAuxDfrRequired ? mnAuxXmlTypeId : moChildDfr.getFkXmlTypeId());
             save = true;
         }
         else if (!mbAuxDfrRequired && mnAuxXmlTypeId == DModSysConsts.TS_XML_TP_NA) {
@@ -530,11 +530,11 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
 
         if (save) {
-            saveDfr(session, true);
+            saveChildDfr(session, true);
         }
     }
 
-    private void saveDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
+    private void saveChildDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
         if (moChildDfr == null) {
             msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
                     + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
@@ -555,7 +555,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
-    private void parseDfr() throws Exception {
+    private void loadXtaDfr() throws Exception {
         if (moChildDfr != null) {
             int row = 0;
             Node node;
@@ -711,7 +711,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     namedNodeMap = node.getAttributes();
                     
                     moXtaDfr.setReceiverFiscalAddress(DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
-                    moXtaDfr.setReceiverTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
+                    moXtaDfr.setReceiverTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
                     moXtaDfr.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
                     
                     // conceptos:
@@ -1505,7 +1505,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
             // Aditional processing:
 
             if (moChildDfr != null) {
-                parseDfr();
+                loadXtaDfr();
             }
 
             // Finish registry reading:
@@ -1712,7 +1712,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
 
         computeBookkeeping(session);
         computeStock(session);
-        computeDfr(session);
+        computeChildDfr(session);
 
         // Finish registry updating:
         
@@ -2204,7 +2204,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         moChildDfr = dfr;
-        saveDfr(session, false);
+        saveChildDfr(session, false);
 
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
@@ -2238,7 +2238,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     break;
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnDpsPrinting(session, this).cratePrintMapCfdi33(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnDpsPrinting(session, this).cratePrintMapCfdi40(), fileName);
                     break;
 
                 default:

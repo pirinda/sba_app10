@@ -196,6 +196,9 @@ public abstract class DModSysConsts {
     public static final int BS_IDY_TP_PER = 1;
     public static final int BS_IDY_TP_ORG = 2;
 
+    public static final String BPR_NAME_PRT_POL_NAME = "1";
+    public static final String BPR_NAME_PRT_POL_NAME_FISCAL = "2";
+
     public static final int BS_BAF_TP_STD = 1;
     public static final int BS_BAF_TP_US = 2;
 
@@ -633,9 +636,16 @@ public abstract class DModSysConsts {
     public static final int TS_XML_TP_CFDI_40 = 5;
 
     public static final int TS_XML_STP_NA = 1;
-    public static final int TS_XML_STP_CFDI_FAC = 2;
-    public static final int TS_XML_STP_CFDI_CRP = 3;
+    public static final int TS_XML_STP_FAC = 2;
+    public static final int TS_XML_STP_CRP = 3;
+    public static final int TS_XML_STP_CCP = 4;
     
+    public static final int[] TS_XML_STP_VER_NA = new int[] { 1, 1 };
+    public static final int[] TS_XML_STP_VER_FAC = new int[] { 2, 1 };
+    public static final int[] TS_XML_STP_VER_CRP_1 = new int[] { 3, 1 };
+    public static final int[] TS_XML_STP_VER_CRP_2 = new int[] { 3, 2 };
+    public static final int[] TS_XML_STP_VER_CCP_2 = new int[] { 4, 1 };
+
     public static final int TS_XML_ST_NA = 1;
     public static final int TS_XML_ST_PEN = 2;
     public static final int TS_XML_ST_ISS = 3;

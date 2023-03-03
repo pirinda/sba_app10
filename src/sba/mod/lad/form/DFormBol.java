@@ -27,9 +27,11 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import sba.gui.DGuiClientSessionCustom;
 import sba.gui.cat.DXmlCatalog;
 import sba.gui.cat.DXmlCatalogEntry;
 import sba.gui.util.DUtilConsts;
+import sba.lib.DLibTimeConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -45,6 +47,7 @@ import sba.lib.gui.DGuiParams;
 import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanFieldBoolean;
+import sba.lib.gui.bean.DBeanFieldDecimal;
 import sba.lib.gui.bean.DBeanFieldInteger;
 import sba.lib.gui.bean.DBeanFieldKey;
 import sba.lib.gui.bean.DBeanFieldRadio;
@@ -63,10 +66,13 @@ import sba.mod.lad.db.DDbBolTransportFigureTransportPart;
 import sba.mod.lad.db.DDbBolTruck;
 import sba.mod.lad.db.DDbBolTruckTrailer;
 import sba.mod.lad.db.DDbLocation;
+import sba.mod.lad.db.DDbSysTransportPartType;
 import sba.mod.lad.db.DDbTrailer;
 import sba.mod.lad.db.DDbTransportFigure;
-import sba.mod.lad.db.DDbTransportPartType;
 import sba.mod.lad.db.DDbTruck;
+import sba.mod.lad.db.DDbTruckTrailer;
+import sba.mod.lad.db.DDbTruckTransportFigure;
+import sba.mod.lad.db.DDbTruckTransportFigureTransportPart;
 import sba.mod.lad.db.DLadCatalogAddressCountry;
 import sba.mod.lad.db.DLadCatalogAddressCounty;
 import sba.mod.lad.db.DLadCatalogAddressDistrict;
@@ -82,11 +88,13 @@ import sba.mod.lad.db.DLadCatalogPackaging;
  */
 public class DFormBol extends DBeanForm implements ActionListener, ItemListener, FocusListener, KeyListener, ListSelectionListener {
     
-    protected final static int ACTION_CREATE = 1;
-    protected final static int ACTION_COPY = 2;
-    protected final static int ACTION_MODIFY = 3;
+    protected final static int ACTION_ADD = 1;
+    protected final static int ACTION_CREATE = 2;
+    protected final static int ACTION_COPY = 3;
+    protected final static int ACTION_MODIFY = 4;
     protected final static int ACTION_CANCEL = 9;
     
+    protected final static String TXT_ACTION_ADD = "Adición";
     protected final static String TXT_ACTION_CREATE = "Creación";
     protected final static String TXT_ACTION_COPY = "Copia";
     protected final static String TXT_ACTION_MODIFY = "Modificación";
@@ -102,6 +110,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected final static int NAV_ACTION_PREV = 3;
     protected final static int NAV_ACTION_NEXT = 4;
     
+    private DGuiClientSessionCustom moSessionCustom;
+    
     protected DDbBol moBol;
     protected DDbBolLocation moBolLocation;
     protected DDbBolMerchandise moBolMerchandise;
@@ -114,6 +124,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected DXmlCatalog moXmlTruckTransportConfig;
     protected DXmlCatalog moXmlTruckPermissionType;
     protected DXmlCatalog moXmlTruckTrailerSubtype;
+
+    protected int[] manTemplateKey;
     
     protected String[] maBolSeries;
     protected int mnBolWeightUnitId;
@@ -124,8 +136,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected int mnTempBolLocationId;
     protected DDbItem moMerchItem;
     protected DDbUnit moMerchUnit;
-    protected int mnTruckIsTrailerNeeded;
-    protected boolean mbTptFigureAreTptPartsRequired;
+    protected int mnTruckIsTrailerRequired;
+    protected boolean mbTptFigureTptPartIsRequired;
     protected boolean mbAdjustingGrids;
     
     protected DGridPaneForm moGridLocations;
@@ -165,6 +177,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected DPickerElement moPickerTruck;
     protected DPickerElement moPickerTrail;
     protected DPickerElement moPickerTptFigure;
+    protected DPickerElement moPickerTptPartType;
+    protected DPickerElement moPickerItem;
     
     protected DPickerCatalogAddressState moPickerCatalogAddressState;
     protected DPickerCatalogAddressCounty moPickerCatalogAddressCounty;
@@ -263,6 +277,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpLocInput11 = new javax.swing.JPanel();
         jlLocLocationType = new javax.swing.JLabel();
         moKeyLocLocationType = new sba.lib.gui.bean.DBeanFieldKey();
+        jbLocEditType = new javax.swing.JButton();
         jpLocInput12 = new javax.swing.JPanel();
         jlLocName = new javax.swing.JLabel();
         moTextLocName = new sba.lib.gui.bean.DBeanFieldText();
@@ -367,6 +382,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchWeightKg = new javax.swing.JLabel();
         moDecMerchWeightKg = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlMerchWeightKgUnit = new javax.swing.JLabel();
+        jlMerchRatioKgHint = new javax.swing.JLabel();
         jpMerchInput17 = new javax.swing.JPanel();
         jlMerchDimensions = new javax.swing.JLabel();
         moIntMerchDimensionsLength = new sba.lib.gui.bean.DBeanFieldInteger();
@@ -450,6 +466,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput11 = new javax.swing.JPanel();
         jlTruckTransportConfig = new javax.swing.JLabel();
         moKeyTruckTransportConfig = new sba.lib.gui.bean.DBeanFieldKey();
+        jbTruckEditConfig = new javax.swing.JButton();
         jpTruckInput12 = new javax.swing.JPanel();
         jlTruckName = new javax.swing.JLabel();
         moTextTruckName = new sba.lib.gui.bean.DBeanFieldText();
@@ -460,11 +477,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput14 = new javax.swing.JPanel();
         jlTruckPlate = new javax.swing.JLabel();
         moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
+        jpTruckInput15 = new javax.swing.JPanel();
         jlTruckModel = new javax.swing.JLabel();
         moYearTruckModel = new sba.lib.gui.bean.DBeanFieldCalendarYear();
-        jpTruckInput15 = new javax.swing.JPanel();
-        jlTruckIsTrailerNeeded = new javax.swing.JLabel();
-        jtfTruckIsTrailerNeeded = new javax.swing.JTextField();
         jpTruckInput16 = new javax.swing.JPanel();
         jlTruckPermissionType = new javax.swing.JLabel();
         moKeyTruckPermissionType = new sba.lib.gui.bean.DBeanFieldKey();
@@ -504,12 +519,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput3N1 = new javax.swing.JPanel();
         jlTruckTrailSubtype = new javax.swing.JLabel();
         moKeyTruckTrailSubtype = new sba.lib.gui.bean.DBeanFieldKey();
+        jbTruckTrailEditSubtype = new javax.swing.JButton();
         jpTruckInput3N2 = new javax.swing.JPanel();
         jlTruckTrailPlate = new javax.swing.JLabel();
         moTextTruckTrailPlate = new sba.lib.gui.bean.DBeanFieldText();
         jpTruckInput3N3 = new javax.swing.JPanel();
         jpTruckInput3N31 = new javax.swing.JPanel();
         jtfTruckTrailPk = new javax.swing.JTextField();
+        jtfTruckTrailIsNeeded = new javax.swing.JTextField();
         jpTruckInput3N32 = new javax.swing.JPanel();
         moBoolTruckTrailUpdate = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpTruckInput3N4 = new javax.swing.JPanel();
@@ -542,6 +559,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTptFigInput11 = new javax.swing.JPanel();
         jlTptFigTransportFigureType = new javax.swing.JLabel();
         moKeyTptFigTransportFigureType = new sba.lib.gui.bean.DBeanFieldKey();
+        jbTptFigEditType = new javax.swing.JButton();
         jpTptFigInput12 = new javax.swing.JPanel();
         jlTptFigName = new javax.swing.JLabel();
         moTextTptFigName = new sba.lib.gui.bean.DBeanFieldText();
@@ -602,10 +620,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTptFigInput3N1 = new javax.swing.JPanel();
         jlTptFigTptPartTransportPartType = new javax.swing.JLabel();
         moKeyTptFigTptPartTransportPartType = new sba.lib.gui.bean.DBeanFieldKey();
+        jbTptFigTptPartEditType = new javax.swing.JButton();
         jpTptFigInput3N2 = new javax.swing.JPanel();
         jpTptFigInput3N3 = new javax.swing.JPanel();
         jpTptFigInput3N31 = new javax.swing.JPanel();
         jtfTptFigTptPartPk = new javax.swing.JTextField();
+        jtfTptFigTptPartIsRequired = new javax.swing.JTextField();
         jpTptFigInput3N32 = new javax.swing.JPanel();
         moBoolTptFigTptPartUpdate = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpTptFigInput3N4 = new javax.swing.JPanel();
@@ -927,8 +947,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlLocLocationType.setPreferredSize(new java.awt.Dimension(75, 23));
         jpLocInput11.add(jlLocLocationType);
 
-        moKeyLocLocationType.setPreferredSize(new java.awt.Dimension(230, 23));
+        moKeyLocLocationType.setPreferredSize(new java.awt.Dimension(205, 23));
         jpLocInput11.add(moKeyLocLocationType);
+
+        jbLocEditType.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbLocEditType.setToolTipText("Obtener siguiente código");
+        jbLocEditType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpLocInput11.add(jbLocEditType);
 
         jpLocInput1.add(jpLocInput11);
 
@@ -1026,10 +1051,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpLocInput182.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolLocUpdate.setText("¡Actualizar datos al registro!");
+        moBoolLocUpdate.setText("¡Actualizar catálogo!");
         moBoolLocUpdate.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         moBoolLocUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        moBoolLocUpdate.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolLocUpdate.setPreferredSize(new java.awt.Dimension(150, 23));
         jpLocInput182.add(moBoolLocUpdate);
 
         jpLocInput18.add(jpLocInput182, java.awt.BorderLayout.EAST);
@@ -1376,8 +1401,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpMerchInput16.add(moDecMerchWeightKg);
 
         jlMerchWeightKgUnit.setText("kg");
-        jlMerchWeightKgUnit.setPreferredSize(new java.awt.Dimension(30, 23));
+        jlMerchWeightKgUnit.setPreferredSize(new java.awt.Dimension(25, 23));
         jpMerchInput16.add(jlMerchWeightKgUnit);
+
+        jlMerchRatioKgHint.setForeground(java.awt.Color.gray);
+        jlMerchRatioKgHint.setText("1.000 x unidad");
+        jlMerchRatioKgHint.setPreferredSize(new java.awt.Dimension(95, 23));
+        jpMerchInput16.add(jlMerchRatioKgHint);
 
         jpMerchInput1.add(jpMerchInput16);
 
@@ -1753,8 +1783,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTruckTransportConfig.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput11.add(jlTruckTransportConfig);
 
-        moKeyTruckTransportConfig.setPreferredSize(new java.awt.Dimension(230, 23));
+        moKeyTruckTransportConfig.setPreferredSize(new java.awt.Dimension(205, 23));
         jpTruckInput11.add(moKeyTruckTransportConfig);
+
+        jbTruckEditConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbTruckEditConfig.setToolTipText("Obtener siguiente código");
+        jbTruckEditConfig.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpTruckInput11.add(jbTruckEditConfig);
 
         jpTruckInput1.add(jpTruckInput11);
 
@@ -1793,29 +1828,18 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(jlTruckPlate);
 
-        moTextTruckPlate.setText("PHB610B");
+        moTextTruckPlate.setText("TEXT");
         moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(moTextTruckPlate);
-
-        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlTruckModel.setText("Modelo:*");
-        jlTruckModel.setPreferredSize(new java.awt.Dimension(70, 23));
-        jpTruckInput14.add(jlTruckModel);
-        jpTruckInput14.add(moYearTruckModel);
 
         jpTruckInput1.add(jpTruckInput14);
 
         jpTruckInput15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlTruckIsTrailerNeeded.setText("Remolque:");
-        jlTruckIsTrailerNeeded.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput15.add(jlTruckIsTrailerNeeded);
-
-        jtfTruckIsTrailerNeeded.setEditable(false);
-        jtfTruckIsTrailerNeeded.setText("TEXT");
-        jtfTruckIsTrailerNeeded.setFocusable(false);
-        jtfTruckIsTrailerNeeded.setPreferredSize(new java.awt.Dimension(150, 23));
-        jpTruckInput15.add(jtfTruckIsTrailerNeeded);
+        jlTruckModel.setText("Modelo:*");
+        jlTruckModel.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput15.add(jlTruckModel);
+        jpTruckInput15.add(moYearTruckModel);
 
         jpTruckInput1.add(jpTruckInput15);
 
@@ -1857,10 +1881,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpTruckInput182.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolTruckUpdate.setText("¡Actualizar datos al registro!");
+        moBoolTruckUpdate.setText("¡Actualizar catálogo!");
         moBoolTruckUpdate.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         moBoolTruckUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        moBoolTruckUpdate.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolTruckUpdate.setPreferredSize(new java.awt.Dimension(150, 23));
         jpTruckInput182.add(moBoolTruckUpdate);
 
         jpTruckInput18.add(jpTruckInput182, java.awt.BorderLayout.EAST);
@@ -1969,8 +1993,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTruckTrailSubtype.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput3N1.add(jlTruckTrailSubtype);
 
-        moKeyTruckTrailSubtype.setPreferredSize(new java.awt.Dimension(230, 23));
+        moKeyTruckTrailSubtype.setPreferredSize(new java.awt.Dimension(205, 23));
         jpTruckInput3N1.add(moKeyTruckTrailSubtype);
+
+        jbTruckTrailEditSubtype.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbTruckTrailEditSubtype.setToolTipText("Obtener siguiente código");
+        jbTruckTrailEditSubtype.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpTruckInput3N1.add(jbTruckTrailEditSubtype);
 
         jpTruckInput3N.add(jpTruckInput3N1);
 
@@ -1997,14 +2026,21 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfTruckTrailPk.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput3N31.add(jtfTruckTrailPk);
 
+        jtfTruckTrailIsNeeded.setEditable(false);
+        jtfTruckTrailIsNeeded.setText("TEXT");
+        jtfTruckTrailIsNeeded.setToolTipText("¿Remolque requerido?");
+        jtfTruckTrailIsNeeded.setFocusable(false);
+        jtfTruckTrailIsNeeded.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput3N31.add(jtfTruckTrailIsNeeded);
+
         jpTruckInput3N3.add(jpTruckInput3N31, java.awt.BorderLayout.CENTER);
 
         jpTruckInput3N32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolTruckTrailUpdate.setText("¡Actualizar datos al registro!");
+        moBoolTruckTrailUpdate.setText("¡Actualizar catálogo!");
         moBoolTruckTrailUpdate.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         moBoolTruckTrailUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        moBoolTruckTrailUpdate.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolTruckTrailUpdate.setPreferredSize(new java.awt.Dimension(150, 23));
         jpTruckInput3N32.add(moBoolTruckTrailUpdate);
 
         jpTruckInput3N3.add(jpTruckInput3N32, java.awt.BorderLayout.EAST);
@@ -2164,8 +2200,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTptFigTransportFigureType.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTptFigInput11.add(jlTptFigTransportFigureType);
 
-        moKeyTptFigTransportFigureType.setPreferredSize(new java.awt.Dimension(230, 23));
+        moKeyTptFigTransportFigureType.setPreferredSize(new java.awt.Dimension(205, 23));
         jpTptFigInput11.add(moKeyTptFigTransportFigureType);
+
+        jbTptFigEditType.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbTptFigEditType.setToolTipText("Obtener siguiente código");
+        jbTptFigEditType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpTptFigInput11.add(jbTptFigEditType);
 
         jpTptFigInput1.add(jpTptFigInput11);
 
@@ -2205,6 +2246,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTptFigInput14.add(jlTptFigFiscalId);
 
         moTextTptFigFiscalId.setText("TEXT");
+        moTextTptFigFiscalId.setPreferredSize(new java.awt.Dimension(150, 23));
         jpTptFigInput14.add(moTextTptFigFiscalId);
 
         jpTptFigInput1.add(jpTptFigInput14);
@@ -2259,10 +2301,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpTptFigInput182.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolTptFigUpdate.setText("¡Actualizar datos al registro!");
+        moBoolTptFigUpdate.setText("¡Actualizar catálogo!");
         moBoolTptFigUpdate.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         moBoolTptFigUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        moBoolTptFigUpdate.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolTptFigUpdate.setPreferredSize(new java.awt.Dimension(150, 23));
         jpTptFigInput182.add(moBoolTptFigUpdate);
 
         jpTptFigInput18.add(jpTptFigInput182, java.awt.BorderLayout.EAST);
@@ -2420,8 +2462,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTptFigTptPartTransportPartType.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTptFigInput3N1.add(jlTptFigTptPartTransportPartType);
 
-        moKeyTptFigTptPartTransportPartType.setPreferredSize(new java.awt.Dimension(230, 23));
+        moKeyTptFigTptPartTransportPartType.setPreferredSize(new java.awt.Dimension(205, 23));
         jpTptFigInput3N1.add(moKeyTptFigTptPartTransportPartType);
+
+        jbTptFigTptPartEditType.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbTptFigTptPartEditType.setToolTipText("Obtener siguiente código");
+        jbTptFigTptPartEditType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpTptFigInput3N1.add(jbTptFigTptPartEditType);
 
         jpTptFigInput3N.add(jpTptFigInput3N1);
 
@@ -2439,14 +2486,21 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfTptFigTptPartPk.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTptFigInput3N31.add(jtfTptFigTptPartPk);
 
+        jtfTptFigTptPartIsRequired.setEditable(false);
+        jtfTptFigTptPartIsRequired.setText("TEXT");
+        jtfTptFigTptPartIsRequired.setToolTipText("¿Parte de transporte requerido?");
+        jtfTptFigTptPartIsRequired.setFocusable(false);
+        jtfTptFigTptPartIsRequired.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTptFigInput3N31.add(jtfTptFigTptPartIsRequired);
+
         jpTptFigInput3N3.add(jpTptFigInput3N31, java.awt.BorderLayout.CENTER);
 
         jpTptFigInput3N32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolTptFigTptPartUpdate.setText("¡Actualizar datos al registro!");
+        moBoolTptFigTptPartUpdate.setText("¡Actualizar catálogo!");
         moBoolTptFigTptPartUpdate.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         moBoolTptFigTptPartUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        moBoolTptFigTptPartUpdate.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolTptFigTptPartUpdate.setPreferredSize(new java.awt.Dimension(150, 23));
         jpTptFigInput3N32.add(moBoolTptFigTptPartUpdate);
 
         jpTptFigInput3N3.add(jpTptFigInput3N32, java.awt.BorderLayout.EAST);
@@ -2589,7 +2643,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpWizardTptFigure.add(jpTptFig, java.awt.BorderLayout.NORTH);
 
-        jtpWizard.addTab("Figuras transporte", jpWizardTptFigure);
+        jtpWizard.addTab("Figuras de transporte", jpWizardTptFigure);
 
         jPanel1.add(jtpWizard, java.awt.BorderLayout.CENTER);
 
@@ -2640,6 +2694,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbLocCancel;
     private javax.swing.JButton jbLocCopy;
     private javax.swing.JButton jbLocCreate;
+    private javax.swing.JButton jbLocEditType;
     private javax.swing.JButton jbLocGetNextCode;
     private javax.swing.JButton jbLocModify;
     private javax.swing.JButton jbLocMoveDown;
@@ -2667,6 +2722,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbTptFigCancel;
     private javax.swing.JButton jbTptFigCopy;
     private javax.swing.JButton jbTptFigCreate;
+    private javax.swing.JButton jbTptFigEditType;
     private javax.swing.JButton jbTptFigGetNextCode;
     private javax.swing.JButton jbTptFigModify;
     private javax.swing.JButton jbTptFigMoveDown;
@@ -2676,6 +2732,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbTptFigTptPartAdd;
     private javax.swing.JButton jbTptFigTptPartCancel;
     private javax.swing.JButton jbTptFigTptPartCreate;
+    private javax.swing.JButton jbTptFigTptPartEditType;
     private javax.swing.JButton jbTptFigTptPartModify;
     private javax.swing.JButton jbTptFigTptPartOk;
     private javax.swing.JButton jbTptFigTptPartRemove;
@@ -2683,6 +2740,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbTruckCancel;
     private javax.swing.JButton jbTruckCopy;
     private javax.swing.JButton jbTruckCreate;
+    private javax.swing.JButton jbTruckEditConfig;
     private javax.swing.JButton jbTruckGetNextCode;
     private javax.swing.JButton jbTruckModify;
     private javax.swing.JButton jbTruckMoveDown;
@@ -2692,6 +2750,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbTruckTrailAdd;
     private javax.swing.JButton jbTruckTrailCancel;
     private javax.swing.JButton jbTruckTrailCreate;
+    private javax.swing.JButton jbTruckTrailEditSubtype;
     private javax.swing.JButton jbTruckTrailModify;
     private javax.swing.JButton jbTruckTrailOk;
     private javax.swing.JButton jbTruckTrailRemove;
@@ -2743,6 +2802,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlMerchMoveSource;
     private javax.swing.JLabel jlMerchPackaging;
     private javax.swing.JLabel jlMerchQuantity;
+    private javax.swing.JLabel jlMerchRatioKgHint;
     private javax.swing.JLabel jlMerchTariff;
     private javax.swing.JLabel jlMerchUnit;
     private javax.swing.JLabel jlMerchUnitDescription;
@@ -2772,7 +2832,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlTruckCode;
     private javax.swing.JLabel jlTruckEnvironmentInsurance;
     private javax.swing.JLabel jlTruckEnvironmentPolicy;
-    private javax.swing.JLabel jlTruckIsTrailerNeeded;
     private javax.swing.JLabel jlTruckModel;
     private javax.swing.JLabel jlTruckName;
     private javax.swing.JLabel jlTruckPermissionNumber;
@@ -2967,11 +3026,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTextField jtfTptFigCrud;
     private javax.swing.JTextField jtfTptFigPk;
     private javax.swing.JTextField jtfTptFigTptPartCrud;
+    private javax.swing.JTextField jtfTptFigTptPartIsRequired;
     private javax.swing.JTextField jtfTptFigTptPartPk;
     private javax.swing.JTextField jtfTruckCrud;
-    private javax.swing.JTextField jtfTruckIsTrailerNeeded;
     private javax.swing.JTextField jtfTruckPk;
     private javax.swing.JTextField jtfTruckTrailCrud;
+    private javax.swing.JTextField jtfTruckTrailIsNeeded;
     private javax.swing.JTextField jtfTruckTrailPk;
     private javax.swing.JTabbedPane jtpWizard;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolIntlTransport;
@@ -3083,7 +3143,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 1024, 640);
         
-        // BOL
+        // BOL:
         
         moKeyBolSeries.setKeySettings(miClient, DGuiUtils.getLabelName(jlBolNumber), false); // this combo box lacks of selection-indicative item
         moDateBolDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlBolDate), true);
@@ -3108,7 +3168,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moFields.addField(moTextBolTemplateCode);
         moFields.setFormButton(jbBolNavStart);
         
-        // locations
+        // locations:
         
         moKeyLocLocationType.setKeySettings(miClient, DGuiUtils.getLabelName(jlLocLocationType), true);
         moTextLocName.setTextSettings(DGuiUtils.getLabelName(jlLocName), 50);
@@ -3165,7 +3225,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moFieldsLocation.setFormButton(jbLocOk);
         
-        // merchandises
+        // merchandises:
         
         moKeyMerchItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchItem), true);
         moTextMerchItemDescription.setTextSettings(DGuiUtils.getLabelName(jlMerchItemDescription), 512);
@@ -3248,7 +3308,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moFieldsMerchandiseMove.setFormButton(jbMerchMoveOk);
         
-        // truck
+        // truck:
         
         moKeyTruckTransportConfig.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckTransportConfig), true);
         moTextTruckName.setTextSettings(DGuiUtils.getLabelName(jlTruckName), 100);
@@ -3301,7 +3361,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moFieldsTruckTrailer.setFormButton(jbTruckTrailOk);
         
-        // transport figures
+        // transport figures:
         
         moKeyTptFigTransportFigureType.setKeySettings(miClient, DGuiUtils.getLabelName(jlTptFigTransportFigureType), true);
         moTextTptFigName.setTextSettings(DGuiUtils.getLabelName(jlTptFigName), 200);
@@ -3457,11 +3517,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
         }
     }
-
+    
     private void computeCatalogCode(final DBeanFieldText textCode, final DBeanFieldText textName, final String defaultCode, final DecimalFormat formatCode, 
             final String catalog, final boolean appendFirstCharCodeToCatalog, final DGuiField fieldFilter, final String attributeFilter) {
         if (textCode.getValue().isEmpty()) {
-            // clear code & name
+            // clear code & name:
             textCode.setValue(defaultCode);
             textName.resetField();
         }
@@ -3521,18 +3581,72 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
     
-    private DGuiItem createGuiItemForBolLocation(final DDbBolLocation bolLocation) {
-        DGuiItem guiItem = new DGuiItem(bolLocation.getPrimaryKey(), bolLocation.getOwnLocation().getName());
-        guiItem.setCode(bolLocation.getOwnLocation().getCodeSource());
-        guiItem.setComplement(bolLocation.getOwnLocation());
-        return guiItem;
+    private String getCrudText(final int action) {
+        String crudText = "";
+        
+        switch (action) {
+            case ACTION_ADD:
+                crudText = TXT_ACTION_ADD;
+                break;
+            case ACTION_CREATE:
+                crudText = TXT_ACTION_CREATE;
+                break;
+            case ACTION_COPY:
+                crudText = TXT_ACTION_COPY;
+                break;
+            case ACTION_MODIFY:
+                crudText = TXT_ACTION_MODIFY;
+                break;
+            default:
+                crudText = TXT_UNKNOWN;
+        }
+        
+        return crudText;
     }
 
     /*
      * BOL
      */
+    
+    private boolean isBolTemplate() {
+        return mnFormSubtype == DDbBol.BOL_TEMPLATE;
+    }
 
     private void computeBol() {
+        jtfBolDeparturelDatetime.setText("");
+        jtfBolDepartureLocation.setText("");
+
+        jtfBolArrivalDatetime.setText("");
+        jtfBolArrivalLocation.setText("");
+        
+        if (!moGridLocations.getModel().getGridRows().isEmpty()) {
+            DDbBolLocation bolLocationFirst = (DDbBolLocation) moGridLocations.getModel().getGridRows().firstElement();
+            if (bolLocationFirst.isLocationSource()) {
+                jtfBolDeparturelDatetime.setText(DLibUtils.DateFormatDatetime.format(bolLocationFirst.getArrivalDepartureDatetime()));
+                jtfBolDeparturelDatetime.setCaretPosition(0);
+                jtfBolDepartureLocation.setText(bolLocationFirst.getOwnLocation().getCode());
+                jtfBolDepartureLocation.setCaretPosition(0);
+            }
+            else {
+                jtfBolDeparturelDatetime.setText("Primer ubicación no es origen");
+                jtfBolDeparturelDatetime.setCaretPosition(0);
+            }
+
+            if (moGridLocations.getModel().getGridRows().size() > 1) {
+                DDbBolLocation bolLocationLast = (DDbBolLocation) moGridLocations.getModel().getGridRows().lastElement();
+                if (bolLocationLast.isLocationDestiny()) {
+                    jtfBolArrivalDatetime.setText(DLibUtils.DateFormatDatetime.format(bolLocationLast.getArrivalDepartureDatetime()));
+                    jtfBolArrivalDatetime.setCaretPosition(0);
+                    jtfBolArrivalLocation.setText(bolLocationLast.getOwnLocation().getCode());
+                    jtfBolArrivalLocation.setCaretPosition(0);
+                }
+                else {
+                    jtfBolArrivalDatetime.setText("Última ubicación no es destino");
+                    jtfBolArrivalDatetime.setCaretPosition(0);
+                }
+            }
+        }
+        
         mdBolDistanceKm = 0;
         for (DGridRow row : moGridLocations.getModel().getGridRows()) {
             DDbBolLocation bolLocation = (DDbBolLocation) row;
@@ -3553,30 +3667,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         mnBolMerchandiseCount = moGridMerchandises.getModel().getRowCount();
         jtfBolMerchandiseCount.setText(DLibUtils.DecimalFormatInteger.format(mnBolMerchandiseCount));
-        
-        if (!moGridLocations.getModel().getGridRows().isEmpty()) {
-            DDbBolLocation bolLocationFirst = (DDbBolLocation) moGridLocations.getModel().getGridRows().firstElement();
-            jtfBolDeparturelDatetime.setText(DLibUtils.DateFormatDatetime.format(bolLocationFirst.getArrivalDepartureDatetime()));
-            jtfBolDeparturelDatetime.setCaretPosition(0);
-            jtfBolDepartureLocation.setText(bolLocationFirst.getOwnLocation().getCode());
-            jtfBolDepartureLocation.setCaretPosition(0);
-
-            DDbBolLocation bolLocationLast = (DDbBolLocation) moGridLocations.getModel().getGridRows().lastElement();
-            jtfBolArrivalDatetime.setText(DLibUtils.DateFormatDatetime.format(bolLocationLast.getArrivalDepartureDatetime()));
-            jtfBolArrivalDatetime.setCaretPosition(0);
-            jtfBolArrivalLocation.setText(bolLocationLast.getOwnLocation().getCode());
-            jtfBolArrivalLocation.setCaretPosition(0);
-        }
-        else {
-            jtfBolDeparturelDatetime.setText("");
-            jtfBolDepartureLocation.setText("");
-
-            jtfBolArrivalDatetime.setText("");
-            jtfBolArrivalLocation.setText("");
-        }
     }
 
     private void clearBolContent() {
+        mnTempBolLocationId = 0;
+        
         if (moGridLocations != null) {
             moGridLocations.clearGridRows();
         }
@@ -3666,32 +3761,56 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (can) {
             DGuiValidation validation = new DGuiValidation();
             
-            switch (jtpWizard.getSelectedIndex()) {
-                case TAB_IDX_LOCATION:
-                    if (moGridLocations.getTable().getRowCount() < 2) {
-                        validation.setMessage("Debe haber al menos dos ubicaciones.");
-                        validation.setComponent(jbLocAdd);
-                    }
-                    break;
-                case TAB_IDX_MERCHANDISE:
-                    if (moGridMerchandises.getTable().getRowCount() < 1) {
-                        validation.setMessage("Debe haber al menos una mercancía.");
-                        validation.setComponent(jbMerchCreate); // adding not supported
-                    }
-                    break;
-                case TAB_IDX_TRUCK:
-                    if (moGridTrucks.getTable().getRowCount() != 1) {
-                        validation.setMessage("Debe haber sólo un autotransporte.");
-                        validation.setComponent(jbTruckAdd);
-                    }
-                    break;
-                case TAB_IDX_TPT_FIGURE:
-                    if (moGridTptFigures.getTable().getRowCount() < 1) {
-                        validation.setMessage("Debe haber al menos una figura de transporte.");
-                        validation.setComponent(jbTptFigAdd);
-                    }
-                    break;
-                default:
+            if (isBolTemplate()) {
+                switch (jtpWizard.getSelectedIndex()) {
+                    case TAB_IDX_LOCATION:
+                        // not required for templates
+                        break;
+                    case TAB_IDX_MERCHANDISE:
+                        // not required for templates
+                        break;
+                    case TAB_IDX_TRUCK:
+                        if (moGridTrucks.getTable().getRowCount() > 1) {
+                            validation.setMessage("Sólo puede haber un autotransporte.");
+                            validation.setComponent(jbTruckAdd);
+                        }
+                        break;
+                    case TAB_IDX_TPT_FIGURE:
+                        // not required for templates
+                        break;
+                    default:
+                        // nothing
+                }
+            }
+            else {
+                switch (jtpWizard.getSelectedIndex()) {
+                    case TAB_IDX_LOCATION:
+                        if (moGridLocations.getTable().getRowCount() < 2) {
+                            validation.setMessage("Debe haber al menos dos ubicaciones.");
+                            validation.setComponent(jbLocAdd);
+                        }
+                        break;
+                    case TAB_IDX_MERCHANDISE:
+                        if (moGridMerchandises.getTable().getRowCount() < 1) {
+                            validation.setMessage("Debe haber al menos una mercancía.");
+                            validation.setComponent(jbMerchCreate); // adding not supported
+                        }
+                        break;
+                    case TAB_IDX_TRUCK:
+                        if (moGridTrucks.getTable().getRowCount() != 1) {
+                            validation.setMessage("Sólo puede haber un autotransporte.");
+                            validation.setComponent(jbTruckAdd);
+                        }
+                        break;
+                    case TAB_IDX_TPT_FIGURE:
+                        if (moGridTptFigures.getTable().getRowCount() < 1) {
+                            validation.setMessage("Debe haber al menos una figura de transporte.");
+                            validation.setComponent(jbTptFigAdd);
+                        }
+                        break;
+                    default:
+                        // nothing
+                }
             }
             
             can = DGuiUtils.computeValidation(miClient, validation);
@@ -3701,9 +3820,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void enableBolControls(final boolean start) {
-        // BOL
+        // BOL:
         
         moKeyBolSeries.setEnabled(!start);
+        moDateBolDate.setEnabled(!isBolTemplate());
         
         moBoolBolIntlTransport.setEnabled(!start);
         moRadBolIntlTransportDirectionIn.setEnabled(!start && moBoolBolIntlTransport.getValue());
@@ -3711,14 +3831,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyBolIntlTransportCountry.setEnabled(!start && moBoolBolIntlTransport.getValue());
         moKeyBolIntlWayTransportType.setEnabled(!start && moBoolBolIntlTransport.getValue());
         
-        moBoolBolTemplate.setEnabled(!start);
+        moBoolBolTemplate.setEnabled(false); // selection defined by form subtype
         moTextBolTemplateName.setEnabled(!start && moBoolBolTemplate.getValue());
         moTextBolTemplateCode.setEnabled(!start && moBoolBolTemplate.getValue());
         
-        // locations
+        // locations:
         
         if (!start) {
-            editLocation(false, 0);
+            editBolLocation(false, 0);
         }
         
         jbLocAdd.setEnabled(start);
@@ -3731,13 +3851,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbLocOk.setEnabled(false);
         jbLocCancel.setEnabled(false);
         
-        // merchandises
+        // merchandises:
         
         if (!start) {
-            editMerchandise(false, 0);
+            editBolMerchandise(false, 0);
         }
         
-        jbMerchAdd.setEnabled(start);
+        jbMerchAdd.setEnabled(false); // adding not required
         jbMerchCreate.setEnabled(start);
         jbMerchCopy.setEnabled(start);
         jbMerchModify.setEnabled(start);
@@ -3747,10 +3867,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbMerchOk.setEnabled(false);
         jbMerchCancel.setEnabled(false);
         
-        // truck
+        // truck:
         
         if (!start) {
-            editTruck(false, 0);
+            editBolTruck(false, 0);
         }
         
         jbTruckAdd.setEnabled(start);
@@ -3763,10 +3883,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTruckOk.setEnabled(false);
         jbTruckCancel.setEnabled(false);
         
-        // transport figures
+        // transport figures:
         
         if (!start) {
-            editTptFigure(false, 0);
+            editBolTptFigure(false, 0);
         }
         
         jbTptFigAdd.setEnabled(start);
@@ -3809,7 +3929,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void enableWizardTab(final int index, final int navAction) {
         if (index >= 0 && index <= jtpWizard.getTabCount()) {
-            // prepare tab
+            // prepare tab:
             
             switch (index) {
                 case TAB_IDX_LOCATION:
@@ -3825,7 +3945,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     // nothing
             }
             
-            // enable tab
+            // enable tab:
             
             jtpWizard.setSelectedIndex(index);
             
@@ -3849,7 +3969,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedBolNavRestart(final boolean clearBolContent) {
-        if (canNavRestart() && (!clearBolContent || miClient.showMsgBoxConfirm("Si reinicia, toda la información capturada será desechada.\n" + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION)) {
+        if (canNavRestart() && (!clearBolContent || miClient.showMsgBoxConfirm("Si reinicia, toda la información capturada será eliminada.\n" + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION)) {
             enableWizardTab(0, NAV_ACTION_RESTART);
             enableBolControls(false);
             
@@ -3878,8 +3998,82 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /*
      * Locations
      */
+    
+    private DDbBolLocation createBolLocationPickingOne() {
+        DDbBolLocation bolLocation = null;
+        
+        if (moPickerLocation == null) {
+            moPickerLocation = new DPickerElement(miClient, DModConsts.LU_LOC);
+        }
+        
+        moPickerLocation.resetForm();
+        moPickerLocation.setVisible(true);
 
-    private void renderLocation(final DDbBolLocation bolLocation) {
+        if (moPickerLocation.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int[] key = (int[]) moPickerLocation.getValue(DPickerElement.ELEMENT);
+            
+            if (key != null) {
+                bolLocation = new DDbBolLocation();
+                bolLocation.setOwnLocation((DDbLocation) miClient.getSession().readRegistry(DModConsts.LU_LOC, key));
+                bolLocation.setArrivalDepartureDatetime(new Date());
+            }
+        }
+        
+        return bolLocation;
+    }
+
+    private DGuiItem createGuiItemForBolLocation(final DDbBolLocation bolLocation) {
+        DGuiItem guiItem = new DGuiItem(bolLocation.getPrimaryKey(), bolLocation.getOwnLocation().getName());
+        guiItem.setCode(bolLocation.getOwnLocation().getCodeSource());
+        guiItem.setComplement(bolLocation.getOwnLocation());
+        return guiItem;
+    }
+    
+    private boolean canBolLocationRemove() {
+        boolean can = true;
+        DDbBolLocation bolLocationSelected = (DDbBolLocation) moGridLocations.getSelectedGridRow();
+        
+        if (bolLocationSelected != null) {
+            if (bolLocationSelected.isLocationSource()) {
+                for (DGridRow row : moGridLocations.getModel().getGridRows()) {
+                    DDbBolLocation bolLocation = (DDbBolLocation) row;
+                    
+                    if (bolLocation.isLocationDestiny() && DLibUtils.compareKeys(bolLocation.getSourceBolLocationKey(), bolLocationSelected.getPrimaryKey())) {
+                        miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
+                                + "se usa en la ubicación '" + bolLocation.getBolSortingPos() + ". " + bolLocation.getName() + "'.");
+                        can = false;
+                        break;
+                    }
+                }
+            }
+            
+            if (can) {
+                merchandises:
+                for (DGridRow row : moGridMerchandises.getModel().getGridRows()) {
+                    DDbBolMerchandise bolMerchandise = (DDbBolMerchandise) row;
+                    
+                    for (DDbBolMerchandiseMove bolMerchandiseMove : bolMerchandise.getChildMoves()) {
+                        if (bolLocationSelected.isLocationSource() && DLibUtils.compareKeys(bolMerchandiseMove.getSourceLocationKey(), bolLocationSelected.getPrimaryKey())) {
+                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
+                                    + "se usa como origen al transportar la mercancía '" + bolMerchandise.getBolSortingPos() + ". " + bolMerchandise.getDescriptionItem() + "'.");
+                            can = false;
+                            break merchandises;
+                        }
+                        else if (bolLocationSelected.isLocationDestiny()&& DLibUtils.compareKeys(bolMerchandiseMove.getDestinyLocationKey(), bolLocationSelected.getPrimaryKey())) {
+                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
+                                    + "se usa como destino al transportar la mercancía '" + bolMerchandise.getBolSortingPos() + ". " + bolMerchandise.getDescriptionItem() + "'.");
+                            can = false;
+                            break merchandises;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return can;
+    }
+    
+    private void renderBolLocation(final DDbBolLocation bolLocation) {
         moBolLocation = bolLocation;
         
         if (moBolLocation == null) {
@@ -3898,6 +4092,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moTextLocCode.setValue(moBolLocation.getOwnLocation().getCode());
             moDatetimeLocArrivalDepartureDatetime.setValue(moBolLocation.getArrivalDepartureDatetime());
             moKeyLocSourceLocation.setValue(moBolLocation.getSourceBolLocationKey());
+            itemStateChangedLocSourceLocation();
             moDecLocDistanceKm.setValue(moBolLocation.getDistanceKm());
             
             jtfLocLocationId.setText(moBolLocation.getLocationId());
@@ -3928,47 +4123,33 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolLocUpdate.setValue(true);
     }
     
-    private void editLocation(final boolean editing, final int action) {
+    private void editBolLocation(final boolean editing, final int action) {
         mbEditingLocation = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingLocation) {
             mnActionLocation = 0;
             jtfLocCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionLocation = ACTION_CREATE;
-                    jtfLocCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionLocation = ACTION_COPY;
-                    jtfLocCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionLocation = ACTION_MODIFY;
-                    jtfLocCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionLocation = 0;
-                    jtfLocCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionLocation = action;
+            jtfLocCrud.setText(getCrudText(action));
             jtfLocCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyLocLocationType.setEnabled(mbEditingLocation);
+        jbLocEditType.setEnabled(false);
         itemStateChangedLocLocationType();
         moTextLocName.setEnabled(mbEditingLocation);
         moTextLocCode.setEnabled(mbEditingLocation);
         jbLocGetNextCode.setEnabled(mbEditingLocation);
         moDatetimeLocArrivalDepartureDatetime.setEnabled(mbEditingLocation);
         //moKeyLocSourceLocation.setEnabled(...); // depends on itemStateChangedLocLocationType()
-        //moDecLocDistanceKm.setEnabled(...); // depends on itemStateChangedLocLocationType()
+        itemStateChangedLocSourceLocation();
+        //moDecLocDistanceKm.setEnabled(...); // depends on itemStateChangedLocSourceLocation()
         
         moKeyLocAddressCountry.setEnabled(mbEditingLocation);
         itemStateChangedLocAddressCountry();
@@ -3988,9 +4169,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moTextLocNotes.setEnabled(mbEditingLocation);
         
-        moBoolLocUpdate.setEnabled(mbEditingLocation && moBolLocation != null && !moBolLocation.isRegistryNew());
-        
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbLocAdd.setEnabled(!mbEditingLocation);
         jbLocCreate.setEnabled(!mbEditingLocation);
@@ -4006,12 +4185,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridLocations.getTable().setEnabled(!mbEditingLocation);
         moGridLocations.getTable().getTableHeader().setEnabled(!mbEditingLocation);
         
-        // clear or refresh data
+        // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                renderBolLocation(moBolLocation); // local registry already set
+                break;
             case ACTION_CREATE:
-                renderLocation(null);
-                moDatetimeLocArrivalDepartureDatetime.setValue(new Date());
+                renderBolLocation(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -4022,13 +4203,27 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 // nothing
         }
         
-        // set edition status appropriately into form
+        // set edition status appropriately into form:
+        
+        boolean updatable = mbEditingLocation && moBolLocation != null && moBolLocation.getOwnLocation() != null && !moBolLocation.getOwnLocation().isRegistryNew();
+        
+        moBoolLocUpdate.setEnabled(updatable);
+        
+        if (updatable) {
+            moKeyLocLocationType.setEnabled(false);
+            jbLocEditType.setEnabled(true);
+        }
         
         if (action != 0) { // check original parameter
             enableBolNavButtons(mbEditingLocation ? 0 : NAV_ACTION_START);
             
             if (mbEditingLocation) {
-                moKeyLocLocationType.requestFocusInWindow();
+                if (moKeyLocLocationType.isEnabled()) {
+                    moKeyLocLocationType.requestFocusInWindow();
+                }
+                else {
+                    moTextLocName.requestFocusInWindow();
+                }
             }
             else {
                 jbLocAdd.requestFocusInWindow();
@@ -4039,21 +4234,21 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshLocations() {
+    public void refreshBolLocations() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridLocations.getModel().getGridRows()) {
-            ((DDbBolLocation) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolLocation) row).setBolSortingPos(++sortingPos);
         }
         
         moGridLocations.renderGridRows();
     }
     
     private void computeLocCode() {
-        // format location code
+        // format location code:
         moTextLocCode.setValue(DBolUtils.FormatCodeLocation.format(DLibUtils.parseInt(moTextLocCode.getValue())));
         
-        // compose location ID
+        // compose location ID:
         if (moKeyLocLocationType.getSelectedIndex() <= 0) {
             jtfLocLocationId.setText("");
         }
@@ -4100,6 +4295,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
     
+    private void actionPerformedLocEditType() {
+        if (mbEditingLocation && miClient.showMsgBoxConfirm("¿Está seguro que desea cambiar el tipo de la ubicación?") == JOptionPane.YES_OPTION) {
+            jbLocEditType.setEnabled(false);
+            moKeyLocLocationType.setEnabled(true);
+            moKeyLocLocationType.requestFocusInWindow();
+        }
+    }
+    
     private void actionPerformedLocGetNextCode() {
         try {
             if (moTextLocCode.getValue().equals(DBolUtils.DEF_CODE_LOCATION) || 
@@ -4116,30 +4319,18 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedLocAdd() {
-        if (moPickerLocation == null) {
-            moPickerLocation = new DPickerElement(miClient, DModConsts.LU_LOC);
-        }
+        DDbBolLocation bolLocation = createBolLocationPickingOne();
         
-        moPickerLocation.resetForm();
-        moPickerLocation.setVisible(true);
-
-        if (moPickerLocation.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
-            int[] key = (int[]) moPickerLocation.getValue(DPickerElement.ELEMENT);
-            
-            if (key != null) {
-                editLocation(true, ACTION_CREATE);
-                
-                DDbBolLocation bolLocation = new DDbBolLocation();
-                bolLocation.setOwnLocation((DDbLocation) miClient.getSession().readRegistry(DModConsts.LU_LOC, key));
-                bolLocation.setArrivalDepartureDatetime(new Date());
-                
-                renderLocation(bolLocation);
-            }
+        if (bolLocation != null) {
+            moBolLocation = bolLocation;
+            editBolLocation(true, ACTION_ADD);
         }
     }
     
     private void actionPerformedLocCreate() {
-        editLocation(true, ACTION_CREATE);
+        editBolLocation(true, ACTION_CREATE);
+        
+        moDatetimeLocArrivalDepartureDatetime.setValue(new Date());
     }
 
     private void actionPerformedLocCopy() {
@@ -4147,7 +4338,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editLocation(true, ACTION_COPY);
+            editBolLocation(true, ACTION_COPY);
         }
     }
 
@@ -4156,23 +4347,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editLocation(true, ACTION_MODIFY);
+            editBolLocation(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedLocRemove() {
-        try {
-            actionGridRemove(moGridLocations, this.getClass().getMethod("refreshLocations"));
-            computeBol();
-        }
-        catch (Exception e) {
-            DLibUtils.showException(this, e);
+        if (canBolLocationRemove()) {
+            try {
+                actionGridRemove(moGridLocations, this.getClass().getMethod("refreshBolLocations"));
+                computeBol();
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
         }
     }
 
     private void actionPerformedLocMoveUp() {
         try {
-            actionGridMoveUp(moGridLocations, this.getClass().getMethod("refreshLocations"));
+            actionGridMoveUp(moGridLocations, this.getClass().getMethod("refreshBolLocations"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -4181,7 +4374,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedLocMoveDown() {
         try {
-            actionGridMoveDown(moGridLocations, this.getClass().getMethod("refreshLocations"));
+            actionGridMoveDown(moGridLocations, this.getClass().getMethod("refreshBolLocations"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -4203,9 +4396,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         
         if (DGuiUtils.computeValidation(miClient, validation)) {
+            boolean adding = mnActionLocation == ACTION_ADD; // convenience variable
             boolean creating = mnActionLocation == ACTION_CREATE || mnActionLocation == ACTION_COPY; // convenience variable
             DDbLocation location = null;
-            DGuiItem item = null;
             
             if (creating) {
                 moBolLocation = new DDbBolLocation();
@@ -4251,10 +4444,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             location.sanitize();
             
+            location.setRegistryEdited(true);
+            
             moBolLocation.updateFromOwnLocation();
             
             //moBolLocation.setPkBolId(...);
-            if (creating) {
+            if (creating || adding) {
                 moBolLocation.setTempBolLocationId(++mnTempBolLocationId); // preserve temporal BOL location ID
                 moBolLocation.setPkLocationId(mnTempBolLocationId);
             }
@@ -4278,22 +4473,26 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             //moBolLocation.setFkLocationTypeId(...); // updated already by DDbBolLocation.updateFromOwnLocation()
             //moBolLocation.setFkLocationId(...); // updated already by DDbBolLocation.updateFromOwnLocation()
             //moBolLocation.setFkAddressCountryId(...); // updated already by DDbBolLocation.updateFromOwnLocation()
-            item = moKeyLocSourceLocation.getSelectedItem();
-            moBolLocation.setFkSourceBolId_n(item == null ? 0 : item.getPrimaryKey()[0]);
-            moBolLocation.setFkSourceLocationId_n(item == null ? 0 : item.getPrimaryKey()[1]);
+            DGuiItem guiItem = moKeyLocSourceLocation.getSelectedItem();
+            moBolLocation.setFkSourceBolId_n(guiItem == null ? 0 : guiItem.getPrimaryKey()[0]);
+            moBolLocation.setFkSourceLocationId_n(guiItem == null ? 0 : guiItem.getPrimaryKey()[1]);
 
             //moBolLocation.setOwnLocation(...); // already set above
-            moBolLocation.setOwnSourceLocation(item == null ? null : (DDbLocation) item.getComplement());
+            moBolLocation.setOwnSourceLocation(guiItem == null ? null : (DDbLocation) guiItem.getComplement());
 
             //registry.setTempBolLocationId(...); // already set above
-            moBolLocation.setTempSourceBolLocationId(item == null ? 0 : item.getPrimaryKey()[1]); // preserve temporary ID of just created BOL locations
+            moBolLocation.setTempSourceBolLocationId(guiItem == null ? 0 : guiItem.getPrimaryKey()[1]); // preserve temporary ID of just created BOL locations
             
-            // update grid
+            // update own registry:
+            
+            moBolLocation.setBolUpdateOwnRegistry(moBoolLocUpdate.getValue());
+            
+            // update grid:
 
-            if (creating) {
+            if (creating || adding) {
                 moGridLocations.addGridRow(moBolLocation);
             }
-            refreshLocations();
+            refreshBolLocations();
             moGridLocations.setSelectedGridRow(moGridLocations.getTable().getRowCount() - 1);
             
             actionPerformedLocCancel();
@@ -4303,16 +4502,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedLocCancel() {
-        editLocation(false, ACTION_CANCEL);
+        editBolLocation(false, ACTION_CANCEL);
     }
     
     private void itemStateChangedLocLocationType() {
         moKeyLocSourceLocation.resetField();
-        moDecLocDistanceKm.resetField();
         
         if (moKeyLocLocationType.getSelectedIndex() <= 0) {
             moKeyLocSourceLocation.setEnabled(false);
-            moDecLocDistanceKm.setEnabled(false);
             
             moKeyLocSourceLocation.removeAllItems();
         }
@@ -4320,12 +4517,34 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             boolean enable = mbEditingLocation && moKeyLocLocationType.getValue()[0] == DModSysConsts.LS_LOC_TP_DES;
             
             moKeyLocSourceLocation.setEnabled(enable);
-            moDecLocDistanceKm.setEnabled(enable);
             
             populateLocSourceLocation();
         }
         
         computeLocCode();
+        itemStateChangedLocSourceLocation();
+    }
+    
+    private void itemStateChangedLocSourceLocation() {
+        moDecLocDistanceKm.resetField();
+        
+        if (moKeyLocSourceLocation.getSelectedIndex() <= 0) {
+            moDecLocDistanceKm.setEnabled(false);
+        }
+        else {
+            boolean enable = mbEditingLocation && moKeyLocSourceLocation.isEnabled();
+            
+            moDecLocDistanceKm.setEnabled(enable);
+            
+            if (moBolLocation != null && moBolLocation.getOwnLocation() != null && !moBolLocation.getOwnLocation().isRegistryNew() && moDecLocDistanceKm.isEnabled()) {
+                try {
+                    moDecLocDistanceKm.setValue(DBolUtils.getDistanceKm(miClient.getSession(), (DDbLocation) moKeyLocSourceLocation.getSelectedItem().getComplement(), moBolLocation.getOwnLocation()));
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
     }
     
     private void itemStateChangedLocAddressCountry() {
@@ -4360,8 +4579,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             String countryCode = moKeyLocAddressCountry.getSelectedItem().getCode(); // convenience variable
-            boolean applyStateCatalog = countryCode.equals(DCfdi40Catalogs.ClavePaísMex) || countryCode.equals(DCfdi40Catalogs.ClavePaísUsa) || countryCode.equals(DCfdi40Catalogs.ClavePaísCan);
-            boolean applyAddressCatalogs = countryCode.equals(DCfdi40Catalogs.ClavePaísMex);
+            boolean applyStateCatalog = DBolUtils.applyStateCatalog(countryCode);
+            boolean applyAddressCatalogs = DBolUtils.applyAddressCatalogs(countryCode);
             
             moTextLocAddressStateCode.setEnabled(mbEditingLocation && applyStateCatalog);
             moTextLocAddressStateName.setEnabled(mbEditingLocation && !applyStateCatalog);
@@ -4454,8 +4673,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressState = new DPickerCatalogAddressState(miClient);
                 }
 
-                DGuiItem item = moKeyLocAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyLocAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 
                 moPickerCatalogAddressState.setValue(DLadCatalogConsts.ADDRESS_COUNTRY, country);
                 moPickerCatalogAddressState.resetForm();
@@ -4488,8 +4707,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressCounty = new DPickerCatalogAddressCounty(miClient);
                 }
 
-                DGuiItem item = moKeyLocAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyLocAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextLocAddressStateCode.getValue(), moTextLocAddressStateName.getValue());
                 
                 moPickerCatalogAddressCounty.setValue(DLadCatalogConsts.ADDRESS_COUNTRY, country);
@@ -4532,8 +4751,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressLocality = new DPickerCatalogAddressLocality(miClient);
                 }
 
-                DGuiItem item = moKeyLocAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyLocAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextLocAddressStateCode.getValue(), moTextLocAddressStateName.getValue());
                 DLadCatalogAddressCounty county = new DLadCatalogAddressCounty(moTextLocAddressCountyCode.getValue(), moTextLocAddressCountyName.getValue());
                 
@@ -4585,8 +4804,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressDistrict = new DPickerCatalogAddressDistrict(miClient);
                 }
 
-                DGuiItem item = moKeyLocAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyLocAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextLocAddressStateCode.getValue(), moTextLocAddressStateName.getValue());
                 DLadCatalogAddressCounty county = new DLadCatalogAddressCounty(moTextLocAddressCountyCode.getValue(), moTextLocAddressCountyName.getValue());
                 DLadCatalogAddressLocality locality = new DLadCatalogAddressLocality(moTextLocAddressLocalityCode.getValue(), moTextLocAddressLocalityName.getValue());
@@ -4611,19 +4830,21 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void valueChangedLoc() {
-        renderLocation((DDbBolLocation) moGridLocations.getSelectedGridRow());
+        renderBolLocation((DDbBolLocation) moGridLocations.getSelectedGridRow());
     }
 
     /*
      * Merchandises
      */
     
-    private void renderMerchandise(final DDbBolMerchandise bolMerchandise) {
+    private void renderBolMerchandise(final DDbBolMerchandise bolMerchandise) {
         moBolMerchandise = bolMerchandise;
         moGridMerchandisesMoves.clearGridRows();
         
         if (moBolMerchandise == null) {
             moFieldsMerchandise.resetFields();
+            moMerchItem = null;
+            moMerchUnit = null;
             
             jtfMerchQuantityMoved.setText(DLibUtils.DecimalFormatValue6D.format(0.0));
         }
@@ -4653,8 +4874,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 moIntMerchDimensionsLength.setValue(dimensions.Length);
                 moIntMerchDimensionsHeight.setValue(dimensions.Height);
                 moIntMerchDimensionsWidth.setValue(dimensions.Width);
-                moRadMerchDimensionsCm.setSelected(dimensions.Unit.equals(DCfdi40Catalogs.DimensiónCm));
-                moRadMerchDimensionsPlg.setSelected(dimensions.Unit.equals(DCfdi40Catalogs.DimensiónPlg));
+                moRadMerchDimensionsCm.setSelected(dimensions.Unit.equals(DCfdi40Catalogs.CcpDimensiónCm));
+                moRadMerchDimensionsPlg.setSelected(dimensions.Unit.equals(DCfdi40Catalogs.CcpDimensiónPlg));
             }
             else {
                 moIntMerchDimensionsLength.resetField();
@@ -4704,12 +4925,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             moGridMerchandisesMoves.setSelectedGridRow(0);
         }
-        
+    
+        computeMerchWeightKg();
         computeMerchDimensions();
         computeMerchImportRequest();
     }
     
-    private void renderMerchandiseMove(final DDbBolMerchandiseMove bolMerchandiseMove) {
+    private void renderBolMerchandiseMove(final DDbBolMerchandiseMove bolMerchandiseMove) {
         moBolMerchandiseMove = bolMerchandiseMove;
         
         populateMerchMoveSourceDestinyLocations(); // call before setting fields values!
@@ -4719,45 +4941,30 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             moKeyMerchMoveSource.setValue(moBolMerchandiseMove.getSourceLocationKey());
-            moKeyMerchMoveDestiny.setValue(moBolMerchandiseMove.getDestinyLocationId());
+            moKeyMerchMoveDestiny.setValue(moBolMerchandiseMove.getDestinyLocationKey());
             moDecMerchMoveQuantity.setValue(moBolMerchandiseMove.getQuantity());
         }
     }
     
-    private void editMerchandise(final boolean editing, final int action) {
+    private void editBolMerchandise(final boolean editing, final int action) {
         mbEditingMerchandise = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingMerchandise) {
             mnActionMerchandise = 0;
             jtfMerchCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionMerchandise = ACTION_CREATE;
-                    jtfMerchCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionMerchandise = ACTION_COPY;
-                    jtfMerchCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionMerchandise = ACTION_MODIFY;
-                    jtfMerchCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionMerchandise = 0;
-                    jtfMerchCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionMerchandise = action;
+            jtfMerchCrud.setText(getCrudText(action));
             jtfMerchCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyMerchItem.setEnabled(mbEditingMerchandise);
+        jbMerchPickItem.setEnabled(mbEditingMerchandise);
         itemStateChangedMerchItem();
         //jbMerchPickItem.setEnabled(mbEditingMerchandise); // depends on itemStateChangedMerchItem()
         //moTextMerchItemDescription.setEnabled(mbEditingMerchandise); // depends on itemStateChangedMerchItem()
@@ -4787,7 +4994,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moIntMerchImportRequest3.setEnabled(mbEditingMerchandise && moBoolBolIntlTransport.getValue());
         moIntMerchImportRequest4.setEnabled(mbEditingMerchandise && moBoolBolIntlTransport.getValue());
         
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbMerchAdd.setEnabled(false); // adding not required
         jbMerchCreate.setEnabled(!mbEditingMerchandise);
@@ -4803,11 +5010,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridMerchandises.getTable().setEnabled(!mbEditingMerchandise);
         moGridMerchandises.getTable().getTableHeader().setEnabled(!mbEditingMerchandise);
         
-        // clear or refresh data
+        // clear or refresh data:
         
         switch (action) { // act on original parameter
             case ACTION_CREATE:
-                renderMerchandise(null);
+                renderBolMerchandise(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -4818,9 +5025,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 // nothing
         }
         
-        // propagate edition state to dependents
+        // propagate edition state to dependents:
         
-        editMerchandiseMove(false, mbEditingMerchandise ? ACTION_CANCEL : 0);
+        editBolMerchandiseMove(false, mbEditingMerchandise ? ACTION_CANCEL : 0);
         if (action == 0) { // check original parameter
             jbMerchMoveAdd.setEnabled(false);
             jbMerchMoveCreate.setEnabled(false);
@@ -4830,7 +5037,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jbMerchMoveCancel.setEnabled(false);
         }
         
-        // set edition status appropriately into form
+        // set edition status appropriately into form:
         
         if (action != 0) { // check original parameter
             enableBolNavButtons(mbEditingMerchandise ? 0 : NAV_ACTION_START);
@@ -4844,45 +5051,29 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void editMerchandiseMove(final boolean editing, final int action) {
+    private void editBolMerchandiseMove(final boolean editing, final int action) {
         mbEditingMerchandiseMove = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingMerchandiseMove) {
             mnActionMerchandiseMove = 0;
             jtfMerchMoveCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionMerchandiseMove = ACTION_CREATE;
-                    jtfMerchMoveCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionMerchandiseMove = ACTION_COPY;
-                    jtfMerchMoveCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionMerchandiseMove = ACTION_MODIFY;
-                    jtfMerchMoveCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionMerchandiseMove = 0;
-                    jtfMerchMoveCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionMerchandiseMove = action;
+            jtfMerchMoveCrud.setText(getCrudText(action));
             jtfMerchMoveCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyMerchMoveSource.setEnabled(mbEditingMerchandiseMove);
         moKeyMerchMoveDestiny.setEnabled(mbEditingMerchandiseMove);
         moDecMerchMoveQuantity.setEnabled(mbEditingMerchandiseMove);
         jbMerchMoveSetQuantity.setEnabled(mbEditingMerchandiseMove);
         
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbMerchMoveAdd.setEnabled(false); // adding not required
         jbMerchMoveCreate.setEnabled(mbEditingMerchandise && !mbEditingMerchandiseMove);
@@ -4895,11 +5086,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridMerchandisesMoves.getTable().setEnabled(mbEditingMerchandise && !mbEditingMerchandiseMove);
         moGridMerchandisesMoves.getTable().getTableHeader().setEnabled(mbEditingMerchandise && !mbEditingMerchandiseMove);
 
-        // clear or refresh data
+        // clear or refresh data:
         
         switch (action) { // act on original parameter
             case ACTION_CREATE:
-                renderMerchandiseMove(null);
+                renderBolMerchandiseMove(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -4921,7 +5112,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jbMerchCancel.setEnabled(mbEditingMerchandise);
         }
         
-        // set edition status appropriately into form
+        // set edition status appropriately into form:
         
         if (action != 0) { // check original parameter
             //enableBolNavButtons(mbEditingMerchandiseMove ? 0 : NAV_ACTION_START); // does not interfere with BOL navigation
@@ -4938,11 +5129,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshMerchandises() {
+    public void refreshBolMerchandises() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridMerchandises.getModel().getGridRows()) {
-            ((DDbBolMerchandise) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolMerchandise) row).setBolSortingPos(++sortingPos);
         }
         
         moGridMerchandises.renderGridRows();
@@ -4951,14 +5142,28 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshMerchandisesMoves() {
+    public void refreshBolMerchandisesMoves() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridMerchandisesMoves.getModel().getGridRows()) {
-            ((DDbBolMerchandiseMove) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolMerchandiseMove) row).setBolSortingPos(++sortingPos);
         }
         
         moGridMerchandisesMoves.renderGridRows();
+    }
+    
+    private void computeMerchWeightKg() {
+        if (moMerchUnit == null || moMerchUnit.getRatioKg() == 0) {
+            jlMerchRatioKgHint.setText("");
+            jlMerchRatioKgHint.setToolTipText(null);
+        }
+        else {
+            String ratio = DLibUtils.getDecimalFormatQuantity().format(moMerchUnit.getRatioKg()) + " x " + moMerchUnit.getCode();
+            jlMerchRatioKgHint.setText(ratio);
+            jlMerchRatioKgHint.setToolTipText("Equivalencia kg: " + ratio);
+            
+            moDecMerchWeightKg.setValue(moDecMerchQuantity.getValue() * moMerchUnit.getRatioKg());
+        }
     }
     
     private void computeMerchDimensions() {
@@ -4967,7 +5172,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moIntMerchDimensionsLength.getValue(), 
                     moIntMerchDimensionsHeight.getValue(), 
                     moIntMerchDimensionsWidth.getValue(), 
-                    moRadMerchDimensionsCm.isSelected() ? DCfdi40Catalogs.DimensiónCm : DCfdi40Catalogs.DimensiónPlg));
+                    moRadMerchDimensionsCm.isSelected() ? DCfdi40Catalogs.CcpDimensiónCm : DCfdi40Catalogs.CcpDimensiónPlg));
         }
         else {
             jtfMerchDimensionsHint.setText(DBolUtils.NA);
@@ -5040,25 +5245,35 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         String unit = "";
         
         if (moRadMerchDimensionsCm.isSelected()) {
-            unit = DCfdi40Catalogs.DimensiónCm;
+            unit = DCfdi40Catalogs.CcpDimensiónCm;
         }
         else if (moRadMerchDimensionsPlg.isSelected()) {
-            unit = DCfdi40Catalogs.DimensiónPlg;
+            unit = DCfdi40Catalogs.CcpDimensiónPlg;
         }
         
         return unit;
     }
     
     private void actionPerformedMerchPickItem() {
+        if (moPickerItem == null) {
+            moPickerItem = new DPickerElement(miClient, DModConsts.IU_ITM);
+        }
         
+        moPickerItem.resetForm();
+        moPickerItem.setVisible(true);
+
+        if (moPickerItem.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            moKeyMerchItem.setValue((int[]) moPickerItem.getValue(DPickerElement.ELEMENT));
+            moKeyMerchItem.requestFocusInWindow();
+        }
     }
     
     private void actionPerformedMerchAdd() {
-        // adding not required
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     private void actionPerformedMerchCreate() {
-        editMerchandise(true, ACTION_CREATE);
+        editBolMerchandise(true, ACTION_CREATE);
     }
 
     private void actionPerformedMerchCopy() {
@@ -5066,7 +5281,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editMerchandise(true, ACTION_COPY);
+            editBolMerchandise(true, ACTION_COPY);
         }
     }
 
@@ -5075,13 +5290,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editMerchandise(true, ACTION_MODIFY);
+            editBolMerchandise(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedMerchRemove() {
         try {
-            actionGridRemove(moGridMerchandises, this.getClass().getMethod("refreshMerchandises"));
+            actionGridRemove(moGridMerchandises, this.getClass().getMethod("refreshBolMerchandises"));
             computeBol();
         }
         catch (Exception e) {
@@ -5091,7 +5306,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedMerchMoveUp() {
         try {
-            actionGridMoveUp(moGridMerchandises, this.getClass().getMethod("refreshMerchandises"));
+            actionGridMoveUp(moGridMerchandises, this.getClass().getMethod("refreshBolMerchandises"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -5100,7 +5315,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedMerchMoveDown() {
         try {
-            actionGridMoveDown(moGridMerchandises, this.getClass().getMethod("refreshMerchandises"));
+            actionGridMoveDown(moGridMerchandises, this.getClass().getMethod("refreshBolMerchandises"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -5177,7 +5392,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     "" + moIntMerchImportRequest4.getValue()));
             moBolMerchandise.setFkItemId(moKeyMerchItem.getValue()[0]);
             moBolMerchandise.setFkUnitId(moKeyMerchUnit.getValue()[0]);
-            moBolMerchandise.setFkCurrencyId(moKeyMerchCurrency.getSelectedIndex() <= 0 ? 0 : moKeyMerchCurrency.getValue()[0]);
+            moBolMerchandise.setFkCurrencyId(moKeyMerchCurrency.getSelectedIndex() <= 0 ? DModSysConsts.CS_CUR_NA : moKeyMerchCurrency.getValue()[0]);
 
             moBolMerchandise.getChildMoves().clear();
             for (DGridRow row : moGridMerchandisesMoves.getModel().getGridRows()) {
@@ -5189,12 +5404,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             moBolMerchandise.computeQuantityMoved();
 
-            // update grid
+            // update grid:
 
             if (creating) {
                 moGridMerchandises.addGridRow(moBolMerchandise);
             }
-            refreshMerchandises();
+            refreshBolMerchandises();
             moGridMerchandises.setSelectedGridRow(moGridMerchandises.getTable().getRowCount() - 1);
             
             actionPerformedMerchCancel();
@@ -5204,7 +5419,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedMerchCancel() {
-        editMerchandise(false, ACTION_CANCEL);
+        editBolMerchandise(false, ACTION_CANCEL);
     }
     
     private void actionPerformedMerchMoveSetQuantity() {
@@ -5226,7 +5441,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedMerchMoveCreate() {
-        editMerchandiseMove(true, ACTION_CREATE);
+        editBolMerchandiseMove(true, ACTION_CREATE);
     }
 
     private void actionPerformedMerchMoveModify() {
@@ -5234,13 +5449,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editMerchandiseMove(true, ACTION_MODIFY);
+            editBolMerchandiseMove(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedMerchMoveRemove() {
         try {
-            actionGridRemove(moGridMerchandisesMoves, this.getClass().getMethod("refreshMerchandisesMoves"));
+            actionGridRemove(moGridMerchandisesMoves, this.getClass().getMethod("refreshBolMerchandisesMoves"));
             computeMerchQuantityMoves();
         }
         catch (Exception e) {
@@ -5286,12 +5501,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moBolMerchandiseMove.setTempSourceBolLocationId(moKeyMerchMoveSource.getValue()[1]); // preserve temporary ID of just created BOL locations
             moBolMerchandiseMove.setTempDestinyBolLocationId(moKeyMerchMoveDestiny.getValue()[1]); // preserve temporary ID of just created BOL locations
             
-            // update grid
+            // update grid:
 
             if (creating) {
                 moGridMerchandisesMoves.addGridRow(moBolMerchandiseMove);
             }
-            refreshMerchandisesMoves();
+            refreshBolMerchandisesMoves();
             moGridMerchandisesMoves.setSelectedGridRow(moGridMerchandisesMoves.getTable().getRowCount() - 1);
             
             computeMerchQuantityMoves();
@@ -5301,7 +5516,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedMerchMoveCancel() {
-        editMerchandiseMove(false, ACTION_CANCEL);
+        editBolMerchandiseMove(false, ACTION_CANCEL);
     }
     
     private void itemStateChangedMerchItem() {
@@ -5309,14 +5524,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchUnit.resetField();
         
         if (moKeyMerchItem.getSelectedIndex() <= 0) {
-            jbMerchPickItem.setEnabled(false);
             moTextMerchItemDescription.setEnabled(false);
             moKeyMerchUnit.setEnabled(false);
             
             moMerchItem = null;
         }
         else {
-            jbMerchPickItem.setEnabled(mbEditingMerchandise);
             moTextMerchItemDescription.setEnabled(mbEditingMerchandise);
             moKeyMerchUnit.setEnabled(mbEditingMerchandise);
             
@@ -5344,6 +5557,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             moTextMerchUnitDescription.setValue(moMerchUnit.getName());
         }
+        
+        computeMerchWeightKg();
     }
 
     private void itemStateChangedMerchCurrency() {
@@ -5402,6 +5617,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moTextMerchPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
             moTextMerchPackagingCode.resetField();
         }
+    }
+    
+    private void focusLostMerchQuantity() {
+        computeMerchWeightKg();
     }
                 
     private void focusLostMerchDimensions() {
@@ -5467,29 +5686,107 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
             
     private void valueChangedMerch() {
-        renderMerchandise((DDbBolMerchandise) moGridMerchandises.getSelectedGridRow());
+        renderBolMerchandise((DDbBolMerchandise) moGridMerchandises.getSelectedGridRow());
     }
 
     private void valueChangedMerchMove() {
-        renderMerchandiseMove((DDbBolMerchandiseMove) moGridMerchandisesMoves.getSelectedGridRow());
+        renderBolMerchandiseMove((DDbBolMerchandiseMove) moGridMerchandisesMoves.getSelectedGridRow());
     }
     
     /*
      * Truck
      */
     
-    private boolean canAddTruck() {
+    private DDbBolTruck createBolTruckPickingOne() {
+        DDbBolTruck bolTruck = null;
+        
+        if (moPickerTruck == null) {
+            moPickerTruck = new DPickerElement(miClient, DModConsts.LU_TRUCK);
+        }
+        
+        moPickerTruck.resetForm();
+        moPickerTruck.setVisible(true);
+
+        if (moPickerTruck.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int[] key = (int[]) moPickerTruck.getValue(DPickerElement.ELEMENT);
+            
+            if (key != null) {
+                bolTruck = new DDbBolTruck();
+                bolTruck.setOwnTruck((DDbTruck) miClient.getSession().readRegistry(DModConsts.LU_TRUCK, key));
+                
+                int sortingPos = 0;
+                for (DDbTruckTrailer truckTrailer : bolTruck.getOwnTruck().getChildTrailers()) {
+                    DDbBolTruckTrailer bolTruckTrailer = new DDbBolTruckTrailer();
+                    bolTruckTrailer.setOwnTrailer((DDbTrailer) miClient.getSession().readRegistry(DModConsts.LU_TRAIL, new int[] { truckTrailer.getFkTrailerId() }));
+                    bolTruckTrailer.setBolSortingPos(++sortingPos);
+                    
+                    bolTruck.getChildTrailers().add(bolTruckTrailer);
+                }
+            }
+        }
+        
+        return bolTruck;
+    }
+
+    private DDbBolTruckTrailer createBolTruckTrailerPickingOne() {
+        DDbBolTruckTrailer bolTruckTrailer = null;
+        
+        if (moPickerTrail == null) {
+            moPickerTrail = new DPickerElement(miClient, DModConsts.LU_TRAIL);
+        }
+        
+        moPickerTrail.resetForm();
+        moPickerTrail.setVisible(true);
+
+        if (moPickerTrail.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int[] key = (int[]) moPickerTrail.getValue(DPickerElement.ELEMENT);
+            
+            if (key != null) {
+                bolTruckTrailer = new DDbBolTruckTrailer();
+                bolTruckTrailer.setOwnTrailer((DDbTrailer) miClient.getSession().readRegistry(DModConsts.LU_TRAIL, key));
+            }
+        }
+        
+        return bolTruckTrailer;
+    }
+
+    private boolean canBolTruckAppend() {
         boolean can = true;
         
-        if (moGridTrucks.getTable().getRowCount() + 1 > 1) {
-            miClient.showMsgBoxInformation("Sólo puede haber un autotransporte.");
+        if (moGridTrucks.getTable().getRowCount() >= 1) {
+            miClient.showMsgBoxWarning("Sólo puede haber un autotransporte.");
             can = false;
         }
         
         return can;
     }
 
-    private void renderTruck(final DDbBolTruck bolTruck) {
+    private boolean canBolTruckAdd() {
+        boolean can = canBolTruckAppend();
+        
+        if (can) {
+            int count = moGridTptFigures.getTable().getRowCount();
+            if (count > 0) {
+                can = miClient.showMsgBoxConfirm("Ya hay " + DLibUtils.DecimalFormatInteger.format(count) + " " + (count == 1 ? "figura" : "figuras") + " de transporte.\n"
+                        + "Si decide agregar un transporte, serán sustituídas por sus propias figuras de transporte.\n"
+                        + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION;
+            }
+        }
+        
+        return can;
+    }
+    
+    private boolean canBolTruckTrailerAppend() {
+        boolean can = DLibUtils.belongsTo(mnTruckIsTrailerRequired, new int[] { DXmlCatalogEntry.REQUIRED_YES, DXmlCatalogEntry.REQUIRED_NO });
+        
+        if (!can) {
+            miClient.showMsgBoxWarning("No se requieren remolques.");
+        }
+        
+        return can;
+    }
+
+    private void renderBolTruck(final DDbBolTruck bolTruck) {
         moBolTruck = bolTruck;
         moGridTrucksTrailers.clearGridRows();
         
@@ -5530,7 +5827,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolTruckUpdate.setValue(true);
     }
     
-    private void renderTruckTrailer(final DDbBolTruckTrailer bolTruckTrailer) {
+    private void renderBolTruckTrailer(final DDbBolTruckTrailer bolTruckTrailer) {
         moBolTruckTrailer = bolTruckTrailer;
         
         if (moBolTruckTrailer == null) {
@@ -5550,40 +5847,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolTruckTrailUpdate.setValue(true);
     }
     
-    private void editTruck(final boolean editing, final int action) {
+    private void editBolTruck(final boolean editing, final int action) {
         mbEditingTruck = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingTruck) {
             mnActionTruck = 0;
             jtfTruckCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionTruck = ACTION_CREATE;
-                    jtfTruckCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionTruck = ACTION_COPY;
-                    jtfTruckCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionTruck = ACTION_MODIFY;
-                    jtfTruckCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionTruck = 0;
-                    jtfTruckCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionTruck = action;
+            jtfTruckCrud.setText(getCrudText(action));
             jtfTruckCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyTruckTransportConfig.setEnabled(mbEditingTruck);
+        jbTruckEditConfig.setEnabled(false);
         itemStateChangedTruckTransportConfig();
         moTextTruckName.setEnabled(mbEditingTruck);
         moTextTruckCode.setEnabled(mbEditingTruck);
@@ -5602,9 +5884,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextTruckCargoPolicy.setEnabled(mbEditingTruck);
         moCurTruckPrime.getField().setEnabled(mbEditingTruck);
         
-        moBoolTruckUpdate.setEnabled(mbEditingTruck && moBolTruck != null && !moBolTruck.isRegistryNew());
-        
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbTruckAdd.setEnabled(!mbEditingTruck);
         jbTruckCreate.setEnabled(!mbEditingTruck);
@@ -5620,11 +5900,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridTrucks.getTable().setEnabled(!mbEditingTruck);
         moGridTrucks.getTable().getTableHeader().setEnabled(!mbEditingTruck);
         
-        // clear or refresh data
+        // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                renderBolTruck(moBolTruck); // local registry already set
+                break;
             case ACTION_CREATE:
-                renderTruck(null);
+                renderBolTruck(null);
                 moYearTruckModel.setValue(DLibTimeUtils.digestYear(new Date())[0]);
                 break;
             case ACTION_COPY:
@@ -5638,7 +5921,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // propagate edition state to dependents:
         
-        editTruckTrailer(false, mbEditingTruck ? ACTION_CANCEL : 0);
+        editBolTruckTrailer(false, mbEditingTruck ? ACTION_CANCEL : 0);
         if (action == 0) { // check original parameter
             jbTruckTrailAdd.setEnabled(false);
             jbTruckTrailCreate.setEnabled(false);
@@ -5650,11 +5933,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // set edition status appropriately into form:
         
+        boolean updatable = mbEditingTruck && moBolTruck != null && moBolTruck.getOwnTruck() != null && !moBolTruck.getOwnTruck().isRegistryNew();
+        
+        moBoolTruckUpdate.setEnabled(updatable);
+        
+        if (updatable) {
+            moKeyTruckTransportConfig.setEnabled(false);
+            jbTruckEditConfig.setEnabled(true);
+        }
+        
         if (action != 0) { // check original parameter
             enableBolNavButtons(mbEditingTruck ? 0 : NAV_ACTION_START);
             
             if (mbEditingTruck) {
-                moKeyTruckTransportConfig.requestFocusInWindow();
+                if (moKeyTruckTransportConfig.isEnabled()) {
+                    moKeyTruckTransportConfig.requestFocusInWindow();
+                }
+                else {
+                    moTextTruckName.requestFocusInWindow();
+                }
             }
             else {
                 jbTruckAdd.requestFocusInWindow();
@@ -5662,46 +5959,29 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void editTruckTrailer(final boolean editing, final int action) {
+    private void editBolTruckTrailer(final boolean editing, final int action) {
         mbEditingTruckTrailer = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingTruckTrailer) {
             mnActionTruckTrailer = 0;
             jtfTruckTrailCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionTruckTrailer = ACTION_CREATE;
-                    jtfTruckTrailCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionTruckTrailer = ACTION_COPY;
-                    jtfTruckTrailCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionTruckTrailer = ACTION_MODIFY;
-                    jtfTruckTrailCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionTruckTrailer = 0;
-                    jtfTruckTrailCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionTruckTrailer = action;
+            jtfTruckTrailCrud.setText(getCrudText(action));
             jtfTruckTrailCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyTruckTrailSubtype.setEnabled(mbEditingTruckTrailer);
+        jbTruckTrailEditSubtype.setEnabled(false);
         itemStateChangedTruckTrailSubtype();
         moTextTruckTrailPlate.setEnabled(mbEditingTruckTrailer);
         
-        moBoolTruckTrailUpdate.setEnabled(mbEditingTruckTrailer && moBolTruckTrailer != null && !moBolTruckTrailer.isRegistryNew());
-        
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbTruckTrailAdd.setEnabled(mbEditingTruck && !mbEditingTruckTrailer);
         jbTruckTrailCreate.setEnabled(mbEditingTruck && !mbEditingTruckTrailer);
@@ -5717,8 +5997,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                renderBolTruckTrailer(moBolTruckTrailer); // local registry already set
+                break;
             case ACTION_CREATE:
-                renderTruckTrailer(null);
+                renderBolTruckTrailer(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -5742,11 +6025,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // set edition status appropriately into form:
         
+        boolean updatable = mbEditingTruckTrailer && moBolTruckTrailer != null && moBolTruckTrailer.getOwnTrailer() != null && !moBolTruckTrailer.getOwnTrailer().isRegistryNew();
+        
+        moBoolTruckTrailUpdate.setEnabled(updatable);
+        
+        if (updatable) {
+            moKeyTruckTrailSubtype.setEnabled(false);
+            jbTruckTrailEditSubtype.setEnabled(true);
+        }
+        
         if (action != 0) { // check original parameter
             //enableBolNavButtons(mbEditingTruckTrailer ? 0 : NAV_ACTION_START); // does not interfere with BOL navigation
             
             if (mbEditingTruckTrailer) {
-                moKeyTruckTrailSubtype.requestFocusInWindow();
+                if (moKeyTruckTrailSubtype.isEnabled()) {
+                    moKeyTruckTrailSubtype.requestFocusInWindow();
+                }
+                else {
+                    moTextTruckTrailPlate.requestFocus();
+                }
             }
             else {
                 jbTruckTrailAdd.requestFocusInWindow();
@@ -5757,11 +6054,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshTrucks() {
+    public void refreshBolTrucks() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridTrucks.getModel().getGridRows()) {
-            ((DDbBolTruck) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolTruck) row).setBolSortingPos(++sortingPos);
         }
         
         moGridTrucks.renderGridRows();
@@ -5770,14 +6067,22 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshTrucksTrailers() {
+    public void refreshBolTrucksTrailers() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridTrucksTrailers.getModel().getGridRows()) {
-            ((DDbBolTruckTrailer) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolTruckTrailer) row).setBolSortingPos(++sortingPos);
         }
         
         moGridTrucksTrailers.renderGridRows();
+    }
+    
+    private void actionPerformedTruckEditConfig() {
+        if (mbEditingTruck && miClient.showMsgBoxConfirm("¿Está seguro que desea cambiar la configuración del autotransporte?") == JOptionPane.YES_OPTION) {
+            jbTruckEditConfig.setEnabled(false);
+            moKeyTruckTransportConfig.setEnabled(true);
+            moKeyTruckTransportConfig.requestFocusInWindow();
+        }
     }
     
     private void actionPerformedTruckGetNextCode() {
@@ -5795,24 +6100,29 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedTruckAdd() {
-        if (canAddTruck()) {
-            
+        if (canBolTruckAdd()) {
+            DDbBolTruck bolTruck = createBolTruckPickingOne();
+
+            if (bolTruck != null) {
+                moBolTruck = bolTruck;
+                editBolTruck(true, ACTION_ADD);
+            }
         }
     }
     
     private void actionPerformedTruckCreate() {
-        if (canAddTruck()) {
-            editTruck(true, ACTION_CREATE);
+        if (canBolTruckAppend()) {
+            editBolTruck(true, ACTION_CREATE);
         }
     }
 
     private void actionPerformedTruckCopy() {
-        if (canAddTruck()) {
+        if (canBolTruckAppend()) {
             if (moGridTrucks.getSelectedGridRow() == null) {
                 miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                editTruck(true, ACTION_COPY);
+                editBolTruck(true, ACTION_COPY);
             }
         }
     }
@@ -5822,13 +6132,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editTruck(true, ACTION_MODIFY);
+            editBolTruck(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedTruckRemove() {
         try {
-            actionGridRemove(moGridTrucks, this.getClass().getMethod("refreshTrucks"));
+            actionGridRemove(moGridTrucks, this.getClass().getMethod("refreshBolTrucks"));
             computeBol();
         }
         catch (Exception e) {
@@ -5838,7 +6148,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedTruckMoveUp() {
         try {
-            actionGridMoveUp(moGridTrucks, this.getClass().getMethod("refreshTrucks"));
+            actionGridMoveUp(moGridTrucks, this.getClass().getMethod("refreshBolTrucks"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -5847,7 +6157,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedTruckMoveDown() {
         try {
-            actionGridMoveDown(moGridTrucks, this.getClass().getMethod("refreshTrucks"));
+            actionGridMoveDown(moGridTrucks, this.getClass().getMethod("refreshBolTrucks"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -5858,15 +6168,15 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsTruck.validateFields();
         
         if (validation.isValid()) {
-            if (mnTruckIsTrailerNeeded == DXmlCatalogEntry.NEEDED_NO && moGridTrucksTrailers.getTable().getRowCount() > 0) {
+            if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_NO && moGridTrucksTrailers.getTable().getRowCount() > 0) {
                 validation.setMessage("La configuración del autotransporte no requiere de remolques.");
                 validation.setComponent(jbTruckTrailCreate);
             }
-            else if (mnTruckIsTrailerNeeded == DXmlCatalogEntry.NEEDED_YES && moGridTrucksTrailers.getTable().getRowCount() == 0) {
+            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_YES && moGridTrucksTrailers.getTable().getRowCount() == 0) {
                 validation.setMessage("La configuración del autotransporte requiere de remolques.");
                 validation.setComponent(jbTruckTrailCreate);
             }
-            else if (mnTruckIsTrailerNeeded == DXmlCatalogEntry.NEEDED_OPT && moGridTrucksTrailers.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm("La configuración del autotransporte permite tener de remolques, pero no lo hay.\n"
+            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_OPT && moGridTrucksTrailers.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm("La configuración del autotransporte permite tener de remolques, pero no lo hay.\n"
                     + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
                 validation.setMessage("Agregar los remolques que se requieran.");
                 validation.setComponent(jbTruckTrailCreate);
@@ -5874,9 +6184,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         
         if (DGuiUtils.computeValidation(miClient, validation)) {
+            boolean adding = mnActionTruck == ACTION_ADD; // convenience variable
             boolean creating = mnActionTruck == ACTION_CREATE || mnActionTruck == ACTION_COPY; // convenience variable
             DDbTruck truck = null;
-            DGuiItem item = null;
             
             if (creating) {
                 moBolTruck = new DDbBolTruck();
@@ -5891,12 +6201,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             truck.setName(moTextTruckName.getValue());
             truck.setPlate(moTextTruckPlate.getValue());
             truck.setModel(moYearTruckModel.getValue());
-            item = moKeyTruckTransportConfig.getSelectedItem();
-            truck.setTransportConfigCode(item.getCode());
-            truck.setTransportConfigName(item.getItem());
-            item = moKeyTruckPermissionType.getSelectedItem();
-            truck.setPermissionTypeCode(item.getCode());
-            truck.setPermissionTypeName(item.getItem());
+            DGuiItem guiItem1 = moKeyTruckTransportConfig.getSelectedItem();
+            String[] codeAndName1 = guiItem1.getItem().split(" - ");
+            truck.setTransportConfigCode(guiItem1.getCode());
+            truck.setTransportConfigName(codeAndName1[1]);
+            DGuiItem guiItem2 = moKeyTruckPermissionType.getSelectedItem();
+            String[] codeAndName2 = guiItem2.getItem().split(" - ");
+            truck.setPermissionTypeCode(guiItem2.getCode());
+            truck.setPermissionTypeName(codeAndName2[1]);
             truck.setPermissionNumber(moTextTruckPermissionNumber.getValue());
             truck.setCivilInsurance(moTextTruckCivilInsurance.getValue());
             truck.setCivilPolicy(moTextTruckCivilPolicy.getValue());
@@ -5905,6 +6217,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             truck.setCargoInsurance(moTextTruckCargoInsurance.getValue());
             truck.setCargoPolicy(moTextTruckCargoPolicy.getValue());
             truck.setPrime(moCurTruckPrime.getField().getValue());
+            
+            truck.setRegistryEdited(true);
             
             moBolTruck.updateFromOwnTruck();
             
@@ -5932,29 +6246,80 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             
             //moBolTruck.setOwnTruck(...); // already set above
+            
+            // update own registry:
+            
+            moBolTruck.setBolUpdateOwnRegistry(moBoolTruckUpdate.getValue());
 
-            // update grid
+            // update grid:
 
-            if (creating) {
+            if (creating || adding) {
                 moGridTrucks.addGridRow(moBolTruck);
             }
-            refreshTrucks();
+            refreshBolTrucks();
             moGridTrucks.setSelectedGridRow(moGridTrucks.getTable().getRowCount() - 1);
+            
+            if (adding) {
+                // add as well all truck's transport figures:
+                
+                moGridTptFigures.clearGridRows();
+
+                int sortingPos1 = 0;
+                for (DDbTruckTransportFigure truckTptFigure : truck.getChildTransportFigures()) {
+                    DDbTransportFigure tptFigure = (DDbTransportFigure) miClient.getSession().readRegistry(DModConsts.LU_TPT_FIGURE, new int[] { truckTptFigure.getFkTransportFigureId() });
+                    DDbBolTransportFigure bolTptFigure = new DDbBolTransportFigure();
+                    bolTptFigure.setDbmsTransportFigureTypeCode((String) miClient.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { tptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
+                    bolTptFigure.setDbmsTransportFigureTypeName((String) miClient.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { tptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_NAME));
+                    bolTptFigure.setOwnTransportFigure(tptFigure);
+                    bolTptFigure.setBolSortingPos(++sortingPos1);
+                    
+                    int sortingPos2 = 0;
+                    for (DDbTruckTransportFigureTransportPart truckTptFigureTptPart : truckTptFigure.getChildTransportParts()) {
+                        DDbSysTransportPartType sysTptPartType = (DDbSysTransportPartType) miClient.getSession().readRegistry(DModConsts.LS_TPT_PART_TP, new int[] { truckTptFigureTptPart.getFkTransportPartTypeId() });
+                        DDbBolTransportFigureTransportPart tptFigureTptPart = new DDbBolTransportFigureTransportPart();
+                        tptFigureTptPart.setOwnSysTransportPartType(sysTptPartType);
+                        tptFigureTptPart.setBolSortingPos(++sortingPos2);
+                        
+                        bolTptFigure.getChildTransportParts().add(tptFigureTptPart);
+                    }
+                    
+                    moGridTptFigures.addGridRow(bolTptFigure);
+                }
+                
+                moGridTptFigures.setSelectedGridRow(0);
+            }
             
             actionPerformedTruckCancel();
         }
     }
 
     private void actionPerformedTruckCancel() {
-        editTruck(false, ACTION_CANCEL);
+        editBolTruck(false, ACTION_CANCEL);
+    }
+    
+    private void actionPerformedTruckTrailEditSubtype() {
+        if (mbEditingTruckTrailer && miClient.showMsgBoxConfirm("¿Está seguro que desea cambiar el subtipo del remolque?") == JOptionPane.YES_OPTION) {
+            jbTruckTrailEditSubtype.setEnabled(false);
+            moKeyTruckTrailSubtype.setEnabled(true);
+            moKeyTruckTrailSubtype.requestFocusInWindow();
+        }
     }
     
     private void actionPerformedTruckTrailAdd() {
-        
+        if (canBolTruckTrailerAppend()) {
+            DDbBolTruckTrailer bolTruckTrailer = createBolTruckTrailerPickingOne();
+
+            if (bolTruckTrailer != null) {
+                moBolTruckTrailer = bolTruckTrailer;
+                editBolTruckTrailer(true, ACTION_ADD);
+            }
+        }
     }
     
     private void actionPerformedTruckTrailCreate() {
-        editTruckTrailer(true, ACTION_CREATE);
+        if (canBolTruckTrailerAppend()) {
+            editBolTruckTrailer(true, ACTION_CREATE);
+        }
     }
 
     private void actionPerformedTruckTrailModify() {
@@ -5962,13 +6327,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editTruckTrailer(true, ACTION_MODIFY);
+            editBolTruckTrailer(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedTruckTrailRemove() {
         try {
-            actionGridRemove(moGridTrucksTrailers, this.getClass().getMethod("refreshTrucksTrailers"));
+            actionGridRemove(moGridTrucksTrailers, this.getClass().getMethod("refreshBolTrucksTrailers"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -5979,9 +6344,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsTruckTrailer.validateFields();
         
         if (DGuiUtils.computeValidation(miClient, validation)) {
+            boolean adding = mnActionTruckTrailer == ACTION_ADD; // convenience variable
             boolean creating = mnActionTruckTrailer == ACTION_CREATE || mnActionTruckTrailer == ACTION_COPY; // convenience variable
             DDbTrailer trailer = null;
-            DGuiItem item = null;
             
             if (creating) {
                 moBolTruckTrailer = new DDbBolTruckTrailer();
@@ -5992,12 +6357,15 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             trailer = moBolTruckTrailer.getOwnTrailer();
             
             //trailer.setPkTrailerId(...);
-            trailer.setCode(moTextTruckTrailPlate.getValue());
-            trailer.setName(moTextTruckTrailPlate.getValue());
+            trailer.setCode(moTextTruckTrailPlate.getValue()); // by now, plate serves as name
+            trailer.setName(moTextTruckTrailPlate.getValue()); // by now, plate serves as code
             trailer.setPlate(moTextTruckTrailPlate.getValue());
-            item = moKeyTruckTrailSubtype.getSelectedItem();
-            trailer.setTrailerSubtypeCode(item.getCode());
-            trailer.setTrailerSubtypeName(item.getItem());
+            DGuiItem guiItem = moKeyTruckTrailSubtype.getSelectedItem();
+            String[] codeAndName = guiItem.getItem().split(" - ");
+            trailer.setTrailerSubtypeCode(guiItem.getCode());
+            trailer.setTrailerSubtypeName(codeAndName[1]);
+            
+            trailer.setRegistryEdited(true);
             
             moBolTruckTrailer.updateFromOwnTrailer();
         
@@ -6011,12 +6379,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
             //moBolTruckTrailer.setOwnTrailer(...); // already set above
             
-            // update grid
+            // update own registry:
+            
+            moBolTruckTrailer.setBolUpdateOwnRegistry(moBoolTruckTrailUpdate.getValue());
 
-            if (creating) {
+            // update grid:
+
+            if (creating || adding) {
                 moGridTrucksTrailers.addGridRow(moBolTruckTrailer);
             }
-            refreshTrucksTrailers();
+            refreshBolTrucksTrailers();
             moGridTrucksTrailers.setSelectedGridRow(moGridTrucksTrailers.getTable().getRowCount() - 1);
             
             actionPerformedTruckTrailCancel();
@@ -6024,7 +6396,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedTruckTrailCancel() {
-        editTruckTrailer(false, ACTION_CANCEL);
+        editBolTruckTrailer(false, ACTION_CANCEL);
     }
     
     @SuppressWarnings("unchecked")
@@ -6032,30 +6404,31 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moKeyTruckTransportConfig.getSelectedIndex() <= 0) {
             moKeyTruckTransportConfig.setToolTipText(null);
             
-            mnTruckIsTrailerNeeded = 0;
-            jtfTruckIsTrailerNeeded.setText("");
+            mnTruckIsTrailerRequired = 0;
+            jtfTruckTrailIsNeeded.setText("");
         }
         else {
             moKeyTruckTransportConfig.setToolTipText(moKeyTruckTransportConfig.getSelectedItem().getItem());
             
             switch (((HashMap<String, String>) moKeyTruckTransportConfig.getSelectedItem().getComplement()).get(DBolUtils.ATT_TRAILER)) {
-                case DXmlCatalogEntry.VAL_NEEDED_NO:
-                    mnTruckIsTrailerNeeded = DXmlCatalogEntry.NEEDED_NO;
-                    jtfTruckIsTrailerNeeded.setText(DXmlCatalogEntry.TXT_NEEDED_NO);
+                case DXmlCatalogEntry.VAL_REQUIRED_NO:
+                    mnTruckIsTrailerRequired = DXmlCatalogEntry.REQUIRED_NO;
+                    jtfTruckTrailIsNeeded.setText(DXmlCatalogEntry.TXT_REQUIRED_NO);
                     break;
-                case DXmlCatalogEntry.VAL_NEEDED_YES:
-                    mnTruckIsTrailerNeeded = DXmlCatalogEntry.NEEDED_YES;
-                    jtfTruckIsTrailerNeeded.setText(DXmlCatalogEntry.TXT_NEEDED_YES);
+                case DXmlCatalogEntry.VAL_REQUIRED_YES:
+                    mnTruckIsTrailerRequired = DXmlCatalogEntry.REQUIRED_YES;
+                    jtfTruckTrailIsNeeded.setText(DXmlCatalogEntry.TXT_REQUIRED_YES);
                     break;
-                case DXmlCatalogEntry.VAL_NEEDED_OPT:
-                    mnTruckIsTrailerNeeded = DXmlCatalogEntry.NEEDED_OPT;
-                    jtfTruckIsTrailerNeeded.setText(DXmlCatalogEntry.TXT_NEEDED_OPT);
+                case DXmlCatalogEntry.VAL_REQUIRED_OPT:
+                    mnTruckIsTrailerRequired = DXmlCatalogEntry.REQUIRED_OPT;
+                    jtfTruckTrailIsNeeded.setText(DXmlCatalogEntry.TXT_REQUIRED_OPT);
                     break;
                 default:
-                    jtfTruckIsTrailerNeeded.setText(TXT_UNKNOWN);
+                    mnTruckIsTrailerRequired = 0;
+                    jtfTruckTrailIsNeeded.setText(TXT_UNKNOWN);
             }
             
-            jtfTruckIsTrailerNeeded.setCaretPosition(0);
+            jtfTruckTrailIsNeeded.setCaretPosition(0);
         }
     }
     
@@ -6078,18 +6451,72 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void valueChangedTruck() {
-        renderTruck((DDbBolTruck) moGridTrucks.getSelectedGridRow());
+        renderBolTruck((DDbBolTruck) moGridTrucks.getSelectedGridRow());
     }
 
     private void valueChangedTruckTrail() {
-        renderTruckTrailer((DDbBolTruckTrailer) moGridTrucksTrailers.getSelectedGridRow());
+        renderBolTruckTrailer((DDbBolTruckTrailer) moGridTrucksTrailers.getSelectedGridRow());
     }
     
     /*
      * Transport figures
      */
 
-    private void renderTptFigure(final DDbBolTransportFigure bolTptFigure) {
+    private DDbBolTransportFigure createBolTptFigurePickingOne() {
+        DDbBolTransportFigure bolTptFigure = null;
+        
+        if (moPickerTptFigure == null) {
+            moPickerTptFigure = new DPickerElement(miClient, DModConsts.LU_TPT_FIGURE);
+        }
+        
+        moPickerTptFigure.resetForm();
+        moPickerTptFigure.setVisible(true);
+
+        if (moPickerTptFigure.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int[] key = (int[]) moPickerTptFigure.getValue(DPickerElement.ELEMENT);
+            
+            if (key != null) {
+                bolTptFigure = new DDbBolTransportFigure();
+                bolTptFigure.setOwnTransportFigure((DDbTransportFigure) miClient.getSession().readRegistry(DModConsts.LU_TPT_FIGURE, key));
+            }
+        }
+        
+        return bolTptFigure;
+    }
+
+    private DDbBolTransportFigureTransportPart createBolTptFigureTptPartPickingOne() {
+        DDbBolTransportFigureTransportPart bolTptFigureTptPart = null;
+        
+        if (moPickerTptPartType == null) {
+            moPickerTptPartType = new DPickerElement(miClient, DModConsts.LS_TPT_PART_TP);
+        }
+        
+        moPickerTptPartType.resetForm();
+        moPickerTptPartType.setVisible(true);
+
+        if (moPickerTptPartType.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int[] key = (int[]) moPickerTptPartType.getValue(DPickerElement.ELEMENT);
+            
+            if (key != null) {
+                bolTptFigureTptPart = new DDbBolTransportFigureTransportPart();
+                bolTptFigureTptPart.setOwnSysTransportPartType((DDbSysTransportPartType) miClient.getSession().readRegistry(DModConsts.LS_TPT_PART_TP, key));
+            }
+        }
+        
+        return bolTptFigureTptPart;
+    }
+
+    private boolean canBolTptFigureTptPartAppend() {
+        boolean can = mbTptFigureTptPartIsRequired;
+        
+        if (!can) {
+            miClient.showMsgBoxWarning("No se requieren partes de transporte.");
+        }
+        
+        return can;
+    }
+
+    private void renderBolTptFigure(final DDbBolTransportFigure bolTptFigure) {
         moBolTptFigure = bolTptFigure;
         moGridTptFiguresTptParts.clearGridRows();
         
@@ -6139,7 +6566,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolTptFigUpdate.setValue(true);
     }
     
-    private void renderTptFigureTptPart(final DDbBolTransportFigureTransportPart bolTptFigureTptPart) {
+    private void renderBolTptFigureTptPart(final DDbBolTransportFigureTransportPart bolTptFigureTptPart) {
         moBolTptFigureTptPart = bolTptFigureTptPart;
         
         if (moBolTptFigureTptPart == null) {
@@ -6157,40 +6584,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolTptFigTptPartUpdate.setValue(true);
     }
     
-    private void editTptFigure(final boolean editing, final int action) {
+    private void editBolTptFigure(final boolean editing, final int action) {
         mbEditingTptFigure = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingTptFigure) {
             mnActionTptFigure = 0;
             jtfTptFigCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionTptFigure = ACTION_CREATE;
-                    jtfTptFigCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionTptFigure = ACTION_COPY;
-                    jtfTptFigCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionTptFigure = ACTION_MODIFY;
-                    jtfTptFigCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionTptFigure = 0;
-                    jtfTptFigCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionTptFigure = action;
+            jtfTptFigCrud.setText(getCrudText(action));
             jtfTptFigCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyTptFigTransportFigureType.setEnabled(mbEditingTptFigure);
+        jbTptFigEditType.setEnabled(false);
         itemStateChangedTptFigTransportFigureType();
         moTextTptFigName.setEnabled(mbEditingTptFigure);
         moTextTptFigCode.setEnabled(mbEditingTptFigure);
@@ -6217,9 +6629,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         //moTextTptFigAddressNumberInt.setEnabled(mbEditingLocation); // depends on itemStateChangedTptFigAddressCountry()
         //moTextTptFigAddressReference.setEnabled(mbEditingLocation); // depends on itemStateChangedTptFigAddressCountry()
         
-        moBoolTptFigUpdate.setEnabled(mbEditingTptFigure && moBolTptFigure != null && !moBolTptFigure.isRegistryNew());
-        
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbTptFigAdd.setEnabled(!mbEditingTptFigure);
         jbTptFigCreate.setEnabled(!mbEditingTptFigure);
@@ -6235,11 +6645,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridTptFigures.getTable().setEnabled(!mbEditingTptFigure);
         moGridTptFigures.getTable().getTableHeader().setEnabled(!mbEditingTptFigure);
         
-        // clear or refresh data
+        // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                renderBolTptFigure(moBolTptFigure); // local registry already set
+                break;
             case ACTION_CREATE:
-                renderTptFigure(null);
+                renderBolTptFigure(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -6252,7 +6665,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // propagate edition state to dependents:
         
-        editTptFigureTptPart(false, mbEditingTptFigure ? ACTION_CANCEL : 0);
+        editBolTptFigureTptPart(false, mbEditingTptFigure ? ACTION_CANCEL : 0);
         if (action == 0) { // check original parameter
             jbTptFigTptPartAdd.setEnabled(false);
             jbTptFigTptPartCreate.setEnabled(false);
@@ -6264,11 +6677,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // set edition status appropriately into form:
         
+        boolean updatable = mbEditingTptFigure && moBolTptFigure != null && moBolTptFigure.getOwnTransportFigure() != null && !moBolTptFigure.getOwnTransportFigure().isRegistryNew();
+        
+        moBoolTptFigUpdate.setEnabled(updatable);
+        
+        if (updatable) {
+            moKeyTptFigTransportFigureType.setEnabled(false);
+            jbTptFigEditType.setEnabled(true);
+        }
+        
         if (action != 0) { // check original parameter
             enableBolNavButtons(mbEditingTptFigure ? 0 : NAV_ACTION_START);
             
             if (mbEditingTptFigure) {
-                moKeyTptFigTransportFigureType.requestFocusInWindow();
+                if (moKeyTptFigTransportFigureType.isEnabled()) {
+                    moKeyTptFigTransportFigureType.requestFocusInWindow();
+                }
+                else {
+                    moTextTptFigName.requestFocusInWindow();
+                }
             }
             else {
                 jbTptFigAdd.requestFocusInWindow();
@@ -6276,44 +6703,27 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void editTptFigureTptPart(final boolean editing, final int action) {
+    private void editBolTptFigureTptPart(final boolean editing, final int action) {
         mbEditingTptFigureTptPart = editing;
         
-        // CRUD action
+        // CRUD action:
         
         if (!mbEditingTptFigureTptPart) {
             mnActionTptFigureTptPart = 0;
             jtfTptFigTptPartCrud.setText("");
         }
         else {
-            switch (action) {
-                case ACTION_CREATE:
-                    mnActionTptFigureTptPart = ACTION_CREATE;
-                    jtfTptFigTptPartCrud.setText(TXT_ACTION_CREATE);
-                    break;
-                case ACTION_COPY:
-                    mnActionTptFigureTptPart = ACTION_COPY;
-                    jtfTptFigTptPartCrud.setText(TXT_ACTION_COPY);
-                    break;
-                case ACTION_MODIFY:
-                    mnActionTptFigureTptPart = ACTION_MODIFY;
-                    jtfTptFigTptPartCrud.setText(TXT_ACTION_MODIFY);
-                    break;
-                default:
-                    mnActionTptFigureTptPart = 0;
-                    jtfTptFigTptPartCrud.setText(TXT_UNKNOWN);
-            }
-            
+            mnActionTptFigureTptPart = action;
+            jtfTptFigTptPartCrud.setText(getCrudText(action));
             jtfTptFigTptPartCrud.setCaretPosition(0);
         }
         
-        // status of fields and input controls
+        // status of fields and input controls:
         
         moKeyTptFigTptPartTransportPartType.setEnabled(mbEditingTptFigureTptPart);
+        jbTptFigTptPartEditType.setEnabled(false);
         
-        moBoolTptFigTptPartUpdate.setEnabled(mbEditingTptFigureTptPart && moBolTptFigureTptPart != null && !moBolTptFigureTptPart.isRegistryNew());
-        
-        // status of CRUD controls
+        // status of CRUD controls:
         
         jbTptFigTptPartAdd.setEnabled(false); // adding not required
         jbTptFigTptPartCreate.setEnabled(mbEditingTptFigure && !mbEditingTptFigureTptPart);
@@ -6329,8 +6739,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                renderBolTptFigureTptPart(moBolTptFigureTptPart); // local registry already set
+                break;
             case ACTION_CREATE:
-                renderTptFigureTptPart(null);
+                renderBolTptFigureTptPart(null);
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -6354,11 +6767,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // set edition status appropriately into form:
         
+        boolean updatable = mbEditingTptFigureTptPart && moBolTptFigureTptPart != null && moBolTptFigureTptPart.getOwnSysTransportPartType() != null && !moBolTptFigureTptPart.getOwnSysTransportPartType().isRegistryNew();
+        
+        moBoolTptFigTptPartUpdate.setEnabled(updatable);
+        
+        if (updatable) {
+            moKeyTptFigTptPartTransportPartType.setEnabled(false);
+            jbTptFigTptPartEditType.setEnabled(true);
+        }
+        
         if (action != 0) { // check original parameter
             //enableBolNavButtons(mbEditingTptFigureTptPart ? 0 : NAV_ACTION_START); // does not interfere with BOL navigation
             
             if (mbEditingTptFigureTptPart) {
-                moKeyTptFigTptPartTransportPartType.requestFocusInWindow();
+                if (moKeyTptFigTptPartTransportPartType.isEnabled()) {
+                    moKeyTptFigTptPartTransportPartType.requestFocusInWindow();
+                }
+                else {
+                    jbTptFigTptPartEditType.requestFocusInWindow();
+                }
             }
             else {
                 jbTptFigTptPartAdd.requestFocusInWindow();
@@ -6369,11 +6796,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshTptFigures() {
+    public void refreshBolTptFigures() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridTptFigures.getModel().getGridRows()) {
-            ((DDbBolTransportFigure) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolTransportFigure) row).setBolSortingPos(++sortingPos);
         }
         
         moGridTptFigures.renderGridRows();
@@ -6382,11 +6809,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     /**
      * Render grid rows. It is needed public in order to be invoked by reflection.
      */
-    public void refreshTptFiguresTptParts() {
+    public void refreshBolTptFiguresTptParts() {
         int sortingPos = 0;
         
         for (DGridRow row : moGridTptFiguresTptParts.getModel().getGridRows()) {
-            ((DDbBolTransportFigureTransportPart) row).setAuxSortingPos(++sortingPos);
+            ((DDbBolTransportFigureTransportPart) row).setBolSortingPos(++sortingPos);
         }
         
         moGridTptFiguresTptParts.renderGridRows();
@@ -6411,6 +6838,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         computeCatalogCode(moTextTptFigAddressDistrictCode, moTextTptFigAddressDistrictName, DBolUtils.DEF_CODE_ADDRESS_DISTRICT, 
                 DBolUtils.FormatCodeAddressDistrict, DCfdi40Catalogs.XML_CCP_COL, true, moTextTptFigAddressZipCode, DBolUtils.ATT_ZIP);
     }
+    
+    private void actionPerformedTptFigEditType() {
+        if (mbEditingTptFigure && miClient.showMsgBoxConfirm("¿Está seguro que desea cambiar el tipo de la figura de transporte?") == JOptionPane.YES_OPTION) {
+            jbTptFigEditType.setEnabled(false);
+            moKeyTptFigTransportFigureType.setEnabled(true);
+            moKeyTptFigTransportFigureType.requestFocusInWindow();
+        }
+    }
 
     private void actionPerformedTptFigGetNextCode() {
         try {
@@ -6427,11 +6862,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedTptFigAdd() {
-        
+        DDbBolTransportFigure bolTptFigure = createBolTptFigurePickingOne();
+
+        if (bolTptFigure != null) {
+            moBolTptFigure = bolTptFigure;
+            editBolTptFigure(true, ACTION_ADD);
+        }
     }
     
     private void actionPerformedTptFigCreate() {
-        editTptFigure(true, ACTION_CREATE);
+        editBolTptFigure(true, ACTION_CREATE);
     }
 
     private void actionPerformedTptFigCopy() {
@@ -6439,7 +6879,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editTptFigure(true, ACTION_COPY);
+            editBolTptFigure(true, ACTION_COPY);
         }
     }
 
@@ -6448,13 +6888,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editTptFigure(true, ACTION_MODIFY);
+            editBolTptFigure(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedTptFigRemove() {
         try {
-            actionGridRemove(moGridTptFigures, this.getClass().getMethod("refreshTptFigures"));
+            actionGridRemove(moGridTptFigures, this.getClass().getMethod("refreshBolTptFigures"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -6463,7 +6903,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedTptFigMoveUp() {
         try {
-            actionGridMoveUp(moGridTptFigures, this.getClass().getMethod("refreshTptFigures"));
+            actionGridMoveUp(moGridTptFigures, this.getClass().getMethod("refreshBolTptFigures"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -6472,7 +6912,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
     private void actionPerformedTptFigMoveDown() {
         try {
-            actionGridMoveDown(moGridTptFigures, this.getClass().getMethod("refreshTptFigures"));
+            actionGridMoveDown(moGridTptFigures, this.getClass().getMethod("refreshBolTptFigures"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -6491,17 +6931,18 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextTptFigAddressStateCode.getFieldName() + "'.");
                 validation.setComponent(moTextTptFigAddressStateCode);
             }
-            else if (mbTptFigureAreTptPartsRequired && moGridTptFiguresTptParts.getTable().getRowCount() == 0) {
+            else if (mbTptFigureTptPartIsRequired && moGridTptFiguresTptParts.getTable().getRowCount() == 0) {
                 validation.setMessage("El tipo de figura de transporte requiere de partes de transporte.");
                 validation.setComponent(jbTptFigTptPartCreate);
             }
-            else if (!mbTptFigureAreTptPartsRequired && moGridTptFiguresTptParts.getTable().getRowCount() > 0) {
+            else if (!mbTptFigureTptPartIsRequired && moGridTptFiguresTptParts.getTable().getRowCount() > 0) {
                 validation.setMessage("El tipo de figura de transporte no requiere de partes de transporte.");
                 validation.setComponent(jbTptFigTptPartCreate);
             }
         }
         
         if (DGuiUtils.computeValidation(miClient, validation)) {
+            boolean adding = mnActionTptFigure == ACTION_ADD; // convenience variable
             boolean creating = mnActionTptFigure == ACTION_CREATE || mnActionTptFigure == ACTION_COPY; // convenience variable
             DDbTransportFigure tptFigure = null;
             
@@ -6545,6 +6986,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             //tptFigure.setFkUserUpdateId(...);
             //tptFigure.setTsUserInsert(...);
             //tptFigure.setTsUserUpdate(...);
+            
+            tptFigure.setRegistryEdited(true);
 
             moBolTptFigure.updateFromOwnTransportFigure();
             
@@ -6582,12 +7025,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moBolTptFigure.setDbmsTransportFigureTypeCode((String) miClient.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { moBolTptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
             moBolTptFigure.setDbmsTransportFigureTypeName((String) miClient.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { moBolTptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_NAME));
             
-            // update grid
+            // update own registry:
+            
+            moBolTptFigure.setBolUpdateOwnRegistry(moBoolTptFigUpdate.getValue());
 
-            if (creating) {
+            // update grid:
+
+            if (creating || adding) {
                 moGridTptFigures.addGridRow(moBolTptFigure);
             }
-            refreshTptFigures();
+            refreshBolTptFigures();
             moGridTptFigures.setSelectedGridRow(moGridTptFigures.getTable().getRowCount() - 1);
             
             actionPerformedTptFigCancel();
@@ -6595,15 +7042,32 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedTptFigCancel() {
-        editTptFigure(false, ACTION_CANCEL);
+        editBolTptFigure(false, ACTION_CANCEL);
+    }
+    
+    private void actionPerformedTptFigTptPartEditType() {
+        if (mbEditingTptFigureTptPart && miClient.showMsgBoxConfirm("¿Está seguro que desea cambiar el tipo de la parte de transporte?") == JOptionPane.YES_OPTION) {
+            jbTptFigTptPartEditType.setEnabled(false);
+            moKeyTptFigTptPartTransportPartType.setEnabled(true);
+            moKeyTptFigTptPartTransportPartType.requestFocusInWindow();
+        }
     }
     
     private void actionPerformedTptFigTptPartAdd() {
-        // adding not required
+        if (canBolTptFigureTptPartAppend()) {
+            DDbBolTransportFigureTransportPart bolTptFigureTptPart = createBolTptFigureTptPartPickingOne();
+
+            if (bolTptFigureTptPart != null) {
+                moBolTptFigureTptPart = bolTptFigureTptPart;
+                editBolTptFigureTptPart(true, ACTION_ADD);
+            }
+        }
     }
     
     private void actionPerformedTptFigTptPartCreate() {
-        editTptFigureTptPart(true, ACTION_CREATE);
+        if (canBolTptFigureTptPartAppend()) {
+            editBolTptFigureTptPart(true, ACTION_CREATE);
+        }
     }
 
     private void actionPerformedTptFigTptPartModify() {
@@ -6611,13 +7075,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
         }
         else {
-            editTptFigureTptPart(true, ACTION_MODIFY);
+            editBolTptFigureTptPart(true, ACTION_MODIFY);
         }
     }
 
     private void actionPerformedTptFigTptPartRemove() {
         try {
-            actionGridRemove(moGridTptFiguresTptParts, this.getClass().getMethod("refreshTptFiguresTptParts"));
+            actionGridRemove(moGridTptFiguresTptParts, this.getClass().getMethod("refreshBolTptFiguresTptParts"));
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
@@ -6628,20 +7092,23 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsTptFigureTptPart.validateFields();
         
         if (DGuiUtils.computeValidation(miClient, validation)) {
+            boolean adding = mnActionTptFigureTptPart == ACTION_ADD; // convenience variable
             boolean creating = mnActionTptFigureTptPart == ACTION_CREATE || mnActionTptFigureTptPart == ACTION_COPY; // convenience variable
-            DDbTransportPartType tptPartType = null;
+            DDbSysTransportPartType sysTptPartType = null;
             
             if (creating) {
                 moBolTptFigureTptPart = new DDbBolTransportFigureTransportPart();
-                tptPartType = (DDbTransportPartType) miClient.getSession().readRegistry(DModConsts.LS_TPT_PART_TP, moKeyTptFigTptPartTransportPartType.getValue());
-                moBolTptFigureTptPart.setOwnTransportPartType(tptPartType);
+                sysTptPartType = (DDbSysTransportPartType) miClient.getSession().readRegistry(DModConsts.LS_TPT_PART_TP, moKeyTptFigTptPartTransportPartType.getValue());
+                moBolTptFigureTptPart.setOwnSysTransportPartType(sysTptPartType);
             }
             
-            tptPartType = moBolTptFigureTptPart.getOwnTransportPartType();
+            sysTptPartType = moBolTptFigureTptPart.getOwnSysTransportPartType();
             
-            tptPartType.setPkTypeId(moKeyTptFigTptPartTransportPartType.getValue()[0]);
+            sysTptPartType.setPkTypeId(moKeyTptFigTptPartTransportPartType.getValue()[0]);
             
-            moBolTptFigureTptPart.updateFromOwnTransportPartType();
+            sysTptPartType.setRegistryEdited(true);
+            
+            moBolTptFigureTptPart.updateFromOwnSysTransportPartType();
         
             //moBolTptFigureTptPart.setPkBolId(...);
             //moBolTptFigureTptPart.setPkTransportFigureId(...);
@@ -6650,12 +7117,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
             //moBolTptFigureTptPart.setOwnTransportPartType(...); // already set above
             
-            // update grid
+            // update own registry:
+            
+            moBolTptFigureTptPart.setBolUpdateOwnRegistry(moBoolTptFigTptPartUpdate.getValue());
 
-            if (creating) {
+            // update grid:
+
+            if (creating || adding) {
                 moGridTptFiguresTptParts.addGridRow(moBolTptFigureTptPart);
             }
-            refreshTptFiguresTptParts();
+            refreshBolTptFiguresTptParts();
             moGridTptFiguresTptParts.setSelectedGridRow(moGridTptFiguresTptParts.getTable().getRowCount() - 1);
             
             actionPerformedTptFigTptPartCancel();
@@ -6663,7 +7134,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void actionPerformedTptFigTptPartCancel() {
-        editTptFigureTptPart(false, ACTION_CANCEL);
+        editBolTptFigureTptPart(false, ACTION_CANCEL);
     }
     
     private void itemStateChangedTptFigTransportFigureType() {
@@ -6672,14 +7143,17 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moKeyTptFigTransportFigureType.getSelectedIndex() <= 0) {
             moTextTptFigDriverLicense.setEnabled(false);
             
-            mbTptFigureAreTptPartsRequired = false;
+            mbTptFigureTptPartIsRequired = false;
+            jtfTptFigTptPartIsRequired.setText("");
         }
         else {
             boolean enableDriverLicense = mbEditingTptFigure && moKeyTptFigTransportFigureType.getValue()[0] == DModSysConsts.LS_TPT_FIGURE_TP_DRIVER;
             
             moTextTptFigDriverLicense.setEnabled(enableDriverLicense);
             
-            mbTptFigureAreTptPartsRequired = DLibUtils.belongsTo(moKeyTptFigTransportFigureType.getValue()[0], new int[] { DModSysConsts.LS_TPT_FIGURE_TP_OWNER, DModSysConsts.LS_TPT_FIGURE_TP_LEASER });
+            mbTptFigureTptPartIsRequired = DLibUtils.belongsTo(moKeyTptFigTransportFigureType.getValue()[0], new int[] { DModSysConsts.LS_TPT_FIGURE_TP_OWNER, DModSysConsts.LS_TPT_FIGURE_TP_LEASER });
+            jtfTptFigTptPartIsRequired.setText(mbTptFigureTptPartIsRequired ? DXmlCatalogEntry.TXT_REQUIRED_YES : DXmlCatalogEntry.TXT_REQUIRED_NO);
+            jtfTptFigTptPartIsRequired.setCaretPosition(0);
         }
     }
     
@@ -6728,8 +7202,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             String countryCode = moKeyTptFigAddressCountry.getSelectedItem().getCode(); // convenience variable
-            boolean applyStateCatalog = countryCode.equals(DCfdi40Catalogs.ClavePaísMex) || countryCode.equals(DCfdi40Catalogs.ClavePaísUsa) || countryCode.equals(DCfdi40Catalogs.ClavePaísCan);
-            boolean applyAddressCatalogs = countryCode.equals(DCfdi40Catalogs.ClavePaísMex);
+            boolean applyStateCatalog = DBolUtils.applyStateCatalog(countryCode);
+            boolean applyAddressCatalogs = DBolUtils.applyAddressCatalogs(countryCode);
             
             moTextTptFigAddressStateCode.setEnabled(mbEditingTptFigure && applyStateCatalog);
             moTextTptFigAddressStateName.setEnabled(mbEditingTptFigure && !applyStateCatalog);
@@ -6812,8 +7286,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressState = new DPickerCatalogAddressState(miClient);
                 }
 
-                DGuiItem item = moKeyTptFigAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyTptFigAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 
                 moPickerCatalogAddressState.setValue(DLadCatalogConsts.ADDRESS_COUNTRY, country);
                 moPickerCatalogAddressState.resetForm();
@@ -6846,8 +7320,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressCounty = new DPickerCatalogAddressCounty(miClient);
                 }
 
-                DGuiItem item = moKeyTptFigAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyTptFigAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextTptFigAddressStateCode.getValue(), moTextTptFigAddressStateName.getValue());
                 
                 moPickerCatalogAddressCounty.setValue(DLadCatalogConsts.ADDRESS_COUNTRY, country);
@@ -6890,8 +7364,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressLocality = new DPickerCatalogAddressLocality(miClient);
                 }
 
-                DGuiItem item = moKeyTptFigAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyTptFigAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextTptFigAddressStateCode.getValue(), moTextTptFigAddressStateName.getValue());
                 DLadCatalogAddressCounty county = new DLadCatalogAddressCounty(moTextTptFigAddressCountyCode.getValue(), moTextTptFigAddressCountyName.getValue());
                 
@@ -6943,8 +7417,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moPickerCatalogAddressDistrict = new DPickerCatalogAddressDistrict(miClient);
                 }
 
-                DGuiItem item = moKeyTptFigAddressCountry.getSelectedItem();
-                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(item.getCode(), item.getItem());
+                DGuiItem guiItem = moKeyTptFigAddressCountry.getSelectedItem();
+                DLadCatalogAddressCountry country = new DLadCatalogAddressCountry(guiItem.getCode(), guiItem.getItem());
                 DLadCatalogAddressState state = new DLadCatalogAddressState(moTextTptFigAddressStateCode.getValue(), moTextTptFigAddressStateName.getValue());
                 DLadCatalogAddressCounty county = new DLadCatalogAddressCounty(moTextTptFigAddressCountyCode.getValue(), moTextTptFigAddressCountyName.getValue());
                 DLadCatalogAddressLocality locality = new DLadCatalogAddressLocality(moTextTptFigAddressLocalityCode.getValue(), moTextTptFigAddressLocalityName.getValue());
@@ -6969,13 +7443,21 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void valueChangedTptFig() {
-        renderTptFigure((DDbBolTransportFigure) moGridTptFigures.getSelectedGridRow());
+        renderBolTptFigure((DDbBolTransportFigure) moGridTptFigures.getSelectedGridRow());
     }
 
     private void valueChangedTptFigTptPart() {
-        renderTptFigureTptPart((DDbBolTransportFigureTransportPart) moGridTptFiguresTptParts.getSelectedGridRow());
+        renderBolTptFigureTptPart((DDbBolTransportFigureTransportPart) moGridTptFiguresTptParts.getSelectedGridRow());
     }
 
+    /*
+     * General public methods
+     */
+
+    public void setTemplateKey(final int[] key) {
+        manTemplateKey = key;
+    }
+    
     /*
      * DBeanForm
      */
@@ -6995,6 +7477,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // locations
 
+        jbLocEditType.addActionListener(this);
         jbLocGetNextCode.addActionListener(this);
         jbLocAdd.addActionListener(this);
         jbLocCreate.addActionListener(this);
@@ -7007,6 +7490,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbLocCancel.addActionListener(this);
         
         moKeyLocLocationType.addItemListener(this);
+        moKeyLocSourceLocation.addItemListener(this);
         moKeyLocAddressCountry.addItemListener(this);
         
         moTextLocCode.addFocusListener(this);
@@ -7022,6 +7506,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // merchandises
         
+        jbMerchPickItem.addActionListener(this);
         jbMerchAdd.addActionListener(this);
         jbMerchCreate.addActionListener(this);
         jbMerchCopy.addActionListener(this);
@@ -7046,6 +7531,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moRadMerchDimensionsPlg.addItemListener(this);
         moBoolMerchIsHazardousMaterial.addItemListener(this);
         
+        moDecMerchQuantity.addFocusListener(this);
         moIntMerchDimensionsLength.addFocusListener(this);
         moIntMerchDimensionsHeight.addFocusListener(this);
         moIntMerchDimensionsWidth.addFocusListener(this);
@@ -7061,6 +7547,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // truck
         
+        jbTruckEditConfig.addActionListener(this);
         jbTruckGetNextCode.addActionListener(this);
         jbTruckAdd.addActionListener(this);
         jbTruckCreate.addActionListener(this);
@@ -7071,6 +7558,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTruckMoveDown.addActionListener(this);
         jbTruckOk.addActionListener(this);
         jbTruckCancel.addActionListener(this);
+        jbTruckTrailEditSubtype.addActionListener(this);
         jbTruckTrailAdd.addActionListener(this);
         jbTruckTrailCreate.addActionListener(this);
         jbTruckTrailModify.addActionListener(this);
@@ -7084,6 +7572,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // transport figures
         
+        jbTptFigEditType.addActionListener(this);
         jbTptFigGetNextCode.addActionListener(this);
         jbTptFigAdd.addActionListener(this);
         jbTptFigCreate.addActionListener(this);
@@ -7094,6 +7583,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTptFigMoveDown.addActionListener(this);
         jbTptFigOk.addActionListener(this);
         jbTptFigCancel.addActionListener(this);
+        jbTptFigTptPartEditType.addActionListener(this);
         jbTptFigTptPartAdd.addActionListener(this);
         jbTptFigTptPartCreate.addActionListener(this);
         jbTptFigTptPartModify.addActionListener(this);
@@ -7131,6 +7621,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // locations
         
+        jbLocEditType.removeActionListener(this);
         jbLocGetNextCode.removeActionListener(this);
         jbLocAdd.removeActionListener(this);
         jbLocCreate.removeActionListener(this);
@@ -7143,6 +7634,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbLocCancel.removeActionListener(this);
         
         moKeyLocLocationType.removeItemListener(this);
+        moKeyLocSourceLocation.removeItemListener(this);
         moKeyLocAddressCountry.removeItemListener(this);
         
         moTextLocCode.removeFocusListener(this);
@@ -7158,6 +7650,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // merchandises
         
+        jbMerchPickItem.removeActionListener(this);
         jbMerchAdd.removeActionListener(this);
         jbMerchCreate.removeActionListener(this);
         jbMerchCopy.removeActionListener(this);
@@ -7182,6 +7675,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moRadMerchDimensionsPlg.removeItemListener(this);
         moBoolMerchIsHazardousMaterial.removeItemListener(this);
         
+        moDecMerchQuantity.removeFocusListener(this);
         moIntMerchDimensionsLength.removeFocusListener(this);
         moIntMerchDimensionsHeight.removeFocusListener(this);
         moIntMerchDimensionsWidth.removeFocusListener(this);
@@ -7197,6 +7691,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // truck
         
+        jbTruckEditConfig.removeActionListener(this);
         jbTruckGetNextCode.removeActionListener(this);
         jbTruckAdd.removeActionListener(this);
         jbTruckCreate.removeActionListener(this);
@@ -7207,6 +7702,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTruckMoveDown.removeActionListener(this);
         jbTruckOk.removeActionListener(this);
         jbTruckCancel.removeActionListener(this);
+        jbTruckTrailEditSubtype.removeActionListener(this);
         jbTruckTrailAdd.removeActionListener(this);
         jbTruckTrailCreate.removeActionListener(this);
         jbTruckTrailModify.removeActionListener(this);
@@ -7220,6 +7716,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         // transport figures
         
+        jbTptFigEditType.removeActionListener(this);
         jbTptFigGetNextCode.removeActionListener(this);
         jbTptFigAdd.removeActionListener(this);
         jbTptFigCreate.removeActionListener(this);
@@ -7230,6 +7727,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTptFigMoveDown.removeActionListener(this);
         jbTptFigOk.removeActionListener(this);
         jbTptFigCancel.removeActionListener(this);
+        jbTptFigTptPartEditType.removeActionListener(this);
         jbTptFigTptPartAdd.removeActionListener(this);
         jbTptFigTptPartCreate.removeActionListener(this);
         jbTptFigTptPartModify.removeActionListener(this);
@@ -7294,22 +7792,55 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         mnFormResult = 0;
         mbFirstActivation = true;
 
+        moSessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom(); // refresh each time this form is used
+        
+        jbSave.setEnabled(false);
+        
+        if (moBol.isRegistryNew()) {
+            // Validate if new registry can be created:
+
+            if (moSessionCustom.getBranchKey() == null) {
+                mbCanShowForm = false;
+                msCanShowFormMessage = DUtilConsts.ERR_MSG_USR_SES_BRA;
+                return;
+            }
+        }
+
         removeAllListeners();
         reloadCatalogues();
 
-        if (moBol.isRegistryNew()) {
+        if (moBol.isRegistryNew() || manTemplateKey != null) {
             moBol.initPrimaryKey();
             
             moBol.setVersion(DElementCartaPorte.VERSION);
-            moBol.setDate(miClient.getSession().getWorkingDate());
+            
+            if (isBolTemplate()) {
+                moBol.setTemplate(true);
+                moBol.setDate(DLibTimeUtils.createDate(DLibTimeConsts.YEAR_MIN, 1, 1));
+            }
+            else {
+                moBol.setTemplate(false);
+                moBol.setDate(miClient.getSession().getWorkingDate());
+            }
+            
             moBol.setFkTransportTypeId(DModSysConsts.LS_TPT_TP_TRUCK);
             moBol.setFkBolStatusId(DModSysConsts.TS_XML_ST_PEN);
+            moBol.setFkOwnerBizPartnerId(moSessionCustom.getBranchKey()[0]);
+            moBol.setFkOwnerBranchId(moSessionCustom.getBranchKey()[1]);
             moBol.setFkMerchandiseWeightUnitId(mnBolWeightUnitId);
+            
+            if (manTemplateKey != null) {
+                moBol.setRegistryNew(true);
+                moBol.initBolTemplate(manTemplateKey[0]);
+                moBol.initBolLocations(new Date());
+                
+                manTemplateKey = null;
+            }
             
             ///// BEGIN OF TESTING CODE (REMOVE FRO PRODUCTION) ////////////////////
             /*
-            moBol.setIntlTransport(DCfdi40Catalogs.TxtSí);
-            moBol.setIntlTransportDirection(DCfdi40Catalogs.MercancíasEntrada);
+            moBol.setIntlTransport(DCfdi40Catalogs.TextoSí);
+            moBol.setIntlTransportDirection(DCfdi40Catalogs.CcpMercancíasEntrada);
             moBol.setFkIntlTransportCountryId(45); // CHL - Chile
             moBol.setFkIntlWayTransportTypeId(DModSysConsts.LS_TPT_TP_SEA);
             */
@@ -7323,8 +7854,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         setFormEditable(true);
         
-        mnTempBolLocationId = 0;
-        
         jtfBolTransportType.setText((String) miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] { moBol.getFkTransportTypeId() }, DDbRegistry.FIELD_NAME));
         jtfBolTransportType.setCaretPosition(0);
         jtfBolVersion.setText(moBol.getVersion());
@@ -7335,12 +7864,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moDateBolDate.setValue(moBol.getDate());
         jtfBolStatus.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ST, new int[] { moBol.getFkBolStatusId() }, DDbRegistry.FIELD_NAME));
         jtfBolStatus.setCaretPosition(0);
-        jtfBolUuid.setText(moBol.getOwnDfr() == null ? "" : moBol.getOwnDfr().getUuid());
+        jtfBolUuid.setText(moBol.getChildDfr() == null ? "" : moBol.getChildDfr().getUuid());
         jtfBolUuid.setCaretPosition(0);
         
-        moBoolBolIntlTransport.setValue(moBol.getIntlTransport().equals(DCfdi40Catalogs.TxtSí));
+        moBoolBolIntlTransport.setValue(moBol.getIntlTransport().equals(DCfdi40Catalogs.TextoSí));
         itemStateChangedBolIntlTransport();
-        moRadBolIntlTransportDirectionIn.setValue(moBol.getIntlTransportDirection().equals(DCfdi40Catalogs.MercancíasEntrada));
+        moRadBolIntlTransportDirectionIn.setValue(moBol.getIntlTransportDirection().equals(DCfdi40Catalogs.CcpMercancíasEntrada));
         moKeyBolIntlTransportCountry.setValue(new int[] { moBol.getFkIntlTransportCountryId() });
         moKeyBolIntlWayTransportType.setValue(new int[] { moBol.getFkIntlWayTransportTypeId()});
         
@@ -7350,20 +7879,20 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextBolTemplateCode.setValue(moBol.getTemplateCode());
         
         if (moBol.getFkBolTemplateId_n() != 0) {
-            jtfBolBolTemplate.setText((String) miClient.getSession().readField(DModConsts.L_BOL, new int[] { moBol.getFkBolTemplateId_n() }, DDbRegistry.FIELD_NAME));
+            jtfBolBolTemplate.setText((String) miClient.getSession().readField(DModConsts.L_BOL, new int[] { moBol.getFkBolTemplateId_n() }, DDbBol.FIELD_TEMP_NAME));
             jtfBolBolTemplate.setCaretPosition(0);
         }
         else {
             jtfBolBolTemplate.setText("");
         }
         
-        renderLocation(null);
-        renderMerchandise(null);
-        renderMerchandiseMove(null);
-        renderTruck(null);
-        renderTruckTrailer(null);
-        renderTptFigure(null);
-        renderTptFigureTptPart(null);
+        renderBolLocation(null);
+        renderBolMerchandise(null);
+        renderBolMerchandiseMove(null);
+        renderBolTruck(null);
+        renderBolTruckTrailer(null);
+        renderBolTptFigure(null);
+        renderBolTptFigureTptPart(null);
         
         ///// BEGIN OF TESTING CODE (REMOVE FRO PRODUCTION) ////////////////////
         /*
@@ -7375,6 +7904,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         ///// END OF TESTING CODE (REMOVE FRO PRODUCTION) //////////////////////
         
         mbAdjustingGrids = true;
+        
+        clearBolContent();
+        
+        // initialize temporal BOL location ID:
+        
+        if (!moBol.getChildLocations().isEmpty()) {
+            mnTempBolLocationId = moBol.getChildLocations().get(moBol.getChildLocations().size() - 1).getPkLocationId();
+        }
+        
+        // populate grids:
         
         moGridLocations.populateGrid(new Vector<>(moBol.getChildLocations()), this);
         moGridLocations.getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -7439,8 +7978,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         bol.setSeries(moKeyBolSeries.getSelectedItem().getItem());
         bol.setNumber(DLibUtils.parseInt(jtfBolNumber.getText()));
         bol.setDate(moDateBolDate.getValue());
-        bol.setIntlTransport(!moBoolBolIntlTransport.getValue() ? DCfdi40Catalogs.TxtNo : DCfdi40Catalogs.TxtSí);
-        bol.setIntlTransportDirection(!moBoolBolIntlTransport.getValue() ? "" : (moRadBolIntlTransportDirectionIn.getValue() ? DCfdi40Catalogs.MercancíasEntrada : DCfdi40Catalogs.MercancíasSalida));
+        bol.setIntlTransport(!moBoolBolIntlTransport.getValue() ? DCfdi40Catalogs.TextoNo : DCfdi40Catalogs.TextoSí);
+        bol.setIntlTransportDirection(!moBoolBolIntlTransport.getValue() ? "" : (moRadBolIntlTransportDirectionIn.getValue() ? DCfdi40Catalogs.CcpMercancíasEntrada : DCfdi40Catalogs.CcpMercancíasSalida));
         bol.setDistanceKm(mdBolDistanceKm);
         bol.setMerchandiseWeight(mdBolMerchandiseWeightKg);
         bol.setMerchandiseNumber(mnBolMerchandiseCount);
@@ -7448,12 +7987,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         bol.setTemplateCode(!moBoolBolTemplate.getValue() ? "" : moTextBolTemplateCode.getValue());
         bol.setTemplateName(!moBoolBolTemplate.getValue() ? "" : moTextBolTemplateName.getValue());
         //bol.setDeleted(...);
-        //bol.setFkTransportTypeId(...);
-        //bol.setFkBolStatusId(...);
-        bol.setFkIntlTransportCountryId(!moBoolBolIntlTransport.getValue() ? 0 : moKeyBolIntlTransportCountry.getValue()[0]);
-        bol.setFkIntlWayTransportTypeId(!moBoolBolIntlTransport.getValue() ? 0 : moKeyBolIntlWayTransportType.getValue()[0]);
-        //bol.setFkMerchandiseWeightUnitId(...);
-        //bol.setFkBolTemplateId_n(...);
+        //bol.setFkTransportTypeId(...); // set from beginning
+        //bol.setFkBolStatusId(...); // set from beginning
+        bol.setFkIntlTransportCountryId(!moBoolBolIntlTransport.getValue() ? DModSysConsts.CS_CTY_NA : moKeyBolIntlTransportCountry.getValue()[0]);
+        bol.setFkIntlWayTransportTypeId(!moBoolBolIntlTransport.getValue() ? DModSysConsts.LS_TPT_TP_NA : moKeyBolIntlWayTransportType.getValue()[0]);
+        //bol.setFkMerchandiseWeightUnitId(...); // set from beginning
+        //bol.setFkBolTemplateId_n(...); // set from beginning
         //bol.setFkUserInsertId(...);
         //bol.setFkUserUpdateId(...);
         //bol.setTsUserInsert(...);
@@ -7491,6 +8030,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             bol.getChildTransportFigures().add((DDbBolTransportFigure) tptFigure);
         }
         
+        bol.setAuxXmlTypeId(DModSysConsts.TS_XML_TP_CFDI_40);
+        
         return bol;
     }
 
@@ -7512,33 +8053,43 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation.setMessage("Se debe terminar la captura de autotransporte.");
             }
             else if (mbEditingTruckTrailer) {
-                validation.setMessage("Se debe terminar la captura de remolques de autotransporte.");
+                validation.setMessage("Se debe terminar la captura de remolques.");
             }
             else if (mbEditingTptFigure) {
                 validation.setMessage("Se debe terminar la captura de figuras de transporte.");
             }
             else if (mbEditingTptFigureTptPart) {
-                validation.setMessage("Se debe terminar la captura de partes de transporte de figuras de transporte.");
+                validation.setMessage("Se debe terminar la captura de partes de transporte.");
             }
             else if (!mbEditionStarted) {
                 validation.setMessage("Debe haberse iniciado la captura de la carta porte.");
                 validation.setComponent(jbBolNavStart);
             }
-            else if (moGridLocations.getTable().getRowCount() < 2) {
-                validation.setMessage("Debe haber al menos dos ubicaciones.");
-                enableWizardTab(TAB_IDX_LOCATION, NAV_ACTION_NEXT);
-            }
-            else if (moGridMerchandises.getTable().getRowCount() < 1) {
-                validation.setMessage("Debe haber al menos una mercancía.");
-                enableWizardTab(TAB_IDX_MERCHANDISE, NAV_ACTION_NEXT);
-            }
-            else if (moGridTrucks.getTable().getRowCount() != 1) {
-                validation.setMessage("Debe haber sólo un autotransporte.");
-                enableWizardTab(TAB_IDX_TRUCK, NAV_ACTION_NEXT);
-            }
-            else if (moGridTptFigures.getTable().getRowCount() < 1) {
-                validation.setMessage("Debe haber al menos una figura de transporte.");
-                enableWizardTab(TAB_IDX_TPT_FIGURE, NAV_ACTION_NEXT);
+            else {
+                if (isBolTemplate()) {
+                    if (moGridTrucks.getTable().getRowCount() > 1) {
+                        validation.setMessage("Debe haber sólo un autotransporte.");
+                        enableWizardTab(TAB_IDX_TRUCK, NAV_ACTION_NEXT);
+                    }
+                }
+                else {
+                    if (moGridLocations.getTable().getRowCount() < 2) {
+                        validation.setMessage("Debe haber al menos dos ubicaciones.");
+                        enableWizardTab(TAB_IDX_LOCATION, NAV_ACTION_NEXT);
+                    }
+                    else if (moGridMerchandises.getTable().getRowCount() < 1) {
+                        validation.setMessage("Debe haber al menos una mercancía.");
+                        enableWizardTab(TAB_IDX_MERCHANDISE, NAV_ACTION_NEXT);
+                    }
+                    else if (moGridTrucks.getTable().getRowCount() != 1) {
+                        validation.setMessage("Sólo puede haber un autotransporte.");
+                        enableWizardTab(TAB_IDX_TRUCK, NAV_ACTION_NEXT);
+                    }
+                    else if (moGridTptFigures.getTable().getRowCount() < 1) {
+                        validation.setMessage("Debe haber al menos una figura de transporte.");
+                        enableWizardTab(TAB_IDX_TPT_FIGURE, NAV_ACTION_NEXT);
+                    }
+                }
             }
         }
         
@@ -7561,6 +8112,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbBolNavNext) {
                 actionPerformedBolNavNext();
+            }
+            else if (button == jbLocEditType) {
+                actionPerformedLocEditType();
             }
             else if (button == jbLocGetNextCode) {
                 actionPerformedLocGetNextCode();
@@ -7643,6 +8197,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             else if (button == jbMerchMoveCancel) {
                 actionPerformedMerchMoveCancel();
             }
+            else if (button == jbTruckEditConfig) {
+                actionPerformedTruckEditConfig();
+            }
             else if (button == jbTruckGetNextCode) {
                 actionPerformedTruckGetNextCode();
             }
@@ -7673,6 +8230,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             else if (button == jbTruckCancel) {
                 actionPerformedTruckCancel();
             }
+            else if (button == jbTruckTrailEditSubtype) {
+                actionPerformedTruckTrailEditSubtype();
+            }
             else if (button == jbTruckTrailAdd) {
                 actionPerformedTruckTrailAdd();
             }
@@ -7690,6 +8250,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbTruckTrailCancel) {
                 actionPerformedTruckTrailCancel();
+            }
+            else if (button == jbTptFigEditType) {
+                actionPerformedTptFigEditType();
             }
             else if (button == jbTptFigGetNextCode) {
                 actionPerformedTptFigGetNextCode();
@@ -7720,6 +8283,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbTptFigCancel) {
                 actionPerformedTptFigCancel();
+            }
+            else if (button == jbTptFigTptPartEditType) {
+                actionPerformedTptFigTptPartEditType();
             }
             else if (button == jbTptFigTptPartAdd) {
                 actionPerformedTptFigTptPartAdd();
@@ -7763,6 +8329,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
                 if (field == moKeyLocLocationType) {
                     itemStateChangedLocLocationType();
+                }
+                else if (field == moKeyLocSourceLocation) {
+                    itemStateChangedLocSourceLocation();
                 }
                 else if (field == moKeyLocAddressCountry) {
                     itemStateChangedLocAddressCountry();
@@ -7893,6 +8462,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (field == moIntMerchImportRequest1 || field == moIntMerchImportRequest2 || field == moIntMerchImportRequest3 || field == moIntMerchImportRequest4) {
                 focusLostMerchImportRequest();
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldDecimal) {
+            DBeanFieldDecimal field = (DBeanFieldDecimal) e.getSource();
+            
+            if (field == moDecMerchQuantity) {
+                focusLostMerchQuantity();
             }
         }
     }

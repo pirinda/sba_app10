@@ -663,7 +663,18 @@
                                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyLocLocationType">
                                   <Properties>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[230, 23]"/>
+                                      <Dimension value="[205, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="jbLocEditType">
+                                  <Properties>
+                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Obtener siguiente c&#xf3;digo"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[23, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -878,11 +889,11 @@
                                   <SubComponents>
                                     <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolLocUpdate">
                                       <Properties>
-                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar datos al registro!"/>
+                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar cat&#xe1;logo!"/>
                                         <Property name="horizontalAlignment" type="int" value="11"/>
                                         <Property name="horizontalTextPosition" type="int" value="10"/>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                          <Dimension value="[200, 23]"/>
+                                          <Dimension value="[150, 23]"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -1642,7 +1653,18 @@
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="kg"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[30, 23]"/>
+                                      <Dimension value="[25, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jlMerchRatioKgHint">
+                                  <Properties>
+                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="80" green="80" id="gray" palette="1" red="80" type="palette"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="1.000 x unidad"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[95, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -2493,7 +2515,18 @@
                                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTruckTransportConfig">
                                   <Properties>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[230, 23]"/>
+                                      <Dimension value="[205, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="jbTruckEditConfig">
+                                  <Properties>
+                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Obtener siguiente c&#xf3;digo"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[23, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -2577,22 +2610,11 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTruckPlate">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="PHB610B"/>
+                                    <Property name="text" type="java.lang.String" value="TEXT"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[75, 23]"/>
                                     </Property>
                                   </Properties>
-                                </Component>
-                                <Component class="javax.swing.JLabel" name="jlTruckModel">
-                                  <Properties>
-                                    <Property name="horizontalAlignment" type="int" value="0"/>
-                                    <Property name="text" type="java.lang.String" value="Modelo:*"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[70, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldCalendarYear" name="moYearTruckModel">
                                 </Component>
                               </SubComponents>
                             </Container>
@@ -2603,23 +2625,15 @@
                                 <Property name="verticalGap" type="int" value="0"/>
                               </Layout>
                               <SubComponents>
-                                <Component class="javax.swing.JLabel" name="jlTruckIsTrailerNeeded">
+                                <Component class="javax.swing.JLabel" name="jlTruckModel">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="Remolque:"/>
+                                    <Property name="text" type="java.lang.String" value="Modelo:*"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[75, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
-                                <Component class="javax.swing.JTextField" name="jtfTruckIsTrailerNeeded">
-                                  <Properties>
-                                    <Property name="editable" type="boolean" value="false"/>
-                                    <Property name="text" type="java.lang.String" value="TEXT"/>
-                                    <Property name="focusable" type="boolean" value="false"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[150, 23]"/>
-                                    </Property>
-                                  </Properties>
+                                <Component class="sba.lib.gui.bean.DBeanFieldCalendarYear" name="moYearTruckModel">
                                 </Component>
                               </SubComponents>
                             </Container>
@@ -2715,11 +2729,11 @@
                                   <SubComponents>
                                     <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolTruckUpdate">
                                       <Properties>
-                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar datos al registro!"/>
+                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar cat&#xe1;logo!"/>
                                         <Property name="horizontalAlignment" type="int" value="11"/>
                                         <Property name="horizontalTextPosition" type="int" value="10"/>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                          <Dimension value="[200, 23]"/>
+                                          <Dimension value="[150, 23]"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -2964,7 +2978,18 @@
                                     <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTruckTrailSubtype">
                                       <Properties>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                          <Dimension value="[230, 23]"/>
+                                          <Dimension value="[205, 23]"/>
+                                        </Property>
+                                      </Properties>
+                                    </Component>
+                                    <Component class="javax.swing.JButton" name="jbTruckTrailEditSubtype">
+                                      <Properties>
+                                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                          <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                                        </Property>
+                                        <Property name="toolTipText" type="java.lang.String" value="Obtener siguiente c&#xf3;digo"/>
+                                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[23, 23]"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -3022,6 +3047,17 @@
                                             </Property>
                                           </Properties>
                                         </Component>
+                                        <Component class="javax.swing.JTextField" name="jtfTruckTrailIsNeeded">
+                                          <Properties>
+                                            <Property name="editable" type="boolean" value="false"/>
+                                            <Property name="text" type="java.lang.String" value="TEXT"/>
+                                            <Property name="toolTipText" type="java.lang.String" value="&#xbf;Remolque requerido?"/>
+                                            <Property name="focusable" type="boolean" value="false"/>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[75, 23]"/>
+                                            </Property>
+                                          </Properties>
+                                        </Component>
                                       </SubComponents>
                                     </Container>
                                     <Container class="javax.swing.JPanel" name="jpTruckInput3N32">
@@ -3038,11 +3074,11 @@
                                       <SubComponents>
                                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolTruckTrailUpdate">
                                           <Properties>
-                                            <Property name="text" type="java.lang.String" value="&#xa1;Actualizar datos al registro!"/>
+                                            <Property name="text" type="java.lang.String" value="&#xa1;Actualizar cat&#xe1;logo!"/>
                                             <Property name="horizontalAlignment" type="int" value="11"/>
                                             <Property name="horizontalTextPosition" type="int" value="10"/>
                                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                              <Dimension value="[200, 23]"/>
+                                              <Dimension value="[150, 23]"/>
                                             </Property>
                                           </Properties>
                                         </Component>
@@ -3365,8 +3401,8 @@
             <Container class="javax.swing.JPanel" name="jpWizardTptFigure">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Figuras transporte">
-                    <Property name="tabTitle" type="java.lang.String" value="Figuras transporte"/>
+                  <JTabbedPaneConstraints tabName="Figuras de transporte">
+                    <Property name="tabTitle" type="java.lang.String" value="Figuras de transporte"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -3427,7 +3463,18 @@
                                 <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTptFigTransportFigureType">
                                   <Properties>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[230, 23]"/>
+                                      <Dimension value="[205, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="jbTptFigEditType">
+                                  <Properties>
+                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Obtener siguiente c&#xf3;digo"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[23, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -3512,6 +3559,9 @@
                                 <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextTptFigFiscalId">
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="TEXT"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[150, 23]"/>
+                                    </Property>
                                   </Properties>
                                 </Component>
                               </SubComponents>
@@ -3633,11 +3683,11 @@
                                   <SubComponents>
                                     <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolTptFigUpdate">
                                       <Properties>
-                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar datos al registro!"/>
+                                        <Property name="text" type="java.lang.String" value="&#xa1;Actualizar cat&#xe1;logo!"/>
                                         <Property name="horizontalAlignment" type="int" value="11"/>
                                         <Property name="horizontalTextPosition" type="int" value="10"/>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                          <Dimension value="[200, 23]"/>
+                                          <Dimension value="[150, 23]"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -3973,7 +4023,18 @@
                                     <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyTptFigTptPartTransportPartType">
                                       <Properties>
                                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                          <Dimension value="[230, 23]"/>
+                                          <Dimension value="[205, 23]"/>
+                                        </Property>
+                                      </Properties>
+                                    </Component>
+                                    <Component class="javax.swing.JButton" name="jbTptFigTptPartEditType">
+                                      <Properties>
+                                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                          <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                                        </Property>
+                                        <Property name="toolTipText" type="java.lang.String" value="Obtener siguiente c&#xf3;digo"/>
+                                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[23, 23]"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -4013,6 +4074,17 @@
                                             </Property>
                                           </Properties>
                                         </Component>
+                                        <Component class="javax.swing.JTextField" name="jtfTptFigTptPartIsRequired">
+                                          <Properties>
+                                            <Property name="editable" type="boolean" value="false"/>
+                                            <Property name="text" type="java.lang.String" value="TEXT"/>
+                                            <Property name="toolTipText" type="java.lang.String" value="&#xbf;Parte de transporte requerido?"/>
+                                            <Property name="focusable" type="boolean" value="false"/>
+                                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                              <Dimension value="[75, 23]"/>
+                                            </Property>
+                                          </Properties>
+                                        </Component>
                                       </SubComponents>
                                     </Container>
                                     <Container class="javax.swing.JPanel" name="jpTptFigInput3N32">
@@ -4029,11 +4101,11 @@
                                       <SubComponents>
                                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolTptFigTptPartUpdate">
                                           <Properties>
-                                            <Property name="text" type="java.lang.String" value="&#xa1;Actualizar datos al registro!"/>
+                                            <Property name="text" type="java.lang.String" value="&#xa1;Actualizar cat&#xe1;logo!"/>
                                             <Property name="horizontalAlignment" type="int" value="11"/>
                                             <Property name="horizontalTextPosition" type="int" value="10"/>
                                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                              <Dimension value="[200, 23]"/>
+                                              <Dimension value="[150, 23]"/>
                                             </Property>
                                           </Properties>
                                         </Component>

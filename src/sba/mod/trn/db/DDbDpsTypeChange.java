@@ -361,7 +361,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
                 }
             }
             
-            dps.setChildDfr(DTrnDfrUtils.createDfr(session, dps, mnAuxXmlTypeId));
+            dps.setChildDfr(DTrnDfrUtils.createDfrFromDps(session, dps, mnAuxXmlTypeId));
         }
 
         dps.save(session);

@@ -75,6 +75,7 @@ import sba.mod.fin.db.DDbTaxGroupConfigRow;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
 import sba.mod.mkt.db.DDbCustomerItemPriceType;
+import sba.mod.trn.db.DDbDfr;
 import sba.mod.trn.db.DDbDps;
 import sba.mod.trn.db.DDbDpsNote;
 import sba.mod.trn.db.DDbDpsRow;
@@ -554,7 +555,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocument1.add(jpDocument13, java.awt.BorderLayout.SOUTH);
 
-        jtpDocument.addTab("Asoc.", jpDocument1);
+        jtpDocument.addTab("Entrega", jpDocument1);
 
         jpDocument2.setLayout(new java.awt.BorderLayout());
 
@@ -1862,7 +1863,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
 
     private boolean enableDfrGlobalFields() {
-        return enableDfrFields() && (moBizPartner != null && moBizPartner.isPublicDomestic());
+        return enableDfrFields() && (moBizPartner != null && moBizPartner.isPublicForDfr());
     }
 
     private boolean isSalesAdjustment() {
@@ -3242,7 +3243,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
             moKeyBranchAddress.setValue(moBizPartnerBranchHeadquarters.getChildAddressDefault().getPrimaryKey());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
-            moKeyDfrCfdUsage.setValue(new int[] { !moKeyDfrCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartnerConfig.getActualCfdUsage()) });
+            moKeyDfrCfdUsage.setValue(new int[] { !moKeyDfrCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartner.isPublic() ? DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales : moBizPartnerConfig.getActualCfdUsage()) });
             moKeyCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
             moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_CSH : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
             moTextOrder.setValue("");
@@ -4127,7 +4128,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 
                 // create dummy DFR only to verify if it can be processed:
                 if (mbCheckDfrOnSaveOnlyOnce) {
-                    DTrnDfrUtils.createDfr(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId());
+                    DDbDfr dummy = DTrnDfrUtils.createDfrFromDps(miClient.getSession(), registry, moDpsSeriesNumber.getFkXmlTypeId());
                     mbCheckDfrOnSaveOnlyOnce = false;
                 }
             }
@@ -4187,6 +4188,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setComponent(moTextImportDeclaration);
                 validation.setTabbedPane(jtpDocument);
                 validation.setTab(DOC_TAB_DFR);
+            }
+            else if (enableDfrGlobalFields() && !moBoolDfrGlobal.isSelected() && miClient.showMsgBoxConfirm("¿Está seguro que no desea seleccionar el campo '" + moBoolDfrGlobal.getText() + "'?") != JOptionPane.YES_OPTION) {
+                validation.setMessage("Seleccionar el campo '" + moBoolDfrGlobal.getText() + "'.");
+                validation.setComponent(moBoolDfrGlobal);
+                validation.setTabbedPane(jtpDocument);
+                validation.setTab(DOC_TAB_GBL);
             }
             else if (moBoolDfrGlobal.isSelected() && (moKeyDfrGlobalPeriodicity.getSelectedIndex() <= 0 || moKeyDfrGlobalMonths.getSelectedIndex() <= 0 || moCalDfrGlobalYear.getValue() == 0)) {
                 validation.setMessage("Se debe completar la información de la sección '" + DGuiUtils.getLabelName(moBoolDfrGlobal.getText()) + "'.");
