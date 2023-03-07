@@ -126,7 +126,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     */
 
     protected int mnXtaIogId;
-    protected DDfr moXtaDfr;
+    protected DDfrMate moXtaDfrMate;
     
     protected DDbDfr moChildDfr; // digital fiscal receipt
     protected Vector<DDbDpsNote> mvChildNotes;
@@ -555,13 +555,12 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
-    private void loadXtaDfr() throws Exception {
+    private void loadXtaDfrMate() throws Exception {
         if (moChildDfr != null) {
             int row = 0;
             Node node;
             NamedNodeMap namedNodeMap;
             Document doc;
-            Vector<Node> relaciones;
             Vector<Node> conceptos;
             
             switch (moChildDfr.getFkXmlTypeId()) {
@@ -570,7 +569,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     break;
                     
                 case DModSysConsts.TS_XML_TP_CFDI_33:
-                    moXtaDfr = new DDfr();
+                    moXtaDfrMate = new DDfrMate();
                     
                     doc = DXmlUtils.parseDocument(moChildDfr.getSuitableDocXml());
                     
@@ -579,12 +578,34 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
                     namedNodeMap = node.getAttributes();
                     
-                    moXtaDfr.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
-                    moXtaDfr.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
-                    moXtaDfr.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
-                    moXtaDfr.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true));
-                    moXtaDfr.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
-                    moXtaDfr.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+                    moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
+                    moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+                    moXtaDfrMate.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
+                    moXtaDfrMate.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true));
+                    moXtaDfrMate.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
+                    moXtaDfrMate.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+
+                    // emisor:
+                    
+                    node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    
+                    moXtaDfrMate.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
+
+                    // receptor:
+                    
+                    node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    
+                    //moXtaDfrMate.setReceiverTaxRegime(..); // not supported in CFDI 3.3
+                    //moXtaDfrMate.setReceiverFiscalAddress(..); // not supported in CFDI 3.3
+                    moXtaDfrMate.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
+                    
+                    // información global (not supported in CFDI 3.3):
+
+                    //dfr.setGlobalPeriodicity(...);
+                    //dfr.setGlobalMonths(...);
+                    //dfr.setGlobalYear(...);
 
                     // CFDI relacionados:
                     
@@ -600,26 +621,12 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                             plainUuids += (plainUuids.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false);
                         }
                         
-                        DDfrCfdRelations cfdRelations = new DDfrCfdRelations();
-                        DDfrCfdRelations.RelatedCfd relatedCfd = cfdRelations.new RelatedCfd(relationCode, plainUuids);
-                        cfdRelations.getRelatedCfds().add(relatedCfd);
-                        moXtaDfr.setCfdRelations(cfdRelations);
+                        DDfrMateRelations relations = new DDfrMateRelations();
+                        DDfrMateRelations.RelatedCfd relatedCfd = relations.new RelatedCfd(relationCode, plainUuids);
+                        relations.getRelatedCfds().add(relatedCfd);
+                        moXtaDfrMate.setRelations(relations);
                     }
 
-                    // emisor:
-                    
-                    node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
-                    namedNodeMap = node.getAttributes();
-                    
-                    moXtaDfr.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
-
-                    // receptor:
-                    
-                    node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
-                    namedNodeMap = node.getAttributes();
-                    
-                    moXtaDfr.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
-                    
                     // conceptos:
                     
                     row = 0;
@@ -646,7 +653,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     break;
                     
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    moXtaDfr = new DDfr();
+                    moXtaDfrMate = new DDfrMate();
                     
                     doc = DXmlUtils.parseDocument(moChildDfr.getSuitableDocXml());
                     
@@ -655,19 +662,45 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
                     namedNodeMap = node.getAttributes();
                     
-                    moXtaDfr.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
-                    moXtaDfr.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
-                    moXtaDfr.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
-                    moXtaDfr.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true));
-                    moXtaDfr.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
-                    moXtaDfr.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+                    moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
+                    moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+                    moXtaDfrMate.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
+                    moXtaDfrMate.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", true));
+                    moXtaDfrMate.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
+                    moXtaDfrMate.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
                     
+                    // emisor:
+                    
+                    node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    
+                    moXtaDfrMate.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
+
+                    // receptor:
+                    
+                    node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                    namedNodeMap = node.getAttributes();
+                    
+                    moXtaDfrMate.setReceiverFiscalAddress(DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
+                    moXtaDfrMate.setReceiverTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
+                    moXtaDfrMate.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
+                    
+                    // información global:
+                    
+                    if (DXmlUtils.hasChildElement(node, "cfdi:InformacionGlobal")) {
+                        node = DXmlUtils.extractChildElements(node, "cfdi:InformacionGlobal").get(0);
+                        namedNodeMap = node.getAttributes();
+                        
+                        moXtaDfrMate.setGlobalPeriodicity(DXmlUtils.extractAttributeValue(namedNodeMap, "Periodicidad", true));
+                        moXtaDfrMate.setGlobalMonths(DXmlUtils.extractAttributeValue(namedNodeMap, "Meses", true));
+                        moXtaDfrMate.setGlobalYear(DLibUtils.parseInt(DXmlUtils.extractAttributeValue(namedNodeMap, "Año", true)));
+                    }
+
                     // CFDI relacionados:
                     
                     if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
-                        relaciones = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados");
-                        
-                        DDfrCfdRelations cfdRelations = new DDfrCfdRelations();
+                        Vector<Node> relaciones = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados");
+                        DDfrMateRelations relations = new DDfrMateRelations();
                         
                         for (Node relacion : relaciones) {
                             namedNodeMap = relacion.getAttributes();
@@ -680,40 +713,13 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                                 plainUuids += (plainUuids.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false);
                             }
 
-                            DDfrCfdRelations.RelatedCfd relatedCfd = cfdRelations.new RelatedCfd(relationCode, plainUuids);
-                            cfdRelations.getRelatedCfds().add(relatedCfd);
+                            DDfrMateRelations.RelatedCfd relatedCfd = relations.new RelatedCfd(relationCode, plainUuids);
+                            relations.getRelatedCfds().add(relatedCfd);
                         }
                         
-                        moXtaDfr.setCfdRelations(cfdRelations);
+                        moXtaDfrMate.setRelations(relations);
                     }
 
-                    // información global:
-                    
-                    if (DXmlUtils.hasChildElement(node, "cfdi:InformacionGlobal")) {
-                        node = DXmlUtils.extractChildElements(node, "cfdi:InformacionGlobal").get(0);
-                        namedNodeMap = node.getAttributes();
-                        
-                        moXtaDfr.setGlobalPeriodicity(DXmlUtils.extractAttributeValue(namedNodeMap, "Periodicidad", true));
-                        moXtaDfr.setGlobalMonths(DXmlUtils.extractAttributeValue(namedNodeMap, "Meses", true));
-                        moXtaDfr.setGlobalYear(DLibUtils.parseInt(DXmlUtils.extractAttributeValue(namedNodeMap, "Año", true)));
-                    }
-
-                    // emisor:
-                    
-                    node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
-                    namedNodeMap = node.getAttributes();
-                    
-                    moXtaDfr.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
-
-                    // receptor:
-                    
-                    node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
-                    namedNodeMap = node.getAttributes();
-                    
-                    moXtaDfr.setReceiverFiscalAddress(DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
-                    moXtaDfr.setReceiverTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
-                    moXtaDfr.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
-                    
                     // conceptos:
                     
                     row = 0;
@@ -740,7 +746,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     break;
                     
                 default:
-                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + "\nTipo de XML.");
             }
         }
     }
@@ -1143,10 +1149,10 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
     public void setXtaIogId(int n) { mnXtaIogId = n; }
-    public void setXtaDfr(DDfr o) { moXtaDfr = o; }
+    public void setXtaDfrMate(DDfrMate o) { moXtaDfrMate = o; }
     
     public int getXtaIogId() { return mnXtaIogId; }
-    public DDfr getXtaDfr() { return moXtaDfr; }
+    public DDfrMate getXtaDfrMate() { return moXtaDfrMate; }
     
     public void setChildDfr(DDbDfr o) { moChildDfr = o; }
 
@@ -1309,7 +1315,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         mtTsUserUpdate = null;
 
         mnXtaIogId = 0;
-        moXtaDfr = null;
+        moXtaDfrMate = null;
         
         moChildDfr = null;
         mvChildNotes.clear();
@@ -1505,7 +1511,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
             // Aditional processing:
 
             if (moChildDfr != null) {
-                loadXtaDfr();
+                loadXtaDfrMate();
             }
 
             // Finish registry reading:
@@ -1796,7 +1802,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
         
-        registry.setXtaDfr(this.getXtaDfr() == null ? null : this.getXtaDfr().clone());
+        registry.setXtaDfrMate(this.getXtaDfrMate() == null ? null : this.getXtaDfrMate().clone());
 
         registry.setChildDfr(this.getChildDfr() == null ? null : this.getChildDfr().clone());
 

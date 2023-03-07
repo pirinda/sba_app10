@@ -17,6 +17,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Vector;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import sba.gui.DGuiClientApp;
 import sba.gui.cat.DXmlCatalog;
 import sba.gui.prt.DPrtUtils;
@@ -107,7 +111,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     protected Date mtTsUserUpdate;
     */
     
-    protected DDfr moXtaDfr;
+    protected DDfrMate moXtaDfrMate;
     
     protected cfd.ver33.crp10.DElementPagos moDfrPagos10;
     protected cfd.ver40.crp20.DElementPagos moDfrPagos20;
@@ -130,16 +134,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
      * Private methods:
      */
     
-    private void computeNextNumber(DGuiSession session) throws Exception {
-        mnNumber = 0;
-        // do not exclude deleted registries because CFDI with series cannot be deleted, only annulled:
-        String sql = "SELECT COALESCE(MAX(num), 0) + 1 "
-                + "FROM " + DModConsts.TablesMap.get(mnRegistryType) + " "
-                + "WHERE ser = '" + msSeries + "';";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-        if (resultSet.next()) {
-            mnNumber = resultSet.getInt(1);
-        }
+    private void computeNextNumber(final DGuiSession session) throws Exception {
+        mnNumber = getNextNumber(session, msSeries);
     }
     
     private ArrayList<DDbBookkeepingMove> createPaymentMoves10(final DGuiSession session, final cfd.ver33.crp10.DElementPagosPago pago10, final DDbAbpBranchCash abpBranchCash) throws Exception {
@@ -422,13 +418,179 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
+    private void loadXtaDfrMate() throws Exception {
+        Node node;
+        NamedNodeMap namedNodeMap;
+        Document doc;
+
+        switch (mnFkXmlTypeId) {
+            case DModSysConsts.TS_XML_TP_CFD:
+            case DModSysConsts.TS_XML_TP_CFDI_32:
+                break;
+
+            case DModSysConsts.TS_XML_TP_CFDI_33:
+                moXtaDfrMate = new DDfrMate();
+
+                doc = DXmlUtils.parseDocument(getSuitableDocXml());
+
+                // comprobante:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                namedNodeMap = node.getAttributes();
+
+                moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
+                moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+                moXtaDfrMate.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
+                moXtaDfrMate.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", false));
+                moXtaDfrMate.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
+                moXtaDfrMate.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+
+                // emisor:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+                namedNodeMap = node.getAttributes();
+
+                moXtaDfrMate.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
+
+                // receptor:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                namedNodeMap = node.getAttributes();
+
+                //moXtaDfrMate.setReceiverTaxRegime(..); // not supported in CFDI 3.3
+                //moXtaDfrMate.setReceiverFiscalAddress(..); // not supported in CFDI 3.3
+                moXtaDfrMate.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
+                
+                // información global (not supported in CFDI 3.3):
+
+                //dfr.setGlobalPeriodicity(...);
+                //dfr.setGlobalMonths(...);
+                //dfr.setGlobalYear(...);
+                
+                // CFDI relacionados:
+
+                if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
+                    node = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados").get(0); // CFDI 3.3 has only one child, if any
+                    namedNodeMap = node.getAttributes();
+
+                    String relationCode = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
+                    String plainUuids = "";
+
+                    for (Node child : DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionado")) {
+                        namedNodeMap = child.getAttributes();
+                        plainUuids += (plainUuids.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false);
+                    }
+
+                    DDfrMateRelations relations = new DDfrMateRelations();
+                    DDfrMateRelations.RelatedCfd relatedCfd = relations.new RelatedCfd(relationCode, plainUuids);
+                    relations.getRelatedCfds().add(relatedCfd);
+                    moXtaDfrMate.setRelations(relations);
+                }
+                break;
+
+            case DModSysConsts.TS_XML_TP_CFDI_40:
+                moXtaDfrMate = new DDfrMate();
+
+                doc = DXmlUtils.parseDocument(getSuitableDocXml());
+
+                // comprobante:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                namedNodeMap = node.getAttributes();
+
+                moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
+                moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
+                moXtaDfrMate.setPlaceOfIssue(DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
+                moXtaDfrMate.setMethodOfPayment(DXmlUtils.extractAttributeValue(namedNodeMap, "MetodoPago", false));
+                moXtaDfrMate.setPaymentTerms(DXmlUtils.extractAttributeValue(namedNodeMap, "CondicionesDePago", false));
+                moXtaDfrMate.setConfirmation(DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
+
+                // emisor:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
+                namedNodeMap = node.getAttributes();
+
+                moXtaDfrMate.setIssuerTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true));
+
+                // receptor:
+
+                node = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
+                namedNodeMap = node.getAttributes();
+
+                moXtaDfrMate.setReceiverFiscalAddress(DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
+                moXtaDfrMate.setReceiverTaxRegime(DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
+                moXtaDfrMate.setCfdUsage(DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true));
+
+                // información global:
+
+                if (DXmlUtils.hasChildElement(node, "cfdi:InformacionGlobal")) {
+                    node = DXmlUtils.extractChildElements(node, "cfdi:InformacionGlobal").get(0);
+                    namedNodeMap = node.getAttributes();
+
+                    moXtaDfrMate.setGlobalPeriodicity(DXmlUtils.extractAttributeValue(namedNodeMap, "Periodicidad", true));
+                    moXtaDfrMate.setGlobalMonths(DXmlUtils.extractAttributeValue(namedNodeMap, "Meses", true));
+                    moXtaDfrMate.setGlobalYear(DLibUtils.parseInt(DXmlUtils.extractAttributeValue(namedNodeMap, "Año", true)));
+                }
+
+                // CFDI relacionados:
+
+                if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
+                    Vector<Node> relaciones = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados");
+                    DDfrMateRelations relations = new DDfrMateRelations();
+
+                    for (Node relacion : relaciones) {
+                        namedNodeMap = relacion.getAttributes();
+
+                        String relationCode = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
+                        String plainUuids = "";
+
+                        for (Node child : DXmlUtils.extractChildElements(relacion, "cfdi:CfdiRelacionado")) {
+                            namedNodeMap = child.getAttributes();
+                            plainUuids += (plainUuids.isEmpty() ? "" : ", ") + DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", false);
+                        }
+
+                        DDfrMateRelations.RelatedCfd relatedCfd = relations.new RelatedCfd(relationCode, plainUuids);
+                        relations.getRelatedCfds().add(relatedCfd);
+                    }
+
+                    moXtaDfrMate.setRelations(relations);
+                }
+                break;
+
+            default:
+                throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN + "\nTipo de XML.");
+        }
+    }
+    
     /*
      * Public methods:
      */
 
     /**
+     * Get next number.
+     * @param session User session.
+     * @param series Series.
+     * @return Next number.
+     * @throws Exception 
+     */
+    public static int getNextNumber(final DGuiSession session, final String series) throws Exception {
+        int number = 0;
+        
+        // do not exclude deleted registries because CFDI with series cannot be deleted, only annulled:
+        String sql = "SELECT COALESCE(MAX(num), 0) + 1 "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
+                + "WHERE ser = '" + series + "';";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            number = resultSet.getInt(1);
+        }
+        
+        return number;
+    }
+    
+    /**
      * Checks if registry is available, that is, not locked.
-     * @param session
+     * @param session User session.
      * @return
      * @throws Exception 
      */
@@ -582,12 +744,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
-    public void setXtaDfr(DDfr o) { moXtaDfr = o; }
+    public void setXtaDfrMate(DDfrMate o) { moXtaDfrMate = o; }
     
     public void setDfrPagos10(cfd.ver33.crp10.DElementPagos o) { moDfrPagos10 = o; }
     public void setDfrPagos20(cfd.ver40.crp20.DElementPagos o) { moDfrPagos20 = o; if (moDfrPagos20 != null) moDfrPagos20.computePagos(); }
     
-    public DDfr getXtaDfr() { return moXtaDfr; }
+    public DDfrMate getXtaDfrMate() { return moXtaDfrMate; }
     
     public cfd.ver33.crp10.DElementPagos getDfrPagos10() { return moDfrPagos10; }
     public cfd.ver40.crp20.DElementPagos getDfrPagos20() { return moDfrPagos20; }
@@ -711,7 +873,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
         
-        moXtaDfr = null;
+        moXtaDfrMate = null;
         
         moDfrPagos10 = null;
         moDfrPagos20 = null;
@@ -814,6 +976,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
 
             mbRegistryNew = false;
         }
+        
+        loadXtaDfrMate();
 
         mnQueryResultId = DDbConsts.READ_OK;
     }
@@ -1157,7 +1321,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
         
-        registry.setXtaDfr(this.getXtaDfr() == null ? null : this.getXtaDfr().clone());
+        registry.setXtaDfrMate(this.getXtaDfrMate() == null ? null : this.getXtaDfrMate().clone());
         
         registry.setDfrPagos10(this.getDfrPagos10() == null ? null : this.getDfrPagos10()); // not cloned!, because clone is not supported for this class!
         registry.setDfrPagos20(this.getDfrPagos20() == null ? null : this.getDfrPagos20()); // not cloned!, because clone is not supported for this class!
@@ -1353,11 +1517,11 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         braAddressEmisor = braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(moXtaDfr.getConfirmation());
+        comprobante.getAttConfirmacion().setString(moXtaDfrMate.getConfirmation());
         
         // element 'CfdiRelacionados':
-        if (moXtaDfr.getCfdRelations() != null && !moXtaDfr.getCfdRelations().getRelatedCfds().isEmpty()) {
-            DDfrCfdRelations.RelatedCfd relatedCfd = moXtaDfr.getCfdRelations().getRelatedCfds().get(0);
+        if (moXtaDfrMate.getRelations() != null && !moXtaDfrMate.getRelations().getRelatedCfds().isEmpty()) {
+            DDfrMateRelations.RelatedCfd relatedCfd = moXtaDfrMate.getRelations().getRelatedCfds().get(0);
             cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
             cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
             
@@ -1373,14 +1537,14 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfr.getIssuerTaxRegime());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfrMate.getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getProperName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfr.getCfdUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfrMate.getCfdUsage());
 
         // element 'Conceptos':
         
@@ -1503,11 +1667,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         braAddressEmisor = braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(moXtaDfr.getConfirmation());
+        comprobante.getAttConfirmacion().setString(moXtaDfrMate.getConfirmation());
+        comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica);
         
         // element 'CfdiRelacionados':
-        if (moXtaDfr.getCfdRelations() != null && !moXtaDfr.getCfdRelations().getRelatedCfds().isEmpty()) {
-            DDfrCfdRelations.RelatedCfd relatedCfd = moXtaDfr.getCfdRelations().getRelatedCfds().get(0);
+        if (moXtaDfrMate.getRelations() != null && !moXtaDfrMate.getRelations().getRelatedCfds().isEmpty()) {
+            DDfrMateRelations.RelatedCfd relatedCfd = moXtaDfrMate.getRelations().getRelatedCfds().get(0);
             cfd.ver40.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver40.DElementCfdiRelacionados();
             cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
             
@@ -1525,14 +1690,16 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getNameFiscal());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfr.getIssuerTaxRegime());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfrMate.getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getNameFiscal());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(moXtaDfrMate.getReceiverFiscalAddress());
+        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(moXtaDfrMate.getReceiverTaxRegime());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfr.getCfdUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfrMate.getCfdUsage());
 
         // element 'Conceptos':
         
@@ -1550,6 +1717,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         concepto.getAttImporte().setDouble(0);
         concepto.getAttImporte().setDecimals(0);
         //concepto.getAttDescuento().setDouble();
+        concepto.getAttObjetoImp().setString(DCfdi40Catalogs.ClaveObjetoImpNo);
 
         comprobante.getEltConceptos().getEltConceptos().add(concepto);
         
@@ -1563,7 +1731,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * By now supports only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0.
+     * By now supports only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0 and CFDI 4.0 with Complemento de Recepción de Pagos 2.0.
      * @param session
      * @throws Exception 
      */
@@ -1729,7 +1897,11 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_33:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap(session, this), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap33(session, this), fileName);
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(session, this), fileName);
                     break;
 
                 default:

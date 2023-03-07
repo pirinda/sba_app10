@@ -344,12 +344,12 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
             DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
             
-            dps.getXtaDfr().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DModSysConsts.TS_XML_TP_PAY_PUE : DModSysConsts.TS_XML_TP_PAY_PUE));
-            dps.getXtaDfr().setPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
-            dps.getXtaDfr().setConfirmation("");
-            dps.getXtaDfr().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
-            dps.getXtaDfr().setCfdUsage(bizPartnerConfig.getActualCfdUsage());
-            dps.getXtaDfr().setCfdRelations(null); // it is assumed that no UUID's are available
+            dps.getXtaDfrMate().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DModSysConsts.TS_XML_TP_PAY_PUE : DModSysConsts.TS_XML_TP_PAY_PUE));
+            dps.getXtaDfrMate().setPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
+            dps.getXtaDfrMate().setConfirmation("");
+            dps.getXtaDfrMate().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.getXtaDfrMate().setCfdUsage(bizPartnerConfig.getActualCfdUsage());
+            dps.getXtaDfrMate().setRelations(null); // it is assumed that no UUID's are available
             
             for (DDbDpsRow row : dps.getChildRows()) {
                 if (!row.isDeleted()) {

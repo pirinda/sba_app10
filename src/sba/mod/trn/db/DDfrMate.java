@@ -9,7 +9,7 @@ package sba.mod.trn.db;
  * Mantiene en memoria los valores de atributos y nodos CFD que no están en la BD.
  * @author Sergio Flores
  */
-public class DDfr {
+public class DDfrMate {
     
     protected String msCfdType;
     protected String msVersion; // eventhough is a decimal, handle it as string
@@ -24,9 +24,9 @@ public class DDfr {
     protected String msGlobalPeriodicity;
     protected String msGlobalMonths;
     protected int mnGlobalYear;
-    protected DDfrCfdRelations moCfdRelations;
+    protected DDfrMateRelations moRelations;
 
-    public DDfr() {
+    public DDfrMate() {
         reset();
     }
     
@@ -44,7 +44,7 @@ public class DDfr {
         msGlobalPeriodicity = "";
         msGlobalMonths = "";
         mnGlobalYear = 0;
-        moCfdRelations = null;
+        moRelations = null;
     }
     
     public void setCfdType(String s) { msCfdType = s; }
@@ -60,7 +60,7 @@ public class DDfr {
     public void setGlobalPeriodicity(String s) { msGlobalPeriodicity = s; }
     public void setGlobalMonths(String s) { msGlobalMonths = s; }
     public void setGlobalYear(int n) { mnGlobalYear = n; }
-    public void setCfdRelations(DDfrCfdRelations o) { moCfdRelations = o; }
+    public void setRelations(DDfrMateRelations o) { moRelations = o; }
     
     public String getCfdType() { return msCfdType; }
     public String getVersion() { return msVersion; }
@@ -75,13 +75,13 @@ public class DDfr {
     public String getGlobalPeriodicity() { return msGlobalPeriodicity; }
     public String getGlobalMonths() { return msGlobalMonths; }
     public int getGlobalYear() { return mnGlobalYear; }
-    public DDfrCfdRelations getCfdRelations() { return moCfdRelations; }
+    public DDfrMateRelations getRelations() { return moRelations; }
     
     public boolean isGlobal() { return !msGlobalPeriodicity.isEmpty(); }
     
     @Override
-    public DDfr clone() throws CloneNotSupportedException {
-        DDfr clone = new DDfr();
+    public DDfrMate clone() throws CloneNotSupportedException {
+        DDfrMate clone = new DDfrMate();
         
         clone.setCfdType(msCfdType);
         clone.setVersion(msVersion);
@@ -96,7 +96,7 @@ public class DDfr {
         clone.setGlobalPeriodicity(msGlobalPeriodicity);
         clone.setGlobalMonths(msGlobalMonths);
         clone.setGlobalYear(mnGlobalYear);
-        clone.setCfdRelations(moCfdRelations == null ? null : moCfdRelations.clone());
+        clone.setRelations(moRelations == null ? null : moRelations.clone());
         
         return clone;
     }

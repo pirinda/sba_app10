@@ -810,7 +810,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttCertificado().setString(signature.getCertificateBase64());
 
         comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
-        comprobante.getAttCondicionesDePago().setString(dps.getXtaDfr().getPaymentTerms());
+        comprobante.getAttCondicionesDePago().setString(dps.getXtaDfrMate().getPaymentTerms());
         
         comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
 
@@ -826,16 +826,16 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttTotal().setDouble(dps.getTotalCy_r());
 
         comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi40Catalogs.CFD_TP_I : DCfdi40Catalogs.CFD_TP_E);
-        comprobante.getAttMetodoPago().setString(dps.getXtaDfr().getMethodOfPayment());
+        comprobante.getAttMetodoPago().setString(dps.getXtaDfrMate().getMethodOfPayment());
         
         braAddressEmisor = braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(dps.getXtaDfr().getConfirmation());
+        comprobante.getAttConfirmacion().setString(dps.getXtaDfrMate().getConfirmation());
         
         // element 'CfdiRelacionados':
-        if (dps.getXtaDfr().getCfdRelations() != null && !dps.getXtaDfr().getCfdRelations().getRelatedCfds().isEmpty()) {
-            DDfrCfdRelations.RelatedCfd relatedCfd = dps.getXtaDfr().getCfdRelations().getRelatedCfds().get(0);
+        if (dps.getXtaDfrMate().getRelations() != null && !dps.getXtaDfrMate().getRelations().getRelatedCfds().isEmpty()) {
+            DDfrMateRelations.RelatedCfd relatedCfd = dps.getXtaDfrMate().getRelations().getRelatedCfds().get(0);
             cfd.ver33.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver33.DElementCfdiRelacionados();
             cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
             
@@ -851,14 +851,14 @@ public abstract class DTrnDfrUtils {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfr().getIssuerTaxRegime());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfrMate().getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getProperName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfr().getCfdUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfrMate().getCfdUsage());
 
         // element 'Conceptos':
         
@@ -1245,8 +1245,8 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttCertificado().setString(signature.getCertificateBase64());
 
         comprobante.getAttFormaPago().setString((String) session.readField(DModConsts.FS_MOP_TP, new int[] { dps.getFkModeOfPaymentTypeId() }, DDbRegistry.FIELD_CODE));
-        if (!dps.getXtaDfr().isGlobal()) {
-            comprobante.getAttCondicionesDePago().setString(dps.getXtaDfr().getPaymentTerms());
+        if (!dps.getXtaDfrMate().isGlobal()) {
+            comprobante.getAttCondicionesDePago().setString(dps.getXtaDfrMate().getPaymentTerms());
         }
         
         comprobante.getAttSubTotal().setDouble(dps.getSubtotalProvCy_r());
@@ -1263,26 +1263,26 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttTotal().setDouble(dps.getTotalCy_r());
 
         comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi40Catalogs.CFD_TP_I : DCfdi40Catalogs.CFD_TP_E);
-        comprobante.getAttMetodoPago().setString(dps.getXtaDfr().getMethodOfPayment());
+        comprobante.getAttMetodoPago().setString(dps.getXtaDfrMate().getMethodOfPayment());
         
         braAddressEmisor = braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
-        comprobante.getAttConfirmacion().setString(dps.getXtaDfr().getConfirmation());
+        comprobante.getAttConfirmacion().setString(dps.getXtaDfrMate().getConfirmation());
         comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica); // fixed value, exportations not supported yet!
         
-        if (dps.getXtaDfr().isGlobal()) {
+        if (dps.getXtaDfrMate().isGlobal()) {
             cfd.ver40.DElementInformacionGlobal informacionGlobal = new DElementInformacionGlobal();
-            informacionGlobal.getAttPeriodicidad().setString(dps.getXtaDfr().getGlobalPeriodicity());
-            informacionGlobal.getAttMeses().setString(dps.getXtaDfr().getGlobalMonths());
-            informacionGlobal.getAttAño().setInteger(dps.getXtaDfr().getGlobalYear());
+            informacionGlobal.getAttPeriodicidad().setString(dps.getXtaDfrMate().getGlobalPeriodicity());
+            informacionGlobal.getAttMeses().setString(dps.getXtaDfrMate().getGlobalMonths());
+            informacionGlobal.getAttAño().setInteger(dps.getXtaDfrMate().getGlobalYear());
             comprobante.setEltOpcInformacionGlobal(informacionGlobal);
         }
         
         // element 'CfdiRelacionados':
-        if (dps.getXtaDfr().getCfdRelations() != null && !dps.getXtaDfr().getCfdRelations().getRelatedCfds().isEmpty()) {
+        if (dps.getXtaDfrMate().getRelations() != null && !dps.getXtaDfrMate().getRelations().getRelatedCfds().isEmpty()) {
             ArrayList<cfd.ver40.DElementCfdiRelacionados> cfdiRelacionadoses = new ArrayList<>();
-            for (DDfrCfdRelations.RelatedCfd relatedCfd : dps.getXtaDfr().getCfdRelations().getRelatedCfds()) {
+            for (DDfrMateRelations.RelatedCfd relatedCfd : dps.getXtaDfrMate().getRelations().getRelatedCfds()) {
                 cfd.ver40.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver40.DElementCfdiRelacionados();
                 cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
 
@@ -1301,16 +1301,16 @@ public abstract class DTrnDfrUtils {
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
         comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getNameFiscal());
-        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfr().getIssuerTaxRegime());
+        comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfrMate().getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
-        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(dps.getXtaDfr().getReceiverTaxRegime());
-        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(!dps.getXtaDfr().isGlobal() ? dps.getXtaDfr().getReceiverFiscalAddress() : braAddressEmisor.getZipCode());
+        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(dps.getXtaDfrMate().getReceiverTaxRegime());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(!dps.getXtaDfrMate().isGlobal() ? dps.getXtaDfrMate().getReceiverFiscalAddress() : braAddressEmisor.getZipCode());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfr().getCfdUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfrMate().getCfdUsage());
 
         // element 'Conceptos':
         
@@ -1337,7 +1337,7 @@ public abstract class DTrnDfrUtils {
                 concepto.getAttCantidad().setDouble(dpsRow.getQuantity() == 0 ? 1 : dpsRow.getQuantity());
                 concepto.getAttCantidad().setDecimals(configCompany.getDecimalsQuantity());
                 concepto.getAttClaveUnidad().setString(dpsRow.getDfrUnitKey());
-                if (!dps.getXtaDfr().isGlobal()) {
+                if (!dps.getXtaDfrMate().isGlobal()) {
                     concepto.getAttUnidad().setString(dpsRow.getDbUnitCode());
                     concepto.getAttDescripcion().setString(dpsRow.getName() + (notes.isEmpty() ? "" : " " + notes));
                 }
@@ -1728,9 +1728,9 @@ public abstract class DTrnDfrUtils {
         
         // element 'CfdiRelacionados':
         /* Not supported yet!
-        if (bol.getXtaDfr().getCfdRelations() != null && !bol.getXtaDfr().getCfdRelations().getRelatedCfds().isEmpty()) {
+        if (bol.getXtaDfrMate().getRelations() != null && !bol.getXtaDfrMate().getRelations().getRelatedCfds().isEmpty()) {
             ArrayList<cfd.ver40.DElementCfdiRelacionados> cfdiRelacionadoses = new ArrayList<>();
-            for (DDfrCfdRelations.RelatedCfd relatedCfd : bol.getXtaDfr().getCfdRelations().getRelatedCfds()) {
+            for (DDfrMateRelations.RelatedCfd relatedCfd : bol.getXtaDfrMate().getRelations().getRelatedCfds()) {
                 cfd.ver40.DElementCfdiRelacionados cfdiRelacionados = new cfd.ver40.DElementCfdiRelacionados();
                 cfdiRelacionados.getAttTipoRelacion().setString(relatedCfd.RelationCode);
 

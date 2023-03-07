@@ -31,7 +31,7 @@ import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanFormDialog;
 import sba.mod.DModConsts;
-import sba.mod.trn.db.DDfrCfdRelations;
+import sba.mod.trn.db.DDfrMateRelations;
 import sba.mod.trn.db.DRowDfrRelatedCfd;
 
 /**
@@ -255,12 +255,12 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
         }
     }
     
-    private void setCfdRelations(final DDfrCfdRelations cfdRelations) {
+    private void setRelations(final DDfrMateRelations relations) {
         int row = 0;
         Vector<DGridRow> rows = new Vector<>();
 
-        if (cfdRelations != null) {
-            for (DDfrCfdRelations.RelatedCfd relatedCfd : cfdRelations.getRelatedCfds()) {
+        if (relations != null) {
+            for (DDfrMateRelations.RelatedCfd relatedCfd : relations.getRelatedCfds()) {
                 rows.add(new DRowDfrRelatedCfd(++row, relatedCfd.RelationCode, moXmlCatalogTipoRelacion.getName(moXmlCatalogTipoRelacion.getId(relatedCfd.RelationCode)), relatedCfd.getUuids()));
             }
         }
@@ -270,16 +270,16 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
         moGridRelations.setSelectedGridRow(0);
     }
     
-    private DDfrCfdRelations getCfdRelations() {
-        DDfrCfdRelations cfdRelations = null;
+    private DDfrMateRelations getRelations() {
+        DDfrMateRelations relations = null;
         
         if (moGridRelations.getTable().getRowCount() > 0) {
             try {
-                cfdRelations = new DDfrCfdRelations();
+                relations = new DDfrMateRelations();
                 
                 for (DGridRow gridRow : moGridRelations.getModel().getGridRows()) {
                     DRowDfrRelatedCfd row = (DRowDfrRelatedCfd) gridRow;
-                    cfdRelations.getRelatedCfds().add(cfdRelations.new RelatedCfd(row.getRelationCode(), row.getUuids()));
+                    relations.getRelatedCfds().add(relations.new RelatedCfd(row.getRelationCode(), row.getUuids()));
                 }
             }
             catch (Exception e) {
@@ -287,7 +287,7 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
             }
         }
         
-        return cfdRelations;
+        return relations;
     }
     
     private void actionPerformedAdd(int action) {
@@ -318,7 +318,7 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
         }
         else {
             try {
-                String uuids = DDfrCfdRelations.normalizeUuids(moTextRelatedCfds.getValue()); // throws exception if invalid data provided
+                String uuids = DDfrMateRelations.normalizeUuids(moTextRelatedCfds.getValue()); // throws exception if invalid data provided
                 
                 int index;
                 DRowDfrRelatedCfd row;
@@ -379,7 +379,7 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
                 message += "\n" + DGuiConsts.ERR_MSG_UNDEF_VALUE;
             }
             else {
-                for (String uuid : DDfrCfdRelations.parseUuids(moTextRelatedCfds.getValue())) { // throws exception if invalid data provided
+                for (String uuid : DDfrMateRelations.parseUuids(moTextRelatedCfds.getValue())) { // throws exception if invalid data provided
                     message += "\n" + uuid;
                 }
             }
@@ -469,7 +469,7 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
     public void setValue(final int type, final Object value) {
         switch (type) {
             case DModConsts.TX_DFR_RELATIONS:
-                setCfdRelations((DDfrCfdRelations) value);
+                setRelations((DDfrMateRelations) value);
                 break;
             case DGuiConsts.PARAM_STATUS:
                 mnFormStatus = (int) value;
@@ -486,7 +486,7 @@ public class DDialogCfdRelations extends DBeanFormDialog implements ActionListen
         
         switch (type) {
             case DModConsts.TX_DFR_RELATIONS:
-                value = getCfdRelations();
+                value = getRelations();
                 break;
             default:
                 miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);

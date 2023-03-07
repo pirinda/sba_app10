@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Data structure to exchange CFD relations between editing dialog and CFD form.
  * @author Sergio Flores
  */
-public class DDfrCfdRelations {
+public class DDfrMateRelations {
     
     public static final String UUID_SEPARATOR = ",";
     public static final String RELATED_CFD_SEPARATOR = "/ ";
@@ -22,7 +22,7 @@ public class DDfrCfdRelations {
     /**
      * Create CFD relations.
      */
-    public DDfrCfdRelations() {
+    public DDfrMateRelations() {
         maRelatedCfds = new ArrayList<>();
     }
     
@@ -133,8 +133,8 @@ public class DDfrCfdRelations {
     }
     
     @Override
-    public DDfrCfdRelations clone() throws CloneNotSupportedException  {
-        DDfrCfdRelations clone = new DDfrCfdRelations();
+    public DDfrMateRelations clone() throws CloneNotSupportedException  {
+        DDfrMateRelations clone = new DDfrMateRelations();
         
         for(RelatedCfd relatedCfd : maRelatedCfds) {
             clone.getRelatedCfds().add(relatedCfd.clone());

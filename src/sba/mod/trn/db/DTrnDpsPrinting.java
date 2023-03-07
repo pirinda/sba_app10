@@ -605,7 +605,7 @@ public class DTrnDpsPrinting {
                 hashMap.put("sXmlTimSelloCfd", sSelloCfd = DXmlUtils.extractAttributeValue(namedNodeMap, "SelloCFD", true));
                 hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMap, "SelloSAT", true));
 
-                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi33(sUuid, emisorRfc, sRecRfc, total, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
+                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi40(sUuid, emisorRfc, sRecRfc, total, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
                 hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
             }
         }
