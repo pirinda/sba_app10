@@ -137,9 +137,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private int mnBizPartnerItemPriceType;
     private int[] manAdjustmentClassMoneyKey;
     private int[] manAdjustmentClassStockKey;
-    private int[] manCurrentAdjustedDpsKey;
     private int[] manCurrentAdjustmentTypeKey;
     private int[] manCurrentAdjustmentClassKey;
+    private int[] manCurrentAdjustedDpsKey;
+    private String msCurrentAdjustedDpsUuid;
     private double mdBizPartnerDiscountPercentage;
     private boolean mbIsDpsSource; // indicates if this document is source of other documents
     private boolean mbIsDocument; // indicates if this document is just a document
@@ -1718,9 +1719,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         if (mbIsAdjustment) {
             setRowFieldsEditable(false);
 
-            manCurrentAdjustedDpsKey = null;
             manCurrentAdjustmentClassKey = null;
             manCurrentAdjustmentTypeKey = null;
+            manCurrentAdjustedDpsKey = null;
+            msCurrentAdjustedDpsUuid = "";
             mjTextCurrentAdjustmentType.setText("");
         }
     }
@@ -2177,7 +2179,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         return defined;
     }
 
-    private boolean renderItem(int[] itemKey_n, double quantity) {
+    private boolean renderItem(final int[] itemKey_n, final double quantity) {
         double taxRate = 0;
         double price = 0;
         double[] prices = null;
@@ -2300,23 +2302,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         return render;
     }
-
-    private void setRowFieldsEditable(boolean editable) {
-        moTextFind.setEnabled(editable);
-        jbFind.setEnabled(editable);
-
-        moBoolRowNote.setEnabled(editable);
-        moTextRowNote.setEnabled(editable && moBoolRowNote.isSelected());
-        moBoolRowNotePrintable.setEnabled(editable && moBoolRowNote.isSelected());
-        moBoolRowNoteDfr.setEnabled(editable && moBoolRowNote.isSelected() && (mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment)));
-        moBoolRowCfdPredial.setEnabled(editable);
-        moTextRowCfdPredial.setEnabled(editable && moBoolRowCfdPredial.isSelected());
-        moBoolRowTaxInput.setEnabled(editable);
-
-        jbRowClear.setEnabled(editable);
-        jbRowAdd.setEnabled(editable);
-    }
-
+    
     private DDbDpsRow createDpsRow() {
         double taxRate = 0;
         double qty = moDecRowQuantity.getValue();
@@ -2477,12 +2463,83 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         dpsRow.setDfrItemKey(isSalesAdjustment() ? DCfdi40Catalogs.ClaveProdServServsFacturacion : moItem.getActualCfdItemKey());
         dpsRow.setDfrUnitKey(isSalesAdjustment() ? DCfdi40Catalogs.ClaveUnidadAct : moUnit.getCfdUnitKey());
-        dpsRow.setDfrSourceUuid("");
+        dpsRow.setDfrSourceUuid(manCurrentAdjustedDpsKey == null ? "" : msCurrentAdjustedDpsUuid);
         
         dpsRow.setDbUnitCode(moUnit.getCode());
         dpsRow.setDbTaxRegimeId(moItem.getFkTaxRegimeId());
+        
+        if (enableDfrFields() && manCurrentAdjustedDpsKey != null && !msCurrentAdjustedDpsUuid.isEmpty()) {
+            addRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, msCurrentAdjustedDpsUuid);
+        }
 
         return dpsRow;
+    }
+    
+    private void setRowFieldsEditable(final boolean editable) {
+        moTextFind.setEnabled(editable);
+        jbFind.setEnabled(editable);
+
+        moBoolRowNote.setEnabled(editable);
+        moTextRowNote.setEnabled(editable && moBoolRowNote.isSelected());
+        moBoolRowNotePrintable.setEnabled(editable && moBoolRowNote.isSelected());
+        moBoolRowNoteDfr.setEnabled(editable && moBoolRowNote.isSelected() && (mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && (mbIsDocument || mbIsAdjustment)));
+        moBoolRowCfdPredial.setEnabled(editable);
+        moTextRowCfdPredial.setEnabled(editable && moBoolRowCfdPredial.isSelected());
+        moBoolRowTaxInput.setEnabled(editable);
+
+        jbRowClear.setEnabled(editable);
+        jbRowAdd.setEnabled(editable);
+    }
+
+    private void addRelatedCfd(final String relationCode, final String uuid) {
+        try {
+            if (moRegistry.getXtaDfrMate().getRelations() == null) {
+                moRegistry.getXtaDfrMate().setRelations(new DDfrMateRelations());
+            }
+            
+            moRegistry.getXtaDfrMate().getRelations().addRelatedCfd(relationCode, uuid);
+            
+            jtfDfrCfdRelations.setText(moRegistry.getXtaDfrMate().getRelations().toString());
+            jtfDfrCfdRelations.setCaretPosition(0);
+    }
+        catch (Exception e) {
+            DLibUtils.showException(this, e);
+        }
+    }
+    
+    private void removeRelatedCfd(final String relationCode, final String uuid) {
+        try {
+            if (moRegistry.getXtaDfrMate().getRelations() != null) {
+                moRegistry.getXtaDfrMate().getRelations().removeRelatedCfd(relationCode, uuid);
+
+                jtfDfrCfdRelations.setText(moRegistry.getXtaDfrMate().getRelations().toString());
+                jtfDfrCfdRelations.setCaretPosition(0);
+            }
+        }
+        catch (Exception e) {
+            DLibUtils.showException(this, e);
+        }
+    }
+
+    private void computeRowDeleted(DDbDpsRow dpsRow) {
+        moRegistry.getChildRows().remove(dpsRow);
+        
+        boolean isUuidStillUsed = false;
+        
+        for (DGridRow row : moGridDpsRows.getModel().getGridRows()) {
+            if (((DDbDpsRow) row).getDfrSourceUuid().equals(dpsRow.getDfrSourceUuid())) {
+                isUuidStillUsed = true;
+                break;
+            }
+        }
+
+        if (!isUuidStillUsed) {
+            if (enableDfrFields() && !dpsRow.getDfrSourceUuid().isEmpty()) {
+                removeRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
+            }
+        }
+        
+        computeTotal();
     }
 
     private void actionPerformedBizPartnerPick() {
@@ -2537,6 +2594,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             
             if (moDialogCfdRelations.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
                 moRegistry.getXtaDfrMate().setRelations((DDfrMateRelations) moDialogCfdRelations.getValue(DModConsts.TX_DFR_RELATIONS));
+                
                 jtfDfrCfdRelations.setText(moRegistry.getXtaDfrMate().getRelations() == null ? "" : moRegistry.getXtaDfrMate().getRelations().toString());
                 jtfDfrCfdRelations.setCaretPosition(0);
             }
@@ -2915,12 +2973,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moGridDpsRows.addGridRow(dpsRow);
                         
                         if (enableDfrFields() && !dpsRow.getDfrSourceUuid().isEmpty()) {
-                            try {
-                                moRegistry.getXtaDfrMate().getRelations().addRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
-                            }
-                            catch (Exception e) {
-                                DLibUtils.showException(this, e);
-                            }
+                            addRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
                         }
                     }
                 }
@@ -2960,12 +3013,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         moGridDpsRows.addGridRow(dpsRow);
 
                         if (enableDfrFields() && !dpsRow.getDfrSourceUuid().isEmpty()) {
-                            try {
-                                moRegistry.getXtaDfrMate().getRelations().addRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
-                            }
-                            catch (Exception e) {
-                                DLibUtils.showException(this, e);
-                            }
+                            addRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
                         }
                     }
                 }
@@ -2991,9 +3039,21 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDialogDpsAdjustedDocument.setVisible(true);
 
             if (moDialogDpsAdjustedDocument.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
-                manCurrentAdjustedDpsKey = (int[]) moDialogDpsAdjustedDocument.getValue(DModSysConsts.PARAM_DPS);
                 manCurrentAdjustmentTypeKey = (int[]) moDialogDpsAdjustedDocument.getValue(DModSysConsts.PARAM_DPS_ADJ_TP);
                 manCurrentAdjustmentClassKey = new int[] { manCurrentAdjustmentTypeKey[0], manCurrentAdjustmentTypeKey[1] };
+                manCurrentAdjustedDpsKey = (int[]) moDialogDpsAdjustedDocument.getValue(DModSysConsts.PARAM_DPS);
+                
+                DDbDps adjustedDps = (DDbDps) miClient.getSession().readRegistry(DModConsts.T_DPS, manCurrentAdjustedDpsKey);
+                
+                if (adjustedDps.getChildDfr() == null) {
+                    miClient.showMsgBoxWarning("El documento seleccionado '" + adjustedDps.getDpsNumber() + "' no tiene CFDI.");
+                }
+                else if (adjustedDps.getChildDfr().getUuid().isEmpty()) {
+                    miClient.showMsgBoxWarning("El CFDI del documento seleccionado '" + adjustedDps.getDpsNumber() + "' no tiene UUID.");
+                }
+                else {
+                    msCurrentAdjustedDpsUuid = adjustedDps.getChildDfr().getUuid();
+                }
 
                 setRowFieldsEditable(true);
                 mjTextCurrentAdjustmentType.setText((String) miClient.getSession().readField(DModConsts.TS_ADJ_TP, manCurrentAdjustmentTypeKey, DDbRegistry.FIELD_NAME));
@@ -3883,7 +3943,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moKeyDfrIssuerTaxRegime.setValue(new int[] { !enableDfrFields ? 0 : DLibUtils.parseInt(moRegistry.getXtaDfrMate().getIssuerTaxRegime()) }); // id = code
         moTextImportDeclaration.setValue(moRegistry.getImportDeclaration()); // depends on business partner settings (i.e. country)
         moDateImportDeclarationDate.setValue(moRegistry.getImportDeclarationDate_n()); // depends on business partner settings (i.e. country)
-        jtfDfrCfdRelations.setText(!enableDfrFields ? "" : moRegistry.getXtaDfrMate().getRelations() == null ? "" : moRegistry.getXtaDfrMate().getRelations().toString());
+        jtfDfrCfdRelations.setText(!enableDfrFields ? "" : (moRegistry.getXtaDfrMate().getRelations() == null ? "" : moRegistry.getXtaDfrMate().getRelations().toString()));
         jtfDfrCfdRelations.setCaretPosition(0);
         
         moBoolDfrGlobal.setValue(enableDfrFields && !moRegistry.getXtaDfrMate().getGlobalPeriodicity().isEmpty());
@@ -4359,18 +4419,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             case DModConsts.T_DPS_NOT:
                 break;
             case DModConsts.T_DPS_ROW:
-                DDbDpsRow dpsRow = (DDbDpsRow) gridRow;
-                moRegistry.getChildRows().remove(dpsRow);
-
-                if (enableDfrFields() && !dpsRow.getDfrSourceUuid().isEmpty()) {
-                    try {
-                        moRegistry.getXtaDfrMate().getRelations().removeRelatedCfd(DCfdi40Catalogs.ClaveTipoRelaciónNotaCrédito, dpsRow.getDfrSourceUuid());
-                    }
-                    catch (Exception e) {
-                        DLibUtils.showException(this, e);
-                    }
-                }
-                computeTotal();
+                computeRowDeleted((DDbDpsRow) gridRow);
                 break;
             default:
         }

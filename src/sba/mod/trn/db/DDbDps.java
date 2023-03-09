@@ -817,7 +817,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                                 }
                             }
                             else if (DTrnUtils.isDpsForStockOut(this, true)) {
-                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<DTrnDocRow>(mvChildRows))) {
+                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<>(mvChildRows))) {
                                     canChange = false;
                                     break;
                                 }
@@ -833,7 +833,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                                 }
                             }
                             else if (DTrnUtils.isDpsForStockOut(this, false)) {
-                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<DTrnDocRow>(mvChildRows))) {
+                                if (!DTrnDocRowUtils.validateRowOut(session, year, row, new Vector<>(mvChildRows))) {
                                     canChange = false;
                                     break;
                                 }
