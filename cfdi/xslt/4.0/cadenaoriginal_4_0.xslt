@@ -6,7 +6,7 @@
   <!--
 		En esta sección se define la inclusión de las plantillas de utilerías para colapsar espacios
 	-->
-  <xsl:include href="https://cfdiconfiguracion.blob.core.windows.net/xslt-complemento/utilerias.xslt"/>
+  <xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/2/cadenaoriginal_2_0/utilerias.xslt"/>
   <!-- 
 		En esta sección se define la inclusión de las demás plantillas de transformación para 
 		la generación de las cadenas originales de los complementos fiscales 
@@ -100,14 +100,14 @@
 		Llamadas para procesar al los sub nodos del comprobante
 	-->
 	<xsl:apply-templates select="./cfdi:InformacionGlobal"/>
-    <xsl:apply-templates select="./cfdi:CfdiRelacionados"/>
+    <xsl:for-each select="./cfdi:CfdiRelacionados">
+      <xsl:apply-templates select="."/>
+    </xsl:for-each>
     <xsl:apply-templates select="./cfdi:Emisor"/>
     <xsl:apply-templates select="./cfdi:Receptor"/>
     <xsl:apply-templates select="./cfdi:Conceptos"/>
     <xsl:apply-templates select="./cfdi:Impuestos"/>
-    <xsl:for-each select="./cfdi:Complemento">
-      <xsl:apply-templates select="."/>
-    </xsl:for-each>
+    <xsl:apply-templates select="./cfdi:Complemento"/>
   </xsl:template>
   
   <!-- Manejador de nodos tipo InformacionGlobal -->

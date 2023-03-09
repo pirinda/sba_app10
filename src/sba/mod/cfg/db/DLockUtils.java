@@ -92,7 +92,7 @@ public abstract class DLockUtils {
     public static void validateLock(final DGuiSession session, final DDbLock lock, final boolean recover) throws Exception {
         //check if lock is still active:
         
-        String sql = "SELECT lock_st, b_del, "
+        String sql = "SELECT lock_tout, lock_ts, lock_st, b_del, "
                 + "TIMEDIFF(ADDTIME(lock_ts, CONCAT('00:', lock_tout)), NOW()) > 0 AS _active,"
                 + "TIMEDIFF(NOW(), ADDTIME(lock_ts, CONCAT('00:', lock_tout))) AS _tout_time "
                 + "FROM " + DModConsts.TablesMap.get(DModConsts.C_LOCK) + " "
@@ -121,7 +121,8 @@ public abstract class DLockUtils {
                 
                 if (!resultSet.getBoolean("_active") || resultSet.getBoolean("b_del") || resultSet.getInt("lock_st") != DDbLock.LOCK_ST_ACTIVE) {
                     int count = 0;
-                    Date timeout = resultSet.getTimestamp("_tout_time");
+                    int timeout = resultSet.getInt("lock_tout");
+                    Date timestamp = resultSet.getDate("lock_ts");
 
                     //check if there are registry updates done after current lock:
                     
@@ -137,7 +138,7 @@ public abstract class DLockUtils {
 
                     if (count > 0) {
                         throw new Exception("El registro solicitado ha sido modificado " + DLibUtils.DecimalFormatInteger.format(count) + " " + (count == 1 ? "vez" : "veces") + " "
-                                + "después de haberse perdido el acceso exclusivo actual hace " + DLibUtils.DateFormatTime.format(timeout) + "."
+                                + "después de haberse perdido el acceso exclusivo actual de " + (timeout == 1 ? "un minuto" : timeout + " minutos") + " desde " + DLibUtils.DateFormatTime.format(timestamp) + "."
                                 + "\nLa captura actual del registro no podrá ser guardada, y debe ser cancelada.");
                     }
                     else {

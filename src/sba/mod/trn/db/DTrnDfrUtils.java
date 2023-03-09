@@ -1199,6 +1199,8 @@ public abstract class DTrnDfrUtils {
         }
 
         // Receptor:
+        
+        boolean isEmmissionTypeAsPublic = false;
 
         switch (dps.getFkEmissionTypeId()) {
             case DModSysConsts.TS_EMI_TP_BPR:
@@ -1207,6 +1209,7 @@ public abstract class DTrnDfrUtils {
                 break;
             case DModSysConsts.TS_EMI_TP_PUB_NAM:
             case DModSysConsts.TS_EMI_TP_PUB:
+                isEmmissionTypeAsPublic = true;
                 bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkPublicBizPartnerSaleId() });
                 braReceptor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkPublicBizPartnerSaleId(), DUtilConsts.BPR_BRA_ID });
                 break;
@@ -1265,7 +1268,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi40Catalogs.CFD_TP_I : DCfdi40Catalogs.CFD_TP_E);
         comprobante.getAttMetodoPago().setString(dps.getXtaDfrMate().getMethodOfPayment());
         
-        braAddressEmisor = braEmisor.getChildAddressOfficial();
+        braAddressEmisor =  braEmisor.getChildAddressOfficial();
         comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
         
         comprobante.getAttConfirmacion().setString(dps.getXtaDfrMate().getConfirmation());
@@ -1304,13 +1307,21 @@ public abstract class DTrnDfrUtils {
         comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfrMate().getIssuerTaxRegime());
 
         // element 'Receptor':
-        comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
+        String rfcReceptor = bprReceptor.getFiscalId();
+        boolean isReceptorPublic = DLibUtils.belongsTo(rfcReceptor, new String[] { DCfdConsts.RFC_GEN_NAC, DCfdConsts.RFC_GEN_INT });
+        
+        if (isEmmissionTypeAsPublic && !isReceptorPublic) {
+            rfcReceptor = DCfdConsts.RFC_GEN_NAC;
+            isReceptorPublic = true;
+        }
+        
+        comprobante.getEltReceptor().getAttRfc().setString(rfcReceptor);
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
-        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(dps.getXtaDfrMate().getReceiverTaxRegime());
-        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(!dps.getXtaDfrMate().isGlobal() ? dps.getXtaDfrMate().getReceiverFiscalAddress() : braAddressEmisor.getZipCode());
+        comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(isReceptorPublic ? DCfdi40Catalogs.ClaveRégimenFiscalSinObligacionesFiscales : dps.getXtaDfrMate().getReceiverTaxRegime());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(isReceptorPublic ? braAddressEmisor.getZipCode() : dps.getXtaDfrMate().getReceiverFiscalAddress());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
-        comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfrMate().getCfdUsage());
+        comprobante.getEltReceptor().getAttUsoCFDI().setString(isReceptorPublic ? DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales : dps.getXtaDfrMate().getCfdUsage());
 
         // element 'Conceptos':
         

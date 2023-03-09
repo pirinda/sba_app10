@@ -83,8 +83,8 @@ import sba.mod.trn.db.DDbDpsRowNote;
 import sba.mod.trn.db.DDbDpsSeries;
 import sba.mod.trn.db.DDbDpsSeriesBranch;
 import sba.mod.trn.db.DDbDpsSeriesNumber;
-import sba.mod.trn.db.DDfrMateRelations;
 import sba.mod.trn.db.DDfrMate;
+import sba.mod.trn.db.DDfrMateRelations;
 import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnDfrUtils;
 import sba.mod.trn.db.DTrnItemsFound;
@@ -528,7 +528,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtaBranchAddress.setBackground(java.awt.SystemColor.control);
         jtaBranchAddress.setColumns(20);
         jtaBranchAddress.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
-        jtaBranchAddress.setText("a\nb\nc\nd\ne");
+        jtaBranchAddress.setText("a\nb\nc");
         jtaBranchAddress.setToolTipText("Domicilio de entrega");
         jtaBranchAddress.setFocusable(false);
         jspBranchAddress.setViewportView(jtaBranchAddress);
@@ -3155,45 +3155,60 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             jtfDfrReceiverFiscalId.setEnabled(false);
             jtfDfrReceiverFiscalAddress.setEnabled(false);
-            moKeyBranchAddress.setEnabled(false);
-            jbBranchAddressOfficialView.setEnabled(false);
+            jbBizPartnerEdit.setEnabled(false);
             moKeyDfrReceiverTaxRegime.setEnabled(false);
             moKeyDfrCfdUsage.setEnabled(false);
-            moKeyCurrency.setEnabled(false);
-            moKeyPaymentType.setEnabled(false);
+            
+            moKeyBranchAddress.setEnabled(false);
+            jbBranchAddressOfficialView.setEnabled(false);
             moTextOrder.setEditable(false);
             moDateDelivery.setEditable(false);
-            moTextImportDeclaration.setEditable(false);
-            moDateImportDeclarationDate.setEditable(false);
+            
+            moTextDfrConfirmation.setEditable(false);
+            moKeyDfrIssuerTaxRegime.setEnabled(false);
             jtfDfrCfdRelations.setEnabled(false);
             jbDfrCfdRelationsEdit.setEnabled(false);
+            moTextImportDeclaration.setEditable(false);
+            moDateImportDeclarationDate.setEditable(false);
+            
             moBoolDfrGlobal.setEnabled(false);
-            moKeyDfrGlobalPeriodicity.setEnabled(false);
-            moKeyEmissionType.setEnabled(false);
-            moKeyAgent.setEnabled(false);
+            
+            moKeyCurrency.setEnabled(false);
+            moKeyPaymentType.setEnabled(false);
+            
             jtfTaxRegion.setEnabled(false);
             jtfIdentityType.setEnabled(false);
+            
+            moKeyEmissionType.setEnabled(false);
+            moKeyAgent.setEnabled(false);
             
             setRowFieldsEditable(false);
 
             jtfDfrReceiverFiscalId.setText("");
             jtfDfrReceiverFiscalAddress.setText("");
-            moKeyBranchAddress.resetField();
             moKeyDfrReceiverTaxRegime.resetField();
             moKeyDfrCfdUsage.resetField();
-            moKeyCurrency.resetField();
-            moKeyPaymentType.resetField();
+            
+            moKeyBranchAddress.resetField();
             moTextOrder.resetField();
             moDateDelivery.resetField();
+            
+            moTextDfrConfirmation.resetField();
+            moKeyDfrIssuerTaxRegime.resetField();
+            jtfDfrCfdRelations.setText("");
             moTextImportDeclaration.resetField();
             moDateImportDeclarationDate.resetField();
-            jtfDfrCfdRelations.setText("");
+            
             moBoolDfrGlobal.resetField();
-            moKeyDfrGlobalPeriodicity.resetField();
-            moKeyEmissionType.resetField();
-            moKeyAgent.resetField();
+            
+            moKeyCurrency.resetField();
+            moKeyPaymentType.resetField();
+            
             jtfTaxRegion.setText("");
             jtfIdentityType.setText("");
+            
+            moKeyEmissionType.resetField();
+            moKeyAgent.resetField();
 
             mbReloadItemsOnFind = false;
 
@@ -3216,24 +3231,32 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             jtfDfrReceiverFiscalId.setEnabled(true);
             jtfDfrReceiverFiscalAddress.setEnabled(true);
-            moKeyBranchAddress.setEnabled(true);
-            jbBranchAddressOfficialView.setEnabled(true);
+            jbBizPartnerEdit.setEnabled(true);
             moKeyDfrReceiverTaxRegime.setEnabled(enableDfrFields);
             moKeyDfrCfdUsage.setEnabled(enableDfrFields);
-            moKeyCurrency.setEnabled(!mbIsPosModule);
-            moKeyPaymentType.setEnabled(enablePaymentTypeField());
+            
+            moKeyBranchAddress.setEnabled(true);
+            jbBranchAddressOfficialView.setEnabled(true);
             moTextOrder.setEditable(!mbIsAdjustment);
             moDateDelivery.setEditable(!mbIsAdjustment);
-            moTextImportDeclaration.setEditable(mbIsImportDeclaration);
-            moDateImportDeclarationDate.setEditable(mbIsImportDeclaration);
+            
+            moTextDfrConfirmation.setEditable(enableDfrFields);
+            moKeyDfrIssuerTaxRegime.setEnabled(enableDfrFields);
             jtfDfrCfdRelations.setEnabled(enableDfrFields);
             jbDfrCfdRelationsEdit.setEnabled(enableDfrFields);
+            moTextImportDeclaration.setEditable(mbIsImportDeclaration);
+            moDateImportDeclarationDate.setEditable(mbIsImportDeclaration);
+            
             moBoolDfrGlobal.setEnabled(enableDfrGlobalFields);
-            moKeyDfrGlobalPeriodicity.setEnabled(enableDfrGlobalFields);
-            moKeyEmissionType.setEnabled(moRegistry.isDpsForSale());
-            moKeyAgent.setEnabled(false); // not implemented yet!
+            
+            moKeyCurrency.setEnabled(!mbIsPosModule);
+            moKeyPaymentType.setEnabled(enablePaymentTypeField());
+            
             jtfTaxRegion.setEnabled(true);
             jtfIdentityType.setEnabled(true);
+            
+            moKeyEmissionType.setEnabled(moRegistry.isDpsForSale());
+            moKeyAgent.setEnabled(false); // not implemented yet!
             
             setRowFieldsEditable(!mbIsAdjustment);
 
@@ -3241,24 +3264,31 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             jtfDfrReceiverFiscalId.setCaretPosition(0);
             jtfDfrReceiverFiscalAddress.setText(moBizPartnerBranchAddressOfficial.getZipCode());
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
-            moKeyBranchAddress.setValue(moBizPartnerBranchHeadquarters.getChildAddressDefault().getPrimaryKey());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
             moKeyDfrCfdUsage.setValue(new int[] { !moKeyDfrCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartner.isPublic() ? DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales : moBizPartnerConfig.getActualCfdUsage()) });
-            moKeyCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
-            moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_CSH : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
+            
+            moKeyBranchAddress.setValue(moBizPartnerBranchHeadquarters.getChildAddressDefault().getPrimaryKey());
             moTextOrder.setValue("");
             moDateDelivery.setValue(null);
+            
+            moTextDfrConfirmation.setValue("");
+            //moKeyDfrIssuerTaxRegime.setValue(...);
+            jtfDfrCfdRelations.setText("");
             moTextImportDeclaration.setValue("");
             moDateImportDeclarationDate.setValue(null);
-            jtfDfrCfdRelations.setText("");
+            
             moBoolDfrGlobal.setValue(false);
-            moKeyDfrGlobalPeriodicity.setValue(null);
-            moKeyEmissionType.setValue(new int[] { moRegistry.isDpsForSale() ? moBizPartner.getFkEmissionTypeId() : DModSysConsts.TS_EMI_TP_BPR });
-            moKeyAgent.setValue(null); // not implemented yet!
+            
+            moKeyCurrency.setValue(new int[] { moBizPartnerConfig.getActualFkCurrencyId(miClient.getSession()) });
+            moKeyPaymentType.setValue(new int[] { mbIsAdjustment ? DModSysConsts.FS_PAY_TP_CSH : (moBizPartnerConfig.getActualFkCreditTypeId() == DModSysConsts.BS_CDT_TP_CDT_NON ? DModSysConsts.FS_PAY_TP_CSH : DModSysConsts.FS_PAY_TP_CDT) });
+            
             jtfTaxRegion.setText((String) miClient.getSession().readField(DModConsts.FU_TAX_REG, new int[] { moBizPartnerBranchHeadquarters.getActualFkTaxRegionId(miClient.getSession()) }, DDbRegistry.FIELD_NAME));
             jtfTaxRegion.setCaretPosition(0);
             jtfIdentityType.setText((String) miClient.getSession().readField(DModConsts.BS_IDY_TP, new int[] { moBizPartner.getFkIdentityTypeId() }, DDbRegistry.FIELD_NAME));
             jtfIdentityType.setCaretPosition(0);
+            
+            moKeyEmissionType.setValue(new int[] { moRegistry.isDpsForSale() ? moBizPartner.getFkEmissionTypeId() : DModSysConsts.TS_EMI_TP_BPR });
+            moKeyAgent.setValue(null); // not implemented yet!
 
             mbReloadItemsOnFind = true;
 
@@ -3814,16 +3844,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         moKeyBizPartner.setValue(moRegistry.getBizPartnerKey());
         itemStateChangedBizPartner();
-        if (!moRegistry.isRegistryNew() && moRegistry.getXtaDfrMate() != null) {
-            jtfDfrReceiverFiscalAddress.setText(moRegistry.getXtaDfrMate().getReceiverFiscalAddress());
-            jtfDfrReceiverFiscalAddress.setCaretPosition(0);
+        
+        if (enableDfrFields) {
+            moKeyDfrReceiverTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getXtaDfrMate().getReceiverTaxRegime()) }); // id = code
+            moKeyDfrCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getXtaDfrMate().getCfdUsage()) });
+            
+            if (moKeyDfrReceiverTaxRegime.getSelectedIndex() <= 0 && moBizPartner != null) {
+                moKeyDfrReceiverTaxRegime.setValue(new int[] { moBizPartner.getFkTaxRegimeId() });
+            }
         }
 
         moKeyBranchAddress.setValue(moRegistry.getBizPartnerBranchAddressKey());
         itemStateChangedBranchAddress();
-        
-        moKeyDfrReceiverTaxRegime.setValue(new int[] { !enableDfrFields ? 0 : DLibUtils.parseInt(moRegistry.getXtaDfrMate().getReceiverTaxRegime()) }); // id = code
-        moKeyDfrCfdUsage.setValue(new int[] { !enableDfrFields ? 0 : moXmlCatalogCfdUsage.getId(moRegistry.getXtaDfrMate().getCfdUsage()) });
 
         mnOriginalYear = DLibTimeUtils.digestYear(mtOriginalDate)[0];
         moDateDate.setValue(mtOriginalDate);
@@ -4170,6 +4202,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DATE_ + "'" + DGuiUtils.getLabelName(jlDateCredit.getText()) + "'" +
                         DGuiConsts.ERR_MSG_FIELD_DATE_GREAT_EQUAL + DLibUtils.DateFormatDate.format(moDateDate.getValue()) + ".");
                 validation.setComponent(moDateCredit);
+            }
+            else if (moKeyEmissionType.getValue()[0] != DModSysConsts.TS_EMI_TP_BPR && moKeyPaymentType.getValue()[0] != DModSysConsts.FS_PAY_TP_CSH) {
+                if (moKeyPaymentType.isEnabled()) {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyPaymentType.getFieldName() + "', si '" + moKeyEmissionType.getFieldName() + "' es '" + moKeyEmissionType.getSelectedItem().getItem() + "'.");
+                    validation.setComponent(moKeyPaymentType);
+                }
+                else {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyEmissionType.getFieldName() + "', si '" + moKeyPaymentType.getFieldName() + "' es '" + moKeyPaymentType.getSelectedItem().getItem() + "'.");
+                    validation.setComponent(moKeyEmissionType);
+                }
             }
             else if (mbIsImportDeclaration && moTextImportDeclaration.getValue().isEmpty() && moDateImportDeclarationDate.getValue() != null) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "'.");
