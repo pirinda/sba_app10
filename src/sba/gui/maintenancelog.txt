@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 029.1
+2023-03-09/ Sergio Abraham FLORES GUTIÉRREZ
+1) Ajustes finales de implementación de CFDI 4.0, factura, nota de crédito y complemento de recepción de pagos.
+
+================================================================================
 SBA 1.0 029.0
 2022-10-05/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de Complemento Carta Porte 2.0, tipo "T".
