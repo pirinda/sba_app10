@@ -6,8 +6,8 @@
 package sba.mod.trn.db;
 
 import cfd.DCfdConsts;
-import cfd.ver33.DCfdi33Consts;
-import cfd.ver33.DCfdi33Utils;
+import cfd.ver40.DCfdi40Consts;
+import cfd.ver40.DCfdi40Utils;
 import java.awt.Cursor;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,7 +41,6 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.text.WordUtils;
-import sa.lib.db.SDbRegistry;
 import sba.gui.DGuiClientApp;
 import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
@@ -602,14 +601,14 @@ public abstract class DTrnEmissionUtils {
                                 + "Cambiar la fecha del " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
                                 + "para que no sea posterior a la fecha-hora actual.");
                     }
-                    else if (delay > DCfdi33Consts.HOURS_TO_SIGN && 
+                    else if (delay > DCfdi40Consts.HOURS_TO_SIGN && 
                             client.showMsgBoxConfirm("La fecha-hora del " + doc.getDocName() + " '" + doc.getDocNumber() + "', " + DLibUtils.DateFormatDatetime.format(doc.getDocDate().getTime()) + ",\n"
-                                    + "no debe ser anterior a la fecha-hora actual, " + DLibUtils.DateFormatDatetime.format(now) + ", por más de " + DCfdi33Consts.HOURS_TO_SIGN + " hrs.\n"
-                                    + "Hay un exceso de " + DLibUtils.DecimalFormatValue4D.format(delay - DCfdi33Consts.HOURS_TO_SIGN) + " hrs. más de lo permitido.\n"
+                                    + "no debe ser anterior a la fecha-hora actual, " + DLibUtils.DateFormatDatetime.format(now) + ", por más de " + DCfdi40Consts.HOURS_TO_SIGN + " hrs.\n"
+                                    + "Hay un exceso de " + DLibUtils.DecimalFormatValue4D.format(delay - DCfdi40Consts.HOURS_TO_SIGN) + " hrs. más de lo permitido.\n"
                                     + "A pesar de lo anterior, ¿desea intentar timbrarlo?") != JOptionPane.YES_OPTION) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
                                 + "Cambiar la fecha del " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
-                                + "para que no sea anterior a la fecha-hora actual por más de " + DCfdi33Consts.HOURS_TO_SIGN + " hrs.");
+                                + "para que no sea anterior a la fecha-hora actual por más de " + DCfdi40Consts.HOURS_TO_SIGN + " hrs.");
                     }
                 }
             }
@@ -824,7 +823,7 @@ public abstract class DTrnEmissionUtils {
             switch (requestSubtype) {
                 case DModSysConsts.TX_XMS_REQ_STP_REQ: // request cancellation
                     if (!dfr.getCancelStatus().isEmpty()) {
-                        String status = DCfdi33Utils.getEstatusCancelación(dfr.getCancelStatus());
+                        String status = DCfdi40Utils.getEstatusCancelación(dfr.getCancelStatus());
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
                                 + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' parece estar en proceso de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + " en estatus '" + (status.isEmpty() ? DTrnEmissionConsts.UNKNOWN : status) + "'.\n"
                                 + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_VER) + " de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".");
@@ -877,7 +876,7 @@ public abstract class DTrnEmissionUtils {
             }
 
             if (!cancel) {
-                String message = doc instanceof SDbRegistry ? ((SDbRegistry) doc).getQueryResult() : "";
+                String message = doc instanceof DDbRegistry ? ((DDbRegistry) doc).getQueryResult() : "";
                 throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no se puede cancelar."
                         + (message.isEmpty() ? "" : "\n" + message));
             }

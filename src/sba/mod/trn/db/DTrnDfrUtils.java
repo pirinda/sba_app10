@@ -22,8 +22,8 @@ import cfd.ext.continental.DElementPosicionesPo;
 import cfd.ext.continental.DElementTipoProv;
 import cfd.ver3.ccp20.DElementPedimentos;
 import cfd.ver32.DCfdiVer32Consts;
-import cfd.ver33.DCfdi33Consts;
 import cfd.ver40.DCfdi40Catalogs;
+import cfd.ver40.DCfdi40Consts;
 import cfd.ver40.DElementInformacionGlobal;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -3049,7 +3049,7 @@ public abstract class DTrnDfrUtils {
                             */
                         
                             // scamp code snippet to emulate an annulled CFDI:
-                            cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                            cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
                             xmlAcuse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tfd:TimbreFiscalDigital xmlns:tfd=\"http://www.sat.gob.mx/TimbreFiscalDigital\" FechaTimbrado=\"2018-08-16T16:00:02\" NoCertificadoSAT=\"00001000000405332712\" RfcProvCertif=\"FIN1203015JA\" SelloCFD=\"ONDe5/YJVqRfuohNNJA/UjxlR5SIwPlASe2/cKZaDHGQ7XKCOUefidDP3Szk9hHIE8hpJGoXjGqETQ/WKotYMcyOqzR+g0F5SGfhz34NZGVuffBLl4Co073g5ZeWGKiM6WXlim2njxxkhIqBTnf5BMcc7WqtyVfOGnwEZlXhx8kIbYKKWrSqEo72hldAZc8xrGkRikUUzp3aS6z5kDjfRcfIqSyBX1z7fOSjgYT9MXVezgEwKjwrhFUydrtz0Jqd5+KycPcHzedKJo6kbtnDmgKeLiZejGKobJ6VSlbXSYdiL+2Mt58WmUkG3JGCEzGXiBSO6ayz1Hmwjrr3rX84BA==\" SelloSAT=\"byIDPVs6qpW+D76RYX9RbZB4+inyp0QjYqzvX5Q0TObgWn9kcNKKsQ94C1OZrGon5qQx65WMlVjQsjSju6pf0Od6042c9S6emU1ANR3dSrcgtn0FjoNukj6lpgEt992hmf74D3wryVfrsc+NlCTuxFxpN0pO5Z2VADHie3GZRBzH9bH3ul8zO8hkihSqZNd1qtNQX3pW2KYnjaG6nQV0Obq441V1W483IUYxscsCrtDLrRyKvPBJQHNUuKAVyTKqzbJpD4u0tRudLIXtpSk9bj5f6ctYbl5ebZuMzOA3p7Nly/qkRoH2onLcZnx45dxJxid8hukCEojbVtW6jBps4w==\" UUID=\"5E43EBB7-D01A-4D44-A372-4A979A4778D4\" Version=\"1.1\" xsi:schemaLocation=\"http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd\"/>";  // 2018-08-17, Sergio Flores: scamp code snippet to emulate a cancelled CFDI
                         }
                         else {
@@ -3063,13 +3063,13 @@ public abstract class DTrnDfrUtils {
                             DTrnDfrUtilsHandler.CfdiAckQuery cfdiAckQuery = dfrUtilsHandler.getCfdiSatStatus(dfr);
 
                             switch (cfdiAckQuery.CfdiStatus) {
-                                case DCfdi33Consts.CFDI_ESTATUS_CAN:
+                                case DCfdi40Consts.CFDI_ESTATUS_CAN:
                                     // CFDI is 'cancelled' before fiscal authority, but is still active in system:
 
                                     getAckCancellation = true;
                                     break;
 
-                                case DCfdi33Consts.CFDI_ESTATUS_VIG:
+                                case DCfdi40Consts.CFDI_ESTATUS_VIG:
                                     // CFDI is 'active' before fiscal authority:
 
                                     if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_VER) {
@@ -3080,14 +3080,14 @@ public abstract class DTrnDfrUtils {
                                         }
                                         else {
                                             switch (cfdiAckQuery.CancelStatus) {
-                                                case DCfdi33Consts.ESTATUS_CANCEL_PROC: // cancellation in process
-                                                    cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE;
+                                                case DCfdi40Consts.ESTATUS_CANCEL_PROC: // cancellation in process
+                                                    cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_PROC_CODE;
                                                     break;
-                                                case DCfdi33Consts.ESTATUS_CANCEL_RECH: // cancellation was rejected
-                                                    cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE;
+                                                case DCfdi40Consts.ESTATUS_CANCEL_RECH: // cancellation was rejected
+                                                    cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_RECH_CODE;
                                                     break;
-                                                case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO: // cancellation in pending buffer
-                                                    cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_PEND_BUFF_CODE;
+                                                case DCfdi40Consts.ESTATUS_CANCEL_NINGUNO: // cancellation in pending buffer
+                                                    cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_PEND_BUFF_CODE;
                                                     break;
                                                 default:
                                                     cancelStatusCode = DTrnEmissionConsts.UNKNOWN;
@@ -3102,16 +3102,16 @@ public abstract class DTrnDfrUtils {
 
                                     // check cancellable status:
                                     switch (cfdiAckQuery.CancellableInfo) {
-                                        case DCfdi33Consts.CANCELABLE_SIN_ACEPT:
+                                        case DCfdi40Consts.CANCELABLE_SIN_ACEPT:
                                             isDirectlyCancellable = true;
                                             // CFDI is cancellable, go through...
                                             break;
 
-                                        case DCfdi33Consts.CANCELABLE_CON_ACEPT:
+                                        case DCfdi40Consts.CANCELABLE_CON_ACEPT:
                                             // CFDI is cancellable, go through...
                                             break;
 
-                                        case DCfdi33Consts.CANCELABLE_NO:
+                                        case DCfdi40Consts.CANCELABLE_NO:
                                             // CFDI is not cancellable, but
                                             // evaluate if CFDI is directly cancellable for having only one unique relation to its replacement,
                                             isDirectlyCancellable = cfdiAckQuery.CfdiRelatedList.size() == 1 && cfdiAckQuery.CfdiRelatedList.get(0).Uuid.equals(cancelParams.AnnulRelatedUuid);
@@ -3126,15 +3126,15 @@ public abstract class DTrnDfrUtils {
                                     // check cancellation status:
                                     if (!cfdiAckQuery.CancelStatus.isEmpty()) { // since december 2020, cancel status is empty for all cancellable CFDI types!, awkward!
                                         switch (cfdiAckQuery.CancelStatus) {
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PROC: // CFDI cancellation in process
-                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
+                                            case DCfdi40Consts.ESTATUS_CANCEL_PROC: // CFDI cancellation in process
+                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi40Consts.ESTATUS_CANCEL_PROC_CODE);
 
                                                 //xsr.delete(session); preserve request log, DO NOT delete it!
                                                 throw new Exception("La solicitud de cancelación del CFDI está pendiente de ser aceptada o rechazada por el receptor.");
 
-                                            case DCfdi33Consts.ESTATUS_CANCEL_RECH: // CFDI cancellation was rejected by receptor
+                                            case DCfdi40Consts.ESTATUS_CANCEL_RECH: // CFDI cancellation was rejected by receptor
                                                 if (!cancelParams.RetryCancel) {
-                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                                    dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi40Consts.ESTATUS_CANCEL_RECH_CODE);
 
                                                     xsr.delete(session); // delete request log
                                                     throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
@@ -3142,14 +3142,14 @@ public abstract class DTrnDfrUtils {
                                                 // previous cancellation request was rejected, so try again...
                                                 break;
 
-                                            case DCfdi33Consts.ESTATUS_CANCEL_NINGUNO:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_NINGUNO:
                                                 // CFD about to be cancelled for the first time or maybe a cancellation is still in process (in pending buffer), go throuth...
                                                 break;
 
-                                            case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
-                                            case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
                                                 xsr.delete(session); // delete request log
                                                 throw new Exception("El estatus de cancelación del CFDI es inconsistente: [" + cfdiAckQuery.CancelStatus + "]");
 
@@ -3160,7 +3160,7 @@ public abstract class DTrnDfrUtils {
                                     }
                                     break;
 
-                                case DCfdi33Consts.CFDI_ESTATUS_NO_ENC:
+                                case DCfdi40Consts.CFDI_ESTATUS_NO_ENC:
                                     // CFDI was 'not found' before fiscal authority:
                                     dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, "!!!");
 
@@ -3195,15 +3195,15 @@ public abstract class DTrnDfrUtils {
                                     }
                                     else {
                                         switch (cfdiAckQuery.CancelStatus) {
-                                            case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
-                                                cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                                            case DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                                cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
                                                 break;
-                                            case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
-                                                cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
+                                            case DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                                cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
                                                 break;
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
-                                            case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
-                                                cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
+                                            case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                            case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
+                                                cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
                                                 break;
                                             default:
                                                 cancelStatusCode = DTrnEmissionConsts.UNKNOWN;
@@ -3264,44 +3264,44 @@ public abstract class DTrnDfrUtils {
 
                                             String estatusCancelacion = elementFolios.getValue().getFolio().get(0).getEstatusCancelacion().getValue();
                                             
-                                            if (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_RECH)) {
+                                            if (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_RECH)) {
                                                 // CFDI cancellation rejected by receptor:
                                                 
-                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_RECH_CODE);
+                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi40Consts.ESTATUS_CANCEL_RECH_CODE);
 
                                                 xsr.delete(session); // delete request log
                                                 throw new Exception("La solicitud de cancelación del CFDI fue rechazada por el receptor.");
                                             }
-                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_PROC) ||
-                                                    (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.RESPONSE_CANCEL) && !isDirectlyCancellable)) { // unexpected message in a succesful cancellation, treated as if cancellation is in process
+                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_PROC) ||
+                                                    (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.RESPONSE_CANCEL) && !isDirectlyCancellable)) { // unexpected message in a succesful cancellation, treated as if cancellation is in process
                                                 // CFDI cancellation in process:
 
-                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PROC_CODE);
+                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi40Consts.ESTATUS_CANCEL_PROC_CODE);
 
                                                 // do not delete XSR, preserve it!
                                                 throw new Exception("La solicitud de cancelación del CFDI fue enviada al receptor.");
                                             }
-                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT) ||
-                                                estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT) ||
-                                                estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC) ||
-                                                estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT) ||
-                                                (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.RESPONSE_CANCEL) && isDirectlyCancellable)) { // unexpected message in a succesful cancellation, treated as if cancellation is done
+                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT) ||
+                                                estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT) ||
+                                                estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC) ||
+                                                estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT) ||
+                                                (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.RESPONSE_CANCEL) && isDirectlyCancellable)) { // unexpected message in a succesful cancellation, treated as if cancellation is done
                                                 // CFDI canceled!:
 
-                                                if (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.RESPONSE_CANCEL) && isDirectlyCancellable) {
-                                                    cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                                                if (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.RESPONSE_CANCEL) && isDirectlyCancellable) {
+                                                    cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
                                                 }
                                                 else {
                                                     switch (estatusCancelacion) {
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT:
-                                                            cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                                                        case DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT:
+                                                            cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
                                                             break;
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT:
-                                                            cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
+                                                        case DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT:
+                                                            cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_CON_ACEPT_CODE;
                                                             break;
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC:
-                                                        case DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
-                                                            cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
+                                                        case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC:
+                                                        case DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_ALT:
+                                                            cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_PLAZO_VENC_CODE;
                                                             break;
                                                         default:
                                                             cancelStatusCode = DTrnEmissionConsts.UNKNOWN;
@@ -3317,10 +3317,10 @@ public abstract class DTrnDfrUtils {
                                                 xmlAcuse = xmlAcuse.replace("&gt;", ">");
                                                 break;
                                             }
-                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi33Consts.ESTATUS_CANCEL_NINGUNO)) {
+                                            else if (estatusCancelacion.equalsIgnoreCase(DCfdi40Consts.ESTATUS_CANCEL_NINGUNO)) {
                                                 // CFDI cancellation in pending buffer:
                                             
-                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi33Consts.ESTATUS_CANCEL_PEND_BUFF_CODE);
+                                                dfr.saveField(session.getStatement(), dfr.getPrimaryKey(), DDbDfr.FIELD_CAN_ST, DCfdi40Consts.ESTATUS_CANCEL_PEND_BUFF_CODE);
 
                                                 // do not delete XSR, preserve it!
                                                 throw new Exception("El CFDI ya está en el controlador de espera (pending buffer), en proceso de ser cancelado.");
@@ -3348,7 +3348,7 @@ public abstract class DTrnDfrUtils {
 
                     case DModSysConsts.CS_XSP_TST:  // testing
                         // scamp code snippet to emulate an annulled CFDI:
-                        cancelStatusCode = DCfdi33Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
+                        cancelStatusCode = DCfdi40Consts.ESTATUS_CANCEL_SIN_ACEPT_CODE;
                         xmlAcuse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tfd:TimbreFiscalDigital xmlns:tfd=\"http://www.sat.gob.mx/TimbreFiscalDigital\" FechaTimbrado=\"2018-08-16T16:00:02\" NoCertificadoSAT=\"00001000000405332712\" RfcProvCertif=\"FIN1203015JA\" SelloCFD=\"ONDe5/YJVqRfuohNNJA/UjxlR5SIwPlASe2/cKZaDHGQ7XKCOUefidDP3Szk9hHIE8hpJGoXjGqETQ/WKotYMcyOqzR+g0F5SGfhz34NZGVuffBLl4Co073g5ZeWGKiM6WXlim2njxxkhIqBTnf5BMcc7WqtyVfOGnwEZlXhx8kIbYKKWrSqEo72hldAZc8xrGkRikUUzp3aS6z5kDjfRcfIqSyBX1z7fOSjgYT9MXVezgEwKjwrhFUydrtz0Jqd5+KycPcHzedKJo6kbtnDmgKeLiZejGKobJ6VSlbXSYdiL+2Mt58WmUkG3JGCEzGXiBSO6ayz1Hmwjrr3rX84BA==\" SelloSAT=\"byIDPVs6qpW+D76RYX9RbZB4+inyp0QjYqzvX5Q0TObgWn9kcNKKsQ94C1OZrGon5qQx65WMlVjQsjSju6pf0Od6042c9S6emU1ANR3dSrcgtn0FjoNukj6lpgEt992hmf74D3wryVfrsc+NlCTuxFxpN0pO5Z2VADHie3GZRBzH9bH3ul8zO8hkihSqZNd1qtNQX3pW2KYnjaG6nQV0Obq441V1W483IUYxscsCrtDLrRyKvPBJQHNUuKAVyTKqzbJpD4u0tRudLIXtpSk9bj5f6ctYbl5ebZuMzOA3p7Nly/qkRoH2onLcZnx45dxJxid8hukCEojbVtW6jBps4w==\" UUID=\"5E43EBB7-D01A-4D44-A372-4A979A4778D4\" Version=\"1.1\" xsi:schemaLocation=\"http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd\"/>";  // 2018-08-17, Sergio Flores: scamp code snippet to emulate a cancelled CFDI
                         break;
 
