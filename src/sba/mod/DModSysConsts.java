@@ -179,7 +179,8 @@ public abstract class DModSysConsts {
     public static final int CS_EMS_TP_NA = 1;
     public static final int CS_EMS_TP_OWN = 2;
     public static final int CS_EMS_TP_LIVE = 3;
-    public static final int CS_EMS_TP_GMAIL = 4;
+    public static final int CS_EMS_TP_GMAIL_SMTP = 4;
+    public static final int CS_EMS_TP_GMAIL_API = 5;
 
     public static final int CS_XSP_NA = 1;
     public static final int CS_XSP_FCG = 2;     // FORCOGSA

@@ -80,7 +80,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
     private JButton mjButtonDfrCancelVerify;    // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrCheckStatus;     // only for Digital Fiscal Receipt (DFR)
     private JButton mjButtonDfrSend;            // only for Digital Fiscal Receipt (DFR)
-    private JButton mjButtonDfrDownload;          // only for Digital Fiscal Receipt (DFR)
+    private JButton mjButtonDfrDownload;        // only for Digital Fiscal Receipt (DFR)
 
     /**
      * @param client GUI client.

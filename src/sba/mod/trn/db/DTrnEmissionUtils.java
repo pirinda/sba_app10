@@ -1057,7 +1057,7 @@ public abstract class DTrnEmissionUtils {
                         String fileNameXml = dfr.getDocXmlName();
                         String filePathXml = configBranch.getDfrDirectory() + fileNameXml;
 
-                        if (configCompany.getFkDfrEmsTypeId() == DModSysConsts.CS_EMS_TP_GMAIL) {
+                        if (configCompany.getFkDfrEmsTypeId() == DModSysConsts.CS_EMS_TP_GMAIL_API) {
                             File pdf = new File(filePathPdf);
                             File xml = new File(filePathXml);
                             DMessage message = new DMessage(from, subject, bodyText, DMailConsts.CONT_TP_TEXT_PLAIN, recipients);
@@ -1085,7 +1085,7 @@ public abstract class DTrnEmissionUtils {
                                     break;
 
                                 case DModSysConsts.CS_EMS_TP_LIVE:
-                                case DModSysConsts.CS_EMS_TP_GMAIL:
+                                case DModSysConsts.CS_EMS_TP_GMAIL_SMTP:
                                     /*
                                     Microsoft:
                                     - SMTP host: smtp.live.com, apparently deprecated by beginning of 2022
