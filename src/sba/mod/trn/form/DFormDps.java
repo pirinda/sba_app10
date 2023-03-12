@@ -61,6 +61,7 @@ import sba.lib.gui.bean.DBeanForm;
 import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.DModUtils;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBizPartnerConfig;
@@ -2564,11 +2565,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             else {
                 int[] key = moKeyBizPartner.getValue();
                 miClient.getSession().showForm(DModConsts.BU_BPR, DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype), new DGuiParams(key));
-
-                // XXX Improve this: form must be updated unless user select "Ok" when closing business partner form.
-                miClient.getSession().populateCatalogue(moKeyBizPartner, DModConsts.BU_BPR, DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype), null);
-                moKeyBizPartner.setValue(key);
-                moKeyBizPartner.requestFocusInWindow();
+                
+                if (miClient.getSession().getModule((new DModUtils()).getModuleTypeByType(DModConsts.BU_BPR)).getLastFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                    miClient.getSession().populateCatalogue(moKeyBizPartner, DModConsts.BU_BPR, DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype), null);
+                    moKeyBizPartner.setValue(key);
+                    moKeyBizPartner.requestFocusInWindow();
+                }
             }
         }
     }
@@ -3225,7 +3227,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDateDelivery.setEditable(false);
             
             moTextDfrConfirmation.setEditable(false);
-            moKeyDfrIssuerTaxRegime.setEnabled(false);
+            //moKeyDfrIssuerTaxRegime.setEnabled(false); // non-dependant on business partner
             jtfDfrCfdRelations.setEnabled(false);
             jbDfrCfdRelationsEdit.setEnabled(false);
             moTextImportDeclaration.setEditable(false);
@@ -3254,7 +3256,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDateDelivery.resetField();
             
             moTextDfrConfirmation.resetField();
-            moKeyDfrIssuerTaxRegime.resetField();
+            //moKeyDfrIssuerTaxRegime.resetField(); // non-dependant on business partner
             jtfDfrCfdRelations.setText("");
             moTextImportDeclaration.resetField();
             moDateImportDeclarationDate.resetField();
@@ -3301,7 +3303,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDateDelivery.setEditable(!mbIsAdjustment);
             
             moTextDfrConfirmation.setEditable(enableDfrFields);
-            moKeyDfrIssuerTaxRegime.setEnabled(enableDfrFields);
+            //moKeyDfrIssuerTaxRegime.setEnabled(enableDfrFields); // non-dependant on business partner
             jtfDfrCfdRelations.setEnabled(enableDfrFields);
             jbDfrCfdRelationsEdit.setEnabled(enableDfrFields);
             moTextImportDeclaration.setEditable(mbIsImportDeclaration);
@@ -3332,7 +3334,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moDateDelivery.setValue(null);
             
             moTextDfrConfirmation.setValue("");
-            //moKeyDfrIssuerTaxRegime.setValue(...);
+            //moKeyDfrIssuerTaxRegime.setValue(...); // non-dependant on business partner
             jtfDfrCfdRelations.setText("");
             moTextImportDeclaration.setValue("");
             moDateImportDeclarationDate.setValue(null);
@@ -3447,8 +3449,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             
             moIntCreditDays.setEnabled(!mbIsPosModule && isCredit);
             moDateCredit.setEnabled(!mbIsPosModule && isCredit);
-            moKeyDfrMethodOfPayment.setEnabled(!mbIsPosModule && enableCfdiFields);
-            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdiFields);
+            moKeyDfrMethodOfPayment.setEnabled(false);
+            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdiFields && isCash);
 
             moIntCreditDays.setValue(isCash ? 0 : moBizPartnerConfig.getActualCreditDays());
             moDateCredit.setValue(moDateDate.getValue());
@@ -3896,11 +3898,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moRegistry.setXtaDfrMate(dfrMate);
         }
         
-        jtpDocument.setEnabledAt(DOC_TAB_DFR, enableDfrFields);
-        
         // Render registry:
 
         setFormEditable(true); // enable all controls before setting form values
+        
+        jtpDocument.setEnabledAt(DOC_TAB_DFR, enableDfrFields);
+        moTextDfrConfirmation.setEditable(enableDfrFields);
+        moKeyDfrIssuerTaxRegime.setEnabled(enableDfrFields);
+        jbDfrCfdRelationsEdit.setEnabled(enableDfrFields);
 
         moKeyBizPartner.setValue(moRegistry.getBizPartnerKey());
         itemStateChangedBizPartner();
@@ -4257,6 +4262,16 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DATE_ + "'" + DGuiUtils.getLabelName(jlDateDate.getText()) + "'" +
                         DGuiConsts.ERR_MSG_FIELD_DATE_GREAT_EQUAL + DLibUtils.DateFormatDate.format(moDpsSeriesNumber.getApprobationDate_n()) + ", fecha de aprobación de los folios del documento.");
                 validation.setComponent(moDateDate);
+            }
+            else if (moKeyDfrReceiverTaxRegime.isEnabled() && moKeyDfrReceiverTaxRegime.getValue()[0] == DModSysConsts.CS_TAX_REG_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyDfrReceiverTaxRegime.getFieldName() + "'.");
+                validation.setComponent(moKeyDfrReceiverTaxRegime);
+            }
+            else if (moKeyDfrIssuerTaxRegime.isEnabled() && moKeyDfrIssuerTaxRegime.getValue()[0] == DModSysConsts.CS_TAX_REG_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyDfrIssuerTaxRegime.getFieldName() + "'.");
+                validation.setComponent(moKeyDfrIssuerTaxRegime);
+                validation.setTabbedPane(jtpDocument);
+                validation.setTab(DOC_TAB_DFR);
             }
             else if (moDateCredit.getValue().before(moDateDate.getValue())) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DATE_ + "'" + DGuiUtils.getLabelName(jlDateCredit.getText()) + "'" +

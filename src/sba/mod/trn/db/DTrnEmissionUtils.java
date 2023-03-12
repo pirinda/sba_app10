@@ -1091,12 +1091,15 @@ public abstract class DTrnEmissionUtils {
                                     - SMTP host: smtp.live.com, apparently deprecated by beginning of 2022
                                     - SMTP host: smtp.office365.com, since beginning of 2022
                                     - SMTP port: 587
+                                    - SMTP SSL: 1 (true)
                                     Gmail:
                                     - SMTP host: smtp.gmail.com
                                     - SMTP port: 587
+                                    - SMTP SSL: 1 (true)
                                     - NOTE:
                                         This sign-in technology is obsolete by May 30, 2022.
                                         Gmail access is now superseded by own implementation of Gmail API.
+                                        Another option is to request an external app code for a Gmail account (go to Google account settings).
                                     */
                                     properties.setProperty("mail.smtp.auth", "true");
                                     properties.setProperty("mail.smtp.starttls.enable", "true");

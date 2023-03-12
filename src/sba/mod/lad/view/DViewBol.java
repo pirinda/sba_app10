@@ -9,22 +9,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import sba.gui.DGuiClientApp;
+import sba.gui.prt.DPrtConsts;
 import sba.gui.util.DUtilConsts;
+import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.grid.DGridColumnView;
 import sba.lib.grid.DGridConsts;
 import sba.lib.grid.DGridFilterDatePeriod;
 import sba.lib.grid.DGridPaneSettings;
 import sba.lib.grid.DGridPaneView;
+import sba.lib.grid.DGridRowView;
 import sba.lib.grid.DGridUtils;
 import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiDate;
 import sba.lib.gui.DGuiParams;
+import sba.lib.img.DImgConsts;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
+import sba.mod.cfg.db.DDbLock;
 import sba.mod.lad.db.DDbBol;
 import sba.mod.lad.form.DPickerTemplate;
+import sba.mod.trn.db.DTrnEmissionUtils;
+import sba.mod.trn.db.DTrnUtils;
 
 /**
  *
@@ -33,8 +42,16 @@ import sba.mod.lad.form.DPickerTemplate;
 public class DViewBol extends DGridPaneView implements ActionListener {
 
     private DPickerTemplate moPickerTemplate;
-    private JButton mjButtonCreateFromTemplate;
     private DGridFilterDatePeriod moFilterDatePeriod;
+    private JButton mjButtonCreateFromTemplate;
+    private JButton mjButtonPrint;
+    private JButton mjButtonDfrSign;
+    private JButton mjButtonDfrSignVerify;
+    private JButton mjButtonDfrCancel;
+    private JButton mjButtonDfrCancelVerify;
+    private JButton mjButtonDfrCheckStatus;
+    private JButton mjButtonDfrSend;
+    private JButton mjButtonDfrDownload;
 
     /**
      * @param client GUI Client.
@@ -52,13 +69,45 @@ public class DViewBol extends DGridPaneView implements ActionListener {
 
     private void initComponentsCustom() {
         if (!isBolTemplate()) {
-            mjButtonCreateFromTemplate = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/dps_inv_tmp.gif")), "Nuevo desde plantilla", this);
-            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonCreateFromTemplate);
-            
             moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+            
+            mjButtonCreateFromTemplate = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/dps_inv_tmp.gif")), "Nuevo desde plantilla", this);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonCreateFromTemplate);
         }
+        
+        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonPrint.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
+
+        mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSign.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
+
+        mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSignVerify.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSignVerify);
+
+        mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrCancel.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancel);
+
+        mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrCancelVerify.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
+
+        mjButtonDfrCheckStatus = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Consultar estatus " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrCheckStatus.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCheckStatus);
+
+        mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+        mjButtonDfrSend.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
+
+        mjButtonDfrDownload = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_doc_xml.gif")), DUtilConsts.TXT_SAVE + " XML", this);
+        mjButtonDfrDownload.setEnabled(true);
+        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrDownload);
     }
     
     private boolean isBolTemplate() {
@@ -201,13 +250,173 @@ public class DViewBol extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.CU_USR);
     }
 
+    private void actionPrint() {
+        if (mjButtonPrint.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow(), DPrtConsts.PRINT_MODE_STD);
+            }
+        }
+    }
+
+    private void actionDfrSign(final int requestSubtype) {
+        if (mjButtonDfrSign.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    private void actionDfrCancel(final int requestSubtype) {
+        if (mjButtonDfrCancel.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                boolean restoreDisableButton = false;
+                boolean isDisableButtonEnabled = false;
+                
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
+                    }
+                    else {
+                        if (requestSubtype == DModSysConsts.TX_XMS_REQ_STP_REQ) {
+                            restoreDisableButton = true;
+                            isDisableButtonEnabled = jbRowDisable.isEnabled(); // preserve button status
+                            jbRowDisable.setEnabled(true); // enable button to allow (to force) disabling of document
+                            actionRowDisable();
+                        }
+                        else {
+                            throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN +
+                                    "\nLa acción solicitada no está disponible para este tipo de registro.");
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
+                    DLibUtils.showException(this, e);
+                }
+                finally {
+                    if (restoreDisableButton) {
+                        jbRowDisable.setEnabled(isDisableButtonEnabled);   // restore original button status
+                    }
+                }
+            }
+        }
+    }
+
+    private void actionDfrCheckStatus() {
+        if (mjButtonDfrCheckStatus.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.checkDps(miClient, (DGridRowView) getSelectedGridRow());
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    private void actionDfrSend() {
+        if (mjButtonDfrSend.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.sendDps(miClient, (DGridRowView) getSelectedGridRow());
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
+    private void actionDfrDownload() {
+        if (mjButtonDfrDownload.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                try {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                        DTrnEmissionUtils.downloadDps(miClient, (DGridRowView) getSelectedGridRow());
+                    }
+                    else {
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(this, e);
+                }
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton) {
+            DGuiParams params = null;
             JButton button = (JButton) e.getSource();
             
             if (button == mjButtonCreateFromTemplate) {
                 actionPerformedCreateFromTemplate();
+            }
+            else if (button == mjButtonPrint) {
+                actionPrint();
+            }
+            else if (button == mjButtonDfrSign) {
+                actionDfrSign(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            }
+            else if (button == mjButtonDfrSignVerify) {
+                actionDfrSign(DModSysConsts.TX_XMS_REQ_STP_VER);
+            }
+            else if (button == mjButtonDfrCancel) {
+                actionDfrCancel(DModSysConsts.TX_XMS_REQ_STP_REQ);
+            }
+            else if (button == mjButtonDfrCancelVerify) {
+                actionDfrCancel(DModSysConsts.TX_XMS_REQ_STP_VER);
+            }
+            else if (button == mjButtonDfrCheckStatus) {
+                actionDfrCheckStatus();
+            }
+            else if (button == mjButtonDfrSend) {
+                actionDfrSend();
+            }
+            else if (button == mjButtonDfrDownload) {
+                actionDfrDownload();
             }
         }
     }

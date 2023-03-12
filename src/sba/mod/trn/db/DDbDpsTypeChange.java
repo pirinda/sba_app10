@@ -344,11 +344,21 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
             DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
             
-            dps.getXtaDfrMate().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DModSysConsts.TS_XML_TP_PAY_PUE : DModSysConsts.TS_XML_TP_PAY_PUE));
+            if (dps.getXtaDfrMate() == null) {
+                dps.setXtaDfrMate(new DDfrMate());
+            }
+            
+            dps.getXtaDfrMate().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DModSysConsts.TS_XML_TP_PAY_PUE : DModSysConsts.TS_XML_TP_PAY_PPD));
+            dps.setFkModeOfPaymentTypeId(dps.getCreditDays() == 0 ? DModSysConsts.FS_MOP_TP_NA : DModSysConsts.FS_MOP_TP_TO_DEF);
             dps.getXtaDfrMate().setPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
             dps.getXtaDfrMate().setConfirmation("");
             dps.getXtaDfrMate().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.getXtaDfrMate().setReceiverTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bizPartner.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.getXtaDfrMate().setReceiverFiscalAddress(bizPartner.getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
             dps.getXtaDfrMate().setCfdUsage(bizPartnerConfig.getActualCfdUsage());
+            dps.getXtaDfrMate().setGlobalPeriodicity("");
+            dps.getXtaDfrMate().setGlobalMonths("");
+            dps.getXtaDfrMate().setGlobalYear(0);
             dps.getXtaDfrMate().setRelations(null); // it is assumed that no UUID's are available
             
             for (DDbDpsRow row : dps.getChildRows()) {

@@ -1,4 +1,22 @@
 ================================================================================
+SBA 1.0 030.3
+2023-03-11/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de timbrado e impresión de CFDI con complemento Carta Porte 2.0, tipo "T".
+
+================================================================================
+SBA 1.0 030.2
+2023-03-11/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección null pointer exception (DFR-mate inexistente) en cambio de tipo de documento, de ticket a factura.
+2) Mejoramiento a la modificación directa del asociado de negocios en la captura de documentos.
+3) Mejoramiento a la validación de no selección de régimen fiscal NA para emisor y receptor.
+4) Mejoramiento a la forma de captura de asociados de negocios en cuanto al nombre completo y la razón social.
+
+================================================================================
+SBA 1.0 030.1
+2023-03-10/ Sergio Abraham FLORES GUTIÉRREZ
+1) Correción a captura opcional del régimen de capital para personas morales en el catálogo de clientes.
+
+================================================================================
 SBA 1.0 030.0
 2023-03-10/ Sergio Abraham FLORES GUTIÉRREZ
 1) Diferenciación de configuración y envío de correo con Gmail: SMTP y Google Mail API.
@@ -11,7 +29,7 @@ SBA 1.0 029.1
 ================================================================================
 SBA 1.0 029.0
 2022-10-05/ Sergio Abraham FLORES GUTIÉRREZ
-1) Implementación de Complemento Carta Porte 2.0, tipo "T".
+1) Implementación de CFDI con complemento Carta Porte 2.0, tipo "T".
 
 ================================================================================
 SBA 1.0 028.0
