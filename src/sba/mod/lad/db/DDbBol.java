@@ -109,7 +109,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         }
     }
     
-    private void computeDfr(final DGuiSession session) throws Exception {
+    private void computeChildDfr(final DGuiSession session) throws Exception {
         boolean save = false;
 
         if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_XML_ST_PEN && mnAuxXmlTypeId != 0) {
@@ -118,11 +118,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         }
 
         if (save) {
-            saveDfr(session, true);
+            saveChildDfr(session, true);
         }
     }
 
-    private void saveDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
+    private void saveChildDfr(final DGuiSession session, boolean printDfr) throws SQLException, Exception {
         if (moChildDfr == null) {
             msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
                     + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
@@ -137,8 +137,8 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             moChildDfr.setDeleted(mbDeleted);
             moChildDfr.save(session);
 
-            if (issueDfr) {
-                issueDfr(session);
+            if (printDfr) {
+                printDfr(session);
             }
         }
     }
@@ -691,7 +691,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         
         // aditional processing:
         
-        computeDfr(session);
+        computeChildDfr(session);
 
         // finish registry updating:
         
@@ -811,32 +811,6 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     }
 
     @Override
-    public void issueDfr(DGuiSession session) throws Exception {
-        String fileName = "";
-        DDbConfigBranch configBranch = null;
-        
-        if (moChildDfr != null && moChildDfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
-            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            fileName += configBranch.getDfrDirectory();
-            fileName += moChildDfr.getDocXmlName().replaceAll(".xml", ".pdf");
-
-            switch (moChildDfr.getFkXmlTypeId()) {
-                case DModSysConsts.TS_XML_TP_CFD:
-                case DModSysConsts.TS_XML_TP_CFDI_32:
-                case DModSysConsts.TS_XML_TP_CFDI_33:
-                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
-
-                case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
-                    break;
-
-                default:
-                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-            }
-        }
-    }
-
-    @Override
     public String getDocName() {
         return "carta porte";
     }
@@ -851,6 +825,9 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         return getChildDfr() == null ? null : getChildDfr().getDocTs();
     }
 
+    /**
+     * Get BOL status. Constants defined in DModSysConsts.TS_XML_ST_...
+     */
     @Override
     public int getDocStatus() {
         return getFkBolStatusId();
@@ -882,12 +859,38 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     }
 
     @Override
+    public void printDfr(DGuiSession session) throws Exception {
+        String fileName = "";
+        DDbConfigBranch configBranch = null;
+        
+        if (moChildDfr != null && moChildDfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
+            configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+            fileName += configBranch.getDfrDirectory();
+            fileName += moChildDfr.getDocXmlName().replaceAll(".xml", ".pdf");
+
+            switch (moChildDfr.getFkXmlTypeId()) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
+    }
+
+    @Override
     public boolean canAnnul(DGuiSession session) throws Exception {
         return true;
     }
 
     /**
-     * Checks if registry is available, that is, not locked.
+     * Check if registry is available, that is, not locked.
      * @param session
      * @return
      * @throws Exception 
@@ -912,7 +915,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
+     * Assure lock. That is if it does not already exist, it is created, otherwise validated.
      * @param session GUI session.
      * @return 
      * @throws Exception 
@@ -934,7 +937,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * Frees current lock, if any, with by-update status.
+     * Free current lock, if any, with by-update status.
      * @param session GUI session.
      * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
      * @throws Exception 

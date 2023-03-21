@@ -16,7 +16,6 @@ import sba.mod.cfg.db.DDbLock;
  */
 public interface DTrnDoc {
     
-    public void issueDfr(DGuiSession session) throws Exception;
     public String getDocName();
     public String getDocNumber();
     public Date getDocDate();
@@ -27,6 +26,7 @@ public interface DTrnDoc {
     public int[] getBizPartnerBranchAddressKey();
     public DDbDfr getDfr();
     public DDbRegistry createDocSending();
+    public void printDfr(DGuiSession session) throws Exception;
     public boolean canAnnul(final DGuiSession session) throws Exception;
     public boolean checkAvailability(final DGuiSession session) throws Exception;
     public DDbLock assureLock(final DGuiSession session) throws Exception;

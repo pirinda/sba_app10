@@ -307,6 +307,7 @@ public class DViewBalanceBranchCash extends DGridPaneView implements ActionListe
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
         moSuscriptionsSet.add(DModConsts.T_DFR);
         moSuscriptionsSet.add(DModConsts.T_IOM);
+        moSuscriptionsSet.add(DModConsts.TX_DFR_PAY);
     }
 
     @Override

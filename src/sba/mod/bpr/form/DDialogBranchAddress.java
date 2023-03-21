@@ -59,6 +59,8 @@ public class DDialogBranchAddress extends DBeanFormDialog {
         DGuiUtils.setWindowBounds(this, 900, 400);
 
         moPanelBranchAddress.setPanelSettings(miClient);
+        moPanelBranchAddress.setHeadquarters(false);
+        
         moPanelBranchAddress.getFields().setFormButton(jbSave);
     }
 

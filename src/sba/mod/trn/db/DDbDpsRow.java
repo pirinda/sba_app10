@@ -27,6 +27,8 @@ import sba.mod.itm.db.DDbItem;
  * @author Sergio Flores
  */
 public class DDbDpsRow extends DDbRegistryUser implements DGridRow, DTrnDocRow {
+    
+    public static final int TAXES = 3;
 
     protected int mnPkDpsId;
     protected int mnPkRowId;

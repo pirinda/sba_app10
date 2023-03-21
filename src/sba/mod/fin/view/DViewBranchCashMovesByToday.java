@@ -164,5 +164,6 @@ public class DViewBranchCashMovesByToday extends DGridPaneView {
         moSuscriptionsSet.add(DModConsts.F_BKK);
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
         moSuscriptionsSet.add(DModConsts.T_DFR);
+        moSuscriptionsSet.add(DModConsts.TX_DFR_PAY);
     }
 }

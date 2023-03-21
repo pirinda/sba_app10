@@ -209,6 +209,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moKeyBizPartner = new sba.lib.gui.bean.DBeanFieldKey();
         jtfDfrReceiverFiscalId = new javax.swing.JTextField();
         jtfDfrReceiverFiscalAddress = new javax.swing.JTextField();
+        jlBizPartnerName = new javax.swing.JLabel();
         jbBizPartnerPick = new javax.swing.JButton();
         jbBizPartnerEdit = new javax.swing.JButton();
         jlNumber = new javax.swing.JLabel();
@@ -396,7 +397,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpMain.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
-        jpMain1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        jpMain1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 3, 0));
 
         moKeyBizPartner.setToolTipText("Asociado de negocios");
         moKeyBizPartner.setPreferredSize(new java.awt.Dimension(350, 23));
@@ -404,25 +405,30 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jtfDfrReceiverFiscalId.setEditable(false);
         jtfDfrReceiverFiscalId.setText("XAXX010101000");
-        jtfDfrReceiverFiscalId.setToolTipText("RFC");
+        jtfDfrReceiverFiscalId.setToolTipText("RFC del asociado de negocios");
         jtfDfrReceiverFiscalId.setFocusable(false);
-        jtfDfrReceiverFiscalId.setPreferredSize(new java.awt.Dimension(96, 23));
+        jtfDfrReceiverFiscalId.setPreferredSize(new java.awt.Dimension(95, 23));
         jpMain1.add(jtfDfrReceiverFiscalId);
 
         jtfDfrReceiverFiscalAddress.setEditable(false);
         jtfDfrReceiverFiscalAddress.setText("00000");
-        jtfDfrReceiverFiscalAddress.setToolTipText("Domicilio fiscal");
+        jtfDfrReceiverFiscalAddress.setToolTipText("Domicilio fiscal (CP) del asociado de negocios");
         jtfDfrReceiverFiscalAddress.setFocusable(false);
-        jtfDfrReceiverFiscalAddress.setPreferredSize(new java.awt.Dimension(50, 23));
+        jtfDfrReceiverFiscalAddress.setPreferredSize(new java.awt.Dimension(45, 23));
         jpMain1.add(jtfDfrReceiverFiscalAddress);
 
+        jlBizPartnerName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/icon_help.png"))); // NOI18N
+        jlBizPartnerName.setToolTipText("Razón social: ?");
+        jlBizPartnerName.setPreferredSize(new java.awt.Dimension(14, 23));
+        jpMain1.add(jlBizPartnerName);
+
         jbBizPartnerPick.setText("...");
-        jbBizPartnerPick.setToolTipText("Buscar ... [F9]");
+        jbBizPartnerPick.setToolTipText("Buscar... [F9]");
         jbBizPartnerPick.setPreferredSize(new java.awt.Dimension(23, 23));
         jpMain1.add(jbBizPartnerPick);
 
         jbBizPartnerEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbBizPartnerEdit.setToolTipText("Modificar ...");
+        jbBizPartnerEdit.setToolTipText("Modificar...");
         jbBizPartnerEdit.setPreferredSize(new java.awt.Dimension(23, 23));
         jpMain1.add(jbBizPartnerEdit);
 
@@ -442,7 +448,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpMain1.add(moIntNumber);
 
         jlDateDate.setText("Fecha:*");
-        jlDateDate.setPreferredSize(new java.awt.Dimension(60, 23));
+        jlDateDate.setPreferredSize(new java.awt.Dimension(65, 23));
         jpMain1.add(jlDateDate);
 
         moDateDate.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -457,14 +463,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpMain.add(jpMain1);
 
-        jpMain2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        jpMain2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 3, 0));
 
         moKeyDfrReceiverTaxRegime.setToolTipText("Régimen fiscal del receptor");
         moKeyDfrReceiverTaxRegime.setPreferredSize(new java.awt.Dimension(350, 23));
         jpMain2.add(moKeyDfrReceiverTaxRegime);
 
         moKeyDfrCfdUsage.setToolTipText("Uso del CFDI");
-        moKeyDfrCfdUsage.setPreferredSize(new java.awt.Dimension(204, 23));
+        moKeyDfrCfdUsage.setPreferredSize(new java.awt.Dimension(212, 23));
         jpMain2.add(moKeyDfrCfdUsage);
 
         jlCurrency.setText("Moneda:*");
@@ -472,14 +478,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jlCurrency.setRequestFocusEnabled(false);
         jpMain2.add(jlCurrency);
 
-        moKeyCurrency.setPreferredSize(new java.awt.Dimension(129, 23));
+        moKeyCurrency.setPreferredSize(new java.awt.Dimension(128, 23));
         jpMain2.add(moKeyCurrency);
 
         jlExchangeRate.setText("T. cambio:*");
-        jlExchangeRate.setPreferredSize(new java.awt.Dimension(60, 23));
+        jlExchangeRate.setPreferredSize(new java.awt.Dimension(65, 23));
         jpMain2.add(jlExchangeRate);
 
-        moDecExchangeRate.setPreferredSize(new java.awt.Dimension(73, 23));
+        moDecExchangeRate.setPreferredSize(new java.awt.Dimension(74, 23));
         jpMain2.add(moDecExchangeRate);
 
         jbExchangeRatePick.setText("...");
@@ -1213,7 +1219,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moBoolRowNotePrintable.setBooleanSettings(moBoolRowNotePrintable.getText(), true);
         moBoolRowNoteDfr.setBooleanSettings(moBoolRowNoteDfr.getText(), false);
         moBoolRowCfdPredial.setBooleanSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), false);
-        moTextRowCfdPredial.setTextSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), 150, 0);
+        moTextRowCfdPredial.setTextSettings(DGuiUtils.getLabelName(moBoolRowCfdPredial.getText()), 50, 0);
         moBoolRowTaxInput.setBooleanSettings(moBoolRowTaxInput.getText(), false);
         
         moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType), true);
@@ -3215,8 +3221,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             
             jtpDocument.setEnabledAt(DOC_TAB_GBL, false);
 
-            jtfDfrReceiverFiscalId.setEnabled(false);
-            jtfDfrReceiverFiscalAddress.setEnabled(false);
             jbBizPartnerEdit.setEnabled(false);
             moKeyDfrReceiverTaxRegime.setEnabled(false);
             moKeyDfrCfdUsage.setEnabled(false);
@@ -3248,6 +3252,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             jtfDfrReceiverFiscalId.setText("");
             jtfDfrReceiverFiscalAddress.setText("");
+            jlBizPartnerName.setToolTipText("Razón social: ?");
             moKeyDfrReceiverTaxRegime.resetField();
             moKeyDfrCfdUsage.resetField();
             
@@ -3291,8 +3296,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             jtpDocument.setEnabledAt(DOC_TAB_GBL, enableDfrGlobalFields);
 
-            jtfDfrReceiverFiscalId.setEnabled(true);
-            jtfDfrReceiverFiscalAddress.setEnabled(true);
             jbBizPartnerEdit.setEnabled(true);
             moKeyDfrReceiverTaxRegime.setEnabled(enableDfrFields);
             moKeyDfrCfdUsage.setEnabled(enableDfrFields);
@@ -3326,6 +3329,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             jtfDfrReceiverFiscalId.setCaretPosition(0);
             jtfDfrReceiverFiscalAddress.setText(moBizPartnerBranchAddressOfficial.getZipCode());
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
+            jlBizPartnerName.setToolTipText("Razón social: " + moBizPartner.getNameFiscal());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
             moKeyDfrCfdUsage.setValue(new int[] { !moKeyDfrCfdUsage.isEnabled() ? 0 : moXmlCatalogCfdUsage.getId(moBizPartner.isPublic() ? DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales : moBizPartnerConfig.getActualCfdUsage()) });
             
@@ -3527,6 +3531,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JButton jbRowAdd;
     private javax.swing.JButton jbRowClear;
     private javax.swing.JLabel jlAgent;
+    private javax.swing.JLabel jlBizPartnerName;
     private javax.swing.JLabel jlCfdType;
     private javax.swing.JLabel jlCreditDays;
     private javax.swing.JLabel jlCurrency;
@@ -4216,9 +4221,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 dfrMate.setReceiverTaxRegime(moKeyDfrReceiverTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyDfrReceiverTaxRegime.getValue()[0]); // id = code
                 dfrMate.setReceiverFiscalAddress(moBizPartnerBranchAddressOfficial.getZipCode());
                 dfrMate.setCfdUsage(moKeyDfrCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyDfrCfdUsage.getSelectedItem().getCode());
-                dfrMate.setGlobalPeriodicity(!moBoolDfrGlobal.isSelected() || moKeyDfrGlobalPeriodicity.getSelectedIndex() <= 0 ? "" : moKeyDfrGlobalPeriodicity.getSelectedItem().getCode());
-                dfrMate.setGlobalMonths(!moBoolDfrGlobal.isSelected() || moKeyDfrGlobalMonths.getSelectedIndex() <= 0 ? "" : moKeyDfrGlobalMonths.getSelectedItem().getCode());
-                dfrMate.setGlobalYear(!moBoolDfrGlobal.isSelected() ? 0 : moCalDfrGlobalYear.getValue());
+                
+                if (!moBoolDfrGlobal.isSelected()) {
+                    dfrMate.setGlobalPeriodicity("");
+                    dfrMate.setGlobalMonths("");
+                    dfrMate.setGlobalYear(0);
+                }
+                else {
+                    dfrMate.setGlobalPeriodicity(moKeyDfrGlobalPeriodicity.getSelectedItem().getCode());
+                    dfrMate.setGlobalMonths(moKeyDfrGlobalMonths.getSelectedItem().getCode());
+                    dfrMate.setGlobalYear(moCalDfrGlobalYear.getValue());
+                }
+                
                 dfrMate.setRelations(moRegistry.getXtaDfrMate().getRelations()); // current relations already in registry
 
                 registry.setXtaDfrMate(dfrMate);
@@ -4278,7 +4292,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         DGuiConsts.ERR_MSG_FIELD_DATE_GREAT_EQUAL + DLibUtils.DateFormatDate.format(moDateDate.getValue()) + ".");
                 validation.setComponent(moDateCredit);
             }
-            else if (moKeyEmissionType.getValue()[0] != DModSysConsts.TS_EMI_TP_BPR && moKeyPaymentType.getValue()[0] != DModSysConsts.FS_PAY_TP_CSH) {
+            else if (moKeyEmissionType.getValue()[0] != DModSysConsts.TS_EMI_TP_BPR && moKeyPaymentType.getValue()[0] != DModSysConsts.FS_PAY_TP_CSH &&
+                    miClient.showMsgBoxConfirm("¿Está seguro que desea emitir la operación a crédito, dado que el tipo de emisíón es '" + moKeyEmissionType.getSelectedItem().getItem().toLowerCase() + "'?") != JOptionPane.YES_OPTION) {
                 if (moKeyPaymentType.isEnabled()) {
                     validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyPaymentType.getFieldName() + "', si '" + moKeyEmissionType.getFieldName() + "' es '" + moKeyEmissionType.getSelectedItem().getItem() + "'.");
                     validation.setComponent(moKeyPaymentType);
@@ -4306,7 +4321,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setTabbedPane(jtpDocument);
                 validation.setTab(DOC_TAB_DFR);
             }
-            else if (enableDfrGlobalFields() && !moBoolDfrGlobal.isSelected() && miClient.showMsgBoxConfirm("¿Está seguro que no desea seleccionar el campo '" + moBoolDfrGlobal.getText() + "'?") != JOptionPane.YES_OPTION) {
+            else if (enableDfrGlobalFields() && !moBoolDfrGlobal.isSelected() && 
+                    miClient.showMsgBoxConfirm("¿Está seguro que no desea seleccionar el campo '" + moBoolDfrGlobal.getText() + "'?") != JOptionPane.YES_OPTION) {
                 validation.setMessage("Seleccionar el campo '" + moBoolDfrGlobal.getText() + "'.");
                 validation.setComponent(moBoolDfrGlobal);
                 validation.setTabbedPane(jtpDocument);

@@ -382,7 +382,6 @@ public class DFormBookkeepingMoveCustom extends DBeanForm implements ActionListe
             jlBizPartner.setText(DBprUtils.getBizPartnerClassNameSng(bizPartnerClass) + ":*");
 
             moDialogFindBizPartner = new DDialogFindBizPartner(miClient, bizPartnerClass);
-            moDialogFindBizPartner.initForm();
 
             if (!DFinUtils.isSysMoveTypeForBranchCashBizPartnerDiverse(manSystemMoveTypeKey)) {
                 jlDiverseMoveType.setEnabled(false);
@@ -419,6 +418,7 @@ public class DFormBookkeepingMoveCustom extends DBeanForm implements ActionListe
 
     private void actionBizPartner() {
         moDialogFindBizPartner.resetForm();
+        moDialogFindBizPartner.initForm();
         moDialogFindBizPartner.setVisible(true);
 
         if (moDialogFindBizPartner.getFormResult() == DGuiConsts.FORM_RESULT_OK) {

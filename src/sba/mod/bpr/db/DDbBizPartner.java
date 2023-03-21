@@ -44,6 +44,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     protected boolean mbCustomer;
     protected boolean mbCreditor;
     protected boolean mbDebtor;
+    protected boolean mbNameFiscalCustomized;
     protected boolean mbFiscalHomologous;
     protected boolean mbBank;
     protected boolean mbCarrier;
@@ -81,10 +82,14 @@ public class DDbBizPartner extends DDbRegistryUser {
      * Private methods
      */
 
-    private String computeName() {
-        return isEntityPerson() ? msLastname + ", " + msFirstname : msName;
+    private String composeName() {
+        return DLibUtils.textTrim(isEntityPerson() ? msLastname + ", " + msFirstname : msName);
     }
 
+    private String composeNameFiscal() {
+        return DLibUtils.textTrim(isEntityPerson() ? msFirstname + " " + msLastname : msNameFiscal);
+    }
+    
     /*
      * Public methods
      */
@@ -106,6 +111,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public void setCustomer(boolean b) { mbCustomer = b; }
     public void setCreditor(boolean b) { mbCreditor = b; }
     public void setDebtor(boolean b) { mbDebtor = b; }
+    public void setNameFiscalCustomized(boolean b) { mbNameFiscalCustomized = b; }
     public void setFiscalHomologous(boolean b) { mbFiscalHomologous = b; }
     public void setBank(boolean b) { mbBank = b; }
     public void setCarrier(boolean b) { mbCarrier = b; }
@@ -141,6 +147,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public boolean isCustomer() { return mbCustomer; }
     public boolean isCreditor() { return mbCreditor; }
     public boolean isDebtor() { return mbDebtor; }
+    public boolean isNameFiscalCustomized() { return mbNameFiscalCustomized; }
     public boolean isFiscalHomologous() { return mbFiscalHomologous; }
     public boolean isBank() { return mbBank; }
     public boolean isCarrier() { return mbCarrier; }
@@ -194,8 +201,8 @@ public class DDbBizPartner extends DDbRegistryUser {
         return mvChildBranches.size() > 0 ? mvChildBranches.get(0) : null;
     }
 
-    public String getProperName() {
-        return DLibUtils.textTrim(isEntityPerson() ? msFirstname + " " + msLastname : msName);
+    public String getPrintableName() {
+        return msNamePrintingPolicy.equals(DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL) ? msNameFiscal : msName;
     }
     
     public boolean isPublic() {
@@ -257,6 +264,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         mbCustomer = false;
         mbCreditor = false;
         mbDebtor = false;
+        mbNameFiscalCustomized = false;
         mbFiscalHomologous = false;
         mbBank = false;
         mbCarrier = false;
@@ -340,6 +348,7 @@ public class DDbBizPartner extends DDbRegistryUser {
             mbCustomer = resultSet.getBoolean("b_cus");
             mbCreditor = resultSet.getBoolean("b_cdr");
             mbDebtor = resultSet.getBoolean("b_dbr");
+            mbNameFiscalCustomized = resultSet.getBoolean("b_name_fis_custom");
             mbFiscalHomologous = resultSet.getBoolean("b_fis_hom");
             mbBank = resultSet.getBoolean("b_bnk");
             mbCarrier = resultSet.getBoolean("b_car");
@@ -400,11 +409,23 @@ public class DDbBizPartner extends DDbRegistryUser {
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         if (isEntityPerson()) {
-            msName = computeName();
-            
-            msNameFiscal = getProperName();
+            msName = composeName();
+
             msNameCapitalRegime = "";
-            msNamePrintingPolicy = DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL;
+            
+            if (!mbNameFiscalCustomized) {
+                msNameFiscal = composeNameFiscal();
+                msNamePrintingPolicy = DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL;
+            }
+            else {
+                if (msNameFiscal.isEmpty()) {
+                    msNameFiscal = composeNameFiscal();
+                }
+
+                if (msNamePrintingPolicy.isEmpty()) {
+                    msNamePrintingPolicy = DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL;
+                }
+            }
         }
 
         if (mbRegistryNew) {
@@ -436,6 +457,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     (mbCustomer ? 1 : 0) + ", " +
                     (mbCreditor ? 1 : 0) + ", " +
                     (mbDebtor ? 1 : 0) + ", " +
+                    (mbNameFiscalCustomized ? 1 : 0) + ", " + 
                     (mbFiscalHomologous ? 1 : 0) + ", " +
                     (mbBank ? 1 : 0) + ", " +
                     (mbCarrier ? 1 : 0) + ", " +
@@ -478,6 +500,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "b_cus = " + (mbCustomer ? 1 : 0) + ", " +
                     "b_cdr = " + (mbCreditor ? 1 : 0) + ", " +
                     "b_dbr = " + (mbDebtor ? 1 : 0) + ", " +
+                    "b_name_fis_custom = " + (mbNameFiscalCustomized ? 1 : 0) + ", " +
                     "b_fis_hom = " + (mbFiscalHomologous ? 1 : 0) + ", " +
                     "b_bnk = " + (mbBank ? 1 : 0) + ", " +
                     "b_car = " + (mbCarrier ? 1 : 0) + ", " +
@@ -544,6 +567,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         registry.setCustomer(this.isCustomer());
         registry.setCreditor(this.isCreditor());
         registry.setDebtor(this.isDebtor());
+        registry.setNameFiscalCustomized(this.isNameFiscalCustomized());
         registry.setFiscalHomologous(this.isFiscalHomologous());
         registry.setBank(this.isBank());
         registry.setCarrier(this.isCarrier());
@@ -596,7 +620,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     @Override
     public boolean canSave(final DGuiSession session) throws SQLException, Exception {
         boolean can = super.canSave(session);
-        String name = computeName();
+        String name = composeName();
         ResultSet resultSet = null;
 
         if (can) {

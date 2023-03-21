@@ -30,8 +30,6 @@ public abstract class DTrnConsts {
     public static final int FIND_MODE_BY_CMP = 5;
     public static final int FIND_MODE_BY_DEP = 6;
 
-    public static final int DPS_ROW_TAXES = 3;
-    
     public static final String TXT_DPS_DOC = "F";
     public static final String TXT_DPS_ADJ_INC = "ND";
     public static final String TXT_DPS_ADJ_DEC = "NC";

@@ -214,6 +214,29 @@ public abstract class DTrnDfrUtils {
             concepto.getAttCantidad().setDecimals(decimalsQuantity);
             concepto.getAttValorUnitario().setDecimals(decimals);
         }
+        
+        if (comprobante.getEltOpcComplemento() != null) {
+            cfd.ver40.DElementComplemento complemento = comprobante.getEltOpcComplemento();
+
+            for (cfd.DElement element : complemento.getElements()) {
+                if (element instanceof cfd.ver40.crp20.DElementPagos) {
+                    cfd.ver40.crp20.DElementPagos pagos = (cfd.ver40.crp20.DElementPagos) element;
+                    for (cfd.ver40.crp20.DElementPagosPago pago : pagos.getEltPagos()) {
+                        if (pago.getAttMonedaP().getString().equals(DCfdi40Catalogs.ClaveMonedaMxn)) {
+                            pago.getAttTipoCambioP().setDouble(1);
+                            pago.getAttTipoCambioP().setDecimals(0);
+                        }
+                        
+                        for (cfd.ver40.crp20.DElementDoctoRelacionado doctoRelacionado : pago.getEltDoctoRelacionados()) {
+                            if (doctoRelacionado.getAttMonedaDR().getString().equals(pago.getAttMonedaP().getString())) {
+                                doctoRelacionado.getAttEquivalenciaDR().setDouble(1);
+                                doctoRelacionado.getAttEquivalenciaDR().setDecimals(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     @Deprecated
@@ -300,7 +323,7 @@ public abstract class DTrnDfrUtils {
             bprReceptorName = bprReceptor;
         }
 
-        sNombreReceptor = bprReceptorName.getProperName();
+        sNombreReceptor = bprReceptorName.getPrintableName();
 
         if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
             tDate = tUpdateTs;
@@ -850,12 +873,12 @@ public abstract class DTrnDfrUtils {
 
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
-        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getPrintableName());
         comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfrMate().getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
-        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getProperName());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getPrintableName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
         comprobante.getEltReceptor().getAttUsoCFDI().setString(dps.getXtaDfrMate().getCfdUsage());
@@ -1179,7 +1202,7 @@ public abstract class DTrnDfrUtils {
         DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
         DDbBizPartner bprReceptorName = null;
-        DDbBranch braReceptor = null;
+        String receptorName = null;
         
         // Check company branch emission configuration:
 
@@ -1205,22 +1228,25 @@ public abstract class DTrnDfrUtils {
         switch (dps.getFkEmissionTypeId()) {
             case DModSysConsts.TS_EMI_TP_BPR:
                 bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
-                braReceptor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, dps.getBizPartnerBranchKey());
+                receptorName = bprReceptor.getNameFiscal();
                 break;
+                
             case DModSysConsts.TS_EMI_TP_PUB_NAM:
             case DModSysConsts.TS_EMI_TP_PUB:
-                isEmmissionTypeAsPublic = true;
                 bprReceptor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkPublicBizPartnerSaleId() });
-                braReceptor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkPublicBizPartnerSaleId(), DUtilConsts.BPR_BRA_ID });
+                isEmmissionTypeAsPublic = true;
+                
+                if (dps.getFkEmissionTypeId() == DModSysConsts.TS_EMI_TP_PUB_NAM) {
+                    bprReceptorName = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
+                    receptorName = bprReceptorName.getNameFiscal();
+                }
+                else {
+                    receptorName = DTrnEmissionConsts.PUBLIC_FAKE;
+                }
                 break;
+                
             default:
-        }
-
-        if (dps.getFkEmissionTypeId() == DModSysConsts.TS_EMI_TP_PUB_NAM) {
-            bprReceptorName = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, dps.getBizPartnerKey());
-        }
-        else {
-            bprReceptorName = bprReceptor;
+                // nothing
         }
 
         if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
@@ -1307,16 +1333,16 @@ public abstract class DTrnDfrUtils {
         comprobante.getEltEmisor().getAttRegimenFiscal().setString(dps.getXtaDfrMate().getIssuerTaxRegime());
 
         // element 'Receptor':
-        String rfcReceptor = bprReceptor.getFiscalId();
-        boolean isReceptorPublic = DLibUtils.belongsTo(rfcReceptor, new String[] { DCfdConsts.RFC_GEN_NAC, DCfdConsts.RFC_GEN_INT });
+        String receptorRfc = bprReceptor.getFiscalId();
+        boolean isReceptorPublic = DLibUtils.belongsTo(receptorRfc, new String[] { DCfdConsts.RFC_GEN_NAC, DCfdConsts.RFC_GEN_INT });
         
         if (isEmmissionTypeAsPublic && !isReceptorPublic) {
-            rfcReceptor = DCfdConsts.RFC_GEN_NAC;
+            receptorRfc = DCfdConsts.RFC_GEN_NAC;
             isReceptorPublic = true;
         }
         
-        comprobante.getEltReceptor().getAttRfc().setString(rfcReceptor);
-        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
+        comprobante.getEltReceptor().getAttRfc().setString(receptorRfc);
+        comprobante.getEltReceptor().getAttNombre().setString(receptorName);
         comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(isReceptorPublic ? DCfdi40Catalogs.ClaveRégimenFiscalSinObligacionesFiscales : dps.getXtaDfrMate().getReceiverTaxRegime());
         comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(isReceptorPublic ? braAddressEmisor.getZipCode() : dps.getXtaDfrMate().getReceiverFiscalAddress());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
@@ -1369,7 +1395,7 @@ public abstract class DTrnDfrUtils {
                 
                 // go through the 3 possible taxes on each document row:
                 
-                for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
+                for (int index = 1; index <= DDbDpsRow.TAXES; index++) {
                     int taxId = DLibConsts.UNDEFINED;
                     double taxRate = 0;
                     double taxAmount = 0;
@@ -1453,7 +1479,7 @@ public abstract class DTrnDfrUtils {
                 
                 //go through the 3 possible taxes on each document row:
                 
-                for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
+                for (int index = 1; index <= DDbDpsRow.TAXES; index++) {
                     int retId = DLibConsts.UNDEFINED;
                     double retRate = 0;
                     double retAmount = 0;
@@ -1557,9 +1583,11 @@ public abstract class DTrnDfrUtils {
                     ArrayList<cfd.ver40.DElementConceptoCuentaPredial> cuentaPredials = new ArrayList<>();
                     
                     for (String predial : prediales) {
-                        cfd.ver40.DElementConceptoCuentaPredial cuentaPredial = new cfd.ver40.DElementConceptoCuentaPredial();
-                        cuentaPredial.getAttNumero().setString(predial);
-                        cuentaPredials.add(cuentaPredial);
+                        if (!predial.isEmpty()) {
+                            cfd.ver40.DElementConceptoCuentaPredial cuentaPredial = new cfd.ver40.DElementConceptoCuentaPredial();
+                            cuentaPredial.getAttNumero().setString(predial);
+                            cuentaPredials.add(cuentaPredial);
+                        }
                     }
                     
                     concepto.setEltOpcConceptoCuentaPredial(cuentaPredials);
@@ -1667,8 +1695,6 @@ public abstract class DTrnDfrUtils {
         DDbBranch braEmisor = null;
         DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
-        DDbBizPartner bprReceptorName = null;
-        DDbBranch braReceptor = null;
         
         // Check company branch emission configuration:
 
@@ -1690,8 +1716,6 @@ public abstract class DTrnDfrUtils {
         // Receptor:
 
         bprReceptor = bprEmisor;
-        braReceptor = braEmisor;
-        bprReceptorName = bprReceptor;
 
         if (DLibUtils.compareKeys(anDateDps, anDateEdit)) {
             tDate = tUpdateTs;
@@ -1765,7 +1789,7 @@ public abstract class DTrnDfrUtils {
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
-        comprobante.getEltReceptor().getAttNombre().setString(bprReceptorName.getNameFiscal());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getNameFiscal());
         comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bprEmisor.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
         comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(bprEmisor.getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
@@ -2248,7 +2272,6 @@ public abstract class DTrnDfrUtils {
         dfr.setFkUserInsertId();    // will be set as needed when saved!
         dfr.setFkUserUpdateId();    // will be set as needed when saved!
         */
-        dfr.setAuxJustIssued(true);
 
         return dfr;
     }
@@ -2343,7 +2366,6 @@ public abstract class DTrnDfrUtils {
         dfr.setFkUserInsertId();    // will be set as needed when saved!
         dfr.setFkUserUpdateId();    // will be set as needed when saved!
         */
-        dfr.setAuxJustIssued(true);
 
         return dfr;
     }
@@ -2759,8 +2781,7 @@ public abstract class DTrnDfrUtils {
             dfr.setDocXmlRaw(cfdi);
             dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ISS);
             dfr.setFkXmlSignatureProviderId(timbreFiscal.getPacId());
-            dfr.setAuxJustIssued(true);
-            dfr.setAuxRewriteXmlOnSave(true);
+            dfr.setAuxDfrJustIssued(true);
             dfr.save(session);
 
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
@@ -2776,9 +2797,9 @@ public abstract class DTrnDfrUtils {
         }
         
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
-            // Issue DFR:
+            // Print DFR:
 
-            doc.issueDfr(session);
+            doc.printDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }
@@ -3365,24 +3386,39 @@ public abstract class DTrnDfrUtils {
                 dfr.setCancelStatus(cancelStatusCode);
                 dfr.setCancelXml(xmlAcuse);
                 dfr.setFkXmlStatusId(DModSysConsts.TS_XML_ST_ANN);
-                dfr.setAuxJustAnnulled(true);
+                dfr.setAuxDfrJustAnnulled(true);
 
                 switch (dfr.getFkXmlSubtypeId()) {
                     case DModSysConsts.TS_XML_STP_FAC:
                         ((DDbDps) doc).updateDfr(session, dfr);
                         break;
                     case DModSysConsts.TS_XML_STP_CRP:
-                        dfr.setAuxComputeBookkeeping(true);
                         dfr.save(session);
                         break;
+                    case DModSysConsts.TS_XML_STP_CCP:
+                        // XXX to do!
+                        break;
                     default:
+                        // nothing
                 }
             }
             
-            if (dfr.getFkXmlSubtypeId() == DModSysConsts.TS_XML_STP_FAC) {
-                if (((DDbDps) doc).getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
-                    ((DDbDps) doc).disable(session);
-                }
+            switch (dfr.getFkXmlSubtypeId()) {
+                case DModSysConsts.TS_XML_STP_FAC:
+                    if (((DDbDps) doc).getFkDpsStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
+                        ((DDbDps) doc).disable(session);
+                    }
+                    break;
+                case DModSysConsts.TS_XML_STP_CRP:
+                    if (((DDbDfr) doc).getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ANN) {
+                        ((DDbDfr) doc).disable(session);
+                    }
+                    break;
+                case DModSysConsts.TS_XML_STP_CCP:
+                    // XXX to do!
+                    break;
+                default:
+                    // nothing
             }
             
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_PRC);
@@ -3400,9 +3436,9 @@ public abstract class DTrnDfrUtils {
         }
 
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
-            // Issue DFR:
+            // Print DFR:
 
-            dfr.issueDfr(session);
+            dfr.printDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }

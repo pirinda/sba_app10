@@ -211,20 +211,20 @@ public class DDialogEmailSending extends DBeanFormDialog {
         DGuiUtils.setWindowBounds(this, 600, 340);
         
         moTextContact1.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 1", 50, 0);
-        moTextContact2.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 2", 50, 0);
-        moTextContact3.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 3", 50, 0);
         moTextEmail1.setTextSettings(DGuiUtils.getLabelName(jlEmail) + " 1", 50);
         moTextEmail1.setTextCaseType(0);
+        moTextContact2.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 2", 50, 0);
         moTextEmail2.setTextSettings(DGuiUtils.getLabelName(jlEmail) + " 2", 50, 0);
         moTextEmail2.setTextCaseType(0);
+        moTextContact3.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 3", 50, 0);
         moTextEmail3.setTextSettings(DGuiUtils.getLabelName(jlEmail) + " 3", 50, 0);
         moTextEmail3.setTextCaseType(0);
         
         moFields.addField(moTextContact1);
-        moFields.addField(moTextContact2);
-        moFields.addField(moTextContact3);
         moFields.addField(moTextEmail1);
+        moFields.addField(moTextContact2);
         moFields.addField(moTextEmail2);
+        moFields.addField(moTextContact3);
         moFields.addField(moTextEmail3);
 
         jbSave.setText(DUtilConsts.TXT_SEND);

@@ -192,11 +192,11 @@
                               <Properties>
                                 <Property name="toolTipText" type="java.lang.String" value="Nombre completo"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[295, 23]"/>
+                                  <Dimension value="[320, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JLabel" name="jLabel1">
+                            <Component class="javax.swing.JLabel" name="jlNameHelp">
                               <Properties>
                                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                   <Image iconType="3" name="/sba/gui/img/icon_help.png"/>
@@ -207,15 +207,22 @@
                                 </Property>
                               </Properties>
                             </Component>
+                            <Component class="javax.swing.JLabel" name="jlNameSeparator">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[23, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
                             <Component class="sba.lib.gui.bean.DBeanFieldRadio" name="moRadNamePrintingPolicyName">
                               <Properties>
                                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                                   <ComponentRef name="bgNamePrintingPolicy"/>
                                 </Property>
-                                <Property name="text" type="java.lang.String" value="Usar al imprimir CFDI"/>
-                                <Property name="toolTipText" type="java.lang.String" value="Nombre en PDF: raz&#xf3;n social"/>
+                                <Property name="text" type="java.lang.String" value="Para imprimir"/>
+                                <Property name="toolTipText" type="java.lang.String" value="Imprimir nombre completo en documentos"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[135, 23]"/>
+                                  <Dimension value="[95, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -240,26 +247,40 @@
                               <Properties>
                                 <Property name="toolTipText" type="java.lang.String" value="Raz&#xf3;n social o denominaci&#xf3;n"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[225, 23]"/>
+                                  <Dimension value="[250, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
                             <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextNameCapitalRegime">
                               <Properties>
-                                <Property name="toolTipText" type="java.lang.String" value="R&#xe9;gimen de capital (dato opcional)"/>
+                                <Property name="toolTipText" type="java.lang.String" value="R&#xe9;gimen de capital (opcional)"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                   <Dimension value="[65, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JLabel" name="jLabel2">
+                            <Component class="javax.swing.JLabel" name="jlNameFiscalHellp">
                               <Properties>
                                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                   <Image iconType="3" name="/sba/gui/img/icon_help.png"/>
                                 </Property>
-                                <Property name="toolTipText" type="java.lang.String" value="Raz&#xf3;n social o denominaci&#xf3;n (para usarse en el XML del CFDI)"/>
+                                <Property name="toolTipText" type="java.lang.String" value="Raz&#xf3;n social o denominaci&#xf3;n (para usarse en el CFDI)"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                   <Dimension value="[15, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JToggleButton" name="jtbNameFiscalCustomized">
+                              <Properties>
+                                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                  <Image iconType="3" name="/sba/gui/img/cmd_std_edit_off.gif"/>
+                                </Property>
+                                <Property name="toolTipText" type="java.lang.String" value="Personalizar raz&#xf3;n social o denominaci&#xf3;n"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[23, 23]"/>
+                                </Property>
+                                <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                  <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -268,10 +289,10 @@
                                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                                   <ComponentRef name="bgNamePrintingPolicy"/>
                                 </Property>
-                                <Property name="text" type="java.lang.String" value="Usar al imprimir CFDI"/>
-                                <Property name="toolTipText" type="java.lang.String" value="Nombre en PDF: nombre fiscal"/>
+                                <Property name="text" type="java.lang.String" value="Para imprimir"/>
+                                <Property name="toolTipText" type="java.lang.String" value="Imprimir raz&#xf3;n social o denominaci&#xf3;n en documentos"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[135, 23]"/>
+                                  <Dimension value="[95, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -295,7 +316,7 @@
                             <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextNickname">
                               <Properties>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[225, 23]"/>
+                                  <Dimension value="[250, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -351,7 +372,6 @@
                             </Component>
                             <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextAlternativeId">
                               <Properties>
-                                <Property name="toolTipText" type="java.lang.String" value="CURP"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                   <Dimension value="[125, 23]"/>
                                 </Property>

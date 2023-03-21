@@ -171,11 +171,11 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_2B, "Días crédito");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DATE, "Fecha venc.");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CO, DUtilConsts.TXT_BRANCH + " empresa");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DUtilConsts.TXT_BRANCH + " " + category);
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DUtilConsts.TXT_BRANCH + " " + category, 75);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Total $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Saldo SBC $ M");
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Saldo $ M");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CUR, "Moneda");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Saldo SBC $ ML");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "UUID");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Tipo XML");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Subtipo XML");
@@ -217,6 +217,8 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
                     "d.tot_cy_r, dt.code, b.id_bpr, b.name, bc.code, bb.name, cb.code, c.code, " +
                     "SUM(bkk.dbt - bkk.cdt) AS f_bal_stc, " +
                     "SUM(IF(bkk.b_avl = 0, 0, bkk.dbt - bkk.cdt)) AS f_bal, " +
+                    "SUM(bkk.dbt_cy - bkk.cdt_cy) AS f_bal_cy_stc, " +
+                    "SUM(IF(bkk.b_avl = 0, 0, bkk.dbt_cy - bkk.cdt_cy)) AS f_bal_cy, " +
                     "dfr.uid, xtp.code, xtp.name, xstp.code, xstp.name, xst.code, xst.name " +
                     "FROM " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " AS bkk " +
                     "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " AS d ON " +
@@ -259,9 +261,9 @@ public class DDialogDpsInvoicePicker extends DBeanFormDialog implements DGridPan
                 data.add(resultSet.getString("cb.code"));
                 data.add(resultSet.getString("bb.name"));
                 data.add(resultSet.getDouble("d.tot_cy_r"));
-                data.add(resultSet.getDouble("f_bal_stc"));
-                data.add(resultSet.getDouble("f_bal"));
+                data.add(resultSet.getDouble("f_bal_cy_stc"));
                 data.add(resultSet.getString("c.code"));
+                data.add(resultSet.getDouble("f_bal_stc"));
                 data.add(resultSet.getString("dfr.uid"));
                 data.add(resultSet.getString("xtp.name"));
                 data.add(resultSet.getString("xstp.name"));

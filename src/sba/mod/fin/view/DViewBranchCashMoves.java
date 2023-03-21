@@ -271,6 +271,7 @@ public class DViewBranchCashMoves extends DGridPaneView implements ActionListene
         moSuscriptionsSet.add(DModConsts.BU_BPR);
         moSuscriptionsSet.add(DModConsts.F_BKK);
         moSuscriptionsSet.add(DModConsts.T_DFR);
+        moSuscriptionsSet.add(DModConsts.TX_DFR_PAY);
 
         if (mnGridType == DModConsts.FX_BKK_CTM_STC) {
             moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);

@@ -71,7 +71,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
-                    <Property name="horizontalGap" type="int" value="4"/>
+                    <Property name="horizontalGap" type="int" value="3"/>
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
@@ -87,10 +87,10 @@
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="text" type="java.lang.String" value="XAXX010101000"/>
-                        <Property name="toolTipText" type="java.lang.String" value="RFC"/>
+                        <Property name="toolTipText" type="java.lang.String" value="RFC del receptor"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[96, 23]"/>
+                          <Dimension value="[95, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -98,17 +98,28 @@
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="text" type="java.lang.String" value="00000"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Domicilio fiscal"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Domicilio fiscal (CP) del receptor"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[50, 23]"/>
+                          <Dimension value="[45, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jlReceiverName">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/sba/gui/img/icon_help.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Raz&#xf3;n social: ?"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[14, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JButton" name="jbReceiverPick">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="..."/>
-                        <Property name="toolTipText" type="java.lang.String" value="Buscar receptor [F9]"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Buscar... [F9]"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[23, 23]"/>
                         </Property>
@@ -119,7 +130,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Modificar ..."/>
+                        <Property name="toolTipText" type="java.lang.String" value="Modificar..."/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[23, 23]"/>
                         </Property>
@@ -158,7 +169,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Fecha:*"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[60, 23]"/>
+                          <Dimension value="[65, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -186,7 +197,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
-                    <Property name="horizontalGap" type="int" value="4"/>
+                    <Property name="horizontalGap" type="int" value="3"/>
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
@@ -202,7 +213,7 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Uso del CFDI"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[204, 23]"/>
+                          <Dimension value="[212, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -218,7 +229,7 @@
                     <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyDummyCurrency">
                       <Properties>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[129, 23]"/>
+                          <Dimension value="[128, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -226,14 +237,14 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="T. cambio:*"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[60, 23]"/>
+                          <Dimension value="[65, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecDummyExchangeRate">
                       <Properties>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[73, 23]"/>
+                          <Dimension value="[74, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -1128,6 +1139,7 @@
                             <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextDocUuid">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="00000000-0000-0000-0000-000000000000"/>
+                                <Property name="toolTipText" type="java.lang.String" value="UUID"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                   <Dimension value="[225, 23]"/>
                                 </Property>

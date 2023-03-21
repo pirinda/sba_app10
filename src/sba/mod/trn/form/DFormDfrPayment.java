@@ -78,7 +78,6 @@ import sba.mod.trn.db.DDfrMateRelations;
 import sba.mod.trn.db.DRowDfrPayment;
 import sba.mod.trn.db.DRowDfrPaymentDoc;
 import sba.mod.trn.db.DTrnAmount;
-import sba.mod.trn.db.DTrnConsts;
 import sba.mod.trn.db.DTrnUtils;
 
 /**
@@ -119,6 +118,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private int mnModePaymentDoc;   // current edition mode of payment of document
     private DDbDps moDps;           // current DPS in edition of payment of document, if any, CFDI can be a third-party's
     private DIntDoctoRelacionado moDoctoRelacionado; // current edited DoctoRelacionado, if new, then it is null
+    private DecimalFormat moTaxRateFormat;
 
     /** Creates new form DFormDfrPayment
      * @param client GUI client.
@@ -147,6 +147,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moKeyDfrReceiver = new sba.lib.gui.bean.DBeanFieldKey();
         jtfDfrReceiverFiscalId = new javax.swing.JTextField();
         jtfDfrReceiverFiscalAddress = new javax.swing.JTextField();
+        jlReceiverName = new javax.swing.JLabel();
         jbReceiverPick = new javax.swing.JButton();
         jbReceiverEdit = new javax.swing.JButton();
         jlDfrNumber = new javax.swing.JLabel();
@@ -307,7 +308,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         jpHeaderMain.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
-        jpHeaderMain1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        jpHeaderMain1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 3, 0));
 
         moKeyDfrReceiver.setToolTipText("Receptor");
         moKeyDfrReceiver.setPreferredSize(new java.awt.Dimension(350, 23));
@@ -315,25 +316,30 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         jtfDfrReceiverFiscalId.setEditable(false);
         jtfDfrReceiverFiscalId.setText("XAXX010101000");
-        jtfDfrReceiverFiscalId.setToolTipText("RFC");
+        jtfDfrReceiverFiscalId.setToolTipText("RFC del receptor");
         jtfDfrReceiverFiscalId.setFocusable(false);
-        jtfDfrReceiverFiscalId.setPreferredSize(new java.awt.Dimension(96, 23));
+        jtfDfrReceiverFiscalId.setPreferredSize(new java.awt.Dimension(95, 23));
         jpHeaderMain1.add(jtfDfrReceiverFiscalId);
 
         jtfDfrReceiverFiscalAddress.setEditable(false);
         jtfDfrReceiverFiscalAddress.setText("00000");
-        jtfDfrReceiverFiscalAddress.setToolTipText("Domicilio fiscal");
+        jtfDfrReceiverFiscalAddress.setToolTipText("Domicilio fiscal (CP) del receptor");
         jtfDfrReceiverFiscalAddress.setFocusable(false);
-        jtfDfrReceiverFiscalAddress.setPreferredSize(new java.awt.Dimension(50, 23));
+        jtfDfrReceiverFiscalAddress.setPreferredSize(new java.awt.Dimension(45, 23));
         jpHeaderMain1.add(jtfDfrReceiverFiscalAddress);
 
+        jlReceiverName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/icon_help.png"))); // NOI18N
+        jlReceiverName.setToolTipText("Razón social: ?");
+        jlReceiverName.setPreferredSize(new java.awt.Dimension(14, 23));
+        jpHeaderMain1.add(jlReceiverName);
+
         jbReceiverPick.setText("...");
-        jbReceiverPick.setToolTipText("Buscar receptor [F9]");
+        jbReceiverPick.setToolTipText("Buscar... [F9]");
         jbReceiverPick.setPreferredSize(new java.awt.Dimension(23, 23));
         jpHeaderMain1.add(jbReceiverPick);
 
         jbReceiverEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbReceiverEdit.setToolTipText("Modificar ...");
+        jbReceiverEdit.setToolTipText("Modificar...");
         jbReceiverEdit.setPreferredSize(new java.awt.Dimension(23, 23));
         jpHeaderMain1.add(jbReceiverEdit);
 
@@ -355,7 +361,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jpHeaderMain1.add(moIntDfrNumber);
 
         jlDateDfrDate.setText("Fecha:*");
-        jlDateDfrDate.setPreferredSize(new java.awt.Dimension(60, 23));
+        jlDateDfrDate.setPreferredSize(new java.awt.Dimension(65, 23));
         jpHeaderMain1.add(jlDateDfrDate);
 
         moDateDfrDate.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -370,14 +376,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         jpHeaderMain.add(jpHeaderMain1);
 
-        jpHeaderMain2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        jpHeaderMain2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 3, 0));
 
         moKeyDfrReceiverTaxRegime.setToolTipText("Régimen fiscal del receptor");
         moKeyDfrReceiverTaxRegime.setPreferredSize(new java.awt.Dimension(350, 23));
         jpHeaderMain2.add(moKeyDfrReceiverTaxRegime);
 
         moKeyDfrCfdUsage.setToolTipText("Uso del CFDI");
-        moKeyDfrCfdUsage.setPreferredSize(new java.awt.Dimension(204, 23));
+        moKeyDfrCfdUsage.setPreferredSize(new java.awt.Dimension(212, 23));
         jpHeaderMain2.add(moKeyDfrCfdUsage);
 
         jlDummyCurrency.setText("Moneda:*");
@@ -385,14 +391,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jlDummyCurrency.setRequestFocusEnabled(false);
         jpHeaderMain2.add(jlDummyCurrency);
 
-        moKeyDummyCurrency.setPreferredSize(new java.awt.Dimension(129, 23));
+        moKeyDummyCurrency.setPreferredSize(new java.awt.Dimension(128, 23));
         jpHeaderMain2.add(moKeyDummyCurrency);
 
         jlDummyExchangeRate.setText("T. cambio:*");
-        jlDummyExchangeRate.setPreferredSize(new java.awt.Dimension(60, 23));
+        jlDummyExchangeRate.setPreferredSize(new java.awt.Dimension(65, 23));
         jpHeaderMain2.add(jlDummyExchangeRate);
 
-        moDecDummyExchangeRate.setPreferredSize(new java.awt.Dimension(73, 23));
+        moDecDummyExchangeRate.setPreferredSize(new java.awt.Dimension(74, 23));
         jpHeaderMain2.add(moDecDummyExchangeRate);
 
         jbDummyExchangeRatePick.setText("...");
@@ -813,6 +819,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jPanel55.add(moIntDocNumber);
 
         moTextDocUuid.setText("00000000-0000-0000-0000-000000000000");
+        moTextDocUuid.setToolTipText("UUID");
         moTextDocUuid.setPreferredSize(new java.awt.Dimension(225, 23));
         jPanel55.add(moTextDocUuid);
 
@@ -1176,6 +1183,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
 
         mvFormGrids.add(moGridPayments);
         mvFormGrids.add(moGridPaymentDocs);
+        
+        moTaxRateFormat = new DecimalFormat("#.000000");
     }
 
     private void freeLockByCancel() {
@@ -1234,25 +1243,25 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     }
     
     private void enabledFieldsDfr() {
-        boolean enable = moRegistry.getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_ISS && moGridPayments.getTable().getRowCount() == 0;
+        boolean enable = moRegistry.getFkXmlStatusId() < DModSysConsts.TS_XML_ST_ISS && moGridPayments.getTable().getRowCount() == 0;
         
         moKeyDfrReceiver.setEnabled(enable);
         jbReceiverPick.setEnabled(enable);
         jbReceiverEdit.setEnabled(enable);
-        moKeyDfrReceiverTaxRegime.setEnabled(enable && moKeyDfrReceiver.getSelectedIndex() > 0);
-        moKeyDfrCfdUsage.setEnabled(false); // non editable
-        moTextDfrSeries.setEditable(false);
-        moIntDfrNumber.setEditable(false);
-        moDateDfrDate.setEditable(enable);
-        moKeyDummyCurrency.setEnabled(false);
-        moDecDummyExchangeRate.setEnabled(false);
-        jbDummyExchangeRatePick.setEnabled(false);
+        moKeyDfrReceiverTaxRegime.setEnabled(true);
+        moKeyDfrCfdUsage.setEnabled(false); // read only
+        moTextDfrSeries.setEditable(false); // read only
+        moIntDfrNumber.setEditable(false); // read only
+        moDateDfrDate.setEditable(true);
+        moKeyDummyCurrency.setEnabled(false); // read only
+        moDecDummyExchangeRate.setEnabled(false); // read only
+        jbDummyExchangeRatePick.setEnabled(false); // read only
         
-        moTextDfrConfirmation.setEditable(enable);
-        moKeyDfrIssuerTaxRegime.setEnabled(enable);
-        jbDfrCfdRelationsEdit.setEnabled(enable);
-        moRadModeEmit.setEnabled(enable);
-        moRadModeEmitPay.setEnabled(enable);
+        moTextDfrConfirmation.setEditable(true);
+        moKeyDfrIssuerTaxRegime.setEnabled(true);
+        jbDfrCfdRelationsEdit.setEnabled(true);
+        moRadModeEmit.setEnabled(true);
+        moRadModeEmitPay.setEnabled(true);
     }
     
     private void enableFieldsPayments(final boolean enable) {
@@ -1479,7 +1488,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moKeyPayModeOfPaymentType.setValue(new int[] { moXmlCatalogModeOfPayment.getId(pago.getAttFormaDePagoP().getString()) });
             moKeyPayCurrency.setValue(new int[] { moXmlCatalogCurrency.getId(pago.getAttMonedaP().getString()) });
             double xrt = pago.getAttTipoCambioP().getDouble();
-            moDecPayExchangeRate.setValue(xrt == 0d ? 1d : xrt);
+            moDecPayExchangeRate.setValue(xrt == 0d ? 1d : xrt); // CFDI 3.3 does not require exchange rate for MXN, so it is zero
             moCurPayAmountPay.getField().setValue(pago.getAttMonto().getDouble());
             moTextPayOperation.setValue(pago.getAttNumOperacion().getString());
             moTextPayPayersBank.setValue(pago.getAttNomBancoOrdExt().getString());
@@ -1687,7 +1696,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         
         for (DGridRow row : moGridPayments.getModel().getGridRows()) {
             DIntPagosPago pago = ((DRowDfrPayment) row).getPago();
-            double xrt = pago.getAttTipoCambioP().getDouble(); // 0 means that currency of payment is local currency
+            double xrt = pago.getAttTipoCambioP().getDouble(); // CFDI 3.3 does not require exchange rate for MXN, so it is zero
             
             int currency = moXmlCatalogCurrency.getId(pago.getAttMonedaP().getString());
             currencies.put(currency, pago.getAttMonedaP().getString());
@@ -1716,7 +1725,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         double xrtPay = 0;
         
         if (moGridPayments.getSelectedGridRow() != null) {
-            xrtPay = ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getAttTipoCambioP().getDouble();
+            xrtPay = ((DRowDfrPayment) moGridPayments.getSelectedGridRow()).getPago().getAttTipoCambioP().getDouble(); // CFDI 3.3 does not require exchange rate for MXN, so it is zero
         }
         
         for (DGridRow row : moGridPaymentDocs.getModel().getGridRows()) {
@@ -1733,15 +1742,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moCurTotalPaymentLoc.getField().setValue(paymentLoc);
     }
     
-    private void computeDocTaxes20(final cfd.ver40.crp20.DElementDoctoRelacionado doctoRelacionado) {
-        // clear taxes
-        doctoRelacionado.setEltImpuestosDR(null);
+    private cfd.ver40.crp20.DElementImpuestosDR createElementImpuestosDR20(final cfd.ver40.crp20.DElementDoctoRelacionado doctoRelacionado) throws Exception {
+        cfd.ver40.crp20.DElementImpuestosDR impuestosDr = null;
         
-        if (moDps != null && moDps.getSubtotalCy_r() > 0 && doctoRelacionado.getAttImpPagado().getDouble() > 0) {
-            double payPct = DLibUtils.compareAmount(doctoRelacionado.getAttImpPagado().getDouble(), moDps.getSubtotalCy_r()) ? 1d : doctoRelacionado.getAttImpPagado().getDouble() / moDps.getSubtotalCy_r();
+        if (moDps != null && moDps.getTotalCy_r() > 0 && doctoRelacionado.getAttImpPagado().getDouble() > 0) {
+            double payPct = DLibUtils.compareAmount(doctoRelacionado.getAttImpPagado().getDouble(), moDps.getTotalCy_r()) ? 1d : doctoRelacionado.getAttImpPagado().getDouble() / moDps.getTotalCy_r();
                     
-            DecimalFormat rateFormat = new DecimalFormat("#.000000");
-            cfd.ver40.crp20.DElementImpuestosDR impuestosDr = null;
             cfd.ver40.crp20.DElementTrasladosDR trasladosDr = null;
             cfd.ver40.crp20.DElementRetencionesDR retencionesDr = null;
             HashMap<String, cfd.ver40.crp20.DElementTrasladoDR> trasladosDrMap = new HashMap<>(); // key = tax_code + tax_rate
@@ -1749,7 +1755,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             for (DDbDpsRow dpsRow : moDps.getChildRows()) {
                 if (!dpsRow.isDeleted()) {
-                    for (int index = 1; index <= DTrnConsts.DPS_ROW_TAXES; index++) {
+                    for (int index = 1; index <= DDbDpsRow.TAXES; index++) {
                         int taxId = 0;
                         double taxRate = 0;
                         double tax = 0;
@@ -1776,25 +1782,28 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                                 // nothing
                         }
                         
-                        if (taxId == DFinConsts.TAX_IVA) {
-                            String key = DCfdi40Catalogs.IMP_IVA + rateFormat.format(taxRate);
-                            cfd.ver40.crp20.DElementTrasladoDR trasladoDr = trasladosDrMap.get(key);
-                            
-                            if (trasladoDr == null) {
+                        if (taxId != DModSysConsts.FU_TAX_NA) {
+                            if (taxId == DFinConsts.TAX_IVA) {
+                                String key = DCfdi40Catalogs.IMP_IVA + moTaxRateFormat.format(taxRate);
+                                cfd.ver40.crp20.DElementTrasladoDR trasladoDr = trasladosDrMap.get(key);
+
+                                if (trasladoDr == null) {
+                                    trasladoDr = new cfd.ver40.crp20.DElementTrasladoDR();
+                                    trasladoDr.getAttImpuestoDR().setString(DCfdi40Catalogs.IMP_IVA);
+                                    trasladoDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
+                                    trasladoDr.getAttTasaOCuotaDR().setDouble(taxRate);
+
+                                    trasladosDrMap.put(key, trasladoDr);
+                                }
+
                                 double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
-                                
-                                trasladoDr = new cfd.ver40.crp20.DElementTrasladoDR();
-                                trasladoDr.getAttBaseDR().setDouble(propBase);
-                                trasladoDr.getAttImpuestoDR().setString(DCfdi40Catalogs.IMP_IVA);
-                                trasladoDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
-                                trasladoDr.getAttTasaOCuotaDR().setDouble(taxRate);
-                                
-                                trasladosDrMap.put(key, trasladoDr);
+                                double propImporte = DLibUtils.roundAmount(tax * payPct);
+
+                                trasladoDr.addImporte(propBase, propImporte);
                             }
-                            
-                            double propTax = DLibUtils.roundAmount(tax * payPct);
-                            
-                            trasladoDr.getAttImporteDR().setDouble(DLibUtils.roundAmount(trasladoDr.getAttImporteDR().getDouble() + propTax));
+                            else {
+                                throw new Exception("El ID del impuesto trasladado es desconocido: " + taxId + ".");
+                            }
                         }
                         
                         // taxes withheld:
@@ -1819,26 +1828,29 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                                 // nothing
                         }
                         
-                        if (taxId == DFinConsts.TAX_IVA || taxId == DFinConsts.TAX_ISR) {
-                            String taxCode = taxId == DFinConsts.TAX_IVA ? DCfdi40Catalogs.IMP_IVA : DCfdi40Catalogs.IMP_ISR;
-                            String key = taxCode + rateFormat.format(taxRate);
-                            cfd.ver40.crp20.DElementRetencionDR retencionDr = retencionesDrMap.get(key);
-                            
-                            if (retencionDr == null) {
+                        if (taxId != DModSysConsts.FU_TAX_NA) {
+                            if (taxId == DFinConsts.TAX_IVA || taxId == DFinConsts.TAX_ISR) {
+                                String taxCode = taxId == DFinConsts.TAX_IVA ? DCfdi40Catalogs.IMP_IVA : DCfdi40Catalogs.IMP_ISR;
+                                String key = taxCode + moTaxRateFormat.format(taxRate);
+                                cfd.ver40.crp20.DElementRetencionDR retencionDr = retencionesDrMap.get(key);
+
+                                if (retencionDr == null) {
+                                    retencionDr = new cfd.ver40.crp20.DElementRetencionDR();
+                                    retencionDr.getAttImpuestoDR().setString(taxCode);
+                                    retencionDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
+                                    retencionDr.getAttTasaOCuotaDR().setDouble(taxRate);
+
+                                    retencionesDrMap.put(key, retencionDr);
+                                }
+
                                 double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
-                                
-                                retencionDr = new cfd.ver40.crp20.DElementRetencionDR();
-                                retencionDr.getAttBaseDR().setDouble(propBase);
-                                retencionDr.getAttImpuestoDR().setString(taxCode);
-                                retencionDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
-                                retencionDr.getAttTasaOCuotaDR().setDouble(taxRate);
-                                
-                                retencionesDrMap.put(key, retencionDr);
+                                double propImporte = DLibUtils.roundAmount(tax * payPct);
+
+                                retencionDr.addImporte(propBase, propImporte);
                             }
-                            
-                            double propTax = DLibUtils.roundAmount(tax * payPct);
-                            
-                            retencionDr.getAttImporteDR().setDouble(DLibUtils.roundAmount(retencionDr.getAttImporteDR().getDouble() + propTax));
+                            else {
+                                throw new Exception("El ID del impuesto retenido es desconocido: " + taxId + ".");
+                            }
                         }
                     }
                 }
@@ -1854,14 +1866,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                 retencionesDr.getEltRetencionDRs().addAll(retencionesDrMap.values());
             }
             
-            if (trasladosDr != null) {
+            if (trasladosDr != null || !retencionesDrMap.isEmpty()) { // in fact, withheld tax depends on charged tax
                 impuestosDr = new cfd.ver40.crp20.DElementImpuestosDR();
                 impuestosDr.setEltTrasladosDR(trasladosDr);
                 impuestosDr.setEltRetencionesDR(retencionesDr);
             }
-            
-            doctoRelacionado.setEltImpuestosDR(impuestosDr);
         }
+        
+        return impuestosDr;
     }
     
     /*
@@ -1940,7 +1952,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             if (moGridPayments.getSelectedGridRow() == null) {
                 miClient.showMsgBoxWarning(DGridConsts.MSG_SELECT_ROW);
             }
-            else {
+            else if (moGridPaymentDocs.getTable().getRowCount() == 0 || miClient.showMsgBoxConfirm("¿Si modifica el pago, sus documentos relacionados serán eliminados?\n" + DGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
                 activateInputPayment(MODE_MODIFY, true);
             }
         }
@@ -1991,7 +2003,21 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             pago.getAttFechaPago().setDatetime(payDatetime);
             pago.getAttFormaDePagoP().setString(moKeyPayModeOfPaymentType.getSelectedItem().getCode());
             pago.getAttMonedaP().setString(moKeyPayCurrency.getSelectedItem().getCode());
-            pago.getAttTipoCambioP().setDouble(miClient.getSession().getSessionCustom().isLocalCurrency(moKeyPayCurrency.getValue()) ? 0d : moDecPayExchangeRate.getValue());
+            
+            if (moRegistry.getFkXmlTypeId() == DModSysConsts.TS_XML_TP_CFDI_33) {
+                pago.getAttTipoCambioP().setDouble(miClient.getSession().getSessionCustom().isLocalCurrency(moKeyPayCurrency.getValue()) ? 0d : moDecPayExchangeRate.getValue());
+            }
+            else {
+                if (miClient.getSession().getSessionCustom().isLocalCurrency(moKeyPayCurrency.getValue())) {
+                    pago.getAttTipoCambioP().setDouble(1);
+                    pago.getAttTipoCambioP().setDecimals(0);
+                }
+                else {
+                    pago.getAttTipoCambioP().setDouble(moDecPayExchangeRate.getValue());
+                    pago.getAttTipoCambioP().setDecimals(cfd.DAttributeTipoCambio.DECS);
+                }
+            }
+            
             pago.getAttMonto().setDouble(moCurPayAmountPay.getField().getValue());
             pago.getAttNumOperacion().setString(moTextPayOperation.getValue());
             pago.getAttRfcEmisorCtaOrd().setString(moTextPayPayersBankFiscalId.getValue());
@@ -2136,7 +2162,15 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             doctoRelacionado.getAttSerie().setString(moTextDocSeries.getValue());
             doctoRelacionado.getAttFolio().setString(moIntDocNumber.getValue().toString());
             doctoRelacionado.getAttMonedaDR().setString(moKeyDocCurrency.getSelectedItem().getCode());
-            doctoRelacionado.getAttEquivalenciaDR().setDouble(DLibUtils.compareKeys(moKeyPayCurrency.getValue(), moKeyDocCurrency.getValue()) ? 0d : moDecDocExchangeRate.getValue());
+            
+            if (DLibUtils.compareKeys(moKeyPayCurrency.getValue(), moKeyDocCurrency.getValue())) {
+                doctoRelacionado.getAttEquivalenciaDR().setDouble(1);
+                doctoRelacionado.getAttEquivalenciaDR().setDecimals(0);
+            }
+            else {
+                doctoRelacionado.getAttEquivalenciaDR().setDouble(moDecDocExchangeRate.getValue());
+                doctoRelacionado.getAttEquivalenciaDR().setDecimals(cfd.DAttributeTipoCambio.DECS);
+            }
             //doctoRelacionado.getAttMetodoDePagoDR().setString(DCfdi40Catalogs.MDP_PPD); // value set by default
             doctoRelacionado.getAttNumParcialidad().setInteger(moIntDocInstallment.getValue());
             doctoRelacionado.getAttImpSaldoAnt().setDouble(moCurDocBalancePrevDoc.getField().getValue());
@@ -2146,12 +2180,21 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             switch (moRegistry.getFkXmlTypeId()) {
                 case DModSysConsts.TS_XML_TP_CFDI_33:
                     break;
+                    
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    computeDocTaxes20((cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado);
-                    doctoRelacionado.getAttObjetoImpDR().setString(((cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado).getEltImpuestosDR() != null ? DCfdi40Catalogs.ClaveObjetoImpSí : DCfdi40Catalogs.ClaveObjetoImpNo);
+                    try {
+                        cfd.ver40.crp20.DElementImpuestosDR impuestosDR = createElementImpuestosDR20((cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado);
+                        ((cfd.ver40.crp20.DElementDoctoRelacionado) doctoRelacionado).setEltImpuestosDR(impuestosDR);
+                        doctoRelacionado.getAttObjetoImpDR().setString(impuestosDR != null ? DCfdi40Catalogs.ClaveObjetoImpSí : DCfdi40Catalogs.ClaveObjetoImpNo);
+                    }
+                    catch (Exception e) {
+                        DLibUtils.showException(this, e);
+                        return; // quit processing this method
+                    }
                     break;
+                    
                 default:
-                    // nothing
+                    miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
             
             DRowDfrPaymentDoc row = new DRowDfrPaymentDoc(doctoRelacionado);
@@ -2276,8 +2319,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             mnBizPartnerIdentityType = ((DGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getIdentityTypeDefault();
             moKeyDfrReceiverTaxRegime.removeAllItems();
 
-            jtfDfrReceiverFiscalId.setEnabled(false);
-            jtfDfrReceiverFiscalAddress.setEnabled(false);
             moKeyDfrReceiverTaxRegime.setEnabled(false);
             moKeyDfrCfdUsage.setEnabled(false);
             moKeyDummyCurrency.setEnabled(false);
@@ -2288,6 +2329,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             jtfDfrReceiverFiscalId.setText("");
             jtfDfrReceiverFiscalAddress.setText("");
+            jlReceiverName.setToolTipText("Razón social: ?");
             moKeyDfrReceiverTaxRegime.resetField();
             moKeyDfrCfdUsage.resetField();
             moKeyDummyCurrency.resetField();
@@ -2307,8 +2349,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             mnBizPartnerIdentityType = moBizPartner.getFkIdentityTypeId();
             miClient.getSession().populateCatalogue(moKeyDfrReceiverTaxRegime, DModConsts.CS_TAX_REG, mnBizPartnerIdentityType, null);
 
-            jtfDfrReceiverFiscalId.setEnabled(true);
-            jtfDfrReceiverFiscalAddress.setEnabled(true);
             moKeyDfrReceiverTaxRegime.setEnabled(true);
             moKeyDfrCfdUsage.setEnabled(false); // non editable
             moKeyDummyCurrency.setEnabled(false); // not required, preserved for consistence
@@ -2321,13 +2361,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             jtfDfrReceiverFiscalId.setCaretPosition(0);
             jtfDfrReceiverFiscalAddress.setText(moBizPartnerBranchAddressOfficial.getZipCode());
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
+            jlReceiverName.setToolTipText("Razón social: " + moBizPartner.getNameFiscal());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
             moKeyDfrCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(DCfdi40Catalogs.ClaveUsoCfdiPagos) });
             moKeyDummyCurrency.setValue(new int[] { moXmlCatalogCurrency.getId(DCfdi40Catalogs.ClaveMonedaXxx) });
             moDecDummyExchangeRate.setValue(1.0);
         
-            moRadModeEmit.setSelected(true);
-            
             enableFieldsPayments(false);
             enableButtonsPaymentsEdition(true);
             enableButtonsPaymentsOkCancel(false);
@@ -2494,6 +2533,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private javax.swing.JLabel jlPayPayersBankFiscalId;
     private javax.swing.JLabel jlPayRecipientsAccount;
     private javax.swing.JLabel jlPayRecipientsBankFiscalId;
+    private javax.swing.JLabel jlReceiverName;
     private javax.swing.JLabel jlTotalCfd;
     private javax.swing.JLabel jlTotalPayment;
     private javax.swing.JPanel jpBody;
@@ -2686,6 +2726,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                 moBranchCash = (DDbBranchCash) miClient.getSession().readRegistry(DModConsts.CU_CSH, sessionCustom.getBranchCashKey());
             }
             
+            moRegistry.setBookkept(true);
+            
             moRegistry.setFkOwnerBizPartnerId(moConfigBranch.getCompanyId());
             moRegistry.setFkOwnerBranchId(moConfigBranch.getBranchId());
             moRegistry.setFkCashBizPartnerId_n(moBranchCash.getPkBizPartnerId());
@@ -2700,7 +2742,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moRegistry.setFkXmlStatusId(DModSysConsts.TS_XML_ST_PEN);
             
             DDfrMate dfrMate = new DDfrMate();
-            dfrMate.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
             dfrMate.setIssuerTaxRegime("" + moConfigCompany.getChildBizPartner().getFkTaxRegimeId()); // id = code
             moRegistry.setXtaDfrMate(dfrMate);
 
@@ -2724,7 +2765,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             moTextDfrSeries.setValue(moRegistry.getSeries());
             moIntDfrNumber.setValue(moRegistry.getNumber());
-            moRadModeEmitPay.setSelected(moRegistry.isBookeept());
 
             mtOriginalDate = moRegistry.getDocTs();
             
@@ -2732,14 +2772,15 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
         
+        if (moRegistry.getFkXmlStatusId() < DModSysConsts.TS_XML_ST_ISS) {
+            // update place of issue allways before document is issued:
+            moRegistry.getXtaDfrMate().setPlaceOfIssue(moConfigCompany.getChildBizPartner().getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+        }
+
         setFormEditable(true);  // enable all controls before setting form values
         
         moKeyDfrReceiver.setValue(new int[] { moRegistry.getFkBizPartnerId() });
         itemStateChangedCfdReceiver();
-        if (!moRegistry.isRegistryNew() && moRegistry.getXtaDfrMate() != null) {
-            jtfDfrReceiverFiscalAddress.setText(moRegistry.getXtaDfrMate().getReceiverFiscalAddress());
-            jtfDfrReceiverFiscalAddress.setCaretPosition(0);
-        }
         
         moKeyDfrReceiverTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getXtaDfrMate().getReceiverTaxRegime()) });
         moKeyDfrCfdUsage.setValue(new int[] { moXmlCatalogCfdUsage.getId(moRegistry.getXtaDfrMate().getCfdUsage()) });
@@ -2748,7 +2789,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moDateDfrDate.setValue(mtOriginalDate);
         
         moKeyDummyCurrency.setValue(new int[] { moXmlCatalogCurrency.getId(DCfdi40Catalogs.ClaveMonedaXxx) });
-        moDecDummyExchangeRate.setValue(1.0);
+        moDecDummyExchangeRate.setValue(1d);
+        
+        if (moRegistry.isBookkept()) {
+            moRadModeEmitPay.setSelected(true);
+        }
+        else {
+            moRadModeEmit.setSelected(true);
+        }
         
         jtfDfrPlaceOfIssue.setText(moRegistry.getXtaDfrMate().getPlaceOfIssue());
         jtfDfrPlaceOfIssue.setCaretPosition(0);
@@ -2880,7 +2928,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         registry.setCancelXml();
         registry.setCancelPdf_n();
         */
-        registry.setBookeept(moRadModeEmitPay.isSelected());
+        registry.setBookkept(moRadModeEmitPay.isSelected());
         /*
         registry.setDeleted();
         registry.setSystem();
@@ -2912,13 +2960,10 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         */
         
         /*
-        registry.setAuxJustIssued();
-        registry.setAuxJustAnnulled();
-        */
-        registry.setAuxComputeBookkeeping(true);
-        /*
+        registry.setAuxDfrJustIssued();
+        registry.setAuxDfrJustAnnulled();
         registry.setAuxRewriteXmlOnSave();
-        registry.setAuxRegenerateXmlOnSave();
+        registry.setAuxAddendaJustSet();
         registry.setAuxXmlSignatureRequestKey();
         */
 
@@ -2950,7 +2995,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         //dfr.setGlobalPeriodicity(...);
         //dfr.setGlobalMonths(...);
         //dfr.setGlobalYear(...);
-        dfrMate.setRelations(moRegistry.getXtaDfrMate().getRelations()); // current relations already in registry
+        dfrMate.setRelations(moRegistry.getXtaDfrMate().getRelations()); // note that current relations are already in registry!
         
         moRegistry.setXtaDfrMate(dfrMate);
         
@@ -2997,7 +3042,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                 validation.setComponent(moDateDfrDate);
             }
             else if (moGridPayments.getTable().getRowCount() == 0) {
-                validation.setMessage(DUtilConsts.ERR_MSG_DOC_NO_ROWS);
+                validation.setMessage("Se deben capturar pagos para el comprobante.");
                 validation.setComponent(jbPayAdd);
             }
             else {
@@ -3006,28 +3051,41 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                     DIntPagosPago pago = ((DRowDfrPayment) row).getPago();
                     double payment = DLibUtils.roundAmount(pago.getAttMonto().getDouble());
                     double paymentDocs = 0;
+                    int docs = 0;
                     
                     for (DIntDoctoRelacionado doctoRelacionado : getDoctoRelacionados(pago)) {
                         double xrt = doctoRelacionado.getAttEquivalenciaDR().getDouble();
                         double paymentDoc = doctoRelacionado.getAttImpPagado().getDouble();
                         paymentDocs = DLibUtils.roundAmount(paymentDocs + (xrt == 0 ? paymentDoc : DLibUtils.roundAmount(paymentDoc / xrt)));
+                        docs++;
                     }
                     
-                    if ((paymentDocs - payment) > 0d) {
+                    if (docs == 0) {
                         moGridPayments.setSelectedGridRow(moGridPayments.getModel().getGridRows().indexOf(row));
                         
-                        validation.setMessage("La suma de pagos aplicados $ " + DLibUtils.getDecimalFormatAmount().format(paymentDocs) + " " + pago.getAttMonedaP().getString() + " "
-                                + "es mayor al monto del pago $ " + DLibUtils.getDecimalFormatAmount().format(payment) + " " + pago.getAttMonedaP().getString() + ".");
+                        validation.setMessage("El pago no tiene documentos relacionados.");
+                        validation.setComponent(jbDocAdd);
                         break;
                     }
-                    else if ((paymentDocs - payment) < 0d) {
-                        moGridPayments.setSelectedGridRow(moGridPayments.getModel().getGridRows().indexOf(row));
-                        
-                        if (miClient.showMsgBoxConfirm("La suma de pagos aplicados $ " + DLibUtils.getDecimalFormatAmount().format(paymentDocs) + " " + pago.getAttMonedaP().getString() + " "
-                                + "es menor al monto del pago $ " + DLibUtils.getDecimalFormatAmount().format(payment) + " " + pago.getAttMonedaP().getString() + ".\n"
-                                + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                            validation.setMessage("Corregir el monto de los pagos aplicados.");
+                    else {
+                        if ((paymentDocs - payment) > 0d) {
+                            moGridPayments.setSelectedGridRow(moGridPayments.getModel().getGridRows().indexOf(row));
+
+                            validation.setMessage("La suma de pagos aplicados $ " + DLibUtils.getDecimalFormatAmount().format(paymentDocs) + " " + pago.getAttMonedaP().getString() + " "
+                                    + "es mayor al monto del pago $ " + DLibUtils.getDecimalFormatAmount().format(payment) + " " + pago.getAttMonedaP().getString() + ".");
+                            validation.setComponent(jbPayModify);
                             break;
+                        }
+                        else if ((paymentDocs - payment) < 0d) {
+                            moGridPayments.setSelectedGridRow(moGridPayments.getModel().getGridRows().indexOf(row));
+
+                            if (miClient.showMsgBoxConfirm("La suma de pagos aplicados $ " + DLibUtils.getDecimalFormatAmount().format(paymentDocs) + " " + pago.getAttMonedaP().getString() + " "
+                                    + "es menor al monto del pago $ " + DLibUtils.getDecimalFormatAmount().format(payment) + " " + pago.getAttMonedaP().getString() + ".\n"
+                                    + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                                validation.setMessage("Corregir el monto de los pagos aplicados.");
+                                validation.setComponent(jbPayModify);
+                                break;
+                            }
                         }
                     }
                 }

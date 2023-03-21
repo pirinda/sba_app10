@@ -660,7 +660,7 @@ public class DFormDfrAddenda extends DBeanForm implements ActionListener, ListSe
         }
         
         registry.setDocXmlAddenda(extAddenda.getElementForXml()); // the very only member of registry set on this form!
-        registry.setAuxRegenerateXmlOnSave(true); // activate request for embedding new addenda and updating XML file when saving this registry
+        registry.setAuxAddendaJustSet(true); // activate request for embedding new addenda and updating XML file when saving this registry
 
         return registry;
     }

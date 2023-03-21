@@ -1,7 +1,25 @@
 ================================================================================
-SBA 1.0 030.3
-2023-03-11/ Sergio Abraham FLORES GUTIÉRREZ
+SBA 1.0 031.0
+2023-03-??/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de timbrado e impresión de CFDI con complemento Carta Porte 2.0, tipo "T".
+
+================================================================================
+SBA 1.0 031.1
+2023-03-21/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección a la contabilización de CFDI de recepción de pagos.
+2) Corrección al cálculo de impuestos al generar CFDI de recepción de pagos.
+3) Adecuación a la consulta de estatus de CFDI 3.2, 3.3 y 4.0.
+
+================================================================================
+SBA 1.0 031.0
+2023-03-16/ Sergio Abraham FLORES GUTIÉRREZ
+1) Permitir cambiar a voluntad la razón social de asociados de negocio (razón social o denominación).
+    Esto permite tener el mismo cliente varias veces, diferenciando cada uno mediante su nombre, pero permitiendo al mismo tiempo la emisión correcta de CFDI 4.0.
+
+================================================================================
+SBA 1.0 030.3
+2023-03-15/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección a la generación del XML de CFDI con complemento Recepción de Pagos 2.0, el atributo tipo de cambio del pago debe ser igual a uno para pagos en moneda nacional.
 
 ================================================================================
 SBA 1.0 030.2

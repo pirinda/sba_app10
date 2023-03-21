@@ -18,15 +18,17 @@ public class DRowFindBizPartner implements DGridRow {
     protected String msCode;
     protected String msName;
     protected String msFiscalId;
+    protected String msNameFiscal;
     protected int mnFkBizPartnerClassId;
     protected int mnFkBizPartnerTypeId;
 
-    public DRowFindBizPartner(int findMode, int bizPartnerId, String code, String name, String fiscalId) {
+    public DRowFindBizPartner(int findMode, int bizPartnerId, String code, String name, String fiscalId, String nameFiscal) {
         mnFindMode = findMode;
         mnPkBizPartnerId = bizPartnerId;
         msCode = code;
         msName = name;
         msFiscalId = fiscalId;
+        msNameFiscal = nameFiscal;
         mnFkBizPartnerClassId = 0;
         mnFkBizPartnerTypeId = 0;
     }
@@ -36,6 +38,7 @@ public class DRowFindBizPartner implements DGridRow {
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
+    public void ssNameFiscal(String s) { msNameFiscal = s; }
     public void setFkBizPartnerClassId(int n) { mnFkBizPartnerClassId = n; }
     public void setFkBizPartnerTypeId(int n) { mnFkBizPartnerTypeId = n; }
 
@@ -44,6 +47,7 @@ public class DRowFindBizPartner implements DGridRow {
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public String getFiscalId() { return msFiscalId; }
+    public String msNameFiscal() { return msNameFiscal; }
     public int getFkBizPartnerClassId() { return mnFkBizPartnerClassId; }
     public int getFkBizPartnerTypeId() { return mnFkBizPartnerTypeId; }
 
@@ -126,6 +130,10 @@ public class DRowFindBizPartner implements DGridRow {
 
             case 2:
                 value = msFiscalId;
+                break;
+
+            case 3:
+                value = msNameFiscal;
                 break;
 
             default:

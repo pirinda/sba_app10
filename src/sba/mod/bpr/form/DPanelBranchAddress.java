@@ -11,12 +11,15 @@
 
 package sba.mod.bpr.form;
 
+import cfd.ver40.DCfdi40Catalogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
+import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
 import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
@@ -178,7 +181,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlLocality.setText("Localidad:*");
+        jlLocality.setText("Localidad:");
         jlLocality.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry14.add(jlLocality);
 
@@ -194,7 +197,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
         jpRegistry15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlState.setText("Estado:*");
+        jlState.setText("Estado:");
         jlState.setPreferredSize(new java.awt.Dimension(75, 23));
         jpRegistry15.add(jlState);
 
@@ -381,7 +384,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
 
     private void initComponentsCustom() {
         mbHeadquarters = false;
-
+        
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 50);
         moBoolDefault.setBooleanSettings(moBoolDefault.getComponent().getText(), false);
         moTextStreet.setTextSettings(DGuiUtils.getLabelName(jlStreet), 100, 0);
@@ -392,7 +395,7 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         moTextLocality.setTextSettings(DGuiUtils.getLabelName(jlLocality), 50, 0);
         moTextCounty.setTextSettings(DGuiUtils.getLabelName(moTextCounty.getToolTipText()), 50, 0);
         moTextState.setTextSettings(DGuiUtils.getLabelName(jlState), 50, 0);
-        moTextZipCode.setTextSettings(DGuiUtils.getLabelName(jlZipCode), 10, 0);
+        moTextZipCode.setTextSettings(DGuiUtils.getLabelName(jlZipCode), 10, 5);
         moTextPostOfficeBox.setTextSettings(DGuiUtils.getLabelName(moTextPostOfficeBox.getToolTipText()), 10, 0);
         moKeyCountry.setKeySettings(miClient, moKeyCountry.getToolTipText(), false);
         moTextNote.setTextSettings(DGuiUtils.getLabelName(jlNote), 100, 0);
@@ -543,6 +546,15 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
     /*
      * Overriden methods
      */
+    
+    @Override
+    public void setPanelSettings(DGuiClient client) {
+        super.setPanelSettings(client);
+        
+        if (((DDbConfigCompany) miClient.getSession().getConfigCompany()).isTelecommDeviceRequired()) {
+            jlTelecommDevice1.setText(jlTelecommDevice1.getText() + "*"); // render as a mandatory field
+        }
+    }
 
     @Override
     public void addAllListeners() {
@@ -697,7 +709,14 @@ public class DPanelBranchAddress extends DBeanPanel implements ActionListener {
         DGuiValidation validation = moFields.validateFields();
 
         if (validation.isValid()) {
-            if (((DDbConfigCompany) miClient.getSession().getConfigCompany()).isTelecommDeviceRequired() && moTextTelecommDevice1.getValue().isEmpty()) {
+            boolean isCountryLocal = !moKeyCountry.isEnabled() || moKeyCountry.getSelectedIndex() < 0 || miClient.getSession().getSessionCustom().isLocalCountry(moKeyCountry.getValue());
+            boolean isCountryNorthAmerica = moKeyCountry.getSelectedIndex() > 0 && DLibUtils.belongsTo(moKeyCountry.getSelectedItem().getCode(), DCfdi40Catalogs.createClavesPaísesNorteamérica());
+            
+            if ((isCountryLocal || isCountryNorthAmerica) && moTextState.getValue().isEmpty()) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextState.getFieldName() + "'.");
+                validation.setComponent(moTextState);
+            }
+            else if (((DDbConfigCompany) miClient.getSession().getConfigCompany()).isTelecommDeviceRequired() && moTextTelecommDevice1.getValue().isEmpty()) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextTelecommDevice1.getFieldName() + "'.");
                 validation.setComponent(moTextTelecommDevice1);
             }

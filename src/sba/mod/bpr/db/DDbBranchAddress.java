@@ -402,7 +402,7 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
         initRegistry();
         initQueryMembers();
         mnQueryResultId = DDbConsts.READ_ERROR;
-
+        
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
         if (!resultSet.next()) {
@@ -462,6 +462,10 @@ public class DDbBranchAddress extends DDbRegistryUser implements DGridRow {
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
+        
+        if (mnFkCountryId_n != DLibConsts.UNDEFINED && session.getSessionCustom().isLocalCountry(new int[] { mnFkCountryId_n })) {
+            mnFkCountryId_n = DLibConsts.UNDEFINED; // unnecessary redundancy for local country
+        }
 
         if (mbRegistryNew) {
             computePrimaryKey(session);

@@ -68,6 +68,7 @@ import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysXmlSignatureProvider;
 import sba.mod.cfg.db.DLockUtils;
+import sba.mod.lad.db.DDbBol;
 import sba.mod.trn.form.DDialogEmailSending;
 import sba.mod.trn.form.DFormDpsCancelling;
 import sba.mod.trn.form.DFormDpsPrinting;
@@ -371,7 +372,8 @@ public abstract class DTrnEmissionUtils {
                             DDbDpsSeriesNumber seriesNumber = DTrnUtils.getDpsSeriesNumber(client.getSession(), dps.getDpsTypeKey(), dps.getSeries(), dps.getNumber());
                             
                             if (seriesNumber != null && seriesNumber.getFkXmlTypeId() != DModSysConsts.TS_XML_TP_NA) {
-                                dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
+                                // reissue document:
+                                dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey()); // retrieve document again, it has been just updated
                                 dps.setAuxLock(lock); // set transaction lock
                                 dfr = DTrnDfrUtils.createDfrFromDps(client.getSession(), dps, seriesNumber.getFkXmlTypeId());
                                 dps.updateDfr(client.getSession(), dfr);
@@ -486,6 +488,34 @@ public abstract class DTrnEmissionUtils {
 
                     case DModSysConsts.TS_XML_TP_CFDI_40:
                         DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(client.getSession(), dfr));
+                        break;
+
+                    default:
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+
+    public static void printBol(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey());
+
+                switch (bol.getDfr().getFkXmlTypeId()) {
+                    case DModSysConsts.TS_XML_TP_CFD:
+                    case DModSysConsts.TS_XML_TP_CFDI_32:
+                    case DModSysConsts.TS_XML_TP_CFDI_33:
+                        throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
+
+                    case DModSysConsts.TS_XML_TP_CFDI_40:
+                        //DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(client.getSession(), bol));
                         break;
 
                     default:
@@ -783,7 +813,7 @@ public abstract class DTrnEmissionUtils {
                 case DModSysConsts.TX_XMS_REQ_STP_REQ:
                     if (client.showMsgBoxConfirm(message + "\n"
                             + "Se puede optar por continuar esta " + DTrnDfrUtils.getXmsRequestSubype(requestSubtype) + " sólo para anular el " + doc.getDocName() + " '" + doc.getDocNumber() + "'\n"
-                            + "o interrumpirla para se solicite manulamnete la acción inhabilitar (anular) de forma directa.\n"
+                            + "o interrumpirla para solicitar manulamnete la acción inhabilitar (anular) de forma directa.\n"
                             + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
                                 + "Inhabilitar (anular) de forma directa el " + doc.getDocName() + " '" + doc.getDocNumber() + "'.");
@@ -865,10 +895,11 @@ public abstract class DTrnEmissionUtils {
                             + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
-                else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_ISS) {
+                else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_ISS && doc.getDocStatus() != DModSysConsts.TS_XML_ST_PEN) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
                             + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
-                            + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                            + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "' o "
+                            + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else {
                     cancel = doc.canAnnul(client.getSession());
@@ -922,7 +953,7 @@ public abstract class DTrnEmissionUtils {
                 if (cancel) {
                     try {
                         client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR)); // XXX improve this!!!
-
+                        
                         DTrnDfrUtils.cancelDfr(client.getSession(), doc, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestSubtype, annulParams);
                         cancelled = true;
                     }

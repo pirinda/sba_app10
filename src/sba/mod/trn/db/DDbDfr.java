@@ -76,7 +76,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     protected String msCancelStatus;
     protected String msCancelXml;
     protected java.sql.Blob moCancelPdf_n;
-    protected boolean mbBookeept;
+    protected boolean mbBookkept;
     /*
     protected boolean mbDeleted;
     protected boolean mbSystem;
@@ -116,11 +116,9 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     protected cfd.ver33.crp10.DElementPagos moDfrPagos10;
     protected cfd.ver40.crp20.DElementPagos moDfrPagos20;
 
-    protected boolean mbAuxJustIssued;
-    protected boolean mbAuxJustAnnulled;
-    protected boolean mbAuxComputeBookkeeping;
-    protected boolean mbAuxRewriteXmlOnSave;
-    protected boolean mbAuxRegenerateXmlOnSave;
+    protected boolean mbAuxDfrJustIssued;
+    protected boolean mbAuxDfrJustAnnulled;
+    protected boolean mbAuxAddendaJustSet;
     protected int[] manAuxXmlSignatureRequestKey;
     protected DDbLock moAuxLock;
     protected DDbLock moAuxDpsLock;
@@ -134,11 +132,180 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
      * Private methods:
      */
     
-    private void computeNextNumber(final DGuiSession session) throws Exception {
-        mnNumber = getNextNumber(session, msSeries);
+    /**
+     * Is this DFR a Complemento de Recepción de Pagos?
+     * @return 
+     */
+    private boolean isCrp() {
+        return mnFkXmlSubtypeId == DModSysConsts.TS_XML_STP_CRP;
+    }
+
+    /**
+     * Prepare this DFR for CRP. Works only if DFR was not just issued nor annulled!
+     * Supported only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0 and CFDI 4.0 with Complemento de Recepción de Pagos 2.0.
+     * @param session GUI user session.
+     * @throws Exception 
+     */
+    private void prepareDfrForCrp(final DGuiSession session) throws Exception {
+        if (isCrp() && !mbAuxDfrJustIssued && !mbAuxDfrJustAnnulled) {
+            if (mnFkXmlTypeId == 0) {
+                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK tipo XML'.");
+            }
+            else if (mnFkOwnerBizPartnerId == 0) {
+                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK empresa'.");
+            }
+            else if (mnFkOwnerBranchId == 0) {
+                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK sucursal empresa'.");
+            }
+            if (mnFkBizPartnerId == 0) {
+                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK asociado de negocios'.");
+            }
+            
+            // generate CFDI 3.3 with CRP 1.0 of CFDI 4.0 with CRP 2.0:
+            
+            if (msSeries.isEmpty()) {
+                msSeries = DCfdi40Catalogs.CFD_TP_P; // default series if no one provided
+            }
+            
+            if (mnNumber == 0) {
+                mnNumber = getNextNumber(session, msSeries);
+            }
+
+            int xmlStatus = DLibConsts.UNDEFINED;
+            String textToSign;
+            String textSigned;
+            DGuiEdsSignature signature;
+            DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getBizPartnerKey());
+            DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+            cfd.DCfd cfd = new cfd.DCfd(configBranch.getDfrDirectory());
+            cfd.DSubelementAddenda extAddenda = null;
+
+            switch (mnFkXmlTypeId) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    // Create DFR:
+                    signature = session.getEdsSignature(getCompanyBranchKey());
+                    cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, signature);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
+                        if (extAddenda != null) {
+                            cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
+                            addenda.getElements().add(extAddenda);
+                            comprobante33.setEltOpcAddenda(addenda);
+                        }
+                    }
+
+                    // Sign DFR:
+                    textToSign = comprobante33.getElementForOriginalString();
+                    textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(mtDocTs)[0]);
+                    cfd.write(comprobante33, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
+
+                    // Set DFR status:
+                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    // Create DFR:
+                    signature = session.getEdsSignature(getCompanyBranchKey());
+                    cfd.ver40.DElementComprobante comprobante40 = createCfdi40(session, signature);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
+                        if (extAddenda != null) {
+                            cfd.ver4.DElementAddenda addenda = new cfd.ver4.DElementAddenda();
+                            addenda.getElements().add(extAddenda);
+                            comprobante40.setEltOpcAddenda(addenda);
+                        }
+                    }
+
+                    // Sign DFR:
+                    textToSign = comprobante40.getElementForOriginalString();
+                    textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(mtDocTs)[0]);
+                    cfd.write(comprobante40, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
+
+                    // Set DFR status:
+                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+
+            // Create DFR:
+
+            //mnPkDfrId;
+            //msSeries; // should be already provided
+            //mnNumber; // will be defined by system
+            msCertificateNumber = session.getEdsSignature(getCompanyBranchKey()).getCertificateNumber();
+            msSignedText = cfd.getLastStringSigned();
+            msSignature = cfd.getLastSignature();
+            msUuid = "";
+            mtDocTs = cfd.getLastTimestamp();
+            msDocXml = cfd.getLastXml();
+            msDocXmlRaw = "";
+            msDocXmlAddenda = extAddenda == null ? "" : extAddenda.getElementForXml();
+            msDocXmlName = cfd.getLastXmlFileName();
+            msCancelStatus = "";
+            msCancelXml = "";
+            moCancelPdf_n = null;
+            //mbBookkept; // should be already provided
+            /*
+            mbDeleted;
+            mbSystem;
+            */
+            //mnFkXmlTypeId; // should be already provided
+            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_VER_CRP_2[0];
+            mnFkXmlSubtypeVersionId = DModSysConsts.TS_XML_STP_VER_CRP_2[1];
+            mnFkXmlStatusId = xmlStatus;
+            mnFkXmlAddendaTypeId = msDocXmlAddenda.isEmpty() ? DModSysConsts.TS_XML_ADD_TP_NA : bizPartner.getFkXmlAddendaTypeId();
+            mnFkXmlSignatureProviderId = DModSysConsts.CS_XSP_NA;
+            mnFkCertificateId = session.getEdsSignature(getCompanyBranchKey()).getCertificateId();
+            //mnFkOwnerBizPartnerId;    // should be already provided
+            //mnFkOwnerBranchId;        // should be already provided
+            //mnFkBizPartnerId;         // should be already provided
+            mnFkDpsId_n = 0;
+            mnFkBolId_n = 0;
+            //mnFkCashBizPartnerId_n;       // should be already provided
+            //mnFkCashBranchId_n;           // should be already provided
+            //mnFkCashCashId_n;             // should be already provided
+            //mnFkBookkeepingYearId_n;      // should be already provided
+            //mnFkBookkeepingNumberId_n;    // should be already provided
+            /*
+            mnFkUserIssuedId;
+            mnFkUserAnnulledId;
+            mnFkUserInsertId;
+            mnFkUserUpdateId;
+            mtTsUserIssued;
+            mtTsUserAnnulled;
+            mtTsUserInsert;
+            mtTsUserUpdate;
+            */
+            
+            /*
+            mbAuxDfrJustIssued;
+            mbAuxDfrJustAnnulled;
+            mbAuxRewriteXmlOnSave;
+            mbAuxAddendaJustSet;
+            manAuxXmlSignatureRequestKey;
+            */
+        }
     }
     
-    private ArrayList<DDbBookkeepingMove> createPaymentMoves10(final DGuiSession session, final cfd.ver33.crp10.DElementPagosPago pago10, final DDbAbpBranchCash abpBranchCash) throws Exception {
+    /**
+     * Create payment moves for CRP.
+     * @param session GUI user session.
+     * @param pago10 XML-element Pago 1.0.
+     * @param abpBranchCash Automatic bookkeeping package for branch cash.
+     * @return
+     * @throws Exception 
+     */
+    private ArrayList<DDbBookkeepingMove> createPaymentMoves10ForCrp(final DGuiSession session, final cfd.ver33.crp10.DElementPagosPago pago10, final DDbAbpBranchCash abpBranchCash) throws Exception {
         ArrayList<DDbBookkeepingMove> moves = new ArrayList<>();
         
         DDbBookkeepingMove bkkMoveCash = new DDbBookkeepingMove();
@@ -223,7 +390,15 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         return moves;
     }
     
-    private ArrayList<DDbBookkeepingMove> createPaymentMoves20(final DGuiSession session, final cfd.ver40.crp20.DElementPagosPago pago20, final DDbAbpBranchCash abpBranchCash) throws Exception {
+    /**
+     * Create payment moves for CRP.
+     * @param session GUI user session.
+     * @param pago10 XML-element Pago 2.0.
+     * @param abpBranchCash Automatic bookkeeping package for branch cash.
+     * @return
+     * @throws Exception 
+     */
+    private ArrayList<DDbBookkeepingMove> createPaymentMoves20ForCrp(final DGuiSession session, final cfd.ver40.crp20.DElementPagosPago pago20, final DDbAbpBranchCash abpBranchCash) throws Exception {
         ArrayList<DDbBookkeepingMove> moves = new ArrayList<>();
         
         DDbBookkeepingMove bkkMoveCash = new DDbBookkeepingMove();
@@ -307,35 +482,34 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         return moves;
     }
-    
+
     /**
+     * Compute bookkeeping for CFR. Works only if DFR was not just issued but annulled!
      * Allways clear previous bookkeeping moves, if any, and create new ones.
      * @param session
      * @throws SQLException
      * @throws Exception 
      */
-    private void computeBookkeeping(final DGuiSession session) throws SQLException, Exception {
-        if (mbAuxComputeBookkeeping) {
-            mbAuxComputeBookkeeping = false;
-            
+    private void computeBookkeepingForCrp(final DGuiSession session) throws SQLException, Exception {
+        if (isCrp() && !mbAuxDfrJustIssued) {
             DDbBookkeepingNumber bkkNumber;
-
+            
             // delete previous bookkeeping moves, if any:
             
             msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.F_BKK) + " "
                     + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
                     + "WHERE fk_dfr_n = " + mnPkDfrId + " AND NOT b_del;";
             session.getStatement().execute(msSql);
-
+            
             // delete previous bookkeeping number (it will attempt to delete as well bookkeping moves), if any:
-
+            
             if (mnFkBookkeepingYearId_n != DLibConsts.UNDEFINED && mnFkBookkeepingNumberId_n != DLibConsts.UNDEFINED) {
                 bkkNumber = new DDbBookkeepingNumber();
                 bkkNumber.read(session, new int[] { mnFkBookkeepingYearId_n, mnFkBookkeepingNumberId_n });
                 bkkNumber.setDeleted(true);
                 bkkNumber.save(session);
 
-                if (!mbBookeept) {
+                if (!mbBookkept) {
                     // clear reference to bookkeeping number in this DFR:
 
                     mnFkBookkeepingYearId_n = 0;
@@ -346,8 +520,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     session.getStatement().execute(msSql);
                 }
             }
-
-            if (mbBookeept) {
+            
+            if (mbBookkept && !mbDeleted && mnFkXmlStatusId < DModSysConsts.TS_XML_ST_ANN) {
                 // save bookkeeping moves:
 
                 bkkNumber = new DDbBookkeepingNumber();
@@ -385,7 +559,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                                 if (element instanceof cfd.ver33.crp10.DElementPagos) {
                                     cfd.ver33.crp10.DElementPagos pagos10 = (cfd.ver33.crp10.DElementPagos) element;
                                     for (cfd.ver33.crp10.DElementPagosPago pago10 : pagos10.getEltPagos()) {
-                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves10(session, pago10, abpBranchCash));
+                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves10ForCrp(session, pago10, abpBranchCash));
                                     }
                                     break;
                                 }
@@ -401,7 +575,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                                 if (element instanceof cfd.ver40.crp20.DElementPagos) {
                                     cfd.ver40.crp20.DElementPagos pagos20 = (cfd.ver40.crp20.DElementPagos) element;
                                     for (cfd.ver40.crp20.DElementPagosPago pago20 : pagos20.getEltPagos()) {
-                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves20(session, pago20, abpBranchCash));
+                                        bkkMoveCustom.getChildMoves().addAll(createPaymentMoves20ForCrp(session, pago20, abpBranchCash));
                                     }
                                     break;
                                 }
@@ -417,7 +591,157 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             }
         }
     }
+    
+    /**
+     * Embeed addenda to this DFR.
+     * @param session GUI user session.
+     * @throws Exception 
+     */
+    @SuppressWarnings("deprecation")
+    private void embeedAddenda(final DGuiSession session) throws Exception {
+        if (mbAuxAddendaJustSet) {
+            DSubelementAddenda extAddenda = null;
 
+            switch (mnFkXmlTypeId) {
+                case DModSysConsts.TS_XML_TP_CFD:
+                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+
+                case DModSysConsts.TS_XML_TP_CFDI_32:
+                    // Create DFR:
+                    cfd.ver32.DElementComprobante comprobante32 = DCfdUtils.getCfdi32(getSuitableDocXml());
+                    DTrnDfrUtils.configureCfdi32(session, comprobante32);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver3.DElementAddenda addenda = null;
+
+                            if (comprobante32.getEltOpcAddenda() != null) {
+                                addenda = comprobante32.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver3.DElementAddenda();
+                                comprobante32.setEltOpcAddenda(addenda);
+                            }
+
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante32.getElementForXml();
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_33:
+                    // Create DFR:
+                    cfd.ver33.DElementComprobante comprobante33 = DCfdUtils.getCfdi33(getSuitableDocXml());
+                    DTrnDfrUtils.configureCfdi33(session, comprobante33);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver3.DElementAddenda addenda = null;
+
+                            if (comprobante33.getEltOpcAddenda() != null) {
+                                addenda = comprobante33.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver3.DElementAddenda();
+                                comprobante33.setEltOpcAddenda(addenda);
+                            }
+
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante33.getElementForXml();
+                    break;
+
+                case DModSysConsts.TS_XML_TP_CFDI_40:
+                    // Create DFR:
+                    cfd.ver40.DElementComprobante comprobante40 = DCfdUtils.getCfdi40(getSuitableDocXml());
+                    DTrnDfrUtils.configureCfdi40(session, comprobante40);
+
+                    // Append to DFR the very addenda previously added to DPS if any:
+                    if (!msDocXmlAddenda.isEmpty()) {
+                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
+                        if (extAddenda != null) {
+                            cfd.ver4.DElementAddenda addenda = null;
+
+                            if (comprobante40.getEltOpcAddenda() != null) {
+                                addenda = comprobante40.getEltOpcAddenda();
+                            }
+                            else {
+                                addenda = new cfd.ver4.DElementAddenda();
+                                comprobante40.setEltOpcAddenda(addenda);
+                            }
+
+                            for (DElement element : addenda.getElements()) {
+                                if (element instanceof DElementAddendaContinentalTire) {
+                                    addenda.getElements().remove(element);
+                                    break;
+                                }
+                            }
+
+                            addenda.getElements().add(extAddenda);
+                        }
+                    }
+
+                    msDocXml = DCfdConsts.XML_HEADER + comprobante40.getElementForXml();
+                    break;
+
+                default:
+                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+            }
+        }
+    }
+    
+    /**
+     * Rewrite XML file of DFR when it must be regenerated, so save new XML file.
+     * @param session GUI user session.
+     * @throws Exception 
+     */
+    private void rewriteXml(final DGuiSession session) throws Exception {
+        if (mbAuxDfrJustIssued || mbAuxAddendaJustSet) {
+            // XML must be regenerated, so save new XML file:
+            
+            DDbConfigBranch configBranch = null;
+            
+            if (mnFkDpsId_n != 0) {
+                DDbDps dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnFkDpsId_n });
+                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+            }
+            else if (mnFkBolId_n != 0) {
+                DDbBol bol = (DDbBol) session.readRegistry(DModConsts.L_BOL, new int[] { mnFkBolId_n });
+                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
+            }
+            else {
+                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
+            }
+            
+            DXmlUtils.writeXml(mbAuxAddendaJustSet ? msDocXml : getSuitableDocXml(), configBranch.getDfrDirectory() + msDocXmlName);
+        }
+    }
+    
+    /**
+     * Load DFR Mate data.
+     * @throws Exception 
+     */
     private void loadXtaDfrMate() throws Exception {
         Node node;
         NamedNodeMap namedNodeMap;
@@ -587,67 +911,6 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         return number;
     }
-    
-    /**
-     * Checks if registry is available, that is, not locked.
-     * @param session User session.
-     * @return
-     * @throws Exception 
-     */
-    @Override
-    public boolean checkAvailability(final DGuiSession session) throws Exception {
-        boolean isAvailable = true;
-        
-        if (!mbRegistryNew) {
-            if (moAuxLock == null) {
-                // no lock set already, check only availabitity:
-                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDfrId);
-            }
-            else {
-                // lock already set, validate it:
-                DLockUtils.validateLock(session, moAuxLock, true);
-                isAvailable = true;
-            }
-        }
-        
-        return isAvailable;
-    }
-
-    /**
-     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
-     * @param session GUI session.
-     * @return 
-     * @throws Exception 
-     */
-    @Override
-    public DDbLock assureLock(final DGuiSession session) throws Exception {
-        if (!mbRegistryNew) {
-            if (moAuxLock == null) {
-                // no lock set already, create it:
-                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDfrId, TIMEOUT);
-            }
-            else {
-                // lock already set, validate it:
-                DLockUtils.validateLock(session, moAuxLock, true);
-            }
-        }
-        
-        return moAuxLock;
-    }
-
-    /**
-     * Frees current lock, if any, with by-update status.
-     * @param session GUI session.
-     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
-     * @throws Exception 
-     */
-    @Override
-    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
-        if (moAuxLock != null) {
-            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
-            moAuxLock = null;
-        }
-    }
 
     private void freeDpsLock(final DGuiSession session, final int freedLockStatus) throws Exception {
         if (moAuxDpsLock != null) {
@@ -671,7 +934,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public void setCancelStatus(String s) { msCancelStatus = s; }
     public void setCancelXml(String s) { msCancelXml = s; }
     public void setCancelPdf_n(java.sql.Blob o) { moCancelPdf_n = o; }
-    public void setBookeept(boolean b) { mbBookeept = b; }
+    public void setBookkept(boolean b) { mbBookkept = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkXmlTypeId(int n) { mnFkXmlTypeId = n; }
@@ -715,7 +978,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public String getCancelStatus() { return msCancelStatus; }
     public String getCancelXml() { return msCancelXml; }
     public java.sql.Blob getCancelPdf_n() { return moCancelPdf_n; }
-    public boolean isBookeept() { return mbBookeept; }
+    public boolean isBookkept() { return mbBookkept; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkXmlTypeId() { return mnFkXmlTypeId; }
@@ -754,20 +1017,16 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     public cfd.ver33.crp10.DElementPagos getDfrPagos10() { return moDfrPagos10; }
     public cfd.ver40.crp20.DElementPagos getDfrPagos20() { return moDfrPagos20; }
     
-    public void setAuxJustIssued(boolean b) { mbAuxJustIssued = b; }
-    public void setAuxJustAnnulled(boolean b) { mbAuxJustAnnulled = b; }
-    public void setAuxComputeBookkeeping(boolean b) { mbAuxComputeBookkeeping = b; }
-    public void setAuxRewriteXmlOnSave(boolean b) { mbAuxRewriteXmlOnSave = b; }
-    public void setAuxRegenerateXmlOnSave(boolean b) { mbAuxRegenerateXmlOnSave = b; }
+    public void setAuxDfrJustIssued(boolean b) { mbAuxDfrJustIssued = b; }
+    public void setAuxDfrJustAnnulled(boolean b) { mbAuxDfrJustAnnulled = b; }
+    public void setAuxAddendaJustSet(boolean b) { mbAuxAddendaJustSet = b; }
     public void setAuxXmlSignatureRequestKey(int[] key) { manAuxXmlSignatureRequestKey = key; }
     public void setAuxLock(DDbLock o) { moAuxLock = o; }
     public void setAuxDpsLock(DDbLock o) { moAuxDpsLock = o; }
 
-    public boolean isAuxJustIssued() { return mbAuxJustIssued; }
-    public boolean isAuxJustAnnulled() { return mbAuxJustAnnulled; }
-    public boolean isAuxComputeBookkeeping() { return mbAuxComputeBookkeeping; }
-    public boolean isAuxRewriteXmlOnSave() { return mbAuxRewriteXmlOnSave; }
-    public boolean isAuxRegenerateXmlOnSave() { return mbAuxRegenerateXmlOnSave; }
+    public boolean isAuxJustIssued() { return mbAuxDfrJustIssued; }
+    public boolean isAuxJustAnnulled() { return mbAuxDfrJustAnnulled; }
+    public boolean isAuxAddendaJustSet() { return mbAuxAddendaJustSet; }
     public int[] getAuxXmlSignatureRequestKey() { return manAuxXmlSignatureRequestKey; }
     public DDbLock getAuxLock() { return moAuxLock; }
     public DDbLock getAuxDpsLock() { return moAuxDpsLock; }
@@ -844,7 +1103,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         msCancelStatus = "";
         msCancelXml = "";
         moCancelPdf_n = null;
-        mbBookeept = false;
+        mbBookkept = false;
         mbDeleted = false;
         mbSystem = false;
         mnFkXmlTypeId = 0;
@@ -878,11 +1137,9 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         moDfrPagos10 = null;
         moDfrPagos20 = null;
         
-        mbAuxJustIssued = false;
-        mbAuxJustAnnulled = false;
-        mbAuxComputeBookkeeping = false;
-        mbAuxRewriteXmlOnSave = false;
-        mbAuxRegenerateXmlOnSave = false;
+        mbAuxDfrJustIssued = false;
+        mbAuxDfrJustAnnulled = false;
+        mbAuxAddendaJustSet = false;
         manAuxXmlSignatureRequestKey = null;
         moAuxLock = null;
         moAuxDpsLock = null;
@@ -945,7 +1202,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             msCancelStatus = resultSet.getString("can_st");
             msCancelXml = resultSet.getString("can_xml");
             moCancelPdf_n = resultSet.getBlob("can_pdf_n");
-            mbBookeept = resultSet.getBoolean("b_bkk");
+            mbBookkept = resultSet.getBoolean("b_bkk");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkXmlTypeId = resultSet.getInt("fk_xml_tp");
@@ -973,7 +1230,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             mtTsUserAnnulled = resultSet.getTimestamp("ts_usr_ann");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-
+            
             mbRegistryNew = false;
         }
         
@@ -983,13 +1240,20 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
+        if (isCrp() && !mbAuxDfrJustIssued && !mbAuxDfrJustAnnulled) {
+            prepareDfrForCrp(session);
+        }
+        
+        if (mbAuxAddendaJustSet) {
+            embeedAddenda(session);
+        }
+        
         // is issued?:
-        if (mbAuxJustIssued) {
+        if (mbAuxDfrJustIssued) {
             mnFkUserIssuedId = session.getUser().getPkUserId();
         }
         else if (mnFkUserIssuedId == DLibConsts.UNDEFINED) {
@@ -997,138 +1261,11 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         }
 
         // is annulled?:
-        if (mbAuxJustAnnulled) {
+        if (mbAuxDfrJustAnnulled) {
             mnFkUserAnnulledId = session.getUser().getPkUserId();
         }
         else if (mnFkUserAnnulledId == DLibConsts.UNDEFINED) {
             mnFkUserAnnulledId = DUtilConsts.USR_NA_ID;
-        }
-        
-        if (mbAuxRegenerateXmlOnSave) {
-            // XML must be regenerated, so embeed addenda:
-            
-            DSubelementAddenda extAddenda = null;
-            
-            switch (mnFkXmlTypeId) {
-                case DModSysConsts.TS_XML_TP_CFD:
-                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
-
-                case DModSysConsts.TS_XML_TP_CFDI_32:
-                    // Create DFR:
-                    cfd.ver32.DElementComprobante comprobante32 = DCfdUtils.getCfdi32(getSuitableDocXml());
-                    DTrnDfrUtils.configureCfdi32(session, comprobante32);
-
-                    // Append to DFR the very addenda previously added to DPS if any:
-                    if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
-                        if (extAddenda != null) {
-                            cfd.ver3.DElementAddenda addenda = null;
-                            
-                            if (comprobante32.getEltOpcAddenda() != null) {
-                                addenda = comprobante32.getEltOpcAddenda();
-                            }
-                            else {
-                                addenda = new cfd.ver3.DElementAddenda();
-                                comprobante32.setEltOpcAddenda(addenda);
-                            }
-                            
-                            for (DElement element : addenda.getElements()) {
-                                if (element instanceof DElementAddendaContinentalTire) {
-                                    addenda.getElements().remove(element);
-                                    break;
-                                }
-                            }
-                            
-                            addenda.getElements().add(extAddenda);
-                        }
-                    }
-                    
-                    msDocXml = DCfdConsts.XML_HEADER + comprobante32.getElementForXml();
-                    break;
-
-                case DModSysConsts.TS_XML_TP_CFDI_33:
-                    // Create DFR:
-                    cfd.ver33.DElementComprobante comprobante33 = DCfdUtils.getCfdi33(getSuitableDocXml());
-                    DTrnDfrUtils.configureCfdi33(session, comprobante33);
-
-                    // Append to DFR the very addenda previously added to DPS if any:
-                    if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
-                        if (extAddenda != null) {
-                            cfd.ver3.DElementAddenda addenda = null;
-                            
-                            if (comprobante33.getEltOpcAddenda() != null) {
-                                addenda = comprobante33.getEltOpcAddenda();
-                            }
-                            else {
-                                addenda = new cfd.ver3.DElementAddenda();
-                                comprobante33.setEltOpcAddenda(addenda);
-                            }
-                            
-                            for (DElement element : addenda.getElements()) {
-                                if (element instanceof DElementAddendaContinentalTire) {
-                                    addenda.getElements().remove(element);
-                                    break;
-                                }
-                            }
-                            
-                            addenda.getElements().add(extAddenda);
-                        }
-                    }
-                    
-                    msDocXml = DCfdConsts.XML_HEADER + comprobante33.getElementForXml();
-                    break;
-
-                case DModSysConsts.TS_XML_TP_CFDI_40:
-                    // Create DFR:
-                    cfd.ver40.DElementComprobante comprobante40 = DCfdUtils.getCfdi40(getSuitableDocXml());
-                    DTrnDfrUtils.configureCfdi40(session, comprobante40);
-
-                    // Append to DFR the very addenda previously added to DPS if any:
-                    if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, mnFkXmlAddendaTypeId);
-                        if (extAddenda != null) {
-                            cfd.ver4.DElementAddenda addenda = null;
-                            
-                            if (comprobante40.getEltOpcAddenda() != null) {
-                                addenda = comprobante40.getEltOpcAddenda();
-                            }
-                            else {
-                                addenda = new cfd.ver4.DElementAddenda();
-                                comprobante40.setEltOpcAddenda(addenda);
-                            }
-                            
-                            for (DElement element : addenda.getElements()) {
-                                if (element instanceof DElementAddendaContinentalTire) {
-                                    addenda.getElements().remove(element);
-                                    break;
-                                }
-                            }
-                            
-                            addenda.getElements().add(extAddenda);
-                        }
-                    }
-                    
-                    msDocXml = DCfdConsts.XML_HEADER + comprobante40.getElementForXml();
-                    break;
-
-                default:
-                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-            }
-        }
-        
-        if (mnFkXmlSubtypeId == DModSysConsts.TS_XML_STP_CRP) {
-            // generate CFDI 3.3 with CRP 1.0 of CFDI 4.0 with CRP 2.0:
-            
-            if (msSeries.isEmpty()) {
-                msSeries = DCfdi40Catalogs.CFD_TP_P; // default series if no one provided
-            }
-            
-            if (mnNumber == 0) {
-                computeNextNumber(session);
-            }
-            
-            prepareDfr(session);
         }
         
         if (mbRegistryNew) {
@@ -1155,7 +1292,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     "'" + msCancelStatus + "', " + 
                     "'" + msCancelXml.replaceAll("'", "''") + "', " + 
                     "NULL, " + 
-                    (mbBookeept ? 1 : 0) + ", " + 
+                    (mbBookkept ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkXmlTypeId + ", " + 
@@ -1206,7 +1343,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     "can_st = '" + msCancelStatus + "', " +
                     "can_xml = '" + msCancelXml.replaceAll("'", "''") + "', " +
                     //"can_pdf_n = " + moCancelPdf_n + ", " +
-                    "b_bkk = " + (mbBookeept ? 1 : 0) + ", " +
+                    "b_bkk = " + (mbBookkept ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_xml_tp = " + mnFkXmlTypeId + ", " +
@@ -1226,12 +1363,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     "fk_csh_csh_n = " + (mnFkCashCashId_n == 0 ? "NULL" : "" + mnFkCashCashId_n) + ", " +
                     "fk_bkk_yer_n = " + (mnFkBookkeepingYearId_n == 0 ? "NULL" : "" + mnFkBookkeepingYearId_n) + ", " +
                     "fk_bkk_num_n = " + (mnFkBookkeepingNumberId_n == 0 ? "NULL" : "" + mnFkBookkeepingNumberId_n) + ", " +
-                    (!mbAuxJustIssued ? "" : "fk_usr_iss = " + mnFkUserIssuedId + ", ") +
-                    (!mbAuxJustAnnulled ? "" : "fk_usr_ann = " + mnFkUserAnnulledId + ", ") +
+                    (!mbAuxDfrJustIssued ? "" : "fk_usr_iss = " + mnFkUserIssuedId + ", ") +
+                    (!mbAuxDfrJustAnnulled ? "" : "fk_usr_ann = " + mnFkUserAnnulledId + ", ") +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + "" +
-                    (!mbAuxJustIssued ? "" : ", ts_usr_iss = " + "NOW()") +
-                    (!mbAuxJustAnnulled ? "" : ", ts_usr_ann = " + "NOW()") +
+                    (!mbAuxDfrJustIssued ? "" : ", ts_usr_iss = " + "NOW()") +
+                    (!mbAuxDfrJustAnnulled ? "" : ", ts_usr_ann = " + "NOW()") +
                     //", ts_usr_ins = '" + DLibUtils.DbmsDateFormatDatetime.format(mtTsUserInsert) + "'" +
                     ", ts_usr_upd = NOW()" +
                     " " +   // NOTE: trailing space!
@@ -1240,29 +1377,15 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         
         session.getStatement().execute(msSql);
         
-        if (mbAuxRewriteXmlOnSave || mbAuxRegenerateXmlOnSave) {
-            // XML must be regenerated, so save new XML file:
-            
-            DDbConfigBranch configBranch = null;
-            
-            if (mnFkDpsId_n != 0) {
-                DDbDps dps = (DDbDps) session.readRegistry(DModConsts.T_DPS, new int[] { mnFkDpsId_n });
-                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
-            }
-            else if (mnFkBolId_n != 0) {
-                DDbBol bol = (DDbBol) session.readRegistry(DModConsts.L_BOL, new int[] { mnFkBolId_n });
-                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
-            }
-            else {
-                configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            }
-            
-            DXmlUtils.writeXml(mbAuxRegenerateXmlOnSave ? msDocXml : getSuitableDocXml(), configBranch.getDfrDirectory() + msDocXmlName);
-        }
-        
         // Additional processing:
         
-        computeBookkeeping(session);
+        if (mbAuxDfrJustIssued || mbAuxAddendaJustSet) {
+            rewriteXml(session);
+        }
+        
+        if (isCrp() && !mbAuxDfrJustIssued) {
+            computeBookkeepingForCrp(session);
+        }
         
         // Finish registry updating:
         
@@ -1292,7 +1415,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setCancelStatus(this.getCancelStatus());
         registry.setCancelXml(this.getCancelXml());
         registry.setCancelPdf_n(this.getCancelPdf_n());
-        registry.setBookeept(this.isBookeept());
+        registry.setBookkept(this.isBookkept());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkXmlTypeId(this.getFkXmlTypeId());
@@ -1326,11 +1449,9 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         registry.setDfrPagos10(this.getDfrPagos10() == null ? null : this.getDfrPagos10()); // not cloned!, because clone is not supported for this class!
         registry.setDfrPagos20(this.getDfrPagos20() == null ? null : this.getDfrPagos20()); // not cloned!, because clone is not supported for this class!
 
-        registry.setAuxJustIssued(this.isAuxJustIssued());
-        registry.setAuxJustAnnulled(this.isAuxJustAnnulled());
-        registry.setAuxComputeBookkeeping(this.isAuxComputeBookkeeping());
-        registry.setAuxRewriteXmlOnSave(this.isAuxRewriteXmlOnSave());
-        registry.setAuxRegenerateXmlOnSave(this.isAuxRegenerateXmlOnSave());
+        registry.setAuxDfrJustIssued(this.isAuxJustIssued());
+        registry.setAuxDfrJustAnnulled(this.isAuxJustAnnulled());
+        registry.setAuxAddendaJustSet(this.isAuxAddendaJustSet());
         registry.setAuxXmlSignatureRequestKey(this.getAuxXmlSignatureRequestKey() == null ? null : new int[] { this.getAuxXmlSignatureRequestKey()[0], this.getAuxXmlSignatureRequestKey()[1] });
         registry.setAuxLock(this.getAuxLock()); // locks cannot be clonned!
         registry.setAuxDpsLock(this.getAuxDpsLock()); // locks cannot be clonned!
@@ -1408,7 +1529,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         }
         else {
             mnFkXmlStatusId = DModSysConsts.TS_XML_ST_ANN;
-            mbAuxJustAnnulled = true;
+            mbAuxDfrJustAnnulled = true;
         }
         
         save(session);
@@ -1536,12 +1657,12 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
 
         // element 'Emisor':
         comprobante.getEltEmisor().getAttRfc().setString(bprEmisor.getFiscalId());
-        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getProperName());
+        comprobante.getEltEmisor().getAttNombre().setString(bprEmisor.getPrintableName());
         comprobante.getEltEmisor().getAttRegimenFiscal().setString(moXtaDfrMate.getIssuerTaxRegime());
 
         // element 'Receptor':
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
-        comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getProperName());
+        comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getPrintableName());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
         comprobante.getEltReceptor().getAttUsoCFDI().setString(moXtaDfrMate.getCfdUsage());
@@ -1730,150 +1851,47 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         return comprobante;
     }
 
+    @Override
+    public String getDocName() {
+        return "comprobante";
+    }
+
+    @Override
+    public String getDocNumber() {
+        return getDfrNumber();
+    }
+
+    @Override
+    public Date getDocDate() {
+        return getDocTs();
+    }
+    
     /**
-     * By now supports only creation of CFDI 3.3 with Complemento de Recepción de Pagos 1.0 and CFDI 4.0 with Complemento de Recepción de Pagos 2.0.
-     * @param session
-     * @throws Exception 
+     * Get DPS status. Constants defined in DModSysConsts.TS_XML_ST_...
      */
-    private void prepareDfr(final DGuiSession session) throws Exception {
-        if (!mbAuxJustIssued && !mbAuxJustAnnulled) {
-            if (mnFkXmlTypeId == 0) {
-                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK tipo XML'.");
-            }
-            else if (mnFkOwnerBizPartnerId == 0) {
-                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK empresa'.");
-            }
-            else if (mnFkOwnerBranchId == 0) {
-                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK sucursal empresa'.");
-            }
-            if (mnFkBizPartnerId == 0) {
-                throw new Exception(DGuiConsts.ERR_MSG_FIELD_REQ + "'FK asociado de negocios'.");
-            }
+    @Override
+    public int getDocStatus() {
+        return getFkXmlStatusId();
+    }
+    
+    @Override
+    public int getBizPartnerCategory() {
+        return DModSysConsts.BS_BPR_CL_CUS;
+    }
 
-            int xmlStatus = DLibConsts.UNDEFINED;
-            String textToSign;
-            String textSigned;
-            DGuiEdsSignature signature;
-            DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getBizPartnerKey());
-            DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, getCompanyBranchKey());
-            cfd.DCfd cfd = new cfd.DCfd(configBranch.getDfrDirectory());
-            cfd.DSubelementAddenda extAddenda = null;
+    @Override
+    public int[] getBizPartnerBranchAddressKey() {
+        return new int[] { mnFkBizPartnerId, DUtilConsts.BPR_BRA_ID, DUtilConsts.BRA_ADD_ID };
+    }
 
-            switch (mnFkXmlTypeId) {
-                case DModSysConsts.TS_XML_TP_CFD:
-                case DModSysConsts.TS_XML_TP_CFDI_32:
-                    throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+    @Override
+    public DDbDfr getDfr() {
+        return this;
+    }
 
-                case DModSysConsts.TS_XML_TP_CFDI_33:
-                    // Create DFR:
-                    signature = session.getEdsSignature(getCompanyBranchKey());
-                    cfd.ver33.DElementComprobante comprobante33 = createCfdi33(session, signature);
-
-                    // Append to DFR the very addenda previously added to DPS if any:
-                    if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
-                        if (extAddenda != null) {
-                            cfd.ver3.DElementAddenda addenda = new cfd.ver3.DElementAddenda();
-                            addenda.getElements().add(extAddenda);
-                            comprobante33.setEltOpcAddenda(addenda);
-                        }
-                    }
-
-                    // Sign DFR:
-                    textToSign = comprobante33.getElementForOriginalString();
-                    textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(mtDocTs)[0]);
-                    cfd.write(comprobante33, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
-
-                    // Set DFR status:
-                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
-                    break;
-
-                case DModSysConsts.TS_XML_TP_CFDI_40:
-                    // Create DFR:
-                    signature = session.getEdsSignature(getCompanyBranchKey());
-                    cfd.ver40.DElementComprobante comprobante40 = createCfdi40(session, signature);
-
-                    // Append to DFR the very addenda previously added to DPS if any:
-                    if (!msDocXmlAddenda.isEmpty()) {
-                        extAddenda = DTrnDfrUtils.extractExtAddenda(msDocXmlAddenda, bizPartner.getFkXmlAddendaTypeId());
-                        if (extAddenda != null) {
-                            cfd.ver4.DElementAddenda addenda = new cfd.ver4.DElementAddenda();
-                            addenda.getElements().add(extAddenda);
-                            comprobante40.setEltOpcAddenda(addenda);
-                        }
-                    }
-
-                    // Sign DFR:
-                    textToSign = comprobante40.getElementForOriginalString();
-                    textSigned = signature.signText(textToSign, DLibTimeUtils.digestYear(mtDocTs)[0]);
-                    cfd.write(comprobante40, textToSign, textSigned, signature.getCertificateNumber(), signature.getCertificateBase64());
-
-                    // Set DFR status:
-                    xmlStatus = DModSysConsts.TS_XML_ST_PEN;
-                    break;
-
-                default:
-                    throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-            }
-
-            // Create DFR:
-
-            //mnPkDfrId;
-            //msSeries; // should be already provided
-            //mnNumber; // will be defined by system
-            msCertificateNumber = session.getEdsSignature(getCompanyBranchKey()).getCertificateNumber();
-            msSignedText = cfd.getLastStringSigned();
-            msSignature = cfd.getLastSignature();
-            msUuid = "";
-            mtDocTs = cfd.getLastTimestamp();
-            msDocXml = cfd.getLastXml();
-            msDocXmlRaw = "";
-            msDocXmlAddenda = extAddenda == null ? "" : extAddenda.getElementForXml();
-            msDocXmlName = cfd.getLastXmlFileName();
-            msCancelStatus = "";
-            msCancelXml = "";
-            moCancelPdf_n = null;
-            //mbBookeept; // should be already provided
-            /*
-            mbDeleted;
-            mbSystem;
-            */
-            //mnFkXmlTypeId; // should be already provided
-            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_VER_CRP_2[0];
-            mnFkXmlSubtypeVersionId = DModSysConsts.TS_XML_STP_VER_CRP_2[1];
-            mnFkXmlStatusId = xmlStatus;
-            mnFkXmlAddendaTypeId = msDocXmlAddenda.isEmpty() ? DModSysConsts.TS_XML_ADD_TP_NA : bizPartner.getFkXmlAddendaTypeId();
-            mnFkXmlSignatureProviderId = DModSysConsts.CS_XSP_NA;
-            mnFkCertificateId = session.getEdsSignature(getCompanyBranchKey()).getCertificateId();
-            //mnFkOwnerBizPartnerId;    // should be already provided
-            //mnFkOwnerBranchId;        // should be already provided
-            //mnFkBizPartnerId;         // should be already provided
-            mnFkDpsId_n = 0;
-            mnFkBolId_n = 0;
-            //mnFkCashBizPartnerId_n;       // should be already provided
-            //mnFkCashBranchId_n;           // should be already provided
-            //mnFkCashCashId_n;             // should be already provided
-            //mnFkBookkeepingYearId_n;      // should be already provided
-            //mnFkBookkeepingNumberId_n;    // should be already provided
-            /*
-            mnFkUserIssuedId;
-            mnFkUserAnnulledId;
-            mnFkUserInsertId;
-            mnFkUserUpdateId;
-            mtTsUserIssued;
-            mtTsUserAnnulled;
-            mtTsUserInsert;
-            mtTsUserUpdate;
-            */
-
-            mbAuxJustIssued = true;
-            /*
-            mbAuxJustAnnulled;
-            mbAuxRewriteXmlOnSave;
-            mbAuxRegenerateXmlOnSave;
-            manAuxXmlSignatureRequestKey;
-            */
-        }
+    @Override
+    public DDbRegistry createDocSending() {
+        return null;
     }
     
     /**
@@ -1882,7 +1900,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
      * @throws net.sf.jasperreports.engine.JRException
      */
     @Override
-    public void issueDfr(final DGuiSession session) throws Exception {
+    public void printDfr(final DGuiSession session) throws Exception {
         String fileName = "";
         DDbConfigBranch configBranch = null;
         
@@ -1909,49 +1927,70 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             }
         }
     }
-
-    @Override
-    public String getDocName() {
-        return "comprobante";
-    }
-
-    @Override
-    public String getDocNumber() {
-        return getDfrNumber();
-    }
-
-    @Override
-    public Date getDocDate() {
-        return getDocTs();
-    }
-    
-    @Override
-    public int getDocStatus() {
-        return getFkXmlStatusId();
-    }
-    
-    @Override
-    public int getBizPartnerCategory() {
-        return DModSysConsts.BS_BPR_CL_CUS;
-    }
-
-    @Override
-    public int[] getBizPartnerBranchAddressKey() {
-        return new int[] { mnFkBizPartnerId, DUtilConsts.BPR_BRA_ID, DUtilConsts.BRA_ADD_ID };
-    }
-
-    @Override
-    public DDbDfr getDfr() {
-        return this;
-    }
-
-    @Override
-    public DDbRegistry createDocSending() {
-        return null;
-    }
     
     @Override
     public boolean canAnnul(final DGuiSession session) throws Exception {
         return canDisable(session);
+    }
+    
+    /**
+     * Check if registry is available, that is, not locked.
+     * @param session User session.
+     * @return
+     * @throws Exception 
+     */
+    @Override
+    public boolean checkAvailability(final DGuiSession session) throws Exception {
+        boolean isAvailable = true;
+        
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, check only availabitity:
+                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDfrId);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+                isAvailable = true;
+            }
+        }
+        
+        return isAvailable;
+    }
+
+    /**
+     * Assure lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @return 
+     * @throws Exception 
+     */
+    @Override
+    public DDbLock assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, create it:
+                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDfrId, TIMEOUT);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+            }
+        }
+        
+        return moAuxLock;
+    }
+
+    /**
+     * Free current lock, if any, with by-update status.
+     * @param session GUI session.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
+     * @throws Exception 
+     */
+    @Override
+    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
+        if (moAuxLock != null) {
+            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
+            moAuxLock = null;
+        }
     }
 }

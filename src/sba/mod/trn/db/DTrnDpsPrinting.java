@@ -528,7 +528,7 @@ public class DTrnDpsPrinting {
         DDbBizPartner bizPartnerEmisor = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, moDps.getCompanyKey());
         DDbBranchAddress addressEmisor = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkOwnerBizPartnerId(), moDps.getFkOwnerBranchId(), DUtilConsts.BRA_ADD_ID });
         String emisorRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true);
-        String emisorNombre = bizPartnerEmisor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerEmisor.getProperName();
+        String emisorNombre = bizPartnerEmisor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerEmisor.getPrintableName();
         String lugarExpedicion = addressEmisor.composeLocality(moSession).toUpperCase();
         
         hashMap.put("sXmlEmiRfc", emisorRfc);
@@ -556,7 +556,7 @@ public class DTrnDpsPrinting {
         DDbBizPartner bizPartnerReceptor = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, moDps.getBizPartnerKey());
         DDbBranchAddress addressReceptor = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, moDps.getBizPartnerBranchAddressKey());
         String sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true);
-        String sRecNombre = bizPartnerReceptor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerReceptor.getProperName();
+        String sRecNombre = bizPartnerReceptor.isNamePrintingPolicyForFiscal() ? DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true) : bizPartnerReceptor.getPrintableName();
         
         hashMap.put("sXmlRecRfc", sRecRfc);
         hashMap.put("sXmlRecNombre", sRecNombre);

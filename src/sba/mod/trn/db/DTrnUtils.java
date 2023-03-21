@@ -381,7 +381,8 @@ public abstract class DTrnUtils {
                         + "FROM " + DModConsts.TablesMap.get(DModConsts.BU_BPR_CFG) + " AS bc "
                         + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_TP ) + " AS bt ON "
                         + "bc.fk_bpr_cl = bt.id_bpr_cl AND bc.fk_bpr_tp = bt.id_bpr_tp AND "
-                        + "bc.id_bpr = " + bizPartnerKey[0] + " AND bc.id_bpr_cl = " + DModSysConsts.BS_BPR_CL_CUS + " ";
+                        + "bc.id_bpr = " + bizPartnerKey[0] + " AND bc.id_bpr_cl = " + DModSysConsts.BS_BPR_CL_CUS + " "
+                        + "WHERE NOT bc.b_del AND NOT bt.b_del ";
                 resultSet = session.getStatement().executeQuery(sql);
                 if (!resultSet.next()) {
                     throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
@@ -400,7 +401,7 @@ public abstract class DTrnUtils {
                             sql = "SELECT prc "
                                     + "FROM " + DModConsts.TablesMap.get(DModConsts.M_CUS_FIX) + " "
                                     + "WHERE id_lnk_cus_tp = " + linkCustomer + " AND id_ref_cus = " + customerLinks[linkCustomer - 1] + " AND "
-                                    + "id_itm = " + item.getPkItemId() + " ";
+                                    + "id_itm = " + item.getPkItemId() + " AND NOT b_del ";
                             resultSet = session.getStatement().executeQuery(sql);
                             if (resultSet.next()) {
                                 price = resultSet.getDouble(1);
@@ -419,7 +420,8 @@ public abstract class DTrnUtils {
                                     + "FROM " + DModConsts.TablesMap.get(DModConsts.M_SPE_CUS) + " AS scus "
                                     + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.M_SPE) + " AS sspe ON "
                                     + "scus.fk_spe = sspe.id_spe AND sspe.b_del = 0 AND "
-                                    + "scus.id_lnk_cus_tp = " + linkCustomer + " AND scus.id_ref_cus = " + customerLinks[linkCustomer - 1] + " ";
+                                    + "scus.id_lnk_cus_tp = " + linkCustomer + " AND scus.id_ref_cus = " + customerLinks[linkCustomer - 1] + " AND "
+                                    + "NOT scus.b_del AND NOT sspe.b_del ";
                             resultSet = session.getStatement().executeQuery(sql);
                             if (resultSet.next()) {
                                 id = resultSet.getInt(1);
@@ -454,7 +456,8 @@ public abstract class DTrnUtils {
                                     + "FROM " + DModConsts.TablesMap.get(DModConsts.M_PRM_CUS) + " AS pcus "
                                     + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.M_PRM) + " AS pprm ON "
                                     + "pcus.fk_prm = pprm.id_prm AND pprm.b_del = 0 AND "
-                                    + "pcus.id_lnk_cus_tp = " + linkCustomer + " AND pcus.id_ref_cus = " + customerLinks[linkCustomer - 1] + " ";
+                                    + "pcus.id_lnk_cus_tp = " + linkCustomer + " AND pcus.id_ref_cus = " + customerLinks[linkCustomer - 1] + " "
+                                    + "WHERE NOT pcus.b_del AND NOT pprm.b_del ";
                             resultSet = session.getStatement().executeQuery(sql);
                             if (resultSet.next()) {
                                 id = resultSet.getInt(1);
@@ -901,7 +904,7 @@ public abstract class DTrnUtils {
      */
     public static Vector<DRowFindBizPartner> readFindBizPartners(final DGuiSession session, final int findMode, final int bizPartnerClass) {
         String sql = "";
-        Vector<DRowFindBizPartner> rows = new Vector<DRowFindBizPartner>();
+        Vector<DRowFindBizPartner> rows = new Vector<>();
         ResultSet resultSet = null;
 
         try {
@@ -916,14 +919,14 @@ public abstract class DTrnUtils {
                     throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
             }
 
-            sql = "SELECT b.id_bpr, bc.code, b.name, b.fis_id, bc.fk_bpr_cl, bc.fk_bpr_tp " +
+            sql = "SELECT b.id_bpr, bc.code, b.name, b.name_fis, b.fis_id, bc.fk_bpr_cl, bc.fk_bpr_tp " +
                     "FROM " + DModConsts.TablesMap.get(DModConsts.BU_BPR) + " AS b " +
                     "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BPR_CFG) + " AS bc ON " +
                     "b.id_bpr = bc.id_bpr AND bc.id_bpr_cl = " + bizPartnerClass + " AND b.b_del = 0 AND b.b_dis = 0 " +
                     "ORDER BY " + sql;
             resultSet = session.getStatement().executeQuery(sql);
             while (resultSet.next()) {
-                DRowFindBizPartner row = new DRowFindBizPartner(findMode, resultSet.getInt("b.id_bpr"), resultSet.getString("bc.code"), resultSet.getString("b.name"), resultSet.getString("b.fis_id"));
+                DRowFindBizPartner row = new DRowFindBizPartner(findMode, resultSet.getInt("b.id_bpr"), resultSet.getString("bc.code"), resultSet.getString("b.name"), resultSet.getString("b.fis_id"), resultSet.getString("b.name_fis"));
                 row.setFkBizPartnerClassId(resultSet.getInt("bc.fk_bpr_cl"));
                 row.setFkBizPartnerTypeId(resultSet.getInt("bc.fk_bpr_tp"));
                 rows.add(row);

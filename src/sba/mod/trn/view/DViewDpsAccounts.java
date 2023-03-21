@@ -268,6 +268,7 @@ public class DViewDpsAccounts extends DGridPaneView implements ActionListener {
         moSuscriptionsSet.add(DModConsts.FX_BKK_CTM);
         moSuscriptionsSet.add(DModConsts.T_DFR);
         moSuscriptionsSet.add(DModConsts.T_DPS);
+        moSuscriptionsSet.add(DModConsts.TX_DFR_PAY);
     }
 
     @Override

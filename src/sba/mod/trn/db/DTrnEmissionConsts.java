@@ -21,6 +21,7 @@ public abstract class DTrnEmissionConsts {
     public static final String UUID_ANNUL_UUID_UNEXIST = "205";
     
     public static final String PAC = "Proveedor Autorizado de Certificación";
+    public static final String PUBLIC_FAKE = "PÚBLICO EN GENERAL"; // the official name is PUBLICO EN GENERAL
     
     public static final String MSG_DENIED_CHANGE = "No se puede cambiar el tipo del documento:\n";
     public static final String MSG_DENIED_SIGN = "No se puede timbrar el comprobante:\n";

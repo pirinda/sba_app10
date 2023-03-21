@@ -534,7 +534,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
-    private void saveChildDfr(final DGuiSession session, boolean issueDfr) throws SQLException, Exception {
+    private void saveChildDfr(final DGuiSession session, boolean printDfr) throws SQLException, Exception {
         if (moChildDfr == null) {
             msSql = "UPDATE " + DModConsts.TablesMap.get(DModConsts.T_DFR) + " "
                     + "SET b_del = 1, fk_usr_upd = " + session.getUser().getPkUserId() + ", ts_usr_upd = NOW() "
@@ -549,8 +549,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
             moChildDfr.setDeleted(mbDeleted);
             moChildDfr.save(session);
 
-            if (issueDfr) {
-                issueDfr(session);
+            if (printDfr) {
+                printDfr(session);
             }
         }
     }
@@ -559,6 +559,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         if (moChildDfr != null) {
             int row = 0;
             Node node;
+            Node nodeComprobante;
             NamedNodeMap namedNodeMap;
             Document doc;
             Vector<Node> conceptos;
@@ -575,8 +576,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     
                     // comprobante:
                     
-                    node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
-                    namedNodeMap = node.getAttributes();
+                    nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                    namedNodeMap = nodeComprobante.getAttributes();
                     
                     moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
                     moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
@@ -609,8 +610,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
 
                     // CFDI relacionados:
                     
-                    if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
-                        node = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados").get(0); // CFDI 3.3 has only one child, if any
+                    if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:CfdiRelacionados")) {
+                        node = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados").get(0); // CFDI 3.3 has only one child, if any
                         namedNodeMap = node.getAttributes();
                         
                         String relationCode = DXmlUtils.extractAttributeValue(namedNodeMap, "TipoRelacion", true);
@@ -659,8 +660,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     
                     // comprobante:
                     
-                    node = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
-                    namedNodeMap = node.getAttributes();
+                    nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
+                    namedNodeMap = nodeComprobante.getAttributes();
                     
                     moXtaDfrMate.setCfdType(DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true));
                     moXtaDfrMate.setVersion(DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
@@ -687,8 +688,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     
                     // información global:
                     
-                    if (DXmlUtils.hasChildElement(node, "cfdi:InformacionGlobal")) {
-                        node = DXmlUtils.extractChildElements(node, "cfdi:InformacionGlobal").get(0);
+                    if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:InformacionGlobal")) {
+                        node = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:InformacionGlobal").get(0);
                         namedNodeMap = node.getAttributes();
                         
                         moXtaDfrMate.setGlobalPeriodicity(DXmlUtils.extractAttributeValue(namedNodeMap, "Periodicidad", true));
@@ -698,8 +699,8 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
 
                     // CFDI relacionados:
                     
-                    if (DXmlUtils.hasChildElement(node, "cfdi:CfdiRelacionados")) {
-                        Vector<Node> relaciones = DXmlUtils.extractChildElements(node, "cfdi:CfdiRelacionados");
+                    if (DXmlUtils.hasChildElement(nodeComprobante, "cfdi:CfdiRelacionados")) {
+                        Vector<Node> relaciones = DXmlUtils.extractChildElements(nodeComprobante, "cfdi:CfdiRelacionados");
                         DDfrMateRelations relations = new DDfrMateRelations();
                         
                         for (Node relacion : relaciones) {
@@ -945,67 +946,6 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         }
 
         return text;
-    }
-    
-    /**
-     * Checks if registry is available, that is, not locked.
-     * @param session
-     * @return
-     * @throws Exception 
-     */
-    @Override
-    public boolean checkAvailability(final DGuiSession session) throws Exception {
-        boolean isAvailable = true;
-        
-        if (!mbRegistryNew) {
-            if (moAuxLock == null) {
-                // no lock set already, check only availabitity:
-                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDpsId);
-            }
-            else {
-                // lock already set, validate it:
-                DLockUtils.validateLock(session, moAuxLock, true);
-                isAvailable = true;
-            }
-        }
-        
-        return isAvailable;
-    }
-
-    /**
-     * Assures lock. That is if it does not already exist, it is created, otherwise validated.
-     * @param session GUI session.
-     * @return 
-     * @throws Exception 
-     */
-    @Override
-    public DDbLock assureLock(final DGuiSession session) throws Exception {
-        if (!mbRegistryNew) {
-            if (moAuxLock == null) {
-                // no lock set already, create it:
-                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDpsId, TIMEOUT);
-            }
-            else {
-                // lock already set, validate it:
-                DLockUtils.validateLock(session, moAuxLock, true);
-            }
-        }
-        
-        return moAuxLock;
-    }
-
-    /**
-     * Frees current lock, if any, with by-update status.
-     * @param session GUI session.
-     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
-     * @throws Exception 
-     */
-    @Override
-    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
-        if (moAuxLock != null) {
-            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
-            moAuxLock = null;
-        }
     }
 
     public void setPkDpsId(int n) { mnPkDpsId = n; }
@@ -1943,13 +1883,6 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     }
     
     @Override
-    public boolean canAnnul(final DGuiSession session) throws SQLException, Exception {
-        mbAuxCheckDfrDiscarting = false;
-        
-        return canDisable(session);
-    }
-
-    @Override
     public boolean canDisable(final DGuiSession session) throws SQLException, Exception {
         boolean can = super.canDisable(session);
 
@@ -2114,7 +2047,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * Creates new entry for document printing log.
+     * Create new entry for document printing log.
      * @param freeDpsLockOnSave
      * @return 
      */
@@ -2144,7 +2077,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * Creates new entry for document signing log.
+     * Create new entry for document signing log.
      * @param freeDpsLockOnSave
      * @return 
      */
@@ -2174,7 +2107,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     }
 
     /**
-     * Creates new entry for document sending log.
+     * Create new entry for document sending log.
      * @return DDbDpsSending
      */
     public DDbDpsSending createDpsSending() {
@@ -2215,14 +2148,52 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         mnQueryResultId = DDbConsts.SAVE_OK;
     }
 
+    @Override
+    public String getDocName() {
+        return "documento";
+    }
+
+    @Override
+    public String getDocNumber() {
+        return getDpsNumber();
+    }
+
+    @Override
+    public Date getDocDate() {
+        return getChildDfr() == null ? null : getChildDfr().getDocTs();
+    }
+    
     /**
-     * Issues Digital Fiscal Receipt (DFR) as file of type Portable Document Format (PDF).
+     * Get DPS status. Constants defined in DModSysConsts.TS_DPS_ST_...
+     */
+    @Override
+    public int getDocStatus() {
+        return getFkDpsStatusId();
+    }
+    
+    @Override
+    public int getBizPartnerCategory() {
+        return DTrnUtils.getBizPartnerClassByDpsCategory(mnFkDpsCategoryId);
+    }
+
+    @Override
+    public DDbDfr getDfr() {
+        return getChildDfr();
+    }
+
+    @Override
+    public DDbRegistry createDocSending() {
+        return createDpsSending();
+    }
+    
+    /**
+     * Print Digital Fiscal Receipt (DFR) as file of type Portable Document Format (PDF).
      * @param session
      * @throws net.sf.jasperreports.engine.JRException
      */
     @Override
     @SuppressWarnings("deprecation")
-    public void issueDfr(final DGuiSession session) throws Exception {
+    public void printDfr(final DGuiSession session) throws Exception {
         String fileName = "";
         DDbConfigBranch configBranch = null;
         
@@ -2254,37 +2225,70 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     }
 
     @Override
-    public String getDocName() {
-        return "documento";
+    public boolean canAnnul(final DGuiSession session) throws SQLException, Exception {
+        mbAuxCheckDfrDiscarting = false;
+        
+        return canDisable(session);
     }
 
+    /**
+     * Check if registry is available, that is, not locked.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
     @Override
-    public String getDocNumber() {
-        return getDpsNumber();
+    public boolean checkAvailability(final DGuiSession session) throws Exception {
+        boolean isAvailable = true;
+        
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, check only availabitity:
+                isAvailable = DLockUtils.isRegistryAvailable(session, mnRegistryType, mnPkDpsId);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+                isAvailable = true;
+            }
+        }
+        
+        return isAvailable;
     }
 
+    /**
+     * Assure lock. That is if it does not already exist, it is created, otherwise validated.
+     * @param session GUI session.
+     * @return 
+     * @throws Exception 
+     */
     @Override
-    public Date getDocDate() {
-        return getChildDfr() == null ? null : getChildDfr().getDocTs();
-    }
-    
-    @Override
-    public int getDocStatus() {
-        return getFkDpsStatusId();
-    }
-    
-    @Override
-    public int getBizPartnerCategory() {
-        return DTrnUtils.getBizPartnerClassByDpsCategory(mnFkDpsCategoryId);
+    public DDbLock assureLock(final DGuiSession session) throws Exception {
+        if (!mbRegistryNew) {
+            if (moAuxLock == null) {
+                // no lock set already, create it:
+                moAuxLock = DLockUtils.createLock(session, mnRegistryType, mnPkDpsId, TIMEOUT);
+            }
+            else {
+                // lock already set, validate it:
+                DLockUtils.validateLock(session, moAuxLock, true);
+            }
+        }
+        
+        return moAuxLock;
     }
 
+    /**
+     * Free current lock, if any, with by-update status.
+     * @param session GUI session.
+     * @param freedLockStatus Options supported: DDbLock.LOCK_ST_FREED_...
+     * @throws Exception 
+     */
     @Override
-    public DDbDfr getDfr() {
-        return getChildDfr();
-    }
-
-    @Override
-    public DDbRegistry createDocSending() {
-        return createDpsSending();
+    public void freeLock(final DGuiSession session, final int freedLockStatus) throws Exception {
+        if (moAuxLock != null) {
+            DLockUtils.freeLock(session, moAuxLock, freedLockStatus);
+            moAuxLock = null;
+        }
     }
 }
