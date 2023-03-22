@@ -539,6 +539,8 @@ public abstract class DModSysConsts {
     public static final int FS_MOP_TP_NA = 1; // non-applying
     public static final int FS_MOP_TP_CSH = 101; // cash
     public static final int FS_MOP_TP_CHK = 102; // check
+    public static final int FS_MOP_TP_COMP = 117; // compensation
+    public static final int FS_MOP_TP_ADV_APL = 130; // advance aplication
     public static final int FS_MOP_TP_TO_DEF = 199; // to be defined
 
     public static final int FS_VAL_TP_NA = 1;

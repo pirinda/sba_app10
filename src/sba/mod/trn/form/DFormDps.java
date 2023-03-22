@@ -4292,6 +4292,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                         DGuiConsts.ERR_MSG_FIELD_DATE_GREAT_EQUAL + DLibUtils.DateFormatDate.format(moDateDate.getValue()) + ".");
                 validation.setComponent(moDateCredit);
             }
+            else if (moKeyDfrMethodOfPayment.getSelectedIndex() > 0 && moKeyDfrMethodOfPayment.getSelectedItem().getCode().equals(DCfdi40Catalogs.MDP_PUE) && 
+                    (moKeyModeOfPaymentType.getValue()[0] == DModSysConsts.FS_MOP_TP_ADV_APL || moKeyModeOfPaymentType.getValue()[0] == DModSysConsts.FS_MOP_TP_TO_DEF)) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moKeyDfrMethodOfPayment.getFieldName() + "' es '" + moKeyDfrMethodOfPayment.getSelectedItem().getCode() + "'."
+                        + "\n" + DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyModeOfPaymentType.getFieldName() + "'.");
+                validation.setComponent(moKeyModeOfPaymentType);
+            }
             else if (moKeyEmissionType.getValue()[0] != DModSysConsts.TS_EMI_TP_BPR && moKeyPaymentType.getValue()[0] != DModSysConsts.FS_PAY_TP_CSH &&
                     miClient.showMsgBoxConfirm("¿Está seguro que desea emitir la operación a crédito, dado que el tipo de emisíón es '" + moKeyEmissionType.getSelectedItem().getItem().toLowerCase() + "'?") != JOptionPane.YES_OPTION) {
                 if (moKeyPaymentType.isEnabled()) {

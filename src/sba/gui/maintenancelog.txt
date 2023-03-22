@@ -4,6 +4,11 @@ SBA 1.0 031.0
 1) Implementación de timbrado e impresión de CFDI con complemento Carta Porte 2.0, tipo "T".
 
 ================================================================================
+SBA 1.0 031.2
+2023-03-21/ Sergio Abraham FLORES GUTIÉRREZ
+1) En la captura de CFDI factura, aplicación de validación de no selección de forma de pago "30" o "99" si el método de pago es "PUE".
+
+================================================================================
 SBA 1.0 031.1
 2023-03-21/ Sergio Abraham FLORES GUTIÉRREZ
 1) Corrección a la contabilización de CFDI de recepción de pagos.
