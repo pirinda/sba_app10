@@ -354,7 +354,7 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             dps.getXtaDfrMate().setConfirmation("");
             dps.getXtaDfrMate().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
             dps.getXtaDfrMate().setReceiverTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bizPartner.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
-            dps.getXtaDfrMate().setReceiverFiscalAddress(bizPartner.getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+            dps.getXtaDfrMate().setReceiverFiscalAddress(bizPartner.getActualAddressFiscal());
             dps.getXtaDfrMate().setCfdUsage(bizPartnerConfig.getActualCfdUsage());
             dps.getXtaDfrMate().setGlobalPeriodicity("");
             dps.getXtaDfrMate().setGlobalMonths("");

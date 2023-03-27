@@ -1199,7 +1199,6 @@ public abstract class DTrnDfrUtils {
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
         DDbBizPartner bprEmisor = null;
         DDbBranch braEmisor = null;
-        DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
         DDbBizPartner bprReceptorName = null;
         String receptorName = null;
@@ -1294,8 +1293,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttTipoDeComprobante().setString(dps.isDpsDocument() ? DCfdi40Catalogs.CFD_TP_I : DCfdi40Catalogs.CFD_TP_E);
         comprobante.getAttMetodoPago().setString(dps.getXtaDfrMate().getMethodOfPayment());
         
-        braAddressEmisor =  braEmisor.getChildAddressOfficial();
-        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        comprobante.getAttLugarExpedicion().setString(bprEmisor.getActualAddressFiscal());
         
         comprobante.getAttConfirmacion().setString(dps.getXtaDfrMate().getConfirmation());
         comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica); // fixed value, exportations not supported yet!
@@ -1344,7 +1342,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getEltReceptor().getAttRfc().setString(receptorRfc);
         comprobante.getEltReceptor().getAttNombre().setString(receptorName);
         comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString(isReceptorPublic ? DCfdi40Catalogs.ClaveRégimenFiscalSinObligacionesFiscales : dps.getXtaDfrMate().getReceiverTaxRegime());
-        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(isReceptorPublic ? braAddressEmisor.getZipCode() : dps.getXtaDfrMate().getReceiverFiscalAddress());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(isReceptorPublic ? bprEmisor.getActualAddressFiscal(): dps.getXtaDfrMate().getReceiverFiscalAddress());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
         comprobante.getEltReceptor().getAttUsoCFDI().setString(isReceptorPublic ? DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales : dps.getXtaDfrMate().getCfdUsage());
@@ -1693,7 +1691,6 @@ public abstract class DTrnDfrUtils {
         DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, bol.getCompanyBranchKey());
         DDbBizPartner bprEmisor = null;
         DDbBranch braEmisor = null;
-        DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
         
         // Check company branch emission configuration:
@@ -1755,8 +1752,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_T);
         comprobante.getAttMetodoPago().setString("");
         
-        braAddressEmisor = braEmisor.getChildAddressOfficial();
-        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        comprobante.getAttLugarExpedicion().setString(bprEmisor.getActualAddressFiscal());
         
         comprobante.getAttConfirmacion().setString("");
         comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica); // fixed value, exportations not supported yet!
@@ -1791,7 +1787,7 @@ public abstract class DTrnDfrUtils {
         comprobante.getEltReceptor().getAttRfc().setString(bprReceptor.getFiscalId());
         comprobante.getEltReceptor().getAttNombre().setString(bprReceptor.getNameFiscal());
         comprobante.getEltReceptor().getAttRegimenFiscalReceptor().setString((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bprEmisor.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
-        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(bprEmisor.getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+        comprobante.getEltReceptor().getAttDomicilioFiscalReceptor().setString(bprEmisor.getActualAddressFiscal());
         //comprobante.getEltReceptor().getAttResidenciaFiscal().setString(""); // not supported yet!
         //comprobante.getEltReceptor().getAttNumRegIdTrib().setString(""); // not supported yet!
         comprobante.getEltReceptor().getAttUsoCFDI().setString(DCfdi40Catalogs.ClaveUsoCfdiSinEfectosFiscales);

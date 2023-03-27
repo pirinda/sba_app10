@@ -74,7 +74,7 @@ public abstract class DTrnDfrPrinting {
      * @throws java.lang.Exception 
      */
     @SuppressWarnings("deprecation")
-    public static HashMap<String, Object> createPrintingMap33(final DGuiSession session, final DDbDfr dfr) throws Exception {
+    public static HashMap<String, Object> createPrintingMapCfdi33(final DGuiSession session, final DDbDfr dfr) throws Exception {
         cfd.ver33.DElementComprobante comprobante = DCfdUtils.getCfdi33(dfr.getSuitableDocXml());
         HashMap<String, Object> map = new HashMap<>();
         
@@ -266,7 +266,7 @@ public abstract class DTrnDfrPrinting {
      * @throws java.lang.Exception 
      */
     @SuppressWarnings("deprecation")
-    public static HashMap<String, Object> createPrintingMap40(final DGuiSession session, final DDbDfr dfr) throws Exception {
+    public static HashMap<String, Object> createPrintingMapCfdi40(final DGuiSession session, final DDbDfr dfr) throws Exception {
         cfd.ver40.DElementComprobante comprobante = DCfdUtils.getCfdi40(dfr.getSuitableDocXml());
         HashMap<String, Object> map = new HashMap<>();
         

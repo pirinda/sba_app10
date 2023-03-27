@@ -2207,15 +2207,15 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_32:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_32, new DTrnDpsPrinting(session, this).cratePrintMapCfdi32(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_32, new DTrnDpsPrinting(session, this).createPrintingMapCfdi32(), fileName);
                     break;
 
                 case DModSysConsts.TS_XML_TP_CFDI_33:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, new DTrnDpsPrinting(session, this).cratePrintMapCfdi33(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33, new DTrnDpsPrinting(session, this).createPrintingMapCfdi33(), fileName);
                     break;
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnDpsPrinting(session, this).cratePrintMapCfdi40(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnDpsPrinting(session, this).createPrintingMapCfdi40(), fileName);
                     break;
 
                 default:

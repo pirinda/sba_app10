@@ -163,6 +163,10 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel38 = new javax.swing.JPanel();
         jlTaxRegime = new javax.swing.JLabel();
         moKeyTaxRegime = new sba.lib.gui.bean.DBeanFieldKey();
+        jPanel2 = new javax.swing.JPanel();
+        jlAddressFiscal = new javax.swing.JLabel();
+        moTextAddressFiscal = new sba.lib.gui.bean.DBeanFieldText();
+        jlAddressFiscalInfo = new javax.swing.JLabel();
         jPanel25 = new javax.swing.JPanel();
         jlWeb = new javax.swing.JLabel();
         moTextWeb = new sba.lib.gui.bean.DBeanFieldText();
@@ -171,6 +175,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jlCurrency = new javax.swing.JLabel();
         moKeyCurrency = new sba.lib.gui.bean.DBeanFieldKey();
         jbCurrency = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
         jPanel26 = new javax.swing.JPanel();
         moBoolCreditByUser = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel27 = new javax.swing.JPanel();
@@ -384,7 +389,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jpConfig1.setLayout(new java.awt.BorderLayout());
 
         jpConfig11.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipo:"));
-        jpConfig11.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jpConfig11.setLayout(new java.awt.GridLayout(12, 1, 0, 5));
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -423,8 +428,8 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel20.add(moTextCodeOwn);
 
         jlCodeOwnInfo.setForeground(java.awt.Color.gray);
-        jlCodeOwnInfo.setText("(Código asignado a nosotros)");
-        jlCodeOwnInfo.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlCodeOwnInfo.setText("(Código de empresa otorgado a nosotros.)");
+        jlCodeOwnInfo.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel20.add(jlCodeOwnInfo);
 
         jpConfig11.add(jPanel20);
@@ -437,8 +442,8 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel24.add(moTextForeignId);
 
         jlForeignIdInfo.setForeground(java.awt.Color.gray);
-        jlForeignIdInfo.setText("(ID fiscal en el país de origen)");
-        jlForeignIdInfo.setPreferredSize(new java.awt.Dimension(155, 23));
+        jlForeignIdInfo.setText("(ID fiscal en el país de origen.)");
+        jlForeignIdInfo.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel24.add(jlForeignIdInfo);
 
         jpConfig11.add(jPanel24);
@@ -506,6 +511,20 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
         jpConfig11.add(jPanel38);
 
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlAddressFiscal.setText("Domicilio fiscal:");
+        jlAddressFiscal.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel2.add(jlAddressFiscal);
+        jPanel2.add(moTextAddressFiscal);
+
+        jlAddressFiscalInfo.setForeground(java.awt.Color.gray);
+        jlAddressFiscalInfo.setText("(Código postal del domicilio fiscal. Dato opcional.)");
+        jlAddressFiscalInfo.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel2.add(jlAddressFiscalInfo);
+
+        jpConfig11.add(jPanel2);
+
         jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWeb.setForeground(new java.awt.Color(0, 102, 102));
@@ -521,7 +540,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jpConfig1.add(jpConfig11, java.awt.BorderLayout.WEST);
 
         jpConfig12.setBorder(javax.swing.BorderFactory.createTitledBorder("Crédito:"));
-        jpConfig12.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jpConfig12.setLayout(new java.awt.GridLayout(12, 1, 0, 5));
 
         jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -539,6 +558,9 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         jPanel32.add(jbCurrency);
 
         jpConfig12.add(jPanel32);
+
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpConfig12.add(jPanel3);
 
         jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -678,6 +700,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moKeyEmissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlEmissionType), true);
         moKeyXmlAddendaType.setKeySettings(miClient, DGuiUtils.getLabelName(jlXmlAddendaType), true);
         moKeyTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxRegime), true);
+        moTextAddressFiscal.setTextSettings(DGuiUtils.getLabelName(jlAddressFiscal), 5, 0);
         moTextWeb.setTextSettings(DGuiUtils.getLabelName(jlWeb), 50, 0);
         moTextWeb.setTextCaseType(0);
         moKeyCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlCurrency), false);
@@ -718,6 +741,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moFields.addField(moKeyEmissionType, 1);
         moFields.addField(moKeyXmlAddendaType, 1);
         moFields.addField(moKeyTaxRegime, 1);
+        moFields.addField(moTextAddressFiscal, 1);
         moFields.addField(moTextWeb, 1);
         moFields.addField(moKeyCurrency, 1);
         moFields.addField(moBoolCreditByUser, 1);
@@ -778,6 +802,16 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         
         moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_CFDI_USO);
         moXmlCatalogCfdUsage.populateCatalog(moKeyCfdUsage);
+        
+        boolean isReceiver = isReceiver();
+        
+        jlEmissionType.setEnabled(isReceiver);
+        jlXmlAddendaType.setEnabled(isReceiver);
+        jlTaxRegime.setEnabled(isReceiver);
+        jlAddressFiscal.setEnabled(isReceiver);
+        
+        jlModeOfPaymentType.setEnabled(isReceiver);
+        jlCfdUsage.setEnabled(isReceiver);
     }
     
     private boolean isCustomer() {
@@ -785,7 +819,11 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     }
 
     private boolean isDebtor() {
-        return mnBizPartnerClass == DModSysConsts.BS_BPR_CL_CUS;
+        return mnBizPartnerClass == DModSysConsts.BS_BPR_CL_DBR;
+    }
+    
+    private boolean isReceiver() {
+        return isCustomer() || isDebtor();
     }
 
     private void updateStatusFieldsIdentityType() {
@@ -804,11 +842,13 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
             // both entity types:
             moRadNamePrintingPolicyName.setEnabled(false);
             moRadNamePrintingPolicyNameFiscal.setEnabled(false);
+            
             moKeyTaxRegime.setEnabled(false);
+            moTextAddressFiscal.setEnabled(false);
         }
         else {
-            boolean isCustomer = isCustomer();
-            boolean isCustomerNameFiscalCustomized = isCustomer && jtbNameFiscalCustomized.isSelected(); // only for persons!
+            boolean isReceiver = isReceiver();
+            boolean isReceiverNameFiscalCustomized = isReceiver && jtbNameFiscalCustomized.isSelected(); // only for persons!
             
             switch (moKeyIdentityType.getValue()[0]) {
                 case DModSysConsts.BS_IDY_TP_PER:
@@ -816,16 +856,16 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                     moTextLastname.setEditable(true);
                     moTextFirstname.setEditable(true);
                     moTextAlternativeId.setEditable(true);
-                    jtbNameFiscalCustomized.setEnabled(isCustomer);
+                    jtbNameFiscalCustomized.setEnabled(isReceiver);
                     
                     // organizations:
                     moTextName.setEditable(false);
-                    moTextNameFiscal.setEditable(isCustomerNameFiscalCustomized);
+                    moTextNameFiscal.setEditable(isReceiverNameFiscalCustomized);
                     moTextNameCapitalRegime.setEditable(false);
                     
                     // both entity types:
-                    moRadNamePrintingPolicyName.setEnabled(isCustomerNameFiscalCustomized);
-                    moRadNamePrintingPolicyNameFiscal.setEnabled(isCustomerNameFiscalCustomized);
+                    moRadNamePrintingPolicyName.setEnabled(isReceiverNameFiscalCustomized);
+                    moRadNamePrintingPolicyNameFiscal.setEnabled(isReceiverNameFiscalCustomized);
                     break;
 
                 case DModSysConsts.BS_IDY_TP_ORG:
@@ -837,12 +877,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                     
                     // organizations:
                     moTextName.setEditable(true);
-                    moTextNameFiscal.setEditable(isCustomer);
-                    moTextNameCapitalRegime.setEditable(isCustomer);
+                    moTextNameFiscal.setEditable(isReceiver);
+                    moTextNameCapitalRegime.setEditable(isReceiver);
                     
                     // both entity types:
-                    moRadNamePrintingPolicyName.setEnabled(isCustomer);
-                    moRadNamePrintingPolicyNameFiscal.setEnabled(isCustomer);
+                    moRadNamePrintingPolicyName.setEnabled(isReceiver);
+                    moRadNamePrintingPolicyNameFiscal.setEnabled(isReceiver);
                     break;
                     
                 default:
@@ -850,7 +890,8 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
             }
             
             // both entity types:
-            moKeyTaxRegime.setEnabled(true);
+            moKeyTaxRegime.setEnabled(isReceiver);
+            moTextAddressFiscal.setEnabled(isReceiver);
         }
     }
 
@@ -893,10 +934,15 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         // both entity types:
         bgNamePrintingPolicy.clearSelection();
         moKeyTaxRegime.removeAllItems();
+        moTextAddressFiscal.resetField();
 
         if (moKeyIdentityType.getSelectedIndex() > 0) {
             bgNamePrintingPolicy.setSelected(moRadNamePrintingPolicyNameFiscal.getModel(), true);
             miClient.getSession().populateCatalogue(moKeyTaxRegime, DModConsts.CS_TAX_REG, moKeyIdentityType.getValue()[0], null);
+            
+            if (!isReceiver()) {
+                moKeyTaxRegime.setValue(new int[] { DModSysConsts.CS_TAX_REG_NA });
+            }
         }
         
         updateStatusFieldsIdentityType();
@@ -915,6 +961,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                 moCurCreditLimit.getField().resetField();
                 moIntCreditDays.resetField();
                 moIntCreditDaysGrace.resetField();
+                
                 moKeyModeOfPaymentType.resetField();
                 moKeyCfdUsage.resetField();
             }
@@ -923,8 +970,15 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
                 moCurCreditLimit.getField().setValue(type.getCreditLimit());
                 moIntCreditDays.setValue(type.getCreditDays());
                 moIntCreditDaysGrace.setValue(type.getCreditDaysGrace());
-                moKeyModeOfPaymentType.setValue( new int[] { type.getFkModeOfPaymentTypeId() });
-                moKeyCfdUsage.setValue( new int[] { moXmlCatalogCfdUsage.getId(type.getCfdUsage()) });
+                
+                if (isReceiver()) {
+                    moKeyModeOfPaymentType.setValue( new int[] { type.getFkModeOfPaymentTypeId() });
+                    moKeyCfdUsage.setValue( new int[] { moXmlCatalogCfdUsage.getId(type.getCfdUsage()) });
+                }
+                else {
+                    moKeyModeOfPaymentType.resetField();
+                    moKeyCfdUsage.resetField();
+                }
             }
         }
 
@@ -973,7 +1027,9 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
 
                     moCurCreditLimit.getField().resetField();
                     break;
+                    
                 default:
+                    // nothing
             }
         }
     }
@@ -991,11 +1047,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     }
 
     private void itemStateBoolCreditByUser() {
-        boolean isCustomerOrDebtor = isCustomer() || isDebtor();
+        boolean isReceiver = isReceiver();
         
         moKeyCreditType.setEnabled(moBoolCreditByUser.getValue());
-        moKeyModeOfPaymentType.setEnabled(moBoolCreditByUser.getValue() && isCustomerOrDebtor);
-        moKeyCfdUsage.setEnabled(moBoolCreditByUser.getValue() && isCustomerOrDebtor);
+        moKeyModeOfPaymentType.setEnabled(moBoolCreditByUser.getValue() && isReceiver);
+        moKeyCfdUsage.setEnabled(moBoolCreditByUser.getValue() && isReceiver);
+        
         itemStateKeyBizPartnerType();
         itemStateKeyCreditType();
     }
@@ -1041,7 +1098,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     }
     
     private void focusLostNamePerson() {
-        moTextName.setValue(DLibUtils.textTrim(moTextLastname.getValue() + ", " + moTextFirstname.getValue()));
+        if (moTextLastname.getValue().isEmpty() && moTextFirstname.getValue().isEmpty()) {
+            moTextName.setValue("");
+        }
+        else {
+            moTextName.setValue(DLibUtils.textTrim(moTextLastname.getValue() + ", " + moTextFirstname.getValue()));
+        }
         
         if (!jtbNameFiscalCustomized.isSelected()) {
             moTextNameFiscal.setValue(DLibUtils.textTrim(moTextFirstname.getValue() + " " + moTextLastname.getValue()));
@@ -1066,6 +1128,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
@@ -1076,6 +1139,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel29;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel32;
@@ -1096,6 +1160,8 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private javax.swing.JButton jbSetDefaultFiscalId;
     private javax.swing.JButton jbXmlAddendaType;
     private javax.swing.JLabel jlAbpBizPartner;
+    private javax.swing.JLabel jlAddressFiscal;
+    private javax.swing.JLabel jlAddressFiscalInfo;
     private javax.swing.JLabel jlAgentType;
     private javax.swing.JLabel jlBizPartnerType;
     private javax.swing.JLabel jlCfdUsage;
@@ -1164,6 +1230,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
     private sba.mod.bpr.form.DPanelBranchAddress moPanelBranchAddress;
     private sba.lib.gui.bean.DBeanFieldRadio moRadNamePrintingPolicyName;
     private sba.lib.gui.bean.DBeanFieldRadio moRadNamePrintingPolicyNameFiscal;
+    private sba.lib.gui.bean.DBeanFieldText moTextAddressFiscal;
     private sba.lib.gui.bean.DBeanFieldText moTextAlternativeId;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextCodeOwn;
@@ -1347,6 +1414,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moKeyEmissionType.setValue(new int[] { moRegistry.getFkEmissionTypeId() });
         moKeyXmlAddendaType.setValue(new int[] { moRegistry.getFkXmlAddendaTypeId()});
         moKeyTaxRegime.setValue(new int[] { moRegistry.getFkTaxRegimeId()});
+        moTextAddressFiscal.setValue(moRegistry.getAddressFiscal());
         moTextWeb.setValue(moRegistry.getWeb());
 
         moKeyCurrency.setValue(new int[] { config.getFkCurrencyId_n() });
@@ -1385,12 +1453,12 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         
         // Prevent undesired modifications to identity type:
         if (moRegistry.isRegistryNew() && moRegistry.getFkIdentityTypeId() == 0) {
-            jbIdentityType.setEnabled(false);
             moKeyIdentityType.setEnabled(true);
+            jbIdentityType.setEnabled(false);
         }
         else {
-            jbIdentityType.setEnabled(true);
             moKeyIdentityType.setEnabled(false);
+            jbIdentityType.setEnabled(true);
         }
 
         // Enable code if appropriate:
@@ -1401,17 +1469,14 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         moKeyCurrency.setEnabled(false);
 
         // Prevent undesired modifications to XML-addenda type:
-        jbXmlAddendaType.setEnabled(true);
-        moKeyXmlAddendaType.setEnabled(false);
         
-        if (isCustomer()) {
-            jlXmlAddendaType.setEnabled(true);
-            jbXmlAddendaType.setEnabled(true);
-        }
-        else {
-            jlXmlAddendaType.setEnabled(false);
-            jbXmlAddendaType.setEnabled(false);
-        }
+        boolean isReceiver = isReceiver();
+        
+        moKeyEmissionType.setEnabled(isReceiver);
+        moKeyXmlAddendaType.setEnabled(false);
+        jbXmlAddendaType.setEnabled(isReceiver);
+        moKeyTaxRegime.setEnabled(isReceiver && moKeyBizPartnerType.getSelectedIndex() > 0);
+        moTextAddressFiscal.setEnabled(isReceiver);
         
         addAllListeners();
     }
@@ -1433,6 +1498,7 @@ public class DFormBizPartner extends DBeanForm implements ActionListener, ItemLi
         registry.setFiscalId(moTextFiscalId.getValue());
         registry.setAlternativeId(moTextAlternativeId.getValue());
         registry.setForeignId(moTextForeignId.getValue());
+        registry.setAddressFiscal(moTextAddressFiscal.isEnabled() ? moTextAddressFiscal.getValue() : "");
         registry.setWeb(moTextWeb.getValue());
         registry.setNote(moTextNote.getValue());
         registry.setNameFiscalCustomized(jtbNameFiscalCustomized.isSelected());

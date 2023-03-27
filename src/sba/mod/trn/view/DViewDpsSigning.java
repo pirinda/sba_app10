@@ -282,7 +282,7 @@ public class DViewDpsSigning extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                     }
                     else {

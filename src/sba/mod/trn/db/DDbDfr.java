@@ -39,7 +39,6 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBranch;
-import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DLockUtils;
@@ -1569,8 +1568,6 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         GregorianCalendar oGregorianCalendar = null;
         DDbConfigBranch configBranch = null;
         DDbBizPartner bprEmisor = null;
-        DDbBranch braEmisor = null;
-        DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
                 
         // Check company branch emission configuration:
@@ -1581,15 +1578,11 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
 
         if (configBranch.getFkBizPartnerDpsSignatureId_n() == DLibConsts.UNDEFINED) {
             // Document's emisor:
-            
             bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, getCompanyKey());
-            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, getCompanyBranchKey());
         }
         else {
             // Company branch's emisor:
-            
             bprEmisor = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
-            braEmisor = (DDbBranch) session.readRegistry(DModConsts.BU_BRA, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n(), DUtilConsts.BPR_BRA_ID });
         }
 
         // Receptor:
@@ -1635,8 +1628,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_P);
         //comprobante.getAttMetodoPago().setString();
         
-        braAddressEmisor = braEmisor.getChildAddressOfficial();
-        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        comprobante.getAttLugarExpedicion().setString(bprEmisor.getActualAddressFiscal());
         
         comprobante.getAttConfirmacion().setString(moXtaDfrMate.getConfirmation());
         
@@ -1720,7 +1712,6 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         DDbConfigBranch configBranch = null;
         DDbBizPartner bprEmisor = null;
         DDbBranch braEmisor = null;
-        DDbBranchAddress braAddressEmisor = null;
         DDbBizPartner bprReceptor = null;
                 
         // Check company branch emission configuration:
@@ -1785,8 +1776,7 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
         comprobante.getAttTipoDeComprobante().setString(DCfdi40Catalogs.CFD_TP_P);
         //comprobante.getAttMetodoPago().setString();
         
-        braAddressEmisor = braEmisor.getChildAddressOfficial();
-        comprobante.getAttLugarExpedicion().setString(braAddressEmisor.getZipCode());
+        comprobante.getAttLugarExpedicion().setString(bprEmisor.getActualAddressFiscal());
         
         comprobante.getAttConfirmacion().setString(moXtaDfrMate.getConfirmation());
         comprobante.getAttExportacion().setString(DCfdi40Catalogs.ClaveExportacionNoAplica);
@@ -1915,11 +1905,11 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_33:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap33(session, this), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMapCfdi33(session, this), fileName);
                     break;
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(session, this), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMapCfdi40(session, this), fileName);
                     break;
 
                 default:

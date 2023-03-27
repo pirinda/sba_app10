@@ -99,7 +99,7 @@ public class DDbItem extends DDbRegistryUser {
 
     public DDbItem() {
         super(DModConsts.IU_ITM);
-        mvChildBarcodes = new Vector<DDbItemBarcode>();
+        mvChildBarcodes = new Vector<>();
         initRegistry();
     }
 

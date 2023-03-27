@@ -69,6 +69,7 @@ import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysXmlSignatureProvider;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.lad.db.DDbBol;
+import sba.mod.lad.db.DLadBolPrinting;
 import sba.mod.trn.form.DDialogEmailSending;
 import sba.mod.trn.form.DFormDpsCancelling;
 import sba.mod.trn.form.DFormDpsPrinting;
@@ -82,46 +83,8 @@ import sba.mod.trn.form.DFormDpsTypeChange;
  */
 public abstract class DTrnEmissionUtils {
     
-    public static int[] getDpsOwnDpsTypeKey(final DGuiSession session, final int[] dpsKey) throws Exception {
-        int[] key = null;
-        String sql = "";
-        ResultSet resultSet = null;
-        
-        sql = "SELECT fk_dps_ct, fk_dps_cl, fk_dps_tp "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " "
-                + "WHERE id_dps = " + dpsKey[0] + " ";
-        resultSet = session.getStatement().executeQuery(sql);
-        if (!resultSet.next()) {
-            throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
-        }
-        else {
-            key = new int[] { resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3) };
-        }
-        
-        return key;
-    }
-    
-    public static int[] getDpsOwnCompanyBranchKey(final DGuiSession session, final int[] dpsKey) throws Exception {
-        int[] key = null;
-        String sql = "";
-        ResultSet resultSet = null;
-        
-        sql = "SELECT fk_own_bpr, fk_own_bra "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " "
-                + "WHERE id_dps = " + dpsKey[0] + " ";
-        resultSet = session.getStatement().executeQuery(sql);
-        if (!resultSet.next()) {
-            throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
-        }
-        else {
-            key = new int[] { resultSet.getInt(1), resultSet.getInt(2) };
-        }
-        
-        return key;
-    }
-    
     /**
-     * Checks if XML signature request is allowed.
+     * Check if XML signature request is allowed.
      * @param session GUI session.
      * @param requestType Signature request type: sign or cancel; constants defined in DModSysConsts.TX_XMS_REQ_TP_.
      * @param requestSubtype Signature request subtype: stamp request or stamp verification; constants defined in DModSysConsts.TX_XMS_REQ_STP_.
@@ -202,6 +165,14 @@ public abstract class DTrnEmissionUtils {
         return settings;
     }
     
+    /**
+     * Get last XML signature request for DFR.
+     * @param session GUI session.
+     * @param dfrId ID of DFR.
+     * @return
+     * @throws SQLException
+     * @throws Exception 
+     */
     public static DDbXmlSignatureRequest getLastXmlSignatureRequest(final DGuiSession session, final int dfrId) throws SQLException, Exception {
         DDbXmlSignatureRequest xsr = null;
         
@@ -217,6 +188,15 @@ public abstract class DTrnEmissionUtils {
         return xsr;
     }
 
+    /**
+     * Get stamps available.
+     * @param session GUI session.
+     * @param xmlSignatureProviderId ID of XML signature provider.
+     * @param signatureCompanyBranchKey Company branch key for signature.
+     * @return
+     * @throws SQLException
+     * @throws Exception 
+     */
     public static int getStampsAvailable(final DGuiSession session, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey) throws SQLException, Exception {
         int stamps = 0;
         String sql = "";
@@ -234,6 +214,12 @@ public abstract class DTrnEmissionUtils {
         return stamps;
     }
     
+    /**
+     * Get XML file.
+     * @param client GUI client.
+     * @return
+     * @throws Exception 
+     */
     public static String getFileXml(DGuiClient client) throws Exception {
         String xml = "";
         FileFilter filter = new FileNameExtensionFilter(DUtilConsts.FILE_EXT_XML.toUpperCase(), DUtilConsts.FILE_EXT_XML);
@@ -252,6 +238,13 @@ public abstract class DTrnEmissionUtils {
         return xml;
     }
     
+    /**
+     * Get PDF file.
+     * @param client GUI client.
+     * @return
+     * @throws FileNotFoundException
+     * @throws Exception 
+     */
     public static FileInputStream getFilePdf(DGuiClient client) throws FileNotFoundException, Exception {
         FileInputStream fis = null;
         FileFilter filter = new FileNameExtensionFilter(DUtilConsts.FILE_EXT_XML.toUpperCase(), DUtilConsts.FILE_EXT_XML);
@@ -270,6 +263,16 @@ public abstract class DTrnEmissionUtils {
         return fis;
     }
     
+    /**
+     * Consume stamp.
+     * @param session GUI session.
+     * @param xmlSignatureProviderId ID of XML signature provider.
+     * @param signatureCompanyBranchKey Company branch key for signature.
+     * @param xmlSignatureMoveKey ID of signature movement.
+     * @param dfrId ID of DFR.
+     * @throws SQLException
+     * @throws Exception 
+     */
     public static void consumeStamp(final DGuiSession session, final int xmlSignatureProviderId, final int[] signatureCompanyBranchKey, final int[] xmlSignatureMoveKey, final int dfrId) throws SQLException, Exception {
         DDbXmlSignatureMove xsm = null;
         
@@ -289,6 +292,11 @@ public abstract class DTrnEmissionUtils {
         xsm.save(session);
     }
     
+    /**
+     * Change type of DPS.
+     * @param client GUI client.
+     * @param gridRow Current grid row.
+     */
     public static void changeDpsType(final DGuiClient client, final DGridRowView gridRow) {
         DDbDps dps = null;
         DDbDfr dfr = null;
@@ -326,6 +334,12 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    /**
+     * Print DPS.
+     * @param client GUI client.
+     * @param gridRow Current grid row.
+     * @param printMode Print mode. Options defined in DPrtConsts.PRINT_MODE_...
+     */
     @SuppressWarnings("deprecation")
     public static void printDps(final DGuiClient client, final DGridRowView gridRow, final int printMode) {
         boolean print = true;
@@ -421,17 +435,17 @@ public abstract class DTrnEmissionUtils {
                                 throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_32:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi32());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_32, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).createPrintingMapCfdi32());
                                 printed = true;
                                 break;
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_33:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi33());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).createPrintingMapCfdi33());
                                 printed = true;
                                 break;
                                 
                             case DModSysConsts.TS_XML_TP_CFDI_40:
-                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).cratePrintMapCfdi40());
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40, printMode, new DTrnDpsPrinting(client.getSession(), gridRow.getRowPrimaryKey()).createPrintingMapCfdi40());
                                 printed = true;
                                 break;
                                 
@@ -469,6 +483,11 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    /**
+     * Print DFR.
+     * @param client GUI client.
+     * @param gridRow Current grid row.
+     */
     public static void printDfr(final DGuiClient client, final DGridRowView gridRow) {
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
@@ -483,11 +502,11 @@ public abstract class DTrnEmissionUtils {
                         throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
 
                     case DModSysConsts.TS_XML_TP_CFDI_33:
-                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMap33(client.getSession(), dfr));
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_33_CRP_10, DTrnDfrPrinting.createPrintingMapCfdi33(client.getSession(), dfr));
                         break;
 
                     case DModSysConsts.TS_XML_TP_CFDI_40:
-                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(client.getSession(), dfr));
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMapCfdi40(client.getSession(), dfr));
                         break;
 
                     default:
@@ -500,6 +519,11 @@ public abstract class DTrnEmissionUtils {
         }
     }
 
+    /**
+     * Print BOL.
+     * @param client GUI client.
+     * @param gridRow Current grid row.
+     */
     public static void printBol(final DGuiClient client, final DGridRowView gridRow) {
         if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
             client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
@@ -515,7 +539,7 @@ public abstract class DTrnEmissionUtils {
                         throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
 
                     case DModSysConsts.TS_XML_TP_CFDI_40:
-                        //DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, DTrnDfrPrinting.createPrintingMap40(client.getSession(), bol));
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, new DLadBolPrinting(client.getSession(), bol).createPrintingMapCfdi40());
                         break;
 
                     default:

@@ -40,8 +40,7 @@ public class DTrnDpsPrinting {
     protected DDbDps moDps;
 
     public DTrnDpsPrinting(DGuiSession session, int[] dpsKey) {
-        moSession = session;
-        moDps = (DDbDps) moSession.readRegistry(DModConsts.T_DPS, dpsKey);
+        this(session, (DDbDps) session.readRegistry(DModConsts.T_DPS, dpsKey));
     }
 
     public DTrnDpsPrinting(DGuiSession session, DDbDps dps) {
@@ -50,12 +49,12 @@ public class DTrnDpsPrinting {
     }
 
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfd() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfd() throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfdi32() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi32() throws Exception {
         Document doc = null;
         Node node = null;
         Node nodeChild = null;
@@ -267,7 +266,7 @@ public class DTrnDpsPrinting {
     }
     
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfdi33() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi33() throws Exception {
         HashMap<String, Object> hashMap = new HashMap<>();
         DDbConfigCompany configCompany = (DDbConfigCompany) moSession.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moDps.getCompanyBranchKey());
@@ -354,12 +353,11 @@ public class DTrnDpsPrinting {
         // Receptor:
         
         String sRecRfc;
-        String sRecNombre;
         Node nodeReceptor = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
         
         namedNodeMap = nodeReceptor.getAttributes();
         hashMap.put("sXmlRecRfc", sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
-        hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
+        hashMap.put("sXmlRecNombre", DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", false));
         hashMap.put("sXmlRecUsoCFDI", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi33Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", false)));
 
         DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moDps.getFkBizPartnerBizPartnerId(), moDps.getFkBizPartnerBranchId(), moDps.getFkBizPartnerAddressId() });
@@ -435,7 +433,7 @@ public class DTrnDpsPrinting {
         return hashMap;
     }
     
-    public HashMap<String, Object> cratePrintMapCfdi40() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi40() throws Exception {
         HashMap<String, Object> hashMap = new HashMap<>();
         DDbConfigCompany configCompany = (DDbConfigCompany) moSession.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moDps.getCompanyBranchKey());

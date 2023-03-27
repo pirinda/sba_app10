@@ -229,6 +229,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfDocStatus = new javax.swing.JTextField();
         jtpDocument = new javax.swing.JTabbedPane();
         jpDocument1 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jpDocument11 = new javax.swing.JPanel();
         jlOrder1 = new javax.swing.JLabel();
         moKeyBranchAddress = new sba.lib.gui.bean.DBeanFieldKey();
@@ -236,11 +237,17 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpDocument12 = new javax.swing.JPanel();
         jspBranchAddress = new javax.swing.JScrollPane();
         jtaBranchAddress = new javax.swing.JTextArea();
+        jPanel3 = new javax.swing.JPanel();
         jpDocument13 = new javax.swing.JPanel();
         jlOrder = new javax.swing.JLabel();
         moTextOrder = new sba.lib.gui.bean.DBeanFieldText();
         jlDateDelivery = new javax.swing.JLabel();
         moDateDelivery = new sba.lib.gui.bean.DBeanFieldDate();
+        jpDocument214 = new javax.swing.JPanel();
+        jlImportDeclaration = new javax.swing.JLabel();
+        moTextImportDeclaration = new sba.lib.gui.bean.DBeanFieldText();
+        jlImportDeclarationDate = new javax.swing.JLabel();
+        moDateImportDeclarationDate = new sba.lib.gui.bean.DBeanFieldDate();
         jpDocument2 = new javax.swing.JPanel();
         jpDocument21 = new javax.swing.JPanel();
         jpDocument211 = new javax.swing.JPanel();
@@ -257,11 +264,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jlDfrCfdRelations = new javax.swing.JLabel();
         jtfDfrCfdRelations = new javax.swing.JTextField();
         jbDfrCfdRelationsEdit = new javax.swing.JButton();
-        jpDocument214 = new javax.swing.JPanel();
-        jlImportDeclaration = new javax.swing.JLabel();
-        moTextImportDeclaration = new sba.lib.gui.bean.DBeanFieldText();
-        jlImportDeclarationDate = new javax.swing.JLabel();
-        moDateImportDeclarationDate = new sba.lib.gui.bean.DBeanFieldDate();
         jpDocument3 = new javax.swing.JPanel();
         jpDocument31 = new javax.swing.JPanel();
         moBoolDfrGlobal = new sba.lib.gui.bean.DBeanFieldBoolean();
@@ -506,7 +508,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jtpDocument.setTabPlacement(javax.swing.JTabbedPane.LEFT);
 
-        jpDocument1.setLayout(new java.awt.BorderLayout(0, 5));
+        jpDocument1.setLayout(new java.awt.BorderLayout(0, 3));
+
+        jPanel1.setLayout(new java.awt.BorderLayout(0, 3));
 
         jpDocument11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -515,7 +519,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpDocument11.add(jlOrder1);
 
         moKeyBranchAddress.setToolTipText("Domicilio de entrega");
-        moKeyBranchAddress.setPreferredSize(new java.awt.Dimension(250, 23));
+        moKeyBranchAddress.setPreferredSize(new java.awt.Dimension(275, 23));
         jpDocument11.add(moKeyBranchAddress);
 
         jbBranchAddressOfficialView.setText("...");
@@ -523,14 +527,14 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbBranchAddressOfficialView.setPreferredSize(new java.awt.Dimension(23, 23));
         jpDocument11.add(jbBranchAddressOfficialView);
 
-        jpDocument1.add(jpDocument11, java.awt.BorderLayout.PAGE_START);
+        jPanel1.add(jpDocument11, java.awt.BorderLayout.PAGE_START);
 
-        jpDocument12.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        jpDocument12.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
         jpDocument12.setLayout(new java.awt.BorderLayout(0, 5));
 
         jspBranchAddress.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jspBranchAddress.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jspBranchAddress.setPreferredSize(new java.awt.Dimension(100, 55));
+        jspBranchAddress.setPreferredSize(new java.awt.Dimension(100, 35));
 
         jtaBranchAddress.setEditable(false);
         jtaBranchAddress.setBackground(java.awt.SystemColor.control);
@@ -543,7 +547,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         jpDocument12.add(jspBranchAddress, java.awt.BorderLayout.CENTER);
 
-        jpDocument1.add(jpDocument12, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jpDocument12, java.awt.BorderLayout.CENTER);
+
+        jpDocument1.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel3.setLayout(new java.awt.GridLayout(2, 1, 0, 3));
 
         jpDocument13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -555,19 +563,39 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpDocument13.add(moTextOrder);
 
         jlDateDelivery.setText("Entrega:");
-        jlDateDelivery.setPreferredSize(new java.awt.Dimension(65, 23));
+        jlDateDelivery.setPreferredSize(new java.awt.Dimension(75, 23));
         jpDocument13.add(jlDateDelivery);
 
         moDateDelivery.setPreferredSize(new java.awt.Dimension(100, 23));
         jpDocument13.add(moDateDelivery);
 
-        jpDocument1.add(jpDocument13, java.awt.BorderLayout.SOUTH);
+        jPanel3.add(jpDocument13);
+
+        jpDocument214.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlImportDeclaration.setText("Número pedimento:");
+        jlImportDeclaration.setPreferredSize(new java.awt.Dimension(100, 23));
+        jpDocument214.add(jlImportDeclaration);
+
+        moTextImportDeclaration.setText("TEXT");
+        jpDocument214.add(moTextImportDeclaration);
+
+        jlImportDeclarationDate.setText("Importación:");
+        jlImportDeclarationDate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpDocument214.add(jlImportDeclarationDate);
+
+        moDateImportDeclarationDate.setPreferredSize(new java.awt.Dimension(100, 23));
+        jpDocument214.add(moDateImportDeclarationDate);
+
+        jPanel3.add(jpDocument214);
+
+        jpDocument1.add(jPanel3, java.awt.BorderLayout.SOUTH);
 
         jtpDocument.addTab("Entrega", jpDocument1);
 
         jpDocument2.setLayout(new java.awt.BorderLayout());
 
-        jpDocument21.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+        jpDocument21.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
         jpDocument211.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -639,24 +667,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jpDocument213.add(jbDfrCfdRelationsEdit);
 
         jpDocument21.add(jpDocument213);
-
-        jpDocument214.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlImportDeclaration.setText("Pedimento:");
-        jlImportDeclaration.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpDocument214.add(jlImportDeclaration);
-
-        moTextImportDeclaration.setText("TEXT");
-        jpDocument214.add(moTextImportDeclaration);
-
-        jlImportDeclarationDate.setText("Importación:");
-        jlImportDeclarationDate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpDocument214.add(jlImportDeclarationDate);
-
-        moDateImportDeclarationDate.setPreferredSize(new java.awt.Dimension(100, 23));
-        jpDocument214.add(moDateImportDeclarationDate);
-
-        jpDocument21.add(jpDocument214);
 
         jpDocument2.add(jpDocument21, java.awt.BorderLayout.NORTH);
 
@@ -1190,12 +1200,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moKeyBranchAddress.setKeySettings(miClient, moKeyBranchAddress.getToolTipText(), true);
         moTextOrder.setTextSettings(DGuiUtils.getLabelName(jlOrder), 15, 0);
         moDateDelivery.setDateSettings(miClient, DGuiUtils.getLabelName(jlDateDelivery), false);
+        moTextImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlImportDeclaration), DDbDps.LEN_IMP_DEC, 0);
+        moDateImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlImportDeclarationDate), false);
         
         moTextDfrConfirmation.setTextSettings(DGuiUtils.getLabelName(jlDfrConfirmation), 5, 0);
         moTextDfrConfirmation.setTextCaseType(0);
         moKeyDfrIssuerTaxRegime.setKeySettings(miClient, DGuiUtils.getLabelName(jlDfrIssuerTaxRegime), true);
-        moTextImportDeclaration.setTextSettings(DGuiUtils.getLabelName(jlImportDeclaration), DDbDps.LEN_IMP_DEC, 0);
-        moDateImportDeclarationDate.setDateSettings(miClient, DGuiUtils.getLabelName(jlImportDeclarationDate), false);
         
         moBoolDfrGlobal.setBooleanSettings(moBoolDfrGlobal.getText(), false);
         moKeyDfrGlobalPeriodicity.setKeySettings(miClient, DGuiUtils.getLabelName(jlDfrGlobalPeriodicity), false);
@@ -1257,11 +1267,11 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moFields.addField(moKeyBranchAddress);
         moFields.addField(moTextOrder);
         moFields.addField(moDateDelivery);
+        moFields.addField(moTextImportDeclaration);
+        moFields.addField(moDateImportDeclarationDate);
         
         moFields.addField(moTextDfrConfirmation);
         moFields.addField(moKeyDfrIssuerTaxRegime);
-        moFields.addField(moTextImportDeclaration);
-        moFields.addField(moDateImportDeclarationDate);
         
         moFields.addField(moBoolDfrGlobal);
         moFields.addField(moKeyDfrGlobalPeriodicity);
@@ -1699,10 +1709,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private int getDocumentTabbedPaneIndex(final JComponent component) {
         int index = -1;
         
-        if (component == moKeyBranchAddress || component == moTextOrder || component == moDateDelivery) {
+        if (component == moKeyBranchAddress || component == moTextOrder || component == moDateDelivery || component == moTextImportDeclaration || component == moDateImportDeclarationDate) {
             index = DOC_TAB_BP;
         }
-        else if (component == moTextDfrConfirmation || component == moKeyDfrIssuerTaxRegime || component == moTextImportDeclaration || component == moDateImportDeclarationDate) {
+        else if (component == moTextDfrConfirmation || component == moKeyDfrIssuerTaxRegime) {
             index = DOC_TAB_DFR;
         }
         else if (component == moKeyDfrGlobalPeriodicity || component == moKeyDfrGlobalMonths || component == moCalDfrGlobalYear) {
@@ -3327,7 +3337,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             jtfDfrReceiverFiscalId.setText(moBizPartner.getFiscalId());
             jtfDfrReceiverFiscalId.setCaretPosition(0);
-            jtfDfrReceiverFiscalAddress.setText(moBizPartnerBranchAddressOfficial.getZipCode());
+            jtfDfrReceiverFiscalAddress.setText(moBizPartner.getActualAddressFiscal());
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
             jlBizPartnerName.setToolTipText("Razón social: " + moBizPartner.getNameFiscal());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
@@ -3502,11 +3512,13 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
@@ -3898,7 +3910,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         
         if (moRegistry.isRegistryNew() && enableDfrFields) {
             DDfrMate dfrMate = new DDfrMate();
-            dfrMate.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+            dfrMate.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getActualAddressFiscal());
             dfrMate.setIssuerTaxRegime("" + moConfigCompany.getChildBizPartner().getFkTaxRegimeId()); // id = code
             moRegistry.setXtaDfrMate(dfrMate);
         }
@@ -4219,7 +4231,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 dfrMate.setConfirmation(moTextDfrConfirmation.getValue());
                 dfrMate.setIssuerTaxRegime(moKeyDfrIssuerTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyDfrIssuerTaxRegime.getValue()[0]); // id = code
                 dfrMate.setReceiverTaxRegime(moKeyDfrReceiverTaxRegime.getSelectedIndex() <= 0 ? "" : "" + moKeyDfrReceiverTaxRegime.getValue()[0]); // id = code
-                dfrMate.setReceiverFiscalAddress(moBizPartnerBranchAddressOfficial.getZipCode());
+                dfrMate.setReceiverFiscalAddress(moBizPartner.getActualAddressFiscal());
                 dfrMate.setCfdUsage(moKeyDfrCfdUsage.getSelectedIndex() <= 0 ? "" : moKeyDfrCfdUsage.getSelectedItem().getCode());
                 
                 if (!moBoolDfrGlobal.isSelected()) {
@@ -4281,6 +4293,24 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyDfrReceiverTaxRegime.getFieldName() + "'.");
                 validation.setComponent(moKeyDfrReceiverTaxRegime);
             }
+            else if (mbIsImportDeclaration && moTextImportDeclaration.getValue().isEmpty() && moDateImportDeclarationDate.getValue() != null) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "'.");
+                validation.setComponent(moTextImportDeclaration);
+                validation.setTabbedPane(jtpDocument);
+                validation.setTab(DOC_TAB_BP);
+            }
+            else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moDateImportDeclarationDate.getValue() == null) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclarationDate.getText()) + "'.");
+                validation.setComponent(moDateImportDeclarationDate);
+                validation.setTabbedPane(jtpDocument);
+                validation.setTab(DOC_TAB_BP);
+            }
+            else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moTextImportDeclaration.getValue().length() != DDbDps.LEN_IMP_DEC) {
+                validation.setMessage("La longitud del campo '" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " " + DDbDps.LEN_IMP_DEC + ".");
+                validation.setComponent(moTextImportDeclaration);
+                validation.setTabbedPane(jtpDocument);
+                validation.setTab(DOC_TAB_BP);
+            }
             else if (moKeyDfrIssuerTaxRegime.isEnabled() && moKeyDfrIssuerTaxRegime.getValue()[0] == DModSysConsts.CS_TAX_REG_NA) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyDfrIssuerTaxRegime.getFieldName() + "'.");
                 validation.setComponent(moKeyDfrIssuerTaxRegime);
@@ -4308,24 +4338,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyEmissionType.getFieldName() + "', si '" + moKeyPaymentType.getFieldName() + "' es '" + moKeyPaymentType.getSelectedItem().getItem() + "'.");
                     validation.setComponent(moKeyEmissionType);
                 }
-            }
-            else if (mbIsImportDeclaration && moTextImportDeclaration.getValue().isEmpty() && moDateImportDeclarationDate.getValue() != null) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "'.");
-                validation.setComponent(moTextImportDeclaration);
-                validation.setTabbedPane(jtpDocument);
-                validation.setTab(DOC_TAB_DFR);
-            }
-            else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moDateImportDeclarationDate.getValue() == null) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + DGuiUtils.getLabelName(jlImportDeclarationDate.getText()) + "'.");
-                validation.setComponent(moDateImportDeclarationDate);
-                validation.setTabbedPane(jtpDocument);
-                validation.setTab(DOC_TAB_DFR);
-            }
-            else if (mbIsImportDeclaration && !moTextImportDeclaration.getValue().isEmpty() && moTextImportDeclaration.getValue().length() != DDbDps.LEN_IMP_DEC) {
-                validation.setMessage("La longitud del campo '" + DGuiUtils.getLabelName(jlImportDeclaration.getText()) + "' " + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + " " + DDbDps.LEN_IMP_DEC + ".");
-                validation.setComponent(moTextImportDeclaration);
-                validation.setTabbedPane(jtpDocument);
-                validation.setTab(DOC_TAB_DFR);
             }
             else if (enableDfrGlobalFields() && !moBoolDfrGlobal.isSelected() && 
                     miClient.showMsgBoxConfirm("¿Está seguro que no desea seleccionar el campo '" + moBoolDfrGlobal.getText() + "'?") != JOptionPane.YES_OPTION) {
@@ -4595,7 +4607,25 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldBoolean) {
+        if (e.getSource() instanceof DBeanFieldKey) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+
+                if (field == moKeyBizPartner) {
+                    itemStateChangedBizPartner();
+                }
+                else if (field == moKeyBranchAddress) {
+                    itemStateChangedBranchAddress();
+                }
+                else if (field == moKeyCurrency) {
+                    itemStateChangedCurrency();
+                }
+                else if (field == moKeyPaymentType) {
+                    itemStateChangedPaymentType();
+                }
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldBoolean) {
             DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
 
             if (field == moBoolDfrGlobal) {
@@ -4612,24 +4642,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
             else if (field == moBoolDiscountDocPercentageApplying) {
                 itemStateChangedDiscountDocPercentageApplying(true);
-            }
-        }
-        else if (e.getSource() instanceof DBeanFieldKey) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                DBeanFieldKey field = (DBeanFieldKey) e.getSource();
-
-                if (field == moKeyBizPartner) {
-                    itemStateChangedBizPartner();
-                }
-                else if (field == moKeyBranchAddress) {
-                    itemStateChangedBranchAddress();
-                }
-                else if (field == moKeyCurrency) {
-                    itemStateChangedCurrency();
-                }
-                else if (field == moKeyPaymentType) {
-                    itemStateChangedPaymentType();
-                }
             }
         }
     }

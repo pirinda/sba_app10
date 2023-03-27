@@ -2387,6 +2387,25 @@ public abstract class DTrnUtils {
         return count;
     }
     
+    public static int[] getDpsOwnDpsTypeKey(final DGuiSession session, final int[] dpsKey) throws Exception {
+        int[] key = null;
+        String sql = "";
+        ResultSet resultSet = null;
+        
+        sql = "SELECT fk_dps_ct, fk_dps_cl, fk_dps_tp "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.T_DPS) + " "
+                + "WHERE id_dps = " + dpsKey[0] + " ";
+        resultSet = session.getStatement().executeQuery(sql);
+        if (!resultSet.next()) {
+            throw new Exception(DDbConsts.ERR_MSG_REG_NOT_FOUND);
+        }
+        else {
+            key = new int[] { resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3) };
+        }
+        
+        return key;
+    }
+    
     /**
      * Populate SDbDpsSending instance with info from array of DBprEmail objects.
      * @param dpsSending

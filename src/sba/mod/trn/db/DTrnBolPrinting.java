@@ -66,7 +66,6 @@ public class DTrnBolPrinting {
         hashMap.put("oDecimalFormatQuantity", configCompany.getDecimalFormatQuantity());
         hashMap.put("oDecimalFormatPriceUnitary", configCompany.getDecimalFormatPriceUnitary());
         hashMap.put("nPkBol", (long) moBol.getPkBolId());
-//        hashMap.put("nFkEmissionType", (long) moBol.getFkEmissionTypeId());
         hashMap.put("sEdsDir", configBranch.getDfrDirectory());
         
         // XML parsing:
@@ -118,13 +117,11 @@ public class DTrnBolPrinting {
         // Emisor:
                 
         String sEmiRfc;
-        String sEmiNombre;
-        String sLugarExpedicion;
         Node nodeEmisor = DXmlUtils.extractElements(doc, "cfdi:Emisor").item(0);
         
         namedNodeMap = nodeEmisor.getAttributes();
         hashMap.put("sXmlEmiRfc", sEmiRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
-        hashMap.put("sXmlEmiNombre", sEmiNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
+        hashMap.put("sXmlEmiNombre", DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
         hashMap.put("sXmlEmiRegimenFiscal", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_REG_FISC, DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscal", true)));
         
         DDbBranchAddress addressEmi = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { moBol.getFkOwnerBizPartnerId(), moBol.getFkOwnerBranchId(), 1 });
@@ -140,19 +137,17 @@ public class DTrnBolPrinting {
         hashMap.put("sEmiDomCodigoPostal", addressEmi.getZipCode());
         hashMap.put("sEmiDomTels", addressEmi.getTelecommDevices());
         hashMap.put("sEmiDomEmails", addressEmi.getTelecommElectronics());
-        sLugarExpedicion = addressEmi.composeLocality(moSession).toUpperCase();
         
         // Receptor:
         
         String sRecRfc;
-        String sRecNombre;
         Node nodeReceptor = DXmlUtils.extractElements(doc, "cfdi:Receptor").item(0);
         
         namedNodeMap = nodeReceptor.getAttributes();
         hashMap.put("sXmlRecRfc", sRecRfc = DXmlUtils.extractAttributeValue(namedNodeMap, "Rfc", true));
-        hashMap.put("sXmlRecNombre", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
-        hashMap.put("sXmlRecDomicilioFiscal", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
-        hashMap.put("sXmlRecRegimenFiscal", sRecNombre = DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
+        hashMap.put("sXmlRecNombre", DXmlUtils.extractAttributeValue(namedNodeMap, "Nombre", true));
+        hashMap.put("sXmlRecDomicilioFiscal", DXmlUtils.extractAttributeValue(namedNodeMap, "DomicilioFiscalReceptor", true));
+        hashMap.put("sXmlRecRegimenFiscal", DXmlUtils.extractAttributeValue(namedNodeMap, "RegimenFiscalReceptor", true));
         hashMap.put("sXmlRecUsoCFDI", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_CFDI_USO, DXmlUtils.extractAttributeValue(namedNodeMap, "UsoCFDI", true)));
 
         DDbBranchAddress addressRec = (DDbBranchAddress) moSession.readRegistry(DModConsts.BU_ADD, new int[] { /*moBol.getFkBizPartnerBizPartnerId(), moBol.getFkBizPartnerBranchId(), moBol.getFkBizPartnerAddressId()*/ });

@@ -761,7 +761,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.signDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                     }
                     else {
@@ -786,7 +786,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
                 boolean isDisableButtonEnabled = false;
                 
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.cancelDps(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                     }
                     else {
@@ -822,7 +822,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.checkDps(miClient, (DGridRowView) getSelectedGridRow());
                     }
                     else {
@@ -843,7 +843,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.sendDps(miClient, (DGridRowView) getSelectedGridRow());
                     }
                     else {
@@ -864,7 +864,7 @@ public class DViewDps extends DGridPaneView implements ActionListener {
             }
             else {
                 try {
-                    if (DTrnUtils.isDpsTypeForDfr(DTrnEmissionUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
+                    if (DTrnUtils.isDpsTypeForDfr(DTrnUtils.getDpsOwnDpsTypeKey(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()))) {
                         DTrnEmissionUtils.downloadDps(miClient, (DGridRowView) getSelectedGridRow());
                     }
                     else {

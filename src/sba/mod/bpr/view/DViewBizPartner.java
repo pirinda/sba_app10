@@ -30,8 +30,8 @@ public class DViewBizPartner extends DGridPaneView {
         mnBizPartnerClass = mnGridSubtype;
     }
     
-    private boolean isCustomer() {
-        return mnBizPartnerClass == DModSysConsts.BS_BPR_CL_CUS;
+    private boolean isReceiver() {
+        return mnBizPartnerClass == DModSysConsts.BS_BPR_CL_CUS || mnBizPartnerClass == DModSysConsts.BS_BPR_CL_DBR;
     }
 
     @Override
@@ -63,6 +63,7 @@ public class DViewBizPartner extends DGridPaneView {
                 "v.nick, " +
                 "v.fis_id, " +
                 "v.alt_id, " +
+                "v.add_fis, " +
                 "v.b_ven, " +
                 "v.b_cus, " +
                 "v.b_cdr, " +
@@ -116,11 +117,11 @@ public class DViewBizPartner extends DGridPaneView {
         DGridColumnView[] columns = null;
         String bizPartner = DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass).toLowerCase();
         
-        if (isCustomer()) {
-            columns = new DGridColumnView[25];
+        if (isReceiver()) {
+            columns = new DGridColumnView[26];
         }
         else {
-            columns = new DGridColumnView[22];
+            columns = new DGridColumnView[21];
         }
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME + " " + bizPartner);
@@ -137,14 +138,19 @@ public class DViewBizPartner extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "f_days", "Días última transacción");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "v.nick", "Alias");
         
-        if (isCustomer()) {
+        if (isReceiver()) {
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.name_fis", "Nombre fiscal", 200);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "v.name_cap_reg", "Régimen capital", 75);
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT, "_name_prt_pol", "Nombre impresión", 75);
         }
         
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_tax_reg", "Régimen fiscal");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xat.name", "Tipo addenda");
+        
+        if (isReceiver()) {
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.add_fis", "Domicilio fiscal");
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "xat.name", "Tipo addenda");
+        }
+        
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DIS, DGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_SYS, DGridConsts.COL_TITLE_IS_SYS);

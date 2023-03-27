@@ -34,8 +34,7 @@ public class DLadBolPrinting {
     protected DDbBol moBol;
 
     public DLadBolPrinting(DGuiSession session, int[] bolKey) {
-        moSession = session;
-        moBol = (DDbBol) moSession.readRegistry(DModConsts.L_BOL, bolKey);
+        this(session, (DDbBol) session.readRegistry(DModConsts.L_BOL, bolKey));
     }
 
     public DLadBolPrinting(DGuiSession session, DDbBol bol) {
@@ -44,21 +43,21 @@ public class DLadBolPrinting {
     }
 
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfd() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfd() throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfdi32() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi32() throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Deprecated
-    public HashMap<String, Object> cratePrintMapCfdi33() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi33() throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public HashMap<String, Object> cratePrintMapCfdi40() throws Exception {
+    public HashMap<String, Object> createPrintingMapCfdi40() throws Exception {
         HashMap<String, Object> hashMap = new HashMap<>();
         DDbConfigCompany configCompany = (DDbConfigCompany) moSession.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moBol.getCompanyBranchKey());
@@ -78,9 +77,6 @@ public class DLadBolPrinting {
         Node nodeComprobante = DXmlUtils.extractElements(doc, "cfdi:Comprobante").item(0);
         namedNodeMap = nodeComprobante.getAttributes();
         
-        double total = DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true));
-        String currency = DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true);
-        
         hashMap.put("sXmlVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
         hashMap.put("sXmlTipoDeComprobante", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_CFDI_TP, DXmlUtils.extractAttributeValue(namedNodeMap, "TipoDeComprobante", true)));
         hashMap.put("sXmlSerie", DXmlUtils.extractAttributeValue(namedNodeMap, "Serie", false));
@@ -89,9 +85,9 @@ public class DLadBolPrinting {
         hashMap.put("sXmlLugarExpedicion", DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
         hashMap.put("sXmlNoCertificado", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificado", true));
         hashMap.put("sXmlSello", DXmlUtils.extractAttributeValue(namedNodeMap, "Sello", true));
-        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MON, currency));
+        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MON, DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
         hashMap.put("dXmlSubTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "SubTotal", true)));
-        hashMap.put("dXmlTotal", total);
+        hashMap.put("dXmlTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true)));
         hashMap.put("sXmlExportacion", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_EXP, DXmlUtils.extractAttributeValue(namedNodeMap, "Exportacion", true)));
         hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
         
@@ -166,28 +162,12 @@ public class DLadBolPrinting {
                 hashMap.put("sXmlTimSelloCfd", sSelloCfd = DXmlUtils.extractAttributeValue(namedNodeMap, "SelloCFD", true));
                 hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMap, "SelloSAT", true));
 
-                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi40(sUuid, emisorRfc, sRecRfc, total, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
-                hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
-            }
-            
-            if (DXmlUtils.hasChildElement(nodeComplemento, "tfd:TimbreFiscalDigital")) {
-                String sUuid;
-                String sSelloCfd;
-                Node nodeTimbreFiscalDigital = DXmlUtils.extractChildElements(nodeComplemento, "tfd:TimbreFiscalDigital").get(0);
-                
-                namedNodeMap = nodeTimbreFiscalDigital.getAttributes();
-                hashMap.put("sXmlTimVersion", DXmlUtils.extractAttributeValue(namedNodeMap, "Version", true));
-                hashMap.put("sXmlTimUuid", sUuid = DXmlUtils.extractAttributeValue(namedNodeMap, "UUID", true));
-                hashMap.put("sXmlTimFechaTimbrado", DXmlUtils.extractAttributeValue(namedNodeMap, "FechaTimbrado", true));
-                hashMap.put("sXmlTimRfcProvCertif", DXmlUtils.extractAttributeValue(namedNodeMap, "RfcProvCertif", false));
-                hashMap.put("sXmlTimNoCertificadoSat", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificadoSAT", false));
-                hashMap.put("sXmlTimSelloCfd", sSelloCfd = DXmlUtils.extractAttributeValue(namedNodeMap, "SelloCFD", true));
-                hashMap.put("sXmlTimSelloSat", DXmlUtils.extractAttributeValue(namedNodeMap, "SelloSAT", true));
-
-                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi40(sUuid, emisorRfc, sRecRfc, total, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
+                BufferedImage bufferedImage = DCfd.createQrCodeBufferedImageCfdi40(sUuid, emisorRfc, sRecRfc, 0, sSelloCfd.isEmpty() ? DLibUtils.textRepeat("0", 8) : sSelloCfd.substring(sSelloCfd.length() - 8, sSelloCfd.length()));
                 hashMap.put("oXmlTimQrCode", bufferedImage.getScaledInstance(bufferedImage.getWidth(), bufferedImage.getHeight(), Image.SCALE_DEFAULT));
             }
         }
+
+        // Otros campos:
 
         hashMap.put("sDocCadenaOriginal", moBol.getChildDfr().getSignedText());
         hashMap.put("sDocUser", moSession.readField(DModConsts.CU_USR, new int[] { moBol.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));

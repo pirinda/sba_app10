@@ -62,8 +62,6 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBizPartnerConfig;
-import sba.mod.bpr.db.DDbBranch;
-import sba.mod.bpr.db.DDbBranchAddress;
 import sba.mod.cfg.db.DDbBranchCash;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
@@ -94,8 +92,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DDbLock moRegistryLock;
     private DDbBizPartner moBizPartner;
     private DDbBizPartnerConfig moBizPartnerConfig;
-    private DDbBranch moBizPartnerBranchHeadquarters;
-    private DDbBranchAddress moBizPartnerBranchAddressOfficial;
     private DDbConfigCompany moConfigCompany;
     private DDbConfigBranch moConfigBranch;
     private DDbBranchCash moBranchCash;
@@ -2314,8 +2310,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         if (moKeyDfrReceiver.getSelectedIndex() <= 0) {
             moBizPartner = null;
             moBizPartnerConfig = null;
-            moBizPartnerBranchHeadquarters = null;
-            moBizPartnerBranchAddressOfficial = null;
             mnBizPartnerIdentityType = ((DGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getIdentityTypeDefault();
             moKeyDfrReceiverTaxRegime.removeAllItems();
 
@@ -2344,8 +2338,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         else {
             moBizPartner = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, moKeyDfrReceiver.getValue());
             moBizPartnerConfig = moBizPartner.getChildConfig(DModSysConsts.BS_BPR_CL_CUS);
-            moBizPartnerBranchHeadquarters = moBizPartner.getChildBranchHeadquarters();
-            moBizPartnerBranchAddressOfficial = moBizPartnerBranchHeadquarters.getChildAddressOfficial();
             mnBizPartnerIdentityType = moBizPartner.getFkIdentityTypeId();
             miClient.getSession().populateCatalogue(moKeyDfrReceiverTaxRegime, DModConsts.CS_TAX_REG, mnBizPartnerIdentityType, null);
 
@@ -2359,7 +2351,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             jtfDfrReceiverFiscalId.setText(moBizPartner.getFiscalId());
             jtfDfrReceiverFiscalId.setCaretPosition(0);
-            jtfDfrReceiverFiscalAddress.setText(moBizPartnerBranchAddressOfficial.getZipCode());
+            jtfDfrReceiverFiscalAddress.setText(moBizPartner.getActualAddressFiscal());
             jtfDfrReceiverFiscalAddress.setCaretPosition(0);
             jlReceiverName.setToolTipText("Razón social: " + moBizPartner.getNameFiscal());
             moKeyDfrReceiverTaxRegime.setValue(new int[] { !moKeyDfrReceiverTaxRegime.isEnabled() ? 0 : moBizPartner.getFkTaxRegimeId() });
@@ -2774,7 +2766,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         
         if (moRegistry.getFkXmlStatusId() < DModSysConsts.TS_XML_ST_ISS) {
             // update place of issue allways before document is issued:
-            moRegistry.getXtaDfrMate().setPlaceOfIssue(moConfigCompany.getChildBizPartner().getChildBranchHeadquarters().getChildAddressOfficial().getZipCode());
+            moRegistry.getXtaDfrMate().setPlaceOfIssue(moConfigCompany.getChildBizPartner().getActualAddressFiscal());
         }
 
         setFormEditable(true);  // enable all controls before setting form values

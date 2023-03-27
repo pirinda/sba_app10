@@ -38,6 +38,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     protected String msFiscalId;
     protected String msAlternativeId;
     protected String msForeignId;
+    protected String msAddressFiscal;
     protected String msWeb;
     protected String msNote;
     protected boolean mbVendor;
@@ -105,6 +106,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setAlternativeId(String s) { msAlternativeId = s; }
     public void setForeignId(String s) { msForeignId = s; }
+    public void setAddressFiscal(String s) { msAddressFiscal = s; }
     public void setWeb(String s) { msWeb = s; }
     public void setNote(String s) { msNote = s; }
     public void setVendor(boolean b) { mbVendor = b; }
@@ -141,6 +143,7 @@ public class DDbBizPartner extends DDbRegistryUser {
     public String getFiscalId() { return msFiscalId; }
     public String getAlternativeId() { return msAlternativeId; }
     public String getForeignId() { return msForeignId; }
+    public String getAddressFiscal() { return msAddressFiscal; }
     public String getWeb() { return msWeb; }
     public String getNote() { return msNote; }
     public boolean isVendor() { return mbVendor; }
@@ -232,6 +235,16 @@ public class DDbBizPartner extends DDbRegistryUser {
     public boolean isNamePrintingPolicyForFiscal() {
         return msNamePrintingPolicy.equals(DModSysConsts.BPR_NAME_PRT_POL_NAME_FISCAL);
     }
+    
+    public String getActualAddressFiscal() {
+        String actualAddressFiscal = msAddressFiscal;
+        
+        if (actualAddressFiscal.isEmpty() && getChildBranchHeadquarters() != null && getChildBranchHeadquarters().getChildAddressOfficial() != null) {
+            actualAddressFiscal = getChildBranchHeadquarters().getChildAddressOfficial().getZipCode();
+        }
+        
+        return actualAddressFiscal;
+    }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -258,6 +271,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         msFiscalId = "";
         msAlternativeId = "";
         msForeignId = "";
+        msAddressFiscal = "";
         msWeb = "";
         msNote = "";
         mbVendor = false;
@@ -342,6 +356,7 @@ public class DDbBizPartner extends DDbRegistryUser {
             msFiscalId = resultSet.getString("fis_id");
             msAlternativeId = resultSet.getString("alt_id");
             msForeignId = resultSet.getString("frg_id");
+            msAddressFiscal = resultSet.getString("add_fis");
             msWeb = resultSet.getString("web");
             msNote = resultSet.getString("note");
             mbVendor = resultSet.getBoolean("b_ven");
@@ -451,6 +466,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "'" + msFiscalId + "', " +
                     "'" + msAlternativeId + "', " +
                     "'" + msForeignId + "', " +
+                    "'" + msAddressFiscal + "', " + 
                     "'" + msWeb + "', " +
                     "'" + msNote + "', " +
                     (mbVendor ? 1 : 0) + ", " +
@@ -494,6 +510,7 @@ public class DDbBizPartner extends DDbRegistryUser {
                     "fis_id = '" + msFiscalId + "', " +
                     "alt_id = '" + msAlternativeId + "', " +
                     "frg_id = '" + msForeignId + "', " +
+                    "add_fis = '" + msAddressFiscal + "', " +
                     "web = '" + msWeb + "', " +
                     "note = '" + msNote + "', " +
                     "b_ven = " + (mbVendor ? 1 : 0) + ", " +
@@ -561,6 +578,7 @@ public class DDbBizPartner extends DDbRegistryUser {
         registry.setFiscalId(this.getFiscalId());
         registry.setAlternativeId(this.getAlternativeId());
         registry.setForeignId(this.getForeignId());
+        registry.setAddressFiscal(this.getAddressFiscal());
         registry.setWeb(this.getWeb());
         registry.setNote(this.getNote());
         registry.setVendor(this.isVendor());

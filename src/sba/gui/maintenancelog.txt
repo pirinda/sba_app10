@@ -1,7 +1,13 @@
 ================================================================================
-SBA 1.0 031.0
+SBA 1.0 032.1
 2023-03-??/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de timbrado e impresión de CFDI con complemento Carta Porte 2.0, tipo "T".
+
+================================================================================
+SBA 1.0 032.0
+2023-03-26/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de captura opcional e impresión de domicilio fiscal de clientes y deudores.
+2) Corrección a la captura de pedimentos de importación en compras.
 
 ================================================================================
 SBA 1.0 031.2
