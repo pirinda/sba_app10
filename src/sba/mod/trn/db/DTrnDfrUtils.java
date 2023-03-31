@@ -2371,6 +2371,7 @@ public abstract class DTrnDfrUtils {
      * @param xml CFDI's XML.
      * @param dfr DFR registry.
      * @return true if is correct.
+     * @throws java.lang.Exception
      */
     @SuppressWarnings("deprecation")
     public static boolean belongsXmlToDfr(final String xml, final DDbDfr dfr) throws Exception {
@@ -3392,7 +3393,7 @@ public abstract class DTrnDfrUtils {
                         dfr.save(session);
                         break;
                     case DModSysConsts.TS_XML_STP_CCP:
-                        // XXX to do!
+                        ((DDbBol) doc).updateDfr(session, dfr);
                         break;
                     default:
                         // nothing
@@ -3411,7 +3412,9 @@ public abstract class DTrnDfrUtils {
                     }
                     break;
                 case DModSysConsts.TS_XML_STP_CCP:
-                    // XXX to do!
+                    if (((DDbBol) doc).getFkBolStatusId() != DModSysConsts.TS_DPS_ST_ANN) {
+                        ((DDbBol) doc).disable(session);
+                    }
                     break;
                 default:
                     // nothing
@@ -3434,7 +3437,7 @@ public abstract class DTrnDfrUtils {
         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
             // Print DFR:
 
-            dfr.printDfr(session);
+            doc.printDfr(session);
             xsr.setRequestStatus(DModSysConsts.TX_XMS_REQ_ST_FIN);
             xsr.save(session);
         }

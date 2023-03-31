@@ -7824,7 +7824,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             
             moBol.setFkTransportTypeId(DModSysConsts.LS_TPT_TP_TRUCK);
-            moBol.setFkBolStatusId(DModSysConsts.TS_XML_ST_PEN);
+            moBol.setFkBolStatusId(DModSysConsts.TS_DPS_ST_NEW);
             moBol.setFkOwnerBizPartnerId(moSessionCustom.getBranchKey()[0]);
             moBol.setFkOwnerBranchId(moSessionCustom.getBranchKey()[1]);
             moBol.setFkMerchandiseWeightUnitId(mnBolWeightUnitId);
@@ -7862,7 +7862,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolNumber.setText("" + moBol.getNumber());
         jtfBolNumber.setCaretPosition(0);
         moDateBolDate.setValue(moBol.getDate());
-        jtfBolStatus.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ST, new int[] { moBol.getFkBolStatusId() }, DDbRegistry.FIELD_NAME));
+        jtfBolStatus.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_ST, new int[] { moBol.getFkBolStatusId() }, DDbRegistry.FIELD_NAME));
         jtfBolStatus.setCaretPosition(0);
         jtfBolUuid.setText(moBol.getChildDfr() == null ? "" : moBol.getChildDfr().getUuid());
         jtfBolUuid.setCaretPosition(0);

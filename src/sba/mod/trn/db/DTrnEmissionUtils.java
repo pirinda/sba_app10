@@ -484,6 +484,39 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
+     * Print BOL.
+     * @param client GUI client.
+     * @param gridRow Current grid row.
+     */
+    public static void printBol(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey());
+
+                switch (bol.getDfr().getFkXmlTypeId()) {
+                    case DModSysConsts.TS_XML_TP_CFD:
+                    case DModSysConsts.TS_XML_TP_CFDI_32:
+                    case DModSysConsts.TS_XML_TP_CFDI_33:
+                        throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
+
+                    case DModSysConsts.TS_XML_TP_CFDI_40:
+                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CCP_20, new DLadBolPrinting(client.getSession(), bol).createPrintingMapCfdi40());
+                        break;
+
+                    default:
+                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+
+    /**
      * Print DFR.
      * @param client GUI client.
      * @param gridRow Current grid row.
@@ -520,40 +553,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Print BOL.
-     * @param client GUI client.
-     * @param gridRow Current grid row.
-     */
-    public static void printBol(final DGuiClient client, final DGridRowView gridRow) {
-        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
-            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
-        }
-        else {
-            try {
-                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey());
-
-                switch (bol.getDfr().getFkXmlTypeId()) {
-                    case DModSysConsts.TS_XML_TP_CFD:
-                    case DModSysConsts.TS_XML_TP_CFDI_32:
-                    case DModSysConsts.TS_XML_TP_CFDI_33:
-                        throw new UnsupportedOperationException("Not supported yet."); // no plans for supporting it later
-
-                    case DModSysConsts.TS_XML_TP_CFDI_40:
-                        DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CRP_20, new DLadBolPrinting(client.getSession(), bol).createPrintingMapCfdi40());
-                        break;
-
-                    default:
-                        throw new Exception(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
-                }
-            }
-            catch (Exception e) {
-                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
-            }
-        }
-    }
-
-    /**
-     * Signs a document.
+     * Sign a document.
      * <b>WARNING:</b> Current lock for Client will be set, manage it propperly.
      * @param client GUI Client.
      * @param gridRow Document.
@@ -636,6 +636,11 @@ public abstract class DTrnEmissionUtils {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
                             + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                }
+                else if (doc instanceof DDbBol && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_NEW) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
+                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_NEW }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_PEN) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
@@ -763,7 +768,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Signs a DPS.
+     * Sign a DPS.
      * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
      * Requests subtypes:
      * a) <b>Request</b> attempts to sign the provided registry.
@@ -784,7 +789,28 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Signs a DFR.
+     * Sign a BOL.
+     * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
+     * Requests subtypes:
+     * a) <b>Request</b> attempts to sign the provided registry.
+     * b) <b>Verification</b> resumes an unfinished previous request or confirms a pending finished cancel request before the authority.
+     * @param client GUI Client.
+     * @param gridRow Grid row containing BOL.
+     * @param requestSubtype Constants defined in DModSysConsts.TX_XMS_REQ_STP_...
+     * @throws java.lang.Exception
+     */
+    public static void signBol(final DGuiClient client, final DGridRowView gridRow, final int requestSubtype) throws Exception {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+            signDoc(client, bol, requestSubtype);
+        }
+    }
+
+    /**
+     * Sign a DFR.
      * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
      * Requests subtypes:
      * a) <b>Request</b> attempts to sign the provided registry.
@@ -805,7 +831,7 @@ public abstract class DTrnEmissionUtils {
     }
     
     /**
-     * Cancels a document.
+     * Cancel a document.
      * <b>WARNING:</b> Current lock for Client will be set, manage it propperly.
      * @param client GUI Client.
      * @param gridRow Document.
@@ -919,6 +945,11 @@ public abstract class DTrnEmissionUtils {
                             + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
+                else if (doc instanceof DDbDps && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_ISS) {
+                    throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
+                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
+                }
                 else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_ISS && doc.getDocStatus() != DModSysConsts.TS_XML_ST_PEN) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
                             + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
@@ -1008,7 +1039,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Cancels a DPS.
+     * Cancel a DPS.
      * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
      * Requests subtypes:
      * a) <b>Request</b> attempts to annul and cancel the provided registry.
@@ -1028,7 +1059,27 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Cancels a DFR.
+     * Cancel a DPS.
+     * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
+     * Requests subtypes:
+     * a) <b>Request</b> attempts to annul and cancel the provided registry.
+     * b) <b>Verification</b> resumes an unfinished previous request or confirms a pending finished cancel request before the authority.
+     * @param client GUI Client.
+     * @param gridRow Grid row containing DPS.
+     * @param requestSubtype Constants defined in DModSysConsts.TX_XMS_REQ_STP_...
+     */
+    public static void cancelBol(final DGuiClient client, final DGridRowView gridRow, final int requestSubtype) throws Exception {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+            cancelDoc(client, bol, requestSubtype);
+        }
+    }
+
+    /**
+     * Cancel a DFR.
      * <b>WARNING:</b> Assure to manage properly current lock in Client if an exception occurs during processing.
      * Requests subtypes:
      * a) <b>Request</b> attempts to execute or confirm an annul and cancel request for provided registry.
@@ -1048,7 +1099,7 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Sends a document by mail.
+     * Send a document by mail.
      * @param client GUI Client.
      * @param gridRow Document.
      * @throws Exception 
@@ -1249,7 +1300,7 @@ public abstract class DTrnEmissionUtils {
     }
     
     /**
-     * Sends a DPS by mail.
+     * Send a DPS by mail.
      * @param client GUI Client.
      * @param gridRow Grid row containing DPS.
      */
@@ -1269,7 +1320,27 @@ public abstract class DTrnEmissionUtils {
     }
 
     /**
-     * Sends a DFR by mail.
+     * Send a BOL by mail.
+     * @param client GUI Client.
+     * @param gridRow Grid row containing DPS.
+     */
+    public static void sendBol(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey());
+                sendDoc(client, bol);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+
+    /**
+     * Send a DFR by mail.
      * @param client GUI Client.
      * @param gridRow Grid row containing DFR.
      */
@@ -1289,7 +1360,7 @@ public abstract class DTrnEmissionUtils {
     }
     
     /**
-     * Checks the status of a document before the authority.
+     * Check the status of a document before the authority.
      * @param client GUI Client.
      * @param gridRow Document.
      * @throws Exception 
@@ -1303,7 +1374,7 @@ public abstract class DTrnEmissionUtils {
     }
     
     /**
-     * Checks the status of a DPS before the authority.
+     * Check the status of a DPS before the authority.
      * @param client GUI Client.
      * @param gridRow Grid row containing DPS.
      */
@@ -1323,7 +1394,27 @@ public abstract class DTrnEmissionUtils {
     }
     
     /**
-     * Checks the status of a DFR before the authority.
+     * Check the status of a BOL before the authority.
+     * @param client GUI Client.
+     * @param gridRow Grid row containing BOL.
+     */
+    public static void checkBol(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey(), DDbConsts.MODE_VERBOSE);
+                checkDoc(client, bol);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+    
+    /**
+     * Check the status of a DFR before the authority.
      * @param client GUI Client.
      * @param gridRow Grid row containing DFR.
      */
@@ -1378,6 +1469,21 @@ public abstract class DTrnEmissionUtils {
             try {
                 DDbDps dps = (DDbDps) client.getSession().readRegistry(DModConsts.T_DPS, gridRow.getRowPrimaryKey());
                 downloadDoc(client, dps);
+            }
+            catch (Exception e) {
+                DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
+            }
+        }
+    }
+    
+    public static void downloadBol(final DGuiClient client, final DGridRowView gridRow) {
+        if (gridRow.getRowType() != DGridConsts.ROW_TYPE_DATA) {
+            client.showMsgBoxWarning(DGridConsts.ERR_MSG_ROW_TYPE_DATA);
+        }
+        else {
+            try {
+                DDbBol bol = (DDbBol) client.getSession().readRegistry(DModConsts.L_BOL, gridRow.getRowPrimaryKey());
+                downloadDoc(client, bol);
             }
             catch (Exception e) {
                 DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);

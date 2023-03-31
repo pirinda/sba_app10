@@ -810,6 +810,24 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         }
     }
 
+    /**
+     * Updates Digital Fiscal Receipt (DFR).
+     * VERY IMPORTANT NOTICE!: Check on each usage of this method that is covered by exclusive-access locks.
+     * By now, all current usages (one in DTrnDfrUtils, two in DTrnEmissionUtils) are covered properly by these locks.
+     * @param session
+     * @param dfr
+     * @throws java.sql.SQLException
+     */
+    public void updateDfr(final DGuiSession session, final DDbDfr dfr) throws SQLException, Exception {
+        initQueryMembers();
+        mnQueryResultId = DDbConsts.SAVE_ERROR;
+
+        moChildDfr = dfr;
+        saveChildDfr(session, false);
+
+        mnQueryResultId = DDbConsts.SAVE_OK;
+    }
+
     @Override
     public String getDocName() {
         return "carta porte";
@@ -875,7 +893,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_20, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
                     break;
 
                 default:

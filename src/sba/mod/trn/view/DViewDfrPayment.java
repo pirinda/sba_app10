@@ -400,14 +400,14 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         }
     }
 
-    private void actionDfrSign(final int requestType) {
+    private void actionDfrSign(final int requestSubtype) {
         if (mjButtonDfrSign.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
                 try {
-                    DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                    DTrnEmissionUtils.signDfr(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                 }
                 catch (Exception e) {
                     ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);
@@ -417,14 +417,14 @@ public class DViewDfrPayment extends DGridPaneView implements ActionListener {
         }
     }
 
-    private void actionDfrCancel(final int requestType) {
+    private void actionDfrCancel(final int requestSubtype) {
         if (mjButtonDfrCancel.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
                 try {
-                    DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestType);
+                    DTrnEmissionUtils.cancelDfr(miClient, (DGridRowView) getSelectedGridRow(), requestSubtype);
                 }
                 catch (Exception e) {
                     ((DGuiClientApp) miClient).freeCurrentLock(DDbLock.LOCK_ST_FREED_EXCEPTION);

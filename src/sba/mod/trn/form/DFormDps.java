@@ -3908,7 +3908,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         
         boolean enableDfrFields = enableDfrFields(); // moDpsSeriesNumber already must be set
         
-        if (moRegistry.isRegistryNew() && enableDfrFields) {
+        if (moRegistry.isRegistryNew() && enableDfrFields && moRegistry.getXtaDfrMate() == null) {
             DDfrMate dfrMate = new DDfrMate();
             dfrMate.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getActualAddressFiscal());
             dfrMate.setIssuerTaxRegime("" + moConfigCompany.getChildBizPartner().getFkTaxRegimeId()); // id = code

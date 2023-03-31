@@ -1,7 +1,23 @@
 ================================================================================
-SBA 1.0 032.1
+SBA 1.0 033.0
 2023-03-??/ Sergio Abraham FLORES GUTIÉRREZ
-1) Implementación de timbrado e impresión de CFDI con complemento Carta Porte 2.0, tipo "T".
+1) Implementación de timbrado e impresión de CFDI tipo "T" con complemento Carta Porte 2.0.
+
+================================================================================
+SBA 1.0 032.3
+2023-03-31/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección al cálculo de impuestos trasladados y retenidos de documentos relacionados y pagos del complemento de Recepción de Pagos 2.0.
+
+================================================================================
+SBA 1.0 032.2
+2023-03-29/ Sergio Abraham FLORES GUTIÉRREZ
+1) Recompilación para incorporar de corrección a la presentación obligada cuando apique del total del importe de IVA tasa 0 en el complemento de Recepción de Pagos 2.0.
+
+================================================================================
+SBA 1.0 032.1
+2023-03-28/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección al procesamiento y consolidación de impuestos trasladados y retenidos del nodo Pago del CFDI con complemento de Recepción de Pagos 2.0.
+2) Corrección a la copia de CFDI facturas y notas de crédito, para no reemplazar la información DFR con un registro nuevo, sino conservar el original que está siendo copiado.
 
 ================================================================================
 SBA 1.0 032.0

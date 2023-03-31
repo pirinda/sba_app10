@@ -1754,7 +1754,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                     for (int index = 1; index <= DDbDpsRow.TAXES; index++) {
                         int taxId = 0;
                         double taxRate = 0;
-                        double tax = 0;
                         
                         // taxes charged:
                         
@@ -1762,17 +1761,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                             case 1:
                                 taxId = dpsRow.getFkTaxCharged1Id();
                                 taxRate = dpsRow.getTaxChargedRate1();
-                                tax = dpsRow.getTaxCharged1Cy();
                                 break;
                             case 2:
                                 taxId = dpsRow.getFkTaxCharged2Id();
                                 taxRate = dpsRow.getTaxChargedRate2();
-                                tax = dpsRow.getTaxCharged2Cy();
                                 break;
                             case 3:
                                 taxId = dpsRow.getFkTaxCharged3Id();
                                 taxRate = dpsRow.getTaxChargedRate3();
-                                tax = dpsRow.getTaxCharged3Cy();
                                 break;
                             default:
                                 // nothing
@@ -1780,8 +1776,9 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                         
                         if (taxId != DModSysConsts.FU_TAX_NA) {
                             if (taxId == DFinConsts.TAX_IVA) {
-                                String key = DCfdi40Catalogs.IMP_IVA + moTaxRateFormat.format(taxRate);
-                                cfd.ver40.crp20.DElementTrasladoDR trasladoDr = trasladosDrMap.get(key);
+                                String mapKey = DCfdi40Catalogs.IMP_IVA + moTaxRateFormat.format(taxRate);
+                                cfd.ver40.crp20.DElementTrasladoDR trasladoDr = trasladosDrMap.get(mapKey);
+                                double baseProp = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
 
                                 if (trasladoDr == null) {
                                     trasladoDr = new cfd.ver40.crp20.DElementTrasladoDR();
@@ -1789,13 +1786,10 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                                     trasladoDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
                                     trasladoDr.getAttTasaOCuotaDR().setDouble(taxRate);
 
-                                    trasladosDrMap.put(key, trasladoDr);
+                                    trasladosDrMap.put(mapKey, trasladoDr);
                                 }
 
-                                double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
-                                double propImporte = DLibUtils.roundAmount(tax * payPct);
-
-                                trasladoDr.addImporte(propBase, propImporte);
+                                trasladoDr.addBaseDR(baseProp);
                             }
                             else {
                                 throw new Exception("El ID del impuesto trasladado es desconocido: " + taxId + ".");
@@ -1808,17 +1802,14 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                             case 1:
                                 taxId = dpsRow.getFkTaxRetained1Id();
                                 taxRate = dpsRow.getTaxRetainedRate1();
-                                tax = dpsRow.getTaxRetained1Cy();
                                 break;
                             case 2:
                                 taxId = dpsRow.getFkTaxRetained2Id();
                                 taxRate = dpsRow.getTaxRetainedRate2();
-                                tax = dpsRow.getTaxRetained2Cy();
                                 break;
                             case 3:
                                 taxId = dpsRow.getFkTaxRetained3Id();
                                 taxRate = dpsRow.getTaxRetainedRate3();
-                                tax = dpsRow.getTaxRetained3Cy();
                                 break;
                             default:
                                 // nothing
@@ -1827,8 +1818,9 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                         if (taxId != DModSysConsts.FU_TAX_NA) {
                             if (taxId == DFinConsts.TAX_IVA || taxId == DFinConsts.TAX_ISR) {
                                 String taxCode = taxId == DFinConsts.TAX_IVA ? DCfdi40Catalogs.IMP_IVA : DCfdi40Catalogs.IMP_ISR;
-                                String key = taxCode + moTaxRateFormat.format(taxRate);
-                                cfd.ver40.crp20.DElementRetencionDR retencionDr = retencionesDrMap.get(key);
+                                String mapKey = taxCode + moTaxRateFormat.format(taxRate);
+                                cfd.ver40.crp20.DElementRetencionDR retencionDr = retencionesDrMap.get(mapKey);
+                                double baseProp = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
 
                                 if (retencionDr == null) {
                                     retencionDr = new cfd.ver40.crp20.DElementRetencionDR();
@@ -1836,13 +1828,10 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
                                     retencionDr.getAttTipoFactorDR().setString(DCfdi40Catalogs.FAC_TP_TASA);
                                     retencionDr.getAttTasaOCuotaDR().setDouble(taxRate);
 
-                                    retencionesDrMap.put(key, retencionDr);
+                                    retencionesDrMap.put(mapKey, retencionDr);
                                 }
 
-                                double propBase = DLibUtils.roundAmount(dpsRow.getSubtotalCy_r() * payPct);
-                                double propImporte = DLibUtils.roundAmount(tax * payPct);
-
-                                retencionDr.addImporte(propBase, propImporte);
+                                retencionDr.addBaseDR(baseProp);
                             }
                             else {
                                 throw new Exception("El ID del impuesto retenido es desconocido: " + taxId + ".");
