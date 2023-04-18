@@ -96,7 +96,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 032.3"; // release date: 2023-03-31
+    public static final String APP_RELEASE = "SBA 1.0 033.0"; // release date: 2023-04-14
     public static final String APP_COPYRIGHT = "Copyright © 2011-2023 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -1626,7 +1626,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
 
     @Override
     public HashMap<String, Object> createReportParams() {
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = new HashMap<>();
 
         params.put("sAppName", APP_NAME);
         params.put("sAppCopyright", APP_COPYRIGHT);
@@ -1634,6 +1634,12 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         params.put("sCompany", msCompany);
         params.put("sUser", moSession.getUser().getName());
         params.put("oFormatDate", DLibUtils.DateFormatDate);
+        params.put("oFormatDatetime", DLibUtils.DateFormatDatetime);
+        params.put("oFormatDatetimeIso", DLibUtils.IsoFormatDatetime);
+        params.put("oDecimalFormatAmount", DLibUtils.DecimalFormatValue2D);
+        params.put("oDecimalFormatPriceUnitary", DLibUtils.DecimalFormatValue8D);
+        params.put("oDecimalFormatQuantity", DLibUtils.DecimalFormatValue3D);
+        params.put("oDecimalFormatInteger", DLibUtils.DecimalFormatInteger);
 
         return params;
     }

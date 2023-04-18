@@ -27,6 +27,9 @@ import sba.mod.trn.db.DTrnUtils;
 public class DDbItem extends DDbRegistryUser {
 
     public static final int FIELD_CFD_ITM_KEY = DDbRegistry.FIELD_BASE + 1;
+    
+    public static final String HAZARDOUS_MATERIAL_Y = "Y";
+    public static final String HAZARDOUS_MATERIAL_N = "N";
 
     protected int mnPkItemId;
     protected String msCode;
@@ -60,6 +63,10 @@ public class DDbItem extends DDbRegistryUser {
     protected boolean mbFreeOfDiscount;
     protected boolean mbFreeOfCommission;
     protected boolean mbPredial;
+    protected boolean mbHazardousMaterial;
+    protected String msHazardousMaterial;
+    protected String msHazardousMaterialCode;
+    protected String msPackagingCode;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -101,6 +108,14 @@ public class DDbItem extends DDbRegistryUser {
         super(DModConsts.IU_ITM);
         mvChildBarcodes = new Vector<>();
         initRegistry();
+    }
+    
+    private void sanitize() {
+        if (!mbHazardousMaterial) {
+            msHazardousMaterial = "";
+            msHazardousMaterialCode = "";
+            msPackagingCode = "";
+        }
     }
 
     /**
@@ -217,6 +232,10 @@ public class DDbItem extends DDbRegistryUser {
     public void setFreeOfDiscount(boolean b) { mbFreeOfDiscount = b; }
     public void setFreeOfCommission(boolean b) { mbFreeOfCommission = b; }
     public void setPredial(boolean b) { mbPredial = b; }
+    public void setHazardousMaterial(boolean b) { mbHazardousMaterial = b; }
+    public void setHazardousMaterial(String s) { msHazardousMaterial = s; }
+    public void setHazardousMaterialCode(String s) { msHazardousMaterialCode = s; }
+    public void setPackagingCode(String s) { msPackagingCode = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -273,6 +292,10 @@ public class DDbItem extends DDbRegistryUser {
     public boolean isFreeOfDiscount() { return mbFreeOfDiscount; }
     public boolean isFreeOfCommission() { return mbFreeOfCommission; }
     public boolean isPredial() { return mbPredial; }
+    public boolean isHazardousMaterial() { return mbHazardousMaterial; }
+    public String getHazardousMaterial() { return msHazardousMaterial; }
+    public String getHazardousMaterialCode() { return msHazardousMaterialCode; }
+    public String getPackagingCode() { return msPackagingCode; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -322,6 +345,14 @@ public class DDbItem extends DDbRegistryUser {
         return key;
     }
 
+    public boolean isHazardousMaterialYes() {
+        return mbHazardousMaterial && msHazardousMaterial.equals(HAZARDOUS_MATERIAL_Y);
+    }
+    
+    public boolean isHazardousMaterialNo() {
+        return mbHazardousMaterial && msHazardousMaterial.equals(HAZARDOUS_MATERIAL_N);
+    }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkItemId = pk[0];
@@ -368,6 +399,10 @@ public class DDbItem extends DDbRegistryUser {
         mbFreeOfDiscount = false;
         mbFreeOfCommission = false;
         mbPredial = false;
+        mbHazardousMaterial = false;
+        msHazardousMaterial = "";
+        msHazardousMaterialCode = "";
+        msPackagingCode = "";
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -477,6 +512,10 @@ public class DDbItem extends DDbRegistryUser {
             mbFreeOfDiscount = resultSet.getBoolean("b_fre_dsc");
             mbFreeOfCommission = resultSet.getBoolean("b_fre_cmm");
             mbPredial = resultSet.getBoolean("b_pred");
+            mbHazardousMaterial = resultSet.getBoolean("b_hazard_mat");
+            msHazardousMaterial = resultSet.getString("hazard_mat");
+            msHazardousMaterialCode = resultSet.getString("hazard_mat_code");
+            msPackagingCode = resultSet.getString("pack_code");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -556,6 +595,8 @@ public class DDbItem extends DDbRegistryUser {
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
+        
+        sanitize();
 
         if (mbRegistryNew) {
             computePrimaryKey(session);
@@ -601,6 +642,10 @@ public class DDbItem extends DDbRegistryUser {
                     (mbFreeOfDiscount ? 1 : 0) + ", " +
                     (mbFreeOfCommission ? 1 : 0) + ", " +
                     (mbPredial ? 1 : 0) + ", " + 
+                    (mbHazardousMaterial ? 1 : 0) + ", " + 
+                    "'" + msHazardousMaterial + "', " + 
+                    "'" + msHazardousMaterialCode + "', " + 
+                    "'" + msPackagingCode + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -662,6 +707,10 @@ public class DDbItem extends DDbRegistryUser {
                     "b_fre_dsc = " + (mbFreeOfDiscount ? 1 : 0) + ", " +
                     "b_fre_cmm = " + (mbFreeOfCommission ? 1 : 0) + ", " +
                     "b_pred = " + (mbPredial ? 1 : 0) + ", " +
+                    "b_hazard_mat = " + (mbHazardousMaterial ? 1 : 0) + ", " +
+                    "hazard_mat = '" + msHazardousMaterial + "', " +
+                    "hazard_mat_code = '" + msHazardousMaterialCode + "', " +
+                    "pack_code = '" + msPackagingCode + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -743,6 +792,10 @@ public class DDbItem extends DDbRegistryUser {
         registry.setFreeOfDiscount(this.isFreeOfDiscount());
         registry.setFreeOfCommission(this.isFreeOfCommission());
         registry.setPredial(this.isPredial());
+        registry.setHazardousMaterial(this.isHazardousMaterial());
+        registry.setHazardousMaterial(this.getHazardousMaterial());
+        registry.setHazardousMaterialCode(this.getHazardousMaterialCode());
+        registry.setPackagingCode(this.getPackagingCode());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

@@ -38,6 +38,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     protected double mdQuantity;
     protected String msDimensions;
     protected boolean mbHazardousMaterial;
+    protected String msHazardousMaterial;
     protected String msHazardousMaterialCode;
     protected String msHazardousMaterialName;
     protected String msPackagingCode;
@@ -65,6 +66,16 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         initRegistry();
     }
 
+    private void sanitize() {
+        if (!mbHazardousMaterial) {
+            msHazardousMaterial = "";
+            msHazardousMaterialCode = "";
+            msHazardousMaterialName = "";
+            msPackagingCode = "";
+            msPackagingName = "";
+        }
+    }
+
     public void setPkBolId(int n) { mnPkBolId = n; }
     public void setPkMerchandiseId(int n) { mnPkMerchandiseId = n; }
     public void setDescriptionItem(String s) { msDescriptionItem = s; }
@@ -72,6 +83,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     public void setQuantity(double d) { mdQuantity = d; }
     public void setDimensions(String s) { msDimensions = s; }
     public void setHazardousMaterial(boolean b) { mbHazardousMaterial = b; }
+    public void setHazardousMaterial(String s) { msHazardousMaterial = s; }
     public void setHazardousMaterialCode(String s) { msHazardousMaterialCode = s; }
     public void setHazardousMaterialName(String s) { msHazardousMaterialName = s; }
     public void setPackagingCode(String s) { msPackagingCode = s; }
@@ -91,6 +103,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     public double getQuantity() { return mdQuantity; }
     public String getDimensions() { return msDimensions; }
     public boolean isHazardousMaterial() { return mbHazardousMaterial; }
+    public String getHazardousMaterial() { return msHazardousMaterial; }
     public String getHazardousMaterialCode() { return msHazardousMaterialCode; }
     public String getHazardousMaterialName() { return msHazardousMaterialName; }
     public String getPackagingCode() { return msPackagingCode; }
@@ -233,6 +246,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         mdQuantity = 0;
         msDimensions = "";
         mbHazardousMaterial = false;
+        msHazardousMaterial = "";
         msHazardousMaterialCode = "";
         msHazardousMaterialName = "";
         msPackagingCode = "";
@@ -308,6 +322,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
             mdQuantity = resultSet.getDouble("qty");
             msDimensions = resultSet.getString("dim");
             mbHazardousMaterial = resultSet.getBoolean("b_hazard_mat");
+            msHazardousMaterial = resultSet.getString("hazard_mat");
             msHazardousMaterialCode = resultSet.getString("hazard_mat_code");
             msHazardousMaterialName = resultSet.getString("hazard_mat_name");
             msPackagingCode = resultSet.getString("pack_code");
@@ -350,6 +365,8 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
+        sanitize();
+
         if (mbRegistryNew) {
             computePrimaryKey(session);
 
@@ -361,6 +378,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
                     mdQuantity + ", " + 
                     "'" + msDimensions + "', " + 
                     (mbHazardousMaterial ? 1 : 0) + ", " + 
+                    "'" + msHazardousMaterial + "', " + 
                     "'" + msHazardousMaterialCode + "', " + 
                     "'" + msHazardousMaterialName + "', " + 
                     "'" + msPackagingCode + "', " + 
@@ -385,6 +403,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
                     "qty = " + mdQuantity + ", " +
                     "dim = '" + msDimensions + "', " +
                     "b_hazard_mat = " + (mbHazardousMaterial ? 1 : 0) + ", " +
+                    "hazard_mat = '" + msHazardousMaterial + "', " +
                     "hazard_mat_code = '" + msHazardousMaterialCode + "', " +
                     "hazard_mat_name = '" + msHazardousMaterialName + "', " +
                     "pack_code = '" + msPackagingCode + "', " +
@@ -431,6 +450,7 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         registry.setQuantity(this.getQuantity());
         registry.setDimensions(this.getDimensions());
         registry.setHazardousMaterial(this.isHazardousMaterial());
+        registry.setHazardousMaterial(this.getHazardousMaterial());
         registry.setHazardousMaterialCode(this.getHazardousMaterialCode());
         registry.setHazardousMaterialName(this.getHazardousMaterialName());
         registry.setPackagingCode(this.getPackagingCode());

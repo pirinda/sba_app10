@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.2" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="bgHazardousMaterial">
+    </Component>
+  </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
   </SyntheticProperties>
@@ -14,7 +18,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,88,0,0,3,-64"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,88,0,0,4,0"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -1164,7 +1168,7 @@
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Dimensiones f&#xed;sicas:"/>
+                        <TitledBorder title="Caracter&#xed;sticas f&#xed;sicas:"/>
                       </Border>
                     </Property>
                   </Properties>
@@ -1320,6 +1324,14 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecWeigthGross">
                                 </Component>
+                                <Component class="javax.swing.JLabel" name="jlWeigthGrossKg">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="kg"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[15, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
                               </SubComponents>
                             </Container>
                             <Container class="javax.swing.JPanel" name="jPanel37">
@@ -1339,6 +1351,14 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecWeigthDelivery">
                                 </Component>
+                                <Component class="javax.swing.JLabel" name="jlWeigthDeliveryKg">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="kg"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[15, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
                               </SubComponents>
                             </Container>
                             <Container class="javax.swing.JPanel" name="jPanel40">
@@ -1347,6 +1367,38 @@
                                 <Property name="alignment" type="int" value="0"/>
                                 <Property name="verticalGap" type="int" value="0"/>
                               </Layout>
+                              <SubComponents>
+                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolHazardousMaterial">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Material peligroso:"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[125, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldRadio" name="moRadHazardousMaterialYes">
+                                  <Properties>
+                                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                                      <ComponentRef name="bgHazardousMaterial"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="S&#xed;"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[50, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldRadio" name="moRadHazardousMaterialNo">
+                                  <Properties>
+                                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                                      <ComponentRef name="bgHazardousMaterial"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="No"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[50, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
                             </Container>
                             <Container class="javax.swing.JPanel" name="jPanel41">
 
@@ -1354,6 +1406,38 @@
                                 <Property name="alignment" type="int" value="0"/>
                                 <Property name="verticalGap" type="int" value="0"/>
                               </Layout>
+                              <SubComponents>
+                                <Component class="javax.swing.JLabel" name="jlHazardousMaterial">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Material:*"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[60, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextHazardousMaterialCode">
+                                  <Properties>
+                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="9999"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Clave (F5 para buscar)"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[35, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="jtfHazardousMaterialName">
+                                  <Properties>
+                                    <Property name="editable" type="boolean" value="false"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Descripci&#xf3;n"/>
+                                    <Property name="focusable" type="boolean" value="false"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[125, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
                             </Container>
                             <Container class="javax.swing.JPanel" name="jPanel43">
 
@@ -1361,6 +1445,38 @@
                                 <Property name="alignment" type="int" value="0"/>
                                 <Property name="verticalGap" type="int" value="0"/>
                               </Layout>
+                              <SubComponents>
+                                <Component class="javax.swing.JLabel" name="jlPackaging">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Embalaje:*"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[60, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextPackagingCode">
+                                  <Properties>
+                                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                      <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="XXXX"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Clave (F5 para buscar)"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[35, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="jtfPackagingName">
+                                  <Properties>
+                                    <Property name="editable" type="boolean" value="false"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Descripci&#xf3;n"/>
+                                    <Property name="focusable" type="boolean" value="false"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[125, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
                             </Container>
                           </SubComponents>
                         </Container>
@@ -1401,11 +1517,18 @@
                                 </Property>
                               </Properties>
                             </Component>
+                            <Component class="javax.swing.JLabel" name="jlDummy1">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[5, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
                             <Component class="javax.swing.JLabel" name="jlUnitsVirtual">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="Unids. virt.:*"/>
+                                <Property name="text" type="java.lang.String" value="Unids. virtuales:*"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[75, 23]"/>
+                                  <Dimension value="[100, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -1435,11 +1558,18 @@
                                 </Property>
                               </Properties>
                             </Component>
+                            <Component class="javax.swing.JLabel" name="jlDummy2">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[5, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
                             <Component class="javax.swing.JLabel" name="jlUnitsContained">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="Unids. cont.:*"/>
+                                <Property name="text" type="java.lang.String" value="Unids. contenidas:*"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[75, 23]"/>
+                                  <Dimension value="[100, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>
@@ -1469,11 +1599,18 @@
                                 </Property>
                               </Properties>
                             </Component>
+                            <Component class="javax.swing.JLabel" name="jlDummy3">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[5, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
                             <Component class="javax.swing.JLabel" name="jlUnitsPackage">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="Unids. conv.:"/>
+                                <Property name="text" type="java.lang.String" value="Unids. conversi&#xf3;n:"/>
                                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                  <Dimension value="[75, 23]"/>
+                                  <Dimension value="[100, 23]"/>
                                 </Property>
                               </Properties>
                             </Component>

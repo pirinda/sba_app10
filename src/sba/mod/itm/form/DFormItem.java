@@ -11,15 +11,21 @@
 
 package sba.mod.itm.form;
 
+import cfd.ver40.DCfdi40Catalogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 import sba.gui.DGuiClientSessionCustom;
+import sba.gui.cat.DXmlCatalog;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
@@ -32,6 +38,7 @@ import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanFieldBoolean;
 import sba.lib.gui.bean.DBeanFieldDecimal;
 import sba.lib.gui.bean.DBeanFieldKey;
+import sba.lib.gui.bean.DBeanFieldRadio;
 import sba.lib.gui.bean.DBeanFieldText;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
@@ -46,13 +53,19 @@ import sba.mod.itm.db.DDbItemBarcode;
 import sba.mod.itm.db.DDbItemGenus;
 import sba.mod.itm.db.DDbItemLine;
 import sba.mod.itm.db.DDbManufacturer;
+import sba.mod.lad.db.DLadCatalogConsts;
+import sba.mod.lad.db.DLadCatalogHazardousMaterial;
+import sba.mod.lad.db.DLadCatalogPackaging;
+import sba.mod.lad.form.DBolUtils;
+import sba.mod.lad.form.DPickerCatalogHazardousMaterial;
+import sba.mod.lad.form.DPickerCatalogPackaging;
 import sba.mod.trn.db.DTrnUtils;
 
 /**
  *
  * @author Sergio Flores
  */
-public class DFormItem extends DBeanForm implements ActionListener, FocusListener, ItemListener {
+public class DFormItem extends DBeanForm implements ActionListener, ItemListener, FocusListener, KeyListener {
 
     private DDbItem moRegistry;
     private DDbItemGenus moItemGenus;
@@ -63,6 +76,9 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private int mnCompanyIdentityType;
     private double mdTaxRate;
 
+    protected DPickerCatalogHazardousMaterial moPickerCatalogHazardousMaterial;
+    protected DPickerCatalogPackaging moPickerCatalogPackaging;
+    
     /** Creates new form DFormItem */
     public DFormItem(DGuiClient client, String title) {
         setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DModConsts.IU_ITM, DLibConsts.UNDEFINED, title);
@@ -79,6 +95,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgHazardousMaterial = new javax.swing.ButtonGroup();
         jpContainer = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -235,26 +252,40 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel45 = new javax.swing.JPanel();
         jlWeigthGross = new javax.swing.JLabel();
         moDecWeigthGross = new sba.lib.gui.bean.DBeanFieldDecimal();
+        jlWeigthGrossKg = new javax.swing.JLabel();
         jPanel37 = new javax.swing.JPanel();
         jlWeigthDelivery = new javax.swing.JLabel();
         moDecWeigthDelivery = new sba.lib.gui.bean.DBeanFieldDecimal();
+        jlWeigthDeliveryKg = new javax.swing.JLabel();
         jPanel40 = new javax.swing.JPanel();
+        moBoolHazardousMaterial = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moRadHazardousMaterialYes = new sba.lib.gui.bean.DBeanFieldRadio();
+        moRadHazardousMaterialNo = new sba.lib.gui.bean.DBeanFieldRadio();
         jPanel41 = new javax.swing.JPanel();
+        jlHazardousMaterial = new javax.swing.JLabel();
+        moTextHazardousMaterialCode = new sba.lib.gui.bean.DBeanFieldText();
+        jtfHazardousMaterialName = new javax.swing.JTextField();
         jPanel43 = new javax.swing.JPanel();
+        jlPackaging = new javax.swing.JLabel();
+        moTextPackagingCode = new sba.lib.gui.bean.DBeanFieldText();
+        jtfPackagingName = new javax.swing.JTextField();
         jPanel49 = new javax.swing.JPanel();
         jPanel39 = new javax.swing.JPanel();
         jlUnitVirtual = new javax.swing.JLabel();
         moKeyUnitVirtual = new sba.lib.gui.bean.DBeanFieldKey();
+        jlDummy1 = new javax.swing.JLabel();
         jlUnitsVirtual = new javax.swing.JLabel();
         moDecUnitsVirtual = new sba.lib.gui.bean.DBeanFieldDecimal();
         jPanel42 = new javax.swing.JPanel();
         jlUnitContained = new javax.swing.JLabel();
         moKeyUnitContained = new sba.lib.gui.bean.DBeanFieldKey();
+        jlDummy2 = new javax.swing.JLabel();
         jlUnitsContained = new javax.swing.JLabel();
         moDecUnitsContained = new sba.lib.gui.bean.DBeanFieldDecimal();
         jPanel44 = new javax.swing.JPanel();
         jlItemPackage = new javax.swing.JLabel();
         moKeyItemPackage = new sba.lib.gui.bean.DBeanFieldKey();
+        jlDummy3 = new javax.swing.JLabel();
         jlUnitsPackage = new javax.swing.JLabel();
         moDecUnitsPackage = new sba.lib.gui.bean.DBeanFieldDecimal();
 
@@ -761,7 +792,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
         jPanel25.add(jPanel17, java.awt.BorderLayout.NORTH);
 
-        jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Dimensiones físicas:"));
+        jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Características físicas:"));
         jPanel27.setLayout(new java.awt.BorderLayout());
 
         jPanel29.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
@@ -824,6 +855,10 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel45.add(jlWeigthGross);
         jPanel45.add(moDecWeigthGross);
 
+        jlWeigthGrossKg.setText("kg");
+        jlWeigthGrossKg.setPreferredSize(new java.awt.Dimension(15, 23));
+        jPanel45.add(jlWeigthGrossKg);
+
         jPanel31.add(jPanel45);
 
         jPanel37.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -833,15 +868,68 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jPanel37.add(jlWeigthDelivery);
         jPanel37.add(moDecWeigthDelivery);
 
+        jlWeigthDeliveryKg.setText("kg");
+        jlWeigthDeliveryKg.setPreferredSize(new java.awt.Dimension(15, 23));
+        jPanel37.add(jlWeigthDeliveryKg);
+
         jPanel31.add(jPanel37);
 
         jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolHazardousMaterial.setText("Material peligroso:");
+        moBoolHazardousMaterial.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel40.add(moBoolHazardousMaterial);
+
+        bgHazardousMaterial.add(moRadHazardousMaterialYes);
+        moRadHazardousMaterialYes.setText("Sí");
+        moRadHazardousMaterialYes.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel40.add(moRadHazardousMaterialYes);
+
+        bgHazardousMaterial.add(moRadHazardousMaterialNo);
+        moRadHazardousMaterialNo.setText("No");
+        moRadHazardousMaterialNo.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel40.add(moRadHazardousMaterialNo);
+
         jPanel31.add(jPanel40);
 
         jPanel41.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlHazardousMaterial.setText("Material:*");
+        jlHazardousMaterial.setPreferredSize(new java.awt.Dimension(60, 23));
+        jPanel41.add(jlHazardousMaterial);
+
+        moTextHazardousMaterialCode.setForeground(java.awt.Color.blue);
+        moTextHazardousMaterialCode.setText("9999");
+        moTextHazardousMaterialCode.setToolTipText("Clave (F5 para buscar)");
+        moTextHazardousMaterialCode.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel41.add(moTextHazardousMaterialCode);
+
+        jtfHazardousMaterialName.setEditable(false);
+        jtfHazardousMaterialName.setToolTipText("Descripción");
+        jtfHazardousMaterialName.setFocusable(false);
+        jtfHazardousMaterialName.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel41.add(jtfHazardousMaterialName);
+
         jPanel31.add(jPanel41);
 
         jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPackaging.setText("Embalaje:*");
+        jlPackaging.setPreferredSize(new java.awt.Dimension(60, 23));
+        jPanel43.add(jlPackaging);
+
+        moTextPackagingCode.setForeground(java.awt.Color.blue);
+        moTextPackagingCode.setText("XXXX");
+        moTextPackagingCode.setToolTipText("Clave (F5 para buscar)");
+        moTextPackagingCode.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel43.add(moTextPackagingCode);
+
+        jtfPackagingName.setEditable(false);
+        jtfPackagingName.setToolTipText("Descripción");
+        jtfPackagingName.setFocusable(false);
+        jtfPackagingName.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel43.add(jtfPackagingName);
+
         jPanel31.add(jPanel43);
 
         jPanel29.add(jPanel31);
@@ -859,8 +947,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyUnitVirtual.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel39.add(moKeyUnitVirtual);
 
-        jlUnitsVirtual.setText("Unids. virt.:*");
-        jlUnitsVirtual.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlDummy1.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel39.add(jlDummy1);
+
+        jlUnitsVirtual.setText("Unids. virtuales:*");
+        jlUnitsVirtual.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel39.add(jlUnitsVirtual);
         jPanel39.add(moDecUnitsVirtual);
 
@@ -875,8 +966,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyUnitContained.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel42.add(moKeyUnitContained);
 
-        jlUnitsContained.setText("Unids. cont.:*");
-        jlUnitsContained.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlDummy2.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel42.add(jlDummy2);
+
+        jlUnitsContained.setText("Unids. contenidas:*");
+        jlUnitsContained.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel42.add(jlUnitsContained);
         jPanel42.add(moDecUnitsContained);
 
@@ -891,8 +985,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moKeyItemPackage.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel44.add(moKeyItemPackage);
 
-        jlUnitsPackage.setText("Unids. conv.:");
-        jlUnitsPackage.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlDummy3.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel44.add(jlDummy3);
+
+        jlUnitsPackage.setText("Unids. conversión:");
+        jlUnitsPackage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel44.add(jlUnitsPackage);
         jPanel44.add(moDecUnitsPackage);
 
@@ -913,7 +1010,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         int lenCode = 0;
         DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
 
-        DGuiUtils.setWindowBounds(this, 960, 650);
+        DGuiUtils.setWindowBounds(this, 1024, 650);
 
         lenCode = configCompany.getLengthCodeItem();
 
@@ -965,6 +1062,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moDecMeasurementTime.setDecimalSettings(DGuiUtils.getLabelName(jlMeasurementTime), DGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeigthGross.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthGross), DGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeigthDelivery.setDecimalSettings(DGuiUtils.getLabelName(jlWeigthDelivery), DGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moBoolHazardousMaterial.setBooleanSettings(msTitle, mbCanShowForm);
+        moRadHazardousMaterialYes.setBooleanSettings(moRadHazardousMaterialYes.getText(), true);
+        moRadHazardousMaterialNo.setBooleanSettings(moRadHazardousMaterialNo.getText(), false);
+        moTextHazardousMaterialCode.setTextSettings(DGuiUtils.getLabelName(jlHazardousMaterial) + ": clave", 4, 0);
+        moTextPackagingCode.setTextSettings(DGuiUtils.getLabelName(jlPackaging) + ": clave", 4, 0);
         moKeyUnitVirtual.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitVirtual), true);
         moDecUnitsVirtual.setDecimalSettings(DGuiUtils.getLabelName(jlUnitsVirtual), DGuiConsts.GUI_TYPE_DEC_QTY, true);
         moKeyUnitContained.setKeySettings(miClient, DGuiUtils.getLabelName(jlUnitContained), true);
@@ -1020,6 +1122,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moFields.addField(moDecMeasurementTime);
         moFields.addField(moDecWeigthGross);
         moFields.addField(moDecWeigthDelivery);
+        moFields.addField(moBoolHazardousMaterial);
+        moFields.addField(moRadHazardousMaterialYes);
+        moFields.addField(moRadHazardousMaterialNo);
+        moFields.addField(moTextHazardousMaterialCode);
+        moFields.addField(moTextPackagingCode);
         moFields.addField(moKeyUnitVirtual);
         moFields.addField(moDecUnitsVirtual);
         moFields.addField(moKeyUnitContained);
@@ -1127,6 +1234,48 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moDecPriceNet5.setValue(moDecPrice5.getValue() * mdTaxRate);
     }
 
+    private void computeCatalogCode(final DBeanFieldText textCode, final JTextField textName, final String defaultCode, final DecimalFormat formatCode, final String catalog) {
+        if (textCode.getValue().isEmpty()) {
+            // clear code & name:
+            textCode.setValue(defaultCode);
+            textName.setText("");
+        }
+        else {
+            if (formatCode != null) {
+                textCode.setValue(formatCode.format(DLibUtils.parseInt(textCode.getValue())));
+            }
+            else {
+                textCode.setValue(textCode.getValue().toUpperCase());
+            }
+            
+            try {
+                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(catalog, "", "", null);
+                int id = xmlCatalog.getId(textCode.getValue(), "");
+                if (id != 0) {
+                    textName.setText(xmlCatalog.getName(id));
+                }
+                else {
+                    textName.setText("(" + DUtilConsts.TXT_UNKNOWN + ")");
+                }
+            }
+            catch (Exception e) {
+                DLibUtils.showException(this, e);
+            }
+            
+            textName.setCaretPosition(0);
+        }
+    }
+    
+    private void computeHazardousMaterialCode() {
+        computeCatalogCode(moTextHazardousMaterialCode, jtfHazardousMaterialName, DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL, 
+                DBolUtils.FormatCodeHazardousMaterial, DCfdi40Catalogs.XML_CCP_MAT_PEL);
+    }
+    
+    private void computePackagingCode() {
+        computeCatalogCode(moTextPackagingCode, jtfPackagingName, DBolUtils.DEF_CODE_PACKAGING, 
+                null, DCfdi40Catalogs.XML_CCP_EMB_TP);
+    }
+    
     private void displayTaxGroup() {
         if (!moBoolTaxGroupByUser.isSelected()) {
             if (moItemLine != null && moItemLine.getFkTaxGroupId_n() != DLibConsts.UNDEFINED) {
@@ -1663,7 +1812,103 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
             displayAbpItem();
         }
     }
+    
+    private void itemStateBoolHazardousMaterial() {
+        if (moBoolHazardousMaterial.isSelected()) {
+            bgHazardousMaterial.setSelected(moRadHazardousMaterialYes.getModel(), true);
+            
+            moRadHazardousMaterialYes.setEnabled(true);
+            moRadHazardousMaterialNo.setEnabled(true);
+        }
+        else {
+            bgHazardousMaterial.clearSelection();
+            
+            moRadHazardousMaterialYes.setEnabled(false);
+            moRadHazardousMaterialNo.setEnabled(false);
+        }
+        
+        itemStateBoolHazardousMaterialYesNo();
+    }
+    
+    private void itemStateBoolHazardousMaterialYesNo() {
+        moTextHazardousMaterialCode.resetField();
+        moTextPackagingCode.resetField();
+        jtfHazardousMaterialName.setText("");
+        jtfPackagingName.setText("");
+        
+        if (moRadHazardousMaterialYes.isSelected()) {
+            moTextHazardousMaterialCode.setEditable(true);
+            moTextPackagingCode.setEditable(true);
+            
+            computeHazardousMaterialCode();
+            computePackagingCode();
+        }
+        else {
+            moTextHazardousMaterialCode.setEditable(false);
+            moTextPackagingCode.setEditable(false);
+        }
+    }
 
+    private void focusGainedHazardousMaterialCode() {
+        if (moTextHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+            moTextHazardousMaterialCode.resetField();
+        }
+    }
+    
+    private void focusGainedPackagingCode() {
+        if (moTextPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+            moTextPackagingCode.resetField();
+        }
+    }
+    
+    private void focusLostHazardousMaterialCode() {
+        computeHazardousMaterialCode();
+    }
+    
+    private void focusLostPackagingCode() {
+        computePackagingCode();
+    }
+    
+    private void keyTypedHazardousMaterialCode(final KeyEvent keyEvent) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
+            if (moPickerCatalogHazardousMaterial == null) {
+                moPickerCatalogHazardousMaterial = new DPickerCatalogHazardousMaterial(miClient);
+            }
+
+            moPickerCatalogHazardousMaterial.resetForm();
+            moPickerCatalogHazardousMaterial.setVisible(true);
+
+            if (moPickerCatalogHazardousMaterial.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                DLadCatalogHazardousMaterial hazardousMaterial = (DLadCatalogHazardousMaterial) moPickerCatalogHazardousMaterial.getValue(DLadCatalogConsts.MERCH_HAZARDOUS_MATERIAL);
+                if (hazardousMaterial != null) {
+                    moTextHazardousMaterialCode.setValue(hazardousMaterial.Code);
+                    jtfHazardousMaterialName.setText(hazardousMaterial.Name);
+                    jtfHazardousMaterialName.setCaretPosition(0);
+                }
+            }
+        }
+    }
+    
+    private void keyTypedPackagingCode(final KeyEvent keyEvent) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
+            if (moPickerCatalogPackaging == null) {
+                moPickerCatalogPackaging = new DPickerCatalogPackaging(miClient);
+            }
+
+            moPickerCatalogPackaging.resetForm();
+            moPickerCatalogPackaging.setVisible(true);
+
+            if (moPickerCatalogPackaging.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                DLadCatalogPackaging hazardousMaterial = (DLadCatalogPackaging) moPickerCatalogPackaging.getValue(DLadCatalogConsts.MERCH_PACKAGING);
+                if (hazardousMaterial != null) {
+                    moTextPackagingCode.setValue(hazardousMaterial.Code);
+                    jtfPackagingName.setText(hazardousMaterial.Name);
+                    jtfPackagingName.setCaretPosition(0);
+                }
+            }
+        }
+    }
+            
     private DGuiValidation validateItemPackage() {
         DDbItem itemPackage = null;
         DGuiValidation validation = new DGuiValidation();
@@ -1748,6 +1993,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgHazardousMaterial;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1829,6 +2075,10 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlComponent;
     private javax.swing.JLabel jlDepartment;
+    private javax.swing.JLabel jlDummy1;
+    private javax.swing.JLabel jlDummy2;
+    private javax.swing.JLabel jlDummy3;
+    private javax.swing.JLabel jlHazardousMaterial;
     private javax.swing.JLabel jlIngredient;
     private javax.swing.JLabel jlItemCode;
     private javax.swing.JLabel jlItemGenus;
@@ -1843,6 +2093,7 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlMeasurementTime;
     private javax.swing.JLabel jlMeasurementVolume;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlPackaging;
     private javax.swing.JLabel jlPrice1;
     private javax.swing.JLabel jlPrice2;
     private javax.swing.JLabel jlPrice3;
@@ -1867,16 +2118,21 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private javax.swing.JLabel jlUnitsPackage;
     private javax.swing.JLabel jlUnitsVirtual;
     private javax.swing.JLabel jlWeigthDelivery;
+    private javax.swing.JLabel jlWeigthDeliveryKg;
     private javax.swing.JLabel jlWeigthGross;
+    private javax.swing.JLabel jlWeigthGrossKg;
     private javax.swing.JPanel jpContainer;
     private javax.swing.JTextField jtfCodeRo;
+    private javax.swing.JTextField jtfHazardousMaterialName;
     private javax.swing.JTextField jtfNameRo;
+    private javax.swing.JTextField jtfPackagingName;
     private javax.swing.JTextField jtfTaxRateRo;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolAbpItemByUser;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBulk;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolFreeOfCommission;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolFreeOfDiscount;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolFreeOfPrice;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolHazardousMaterial;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolInventoriable;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolLotApplying;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolPredial;
@@ -1919,13 +2175,17 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnit;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitContained;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnitVirtual;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadHazardousMaterialNo;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadHazardousMaterialYes;
     private sba.lib.gui.bean.DBeanFieldText moTextBarcode1;
     private sba.lib.gui.bean.DBeanFieldText moTextBarcode2;
     private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
+    private sba.lib.gui.bean.DBeanFieldText moTextHazardousMaterialCode;
     private sba.lib.gui.bean.DBeanFieldText moTextIngredient;
     private sba.lib.gui.bean.DBeanFieldText moTextItemCode;
     private sba.lib.gui.bean.DBeanFieldText moTextItemName;
     private sba.lib.gui.bean.DBeanFieldText moTextItemPresentation;
+    private sba.lib.gui.bean.DBeanFieldText moTextPackagingCode;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -1935,6 +2195,19 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jbNewBrand.addActionListener(this);
         jbNewManufacturer.addActionListener(this);
         jbEditTaxRegime.addActionListener(this);
+
+        moKeyItemGenus.addItemListener(this);
+        moKeyItemLine.addItemListener(this);
+        moKeyBrand.addItemListener(this);
+        moKeyManufacturer.addItemListener(this);
+        moKeyTaxGroup.addItemListener(this);
+        moBoolInventoriable.addItemListener(this);
+        moBoolFreeOfPrice.addItemListener(this);
+        moBoolTaxGroupByUser.addItemListener(this);
+        moBoolAbpItemByUser.addItemListener(this);
+        moBoolHazardousMaterial.addItemListener(this);
+        moRadHazardousMaterialYes.addItemListener(this);
+        moRadHazardousMaterialNo.addItemListener(this);
 
         moTextItemCode.addFocusListener(this);
         moTextItemName.addFocusListener(this);
@@ -1951,16 +2224,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moDecPriceNet3.addFocusListener(this);
         moDecPriceNet4.addFocusListener(this);
         moDecPriceNet5.addFocusListener(this);
-
-        moKeyItemGenus.addItemListener(this);
-        moKeyItemLine.addItemListener(this);
-        moKeyBrand.addItemListener(this);
-        moKeyManufacturer.addItemListener(this);
-        moKeyTaxGroup.addItemListener(this);
-        moBoolInventoriable.addItemListener(this);
-        moBoolFreeOfPrice.addItemListener(this);
-        moBoolTaxGroupByUser.addItemListener(this);
-        moBoolAbpItemByUser.addItemListener(this);
+        moTextHazardousMaterialCode.addFocusListener(this);
+        moTextPackagingCode.addFocusListener(this);
+        
+        moTextHazardousMaterialCode.addKeyListener(this);
+        moTextPackagingCode.addKeyListener(this);
     }
 
     @Override
@@ -1971,6 +2239,19 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         jbNewManufacturer.removeActionListener(this);
         jbEditTaxRegime.removeActionListener(this);
 
+        moKeyItemGenus.removeItemListener(this);
+        moKeyItemLine.removeItemListener(this);
+        moKeyBrand.removeItemListener(this);
+        moKeyManufacturer.removeItemListener(this);
+        moKeyTaxGroup.removeItemListener(this);
+        moBoolInventoriable.removeItemListener(this);
+        moBoolFreeOfPrice.removeItemListener(this);
+        moBoolTaxGroupByUser.removeItemListener(this);
+        moBoolAbpItemByUser.removeItemListener(this);
+        moBoolHazardousMaterial.removeItemListener(this);
+        moRadHazardousMaterialYes.removeItemListener(this);
+        moRadHazardousMaterialNo.removeItemListener(this);
+        
         moTextItemCode.removeFocusListener(this);
         moTextItemName.removeFocusListener(this);
         moTextItemPresentation.removeFocusListener(this);
@@ -1986,16 +2267,11 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moDecPriceNet3.removeFocusListener(this);
         moDecPriceNet4.removeFocusListener(this);
         moDecPriceNet5.removeFocusListener(this);
-
-        moKeyItemGenus.removeItemListener(this);
-        moKeyItemLine.removeItemListener(this);
-        moKeyBrand.removeItemListener(this);
-        moKeyManufacturer.removeItemListener(this);
-        moKeyTaxGroup.removeItemListener(this);
-        moBoolInventoriable.removeItemListener(this);
-        moBoolFreeOfPrice.removeItemListener(this);
-        moBoolTaxGroupByUser.removeItemListener(this);
-        moBoolAbpItemByUser.removeItemListener(this);
+        moTextHazardousMaterialCode.removeFocusListener(this);
+        moTextPackagingCode.removeFocusListener(this);
+        
+        moTextHazardousMaterialCode.removeKeyListener(this);
+        moTextPackagingCode.removeKeyListener(this);
     }
 
     @Override
@@ -2076,6 +2352,18 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         moBoolFreeOfDiscount.setValue(moRegistry.isFreeOfDiscount());
         moBoolFreeOfCommission.setValue(moRegistry.isFreeOfCommission());
         moBoolPredial.setValue(moRegistry.isPredial());
+        moBoolHazardousMaterial.setEnabled(((DDbConfigCompany) miClient.getSession().getConfigCompany()).isModuleLadings());
+        moBoolHazardousMaterial.setValue(moRegistry.isHazardousMaterial());
+        itemStateBoolHazardousMaterial();
+        moRadHazardousMaterialYes.setValue(moRegistry.isHazardousMaterialYes());
+        moRadHazardousMaterialNo.setValue(moRegistry.isHazardousMaterialNo());
+        itemStateBoolHazardousMaterialYesNo();
+        moTextHazardousMaterialCode.setValue(moRegistry.getHazardousMaterialCode());
+        moTextPackagingCode.setValue(moRegistry.getPackagingCode());
+        if (moRadHazardousMaterialYes.isSelected()) {
+            computeHazardousMaterialCode();
+            computePackagingCode();
+        }
         moKeyBrand.setValue(new int[] { moRegistry.getFkBrandId() });
         moKeyManufacturer.setValue(new int[] { moRegistry.getFkManufacturerId() });
         moKeyComponent.setValue(new int[] { moRegistry.getFkComponentId() });
@@ -2155,6 +2443,24 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
         registry.setFreeOfDiscount(moBoolFreeOfDiscount.getValue());
         registry.setFreeOfCommission(moBoolFreeOfCommission.getValue());
         registry.setPredial(moBoolPredial.getValue());
+        registry.setHazardousMaterial(moBoolHazardousMaterial.getValue());
+        if (!registry.isHazardousMaterial()) {
+            registry.setHazardousMaterial("");
+            registry.setHazardousMaterialCode("");
+            registry.setPackagingCode("");
+        }
+        else {
+            if (moRadHazardousMaterialYes.getValue()) {
+                registry.setHazardousMaterial(DDbItem.HAZARDOUS_MATERIAL_Y);
+                registry.setHazardousMaterialCode(moTextHazardousMaterialCode.getValue());
+                registry.setPackagingCode(moTextPackagingCode.getValue());
+            }
+            else {
+                registry.setHazardousMaterial(DDbItem.HAZARDOUS_MATERIAL_N);
+                registry.setHazardousMaterialCode("");
+                registry.setPackagingCode("");
+            }
+        }
         registry.setFkItemGenusId(moKeyItemGenus.getValue()[0]);
         registry.setFkItemLineId_n(moKeyItemLine.getSelectedIndex() <= 0 ? DLibConsts.UNDEFINED : moKeyItemLine.getValue()[0]);
         registry.setFkBrandId(moKeyBrand.getValue()[0]);
@@ -2200,6 +2506,35 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
             }
             else {
                 validation = validateItemPackage();
+                
+                if (validation.isValid()) {
+                    if (moBoolHazardousMaterial.isSelected() && moRadHazardousMaterialYes.isSelected()) {
+                        try {
+                            DXmlCatalog xmlCatalogHazardousMaterial = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
+                            DXmlCatalog xmlCatalogPackaging = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
+
+                            if (moTextHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+                                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextHazardousMaterialCode.getFieldName() + "'.");
+                                validation.setComponent(moTextHazardousMaterialCode);
+                            }
+                            else if (xmlCatalogHazardousMaterial.getId(moTextHazardousMaterialCode.getValue()) == 0) {
+                                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextHazardousMaterialCode.getFieldName() + "'.");
+                                validation.setComponent(moTextHazardousMaterialCode);
+                            }
+                            else if (moTextPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+                                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextPackagingCode.getFieldName() + "'.");
+                                validation.setComponent(moTextPackagingCode);
+                            }
+                            else if (xmlCatalogPackaging.getId(moTextPackagingCode.getValue()) == 0) {
+                                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextPackagingCode.getFieldName() + "'.");
+                                validation.setComponent(moTextPackagingCode);
+                            }
+                        }
+                        catch (Exception e) {
+                            validation.setMessage(e.getMessage());
+                        }
+                    }
+                }
             }
         }
 
@@ -2230,8 +2565,70 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() instanceof DBeanFieldBoolean) {
+            DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
 
+            if (field == moBoolInventoriable) {
+                itemStateBoolInventoriable();
+            }
+            else if (field == moBoolFreeOfPrice) {
+                itemStateBoolFreeOfPrice();
+            }
+            else if (field == moBoolTaxGroupByUser) {
+                itemStateBoolTaxGroupByUser();
+            }
+            else if (field == moBoolAbpItemByUser) {
+                itemStateBoolAbpItemByUser();
+            }
+            else if (field == moBoolHazardousMaterial) {
+                itemStateBoolHazardousMaterial();
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldRadio) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                DBeanFieldRadio field = (DBeanFieldRadio) e.getSource();
+                
+                if (field == moRadHazardousMaterialYes || field == moRadHazardousMaterialNo) {
+                    itemStateBoolHazardousMaterialYesNo();
+                }
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldKey) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+
+                if (field == moKeyItemGenus) {
+                    itemStateKeyItemGenus(true);
+                }
+                else if (field == moKeyItemLine) {
+                    itemStateKeyItemLine(true);
+                }
+                else if (field == moKeyBrand) {
+                    itemStateKeyBrand(true);
+                }
+                else if (field == moKeyManufacturer) {
+                    itemStateKeyManufacturer(true);
+                }
+                else if (field == moKeyTaxGroup) {
+                    itemStateKeyTaxGroup();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (e.getSource() instanceof DBeanFieldText) {
+            DBeanFieldText field = (DBeanFieldText) e.getSource();
+            
+            if (field == moTextHazardousMaterialCode) {
+                focusGainedHazardousMaterialCode();
+            }
+            else if (field == moTextPackagingCode) {
+                focusGainedPackagingCode();
+            }
+        }
     }
 
     @Override
@@ -2241,6 +2638,12 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
 
             if (field == moTextItemCode || field == moTextItemName || field == moTextItemPresentation) {
                 computeItemNameCode();
+            }
+            else if (field == moTextHazardousMaterialCode) {
+                focusLostHazardousMaterialCode();
+            }
+            else if (field == moTextPackagingCode) {
+                focusLostPackagingCode();
             }
         }
         else if (e.getSource() instanceof DBeanFieldDecimal) {
@@ -2286,42 +2689,25 @@ public class DFormItem extends DBeanForm implements ActionListener, FocusListene
     }
 
     @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldBoolean) {
-            DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
+    public void keyTyped(KeyEvent e) {
 
-            if (field == moBoolInventoriable) {
-                itemStateBoolInventoriable();
-            }
-            else if (field == moBoolFreeOfPrice) {
-                itemStateBoolFreeOfPrice();
-            }
-            else if (field == moBoolTaxGroupByUser) {
-                itemStateBoolTaxGroupByUser();
-            }
-            else if (field == moBoolAbpItemByUser) {
-                itemStateBoolAbpItemByUser();
-            }
-        }
-        else if (e.getSource() instanceof DBeanFieldKey) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+    }
 
-                if (field == moKeyItemGenus) {
-                    itemStateKeyItemGenus(true);
-                }
-                else if (field == moKeyItemLine) {
-                    itemStateKeyItemLine(true);
-                }
-                else if (field == moKeyBrand) {
-                    itemStateKeyBrand(true);
-                }
-                else if (field == moKeyManufacturer) {
-                    itemStateKeyManufacturer(true);
-                }
-                else if (field == moKeyTaxGroup) {
-                    itemStateKeyTaxGroup();
-                }
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getSource() instanceof DBeanFieldText) {
+            DBeanFieldText field = (DBeanFieldText) e.getSource();
+            
+            if (field == moTextHazardousMaterialCode) {
+                keyTypedHazardousMaterialCode(e);
+            }
+            else if (field == moTextPackagingCode) {
+                keyTypedPackagingCode(e);
             }
         }
     }

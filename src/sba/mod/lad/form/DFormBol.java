@@ -210,6 +210,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         bgBolIntlTransportDirections = new javax.swing.ButtonGroup();
         bgMerchDimensionUnits = new javax.swing.ButtonGroup();
+        bgMerchHazardousMaterial = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jpHeader = new javax.swing.JPanel();
         jpHeaderBol = new javax.swing.JPanel();
@@ -403,7 +404,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchValue = new javax.swing.JLabel();
         moCurMerchValue = new sba.lib.gui.bean.DBeanCompoundFieldCurrency();
         jpMerchInput23 = new javax.swing.JPanel();
-        moBoolMerchIsHazardousMaterial = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolMerchHazardousMaterial = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moRadMerchHazardousMaterialYes = new sba.lib.gui.bean.DBeanFieldRadio();
+        moRadMerchHazardousMaterialNo = new sba.lib.gui.bean.DBeanFieldRadio();
         jpMerchInput24 = new javax.swing.JPanel();
         jlMerchHazardousMaterial = new javax.swing.JLabel();
         moTextMerchHazardousMaterialCode = new sba.lib.gui.bean.DBeanFieldText();
@@ -1492,9 +1495,19 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpMerchInput23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolMerchIsHazardousMaterial.setText("Es material peligroso");
-        moBoolMerchIsHazardousMaterial.setPreferredSize(new java.awt.Dimension(200, 23));
-        jpMerchInput23.add(moBoolMerchIsHazardousMaterial);
+        moBoolMerchHazardousMaterial.setText("Material peligroso:");
+        moBoolMerchHazardousMaterial.setPreferredSize(new java.awt.Dimension(125, 23));
+        jpMerchInput23.add(moBoolMerchHazardousMaterial);
+
+        bgMerchHazardousMaterial.add(moRadMerchHazardousMaterialYes);
+        moRadMerchHazardousMaterialYes.setText("Sí");
+        moRadMerchHazardousMaterialYes.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpMerchInput23.add(moRadMerchHazardousMaterialYes);
+
+        bgMerchHazardousMaterial.add(moRadMerchHazardousMaterialNo);
+        moRadMerchHazardousMaterialNo.setText("No");
+        moRadMerchHazardousMaterialNo.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpMerchInput23.add(moRadMerchHazardousMaterialNo);
 
         jpMerchInput2.add(jpMerchInput23);
 
@@ -1549,7 +1562,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpMerchInput27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlMerchImportRequest.setText("Pedimento:*");
+        jlMerchImportRequest.setText("Pedimento i.:*");
         jlMerchImportRequest.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput27.add(jlMerchImportRequest);
 
@@ -2685,6 +2698,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgBolIntlTransportDirections;
     private javax.swing.ButtonGroup bgMerchDimensionUnits;
+    private javax.swing.ButtonGroup bgMerchHazardousMaterial;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton jbBolNavNext;
     private javax.swing.JButton jbBolNavPrev;
@@ -3037,7 +3051,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolIntlTransport;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolTemplate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolLocUpdate;
-    private sba.lib.gui.bean.DBeanFieldBoolean moBoolMerchIsHazardousMaterial;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolMerchHazardousMaterial;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTptFigTptPartUpdate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTptFigUpdate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTruckTrailUpdate;
@@ -3079,6 +3093,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private sba.lib.gui.bean.DBeanFieldRadio moRadBolIntlTransportDirectionOut;
     private sba.lib.gui.bean.DBeanFieldRadio moRadMerchDimensionsCm;
     private sba.lib.gui.bean.DBeanFieldRadio moRadMerchDimensionsPlg;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadMerchHazardousMaterialNo;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadMerchHazardousMaterialYes;
     private sba.lib.gui.bean.DBeanFieldText moTextBolTemplateCode;
     private sba.lib.gui.bean.DBeanFieldText moTextBolTemplateName;
     private sba.lib.gui.bean.DBeanFieldText moTextLocAddressCountyCode;
@@ -3247,7 +3263,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchCurrency.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchCurrency), false);
         moCurMerchValue.setCompoundFieldSettings(miClient);
         moCurMerchValue.getField().setDecimalSettings(DGuiUtils.getLabelName(jlMerchValue), DGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moBoolMerchIsHazardousMaterial.setBooleanSettings(moBoolMerchIsHazardousMaterial.getText(), false);
+        moBoolMerchHazardousMaterial.setBooleanSettings(moBoolMerchHazardousMaterial.getText(), false);
+        moRadMerchHazardousMaterialYes.setBooleanSettings(moRadMerchHazardousMaterialYes.getText(), true);
+        moRadMerchHazardousMaterialNo.setBooleanSettings(moRadMerchHazardousMaterialNo.getText(), false);
         moTextMerchHazardousMaterialCode.setTextSettings(DGuiUtils.getLabelName(jlMerchHazardousMaterial) + ": clave", 4, 0);
         moTextMerchHazardousMaterialName.setTextSettings(DGuiUtils.getLabelName(jlMerchHazardousMaterial) + ": " + moTextMerchHazardousMaterialName.getToolTipText(), 100, 0);
         moTextMerchPackagingCode.setTextSettings(DGuiUtils.getLabelName(jlMerchPackaging) + ": clave", 4, 0);
@@ -3287,7 +3305,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moFieldsMerchandise.addField(moKeyMerchCurrency, TAB_IDX_MERCHANDISE);
         moFieldsMerchandise.addField(moCurMerchValue.getField(), TAB_IDX_MERCHANDISE);
-        moFieldsMerchandise.addField(moBoolMerchIsHazardousMaterial, TAB_IDX_MERCHANDISE);
+        moFieldsMerchandise.addField(moBoolMerchHazardousMaterial, TAB_IDX_MERCHANDISE);
+        moFieldsMerchandise.addField(moRadMerchHazardousMaterialYes, TAB_IDX_MERCHANDISE);
+        moFieldsMerchandise.addField(moRadMerchHazardousMaterialNo, TAB_IDX_MERCHANDISE);
         moFieldsMerchandise.addField(moTextMerchHazardousMaterialCode, TAB_IDX_MERCHANDISE);
         moFieldsMerchandise.addField(moTextMerchHazardousMaterialName, TAB_IDX_MERCHANDISE);
         moFieldsMerchandise.addField(moTextMerchPackagingCode, TAB_IDX_MERCHANDISE);
@@ -4887,7 +4907,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moKeyMerchCurrency.setValue(new int[] { moBolMerchandise.getFkCurrencyId() });
             itemStateChangedMerchCurrency();
             moCurMerchValue.getField().setValue(moBolMerchandise.getValue());
-            moBoolMerchIsHazardousMaterial.setValue(moBolMerchandise.isHazardousMaterial());
+            moBoolMerchHazardousMaterial.setValue(moBolMerchandise.isHazardousMaterial());
             itemStateChangedMerchIsHazardousMaterial();
             moTextMerchHazardousMaterialCode.setValue(moBolMerchandise.getHazardousMaterialCode());
             moTextMerchHazardousMaterialName.setValue(moBolMerchandise.getHazardousMaterialName());
@@ -4982,7 +5002,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchCurrency.setEnabled(mbEditingMerchandise);
         itemStateChangedMerchCurrency();
         //moCurMerchValue.getField().setEnabled(mbEditingMerchandise); // depends on itemStateChangedMerchCurrency()
-        moBoolMerchIsHazardousMaterial.setEnabled(mbEditingMerchandise);
+        moBoolMerchHazardousMaterial.setEnabled(mbEditingMerchandise);
         itemStateChangedMerchIsHazardousMaterial();
         //moTextMerchHazardousMaterialCode.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
         //moTextMerchHazardousMaterialName.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
@@ -5377,7 +5397,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moIntMerchDimensionsHeight.getValue(), 
                     moIntMerchDimensionsWidth.getValue(), 
                     getMerchDimensionsUnit()));
-            moBolMerchandise.setHazardousMaterial(moBoolMerchIsHazardousMaterial.getValue());
+            moBolMerchandise.setHazardousMaterial(moBoolMerchHazardousMaterial.getValue());
             moBolMerchandise.setHazardousMaterialCode(moTextMerchHazardousMaterialCode.getValue());
             moBolMerchandise.setHazardousMaterialName(moTextMerchHazardousMaterialName.getValue());
             moBolMerchandise.setPackagingCode(moTextMerchPackagingCode.getValue());
@@ -5586,7 +5606,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextMerchPackagingCode.resetField();
         moTextMerchPackagingName.resetField();
         
-        if (moBoolMerchIsHazardousMaterial.isSelected()) {
+        if (moBoolMerchHazardousMaterial.isSelected()) {
             moTextMerchHazardousMaterialCode.setEnabled(mbEditingMerchandise);
             moTextMerchPackagingCode.setEnabled(mbEditingMerchandise);
         }
@@ -7529,7 +7549,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchCurrency.addItemListener(this);
         moRadMerchDimensionsCm.addItemListener(this);
         moRadMerchDimensionsPlg.addItemListener(this);
-        moBoolMerchIsHazardousMaterial.addItemListener(this);
+        moBoolMerchHazardousMaterial.addItemListener(this);
         
         moDecMerchQuantity.addFocusListener(this);
         moIntMerchDimensionsLength.addFocusListener(this);
@@ -7673,7 +7693,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchCurrency.removeItemListener(this);
         moRadMerchDimensionsCm.removeItemListener(this);
         moRadMerchDimensionsPlg.removeItemListener(this);
-        moBoolMerchIsHazardousMaterial.removeItemListener(this);
+        moBoolMerchHazardousMaterial.removeItemListener(this);
         
         moDecMerchQuantity.removeFocusListener(this);
         moIntMerchDimensionsLength.removeFocusListener(this);
@@ -8319,7 +8339,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             else if (field == moBoolBolTemplate) {
                 itemStateChangedBolTemplate();
             }
-            else if (field == moBoolMerchIsHazardousMaterial) {
+            else if (field == moBoolMerchHazardousMaterial) {
                 itemStateChangedMerchIsHazardousMaterial();
             }
         }

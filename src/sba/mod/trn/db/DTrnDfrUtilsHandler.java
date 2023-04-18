@@ -146,6 +146,7 @@ public class DTrnDfrUtilsHandler {
         return cfdiRelatedList;
     }
     
+    @SuppressWarnings("deprecation")
     public CfdiAckQuery getCfdiSatStatus(final DDbDfr dfr) throws Exception {
         /*
         // Former code. Status query done through PAC web services
