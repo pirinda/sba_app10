@@ -9,6 +9,7 @@ import cfd.DCfd;
 import cfd.ver40.DCfdi40Catalogs;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Vector;
 import org.w3c.dom.Document;
@@ -16,12 +17,15 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
+import sba.lib.db.DDbRegistrySysFly;
 import sba.lib.gui.DGuiSession;
 import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
+import sba.mod.cfg.db.DDbSysCountry;
+import sba.mod.itm.db.DDbUnit;
 import sba.mod.trn.db.DTrnDfrCatalogs;
 
 /**
@@ -62,10 +66,30 @@ public class DLadBolPrinting {
         DDbConfigCompany configCompany = (DDbConfigCompany) moSession.getConfigCompany();
         DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, moBol.getCompanyBranchKey());
 
-        hashMap.put("oDecimalFormatQuantity", configCompany.getDecimalFormatQuantity());
         hashMap.put("oDecimalFormatPriceUnitary", configCompany.getDecimalFormatPriceUnitary());
-        hashMap.put("nPkBol", (long) moBol.getPkBolId());
+        hashMap.put("oDecimalFormatQuantity", configCompany.getDecimalFormatQuantity());
+        hashMap.put("oDecimalFormatCantidad", new DecimalFormat("#,##0.000000"));
+        hashMap.put("separator", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); // 5 HTML blank spaces
         hashMap.put("sEdsDir", configBranch.getDfrDirectory());
+        hashMap.put("nPkBol", (long) moBol.getPkBolId());
+        
+        // Complemento carta porte:
+        
+        DDbSysCountry country = (DDbSysCountry) moSession.readRegistry(DModConsts.CS_CTY, new int[] { moBol.getFkIntlTransportCountryId() });
+        DDbSysTransportType intlWayTransportType = (DDbSysTransportType) moSession.readRegistry(DModConsts.LS_TPT_TP, new int[] { moBol.getFkIntlWayTransportTypeId() });
+        DDbUnit unit = (DDbUnit) moSession.readRegistry(DModConsts.IU_UNT, new int[] { moBol.getFkMerchandiseWeightUnitId() });
+        
+        hashMap.put("ccpVersion", moBol.getVersion());
+        hashMap.put("ccpTranspInternac", moBol.getIntlTransport());
+        hashMap.put("ccpEntradaSalidaMerc", moBol.getIntlTransportDirection());
+        hashMap.put("ccpPaisOrigenDestino", country.getCode() + " - " + country.getName());
+        hashMap.put("ccpViaEntradaSalida", intlWayTransportType.getCode() + " - " + intlWayTransportType.getName());
+        hashMap.put("ccpTotalDistRec", moBol.getDistanceKm());
+        hashMap.put("ccpRfcRemitDestin", ((DDbConfigCompany) moSession.getConfigCompany()).getChildBizPartner().getFiscalId());
+        hashMap.put("ccpNombreRemitDestin", ((DDbConfigCompany) moSession.getConfigCompany()).getChildBizPartner().getPrintableName());
+        hashMap.put("ccpPesoBrutoTotal", moBol.getMerchandiseWeight());
+        hashMap.put("ccpUnidadPeso", unit.getCfdUnitKey() + " - " + unit.getName());
+        hashMap.put("ccpNumTotalMercancias", moBol.getMerchandiseNumber());
         
         // XML parsing:
 
@@ -85,9 +109,6 @@ public class DLadBolPrinting {
         hashMap.put("sXmlLugarExpedicion", DXmlUtils.extractAttributeValue(namedNodeMap, "LugarExpedicion", true));
         hashMap.put("sXmlNoCertificado", DXmlUtils.extractAttributeValue(namedNodeMap, "NoCertificado", true));
         hashMap.put("sXmlSello", DXmlUtils.extractAttributeValue(namedNodeMap, "Sello", true));
-        hashMap.put("sXmlMoneda", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_MON, DXmlUtils.extractAttributeValue(namedNodeMap, "Moneda", true)));
-        hashMap.put("dXmlSubTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "SubTotal", true)));
-        hashMap.put("dXmlTotal", DLibUtils.parseDouble(DXmlUtils.extractAttributeValue(namedNodeMap, "Total", true)));
         hashMap.put("sXmlExportacion", DTrnDfrCatalogs.composeCatalogEntry(moSession.getClient(), DCfdi40Catalogs.CAT_EXP, DXmlUtils.extractAttributeValue(namedNodeMap, "Exportacion", true)));
         hashMap.put("sXmlConfirmacion", DXmlUtils.extractAttributeValue(namedNodeMap, "Confirmacion", false));
         
@@ -170,7 +191,6 @@ public class DLadBolPrinting {
         // Otros campos:
 
         hashMap.put("sDocCadenaOriginal", moBol.getChildDfr().getSignedText());
-        hashMap.put("sDocUser", moSession.readField(DModConsts.CU_USR, new int[] { moBol.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));
 
         return hashMap;
     }

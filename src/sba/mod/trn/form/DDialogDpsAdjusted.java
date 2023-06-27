@@ -582,7 +582,7 @@ public class DDialogDpsAdjusted extends DBeanFormDialog implements ActionListene
         */
         dpsRowNew.setDfrItemKey(DCfdi40Catalogs.ClaveProdServServsFacturacion); //fixed ClaveProdServ
         dpsRowNew.setDfrUnitKey(DCfdi40Catalogs.ClaveUnidadAct); //fixed ClaveUnidad
-        dpsRowNew.setDfrSourceUuid(moDps.getChildDfr().getUuid());
+        dpsRowNew.setDfrSourceUuid(moDps.getChildDfr() != null ? moDps.getChildDfr().getUuid() : "");
         
         dpsRowNew.setDbUnitCode(dpsRow.getDbUnitCode());
         dpsRowNew.setDbTaxRegimeId(dpsRow.getDbTaxRegimeId());

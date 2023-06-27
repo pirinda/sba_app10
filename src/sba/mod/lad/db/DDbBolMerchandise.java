@@ -224,6 +224,14 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         }
     }
     
+    public boolean isHazardousMaterialYes() {
+        return mbHazardousMaterial && msHazardousMaterial.equals(DDbItem.HAZARDOUS_MATERIAL_Y);
+    }
+    
+    public boolean isHazardousMaterialNo() {
+        return mbHazardousMaterial && msHazardousMaterial.equals(DDbItem.HAZARDOUS_MATERIAL_N);
+    }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkBolId = pk[0];

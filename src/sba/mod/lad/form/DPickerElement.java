@@ -55,7 +55,7 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
      * @param element Element. Constants defined in DModConsts. Optsions supported: LU_LOC, LU_TPT_FIGURE, LU_TRAIL, LU_TRUCK, LS_TPT_PART_TP, IU_ITM.
      */
     public DPickerElement(DGuiClient client, int element) {
-        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, element, 0, composeTitle());
+        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, element, 0, "");
         initComponents();
         initComponentsCustom();
     }
@@ -137,6 +137,9 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
 
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 640, 400);
+        
+        msTitle = composeTitle();
+        setTitle(msTitle);
         
         moKeyFilter.setKeySettings(miClient, DGuiUtils.getLabelName(jlFilter), true);
         moTextElementName.setTextSettings(DGuiUtils.getLabelName(jlElement), 100);

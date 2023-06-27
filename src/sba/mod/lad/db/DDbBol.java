@@ -233,6 +233,19 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         return bolLocation;
     }
     
+    public DDbBolMerchandise getChildMerchandise(final int[] key) {
+        DDbBolMerchandise bolMerchandise = null;
+        
+        for (DDbBolMerchandise bm : maChildMerchandises) {
+            if (DLibUtils.compareKeys(bm.getPrimaryKey(), key)) {
+                bolMerchandise = bm;
+                break;
+            }
+        }
+        
+        return bolMerchandise;
+    }
+    
     public void initBolTemplate(final int bolTemplateId) {
         mbTemplate = false;
         msTemplateCode = "";
@@ -241,6 +254,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         
         for (DDbBolLocation location : maChildLocations) {
             location.setPkBolId(0);
+            location.setFkSourceBolId_n(0);
         }
         
         for (DDbBolMerchandise merchandise : maChildMerchandises) {
@@ -248,6 +262,8 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             
             for (DDbBolMerchandiseMove merchandiseMove : merchandise.getChildMoves()) {
                 merchandiseMove.setPkBolId(0);
+                merchandiseMove.setFkSourceBolId(0);
+                merchandiseMove.setFkDestinyBolId(0);
             }
         }
         
@@ -389,7 +405,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             mnFkOwnerBranchId = resultSet.getInt("fk_own_bra");
             mnFkIntlTransportCountryId = resultSet.getInt("fk_intl_tpt_cty");
             mnFkIntlWayTransportTypeId = resultSet.getInt("fk_intl_way_tpt_tp");
-            mnFkMerchandiseWeightUnitId = resultSet.getInt("fk_merch_weigh_unt");
+            mnFkMerchandiseWeightUnitId = resultSet.getInt("fk_merch_weight_unt");
             mnFkBolTemplateId_n = resultSet.getInt("fk_bol_temp_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -538,7 +554,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     "fk_own_bra = " + mnFkOwnerBranchId + ", " +
                     "fk_intl_tpt_cty = " + mnFkIntlTransportCountryId + ", " +
                     "fk_intl_way_tpt_tp = " + mnFkIntlWayTransportTypeId + ", " +
-                    "fk_merch_weigh_unt = " + mnFkMerchandiseWeightUnitId + ", " +
+                    "fk_merch_weight_unt = " + mnFkMerchandiseWeightUnitId + ", " +
                     "fk_bol_temp_n = " + (mnFkBolTemplateId_n == 0 ? "NULL" : mnFkBolTemplateId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +

@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 034.0
+2023-06-26/ Sergio Abraham FLORES GUTIÉRREZ
+1) Puesta a punto de emisión, timbrado e impresión de CFDI tipo "T" con complemento Carta Porte 2.0.
+
+================================================================================
 SBA 1.0 033.0
 2023-03-??/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de configuración de material peligroso en catálogo de ítems.

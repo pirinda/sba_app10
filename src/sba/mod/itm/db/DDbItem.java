@@ -344,7 +344,7 @@ public class DDbItem extends DDbRegistryUser {
         
         return key;
     }
-
+    
     public boolean isHazardousMaterialYes() {
         return mbHazardousMaterial && msHazardousMaterial.equals(HAZARDOUS_MATERIAL_Y);
     }

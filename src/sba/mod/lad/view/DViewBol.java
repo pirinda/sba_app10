@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import sba.gui.DGuiClientApp;
-import sba.gui.prt.DPrtConsts;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
@@ -71,41 +70,41 @@ public class DViewBol extends DGridPaneView implements ActionListener {
             moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
             
-            mjButtonCreateFromTemplate = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/dps_inv_tmp.gif")), "Nuevo desde plantilla", this);
+            mjButtonCreateFromTemplate = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/dps_inv.gif")), "Nuevo desde plantilla", this);
             getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonCreateFromTemplate);
+
+            mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonPrint.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
+
+            mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrSign.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
+
+            mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrSignVerify.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSignVerify);
+
+            mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrCancel.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancel);
+
+            mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrCancelVerify.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
+
+            mjButtonDfrCheckStatus = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Consultar estatus " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrCheckStatus.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCheckStatus);
+
+            mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
+            mjButtonDfrSend.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
+
+            mjButtonDfrDownload = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_doc_xml.gif")), DUtilConsts.TXT_SAVE + " XML", this);
+            mjButtonDfrDownload.setEnabled(true);
+            getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrDownload);
         }
-        
-        mjButtonPrint = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_PRINT), DUtilConsts.TXT_PRINT + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonPrint.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonPrint);
-
-        mjButtonDfrSign = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN), DUtilConsts.TXT_SIGN + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrSign.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSign);
-
-        mjButtonDfrSignVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SIGN_VER), DUtilConsts.TXT_SIGN_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrSignVerify.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSignVerify);
-
-        mjButtonDfrCancel = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL), DUtilConsts.TXT_CANCEL + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrCancel.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancel);
-
-        mjButtonDfrCancelVerify = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_CANCEL_VER), DUtilConsts.TXT_CANCEL_VER + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrCancelVerify.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCancelVerify);
-
-        mjButtonDfrCheckStatus = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_VIEW), "Consultar estatus " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrCheckStatus.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrCheckStatus);
-
-        mjButtonDfrSend = DGridUtils.createButton(miClient.getImageIcon(DImgConsts.CMD_STD_SEND), DUtilConsts.TXT_SEND + " " + DUtilConsts.TXT_DOC.toLowerCase(), this);
-        mjButtonDfrSend.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrSend);
-
-        mjButtonDfrDownload = DGridUtils.createButton(new ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_doc_xml.gif")), DUtilConsts.TXT_SAVE + " XML", this);
-        mjButtonDfrDownload.setEnabled(true);
-        getPanelCommandsSys(DGuiConsts.PANEL_CENTER).add(mjButtonDfrDownload);
     }
     
     private boolean isBolTemplate() {
@@ -131,7 +130,6 @@ public class DViewBol extends DGridPaneView implements ActionListener {
                     miClient.getSession().getModule(DModConsts.MOD_LAD, 0).showForm(DModConsts.L_BOL, DDbBol.BOL_REAL, params);
                 }
             }
-            
         }
     }
 
@@ -187,6 +185,16 @@ public class DViewBol extends DGridPaneView implements ActionListener {
                 "(SELECT l.name FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_LOC) + " AS bl " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LU_LOC) + " AS l ON l.id_loc = bl.fk_loc " +
                 "WHERE bl.id_bol = b.id_bol AND bl.fk_loc_tp = " + DModSysConsts.LS_LOC_TP_DES + " ORDER BY bl.id_loc DESC LIMIT 1) AS _des, " +
+                "COALESCE((SELECT t.name FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TRUCK) + " AS bt " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LU_TRUCK) + " AS t ON t.id_truck = bt.fk_truck " +
+                "WHERE bt.id_bol = b.id_bol AND bt.id_truck = 1 ORDER BY bt.id_truck LIMIT 1), 'ND') AS _truck, " +
+                "COALESCE((SELECT tf.name FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL_TPT_FIGURE) + " AS btf " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LU_TPT_FIGURE) + " AS tf ON tf.id_tpt_figure = btf.fk_tpt_figure " +
+                "WHERE btf.id_bol = b.id_bol AND btf.fk_tpt_figure_tp = " + DModSysConsts.LS_TPT_FIGURE_TP_DRIVER + " ORDER BY btf.id_tpt_figure LIMIT 1), 'ND') AS _driver, " +
+                "b.dist_km, " +
+                "b.merch_weight, " +
+                "b.merch_num, " +
+                "u.code, " +
                 "b.dt AS " + DDbConsts.FIELD_DATE + ", " +
                 "b.b_del AS " + DDbConsts.FIELD_IS_DEL + ", " +
                 "b.fk_usr_ins AS " + DDbConsts.FIELD_USER_INS_ID + ", " +
@@ -198,6 +206,8 @@ public class DViewBol extends DGridPaneView implements ActionListener {
                 "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL) + " AS b " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BRA) + " AS cb ON " +
                 "b.fk_own_bpr = cb.id_bpr AND b.fk_own_bra = cb.id_bra " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.IU_UNT) + " AS u ON " +
+                "b.fk_merch_weight_unt = u.id_unt " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "b.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
@@ -214,14 +224,14 @@ public class DViewBol extends DGridPaneView implements ActionListener {
         DGridColumnView[] columns = null;
 
         if (isBolTemplate()) {
-            columns = new DGridColumnView[11];
+            columns = new DGridColumnView[17];
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_L, DDbConsts.FIELD_NAME, "Nombre");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, "Código");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "b.ser", "Serie");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
         }
         else {
-            columns = new DGridColumnView[12];
+            columns = new DGridColumnView[18];
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_REG_NUM, DDbConsts.FIELD_NAME, "Folio");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE, DDbConsts.FIELD_DATE, "Fecha");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
@@ -231,6 +241,12 @@ public class DViewBol extends DGridPaneView implements ActionListener {
         
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_src", "Origen");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_des", "Destino");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_2D, "b.dist_km", "Distancia km");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_3D, "b.merch_weight", "Peso bruto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "u.code", "Unidad peso bruto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "b.merch_num", "Mercancías");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "_truck", "Autotransporte");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "_driver", "Operador");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_S, DDbConsts.FIELD_IS_DEL, DGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_USR, DDbConsts.FIELD_USER_INS_NAME, DGridConsts.COL_TITLE_USER_INS_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DATE_DATETIME, DDbConsts.FIELD_USER_INS_TS, DGridConsts.COL_TITLE_USER_INS_TS);
@@ -256,7 +272,7 @@ public class DViewBol extends DGridPaneView implements ActionListener {
                 miClient.showMsgBoxInformation(DGridConsts.MSG_SELECT_ROW);
             }
             else {
-                DTrnEmissionUtils.printDps(miClient, (DGridRowView) getSelectedGridRow(), DPrtConsts.PRINT_MODE_STD);
+                DTrnEmissionUtils.printBol(miClient, (DGridRowView) getSelectedGridRow());
             }
         }
     }

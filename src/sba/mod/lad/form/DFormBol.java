@@ -98,6 +98,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected final static String TXT_ACTION_CREATE = "Creación";
     protected final static String TXT_ACTION_COPY = "Copia";
     protected final static String TXT_ACTION_MODIFY = "Modificación";
+    protected final static String TXT_CFD_ITEM_KEY = "ProdServ";
     protected final static String TXT_UNKNOWN = "?";
     
     protected final static int TAB_IDX_LOCATION = 0;
@@ -120,6 +121,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected DDbBolTruckTrailer moBolTruckTrailer;
     protected DDbBolTransportFigure moBolTptFigure;
     protected DDbBolTransportFigureTransportPart moBolTptFigureTptPart;
+    
+    protected DDialogBol moDialogBol;
     
     protected DXmlCatalog moXmlTruckTransportConfig;
     protected DXmlCatalog moXmlTruckPermissionType;
@@ -383,6 +386,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchWeightKg = new javax.swing.JLabel();
         moDecMerchWeightKg = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlMerchWeightKgUnit = new javax.swing.JLabel();
+        jbMerchSetWeightKg = new javax.swing.JButton();
         jlMerchRatioKgHint = new javax.swing.JLabel();
         jpMerchInput17 = new javax.swing.JPanel();
         jlMerchDimensions = new javax.swing.JLabel();
@@ -396,6 +400,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpMerchInput18 = new javax.swing.JPanel();
         jlMerchDimensionsHint = new javax.swing.JLabel();
         jtfMerchDimensionsHint = new javax.swing.JTextField();
+        jlMerchCfdItemKeySeparator = new javax.swing.JLabel();
+        jlMerchCfdItemKey = new javax.swing.JLabel();
         jpMerchInput2 = new javax.swing.JPanel();
         jpMerchInput21 = new javax.swing.JPanel();
         jlMerchCurrency = new javax.swing.JLabel();
@@ -667,7 +673,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpHeader.setLayout(new java.awt.GridLayout(1, 4));
 
-        jpHeaderBol.setBorder(javax.swing.BorderFactory.createTitledBorder("Carta Porte:"));
+        jpHeaderBol.setBorder(javax.swing.BorderFactory.createTitledBorder("Carta porte:"));
         jpHeaderBol.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
         jpHeaderBol1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -954,7 +960,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpLocInput11.add(moKeyLocLocationType);
 
         jbLocEditType.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbLocEditType.setToolTipText("Obtener siguiente código");
+        jbLocEditType.setToolTipText("Modificar");
         jbLocEditType.setPreferredSize(new java.awt.Dimension(23, 23));
         jpLocInput11.add(jbLocEditType);
 
@@ -1383,6 +1389,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchQuantity.setText("Cantidad:*");
         jlMerchQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput13.add(jlMerchQuantity);
+
+        moDecMerchQuantity.setPreferredSize(new java.awt.Dimension(90, 23));
         jpMerchInput13.add(moDecMerchQuantity);
 
         jtfMerchQuantityMoved.setEditable(false);
@@ -1390,7 +1398,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfMerchQuantityMoved.setText("0.00000000");
         jtfMerchQuantityMoved.setToolTipText("Cantidad transportada");
         jtfMerchQuantityMoved.setFocusable(false);
-        jtfMerchQuantityMoved.setPreferredSize(new java.awt.Dimension(100, 23));
+        jtfMerchQuantityMoved.setPreferredSize(new java.awt.Dimension(90, 23));
         jtfMerchQuantityMoved.setRequestFocusEnabled(false);
         jpMerchInput13.add(jtfMerchQuantityMoved);
 
@@ -1401,15 +1409,22 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchWeightKg.setText("Peso bruto:*");
         jlMerchWeightKg.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput16.add(jlMerchWeightKg);
+
+        moDecMerchWeightKg.setPreferredSize(new java.awt.Dimension(90, 23));
         jpMerchInput16.add(moDecMerchWeightKg);
 
         jlMerchWeightKgUnit.setText("kg");
-        jlMerchWeightKgUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jlMerchWeightKgUnit.setPreferredSize(new java.awt.Dimension(15, 23));
         jpMerchInput16.add(jlMerchWeightKgUnit);
+
+        jbMerchSetWeightKg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
+        jbMerchSetWeightKg.setToolTipText("Asignar peso bruto");
+        jbMerchSetWeightKg.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpMerchInput16.add(jbMerchSetWeightKg);
 
         jlMerchRatioKgHint.setForeground(java.awt.Color.gray);
         jlMerchRatioKgHint.setText("1.000 x unidad");
-        jlMerchRatioKgHint.setPreferredSize(new java.awt.Dimension(95, 23));
+        jlMerchRatioKgHint.setPreferredSize(new java.awt.Dimension(90, 23));
         jpMerchInput16.add(jlMerchRatioKgHint);
 
         jpMerchInput1.add(jpMerchInput16);
@@ -1463,8 +1478,17 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfMerchDimensionsHint.setText("999/999/999cm");
         jtfMerchDimensionsHint.setToolTipText("Dimensiones");
         jtfMerchDimensionsHint.setFocusable(false);
-        jtfMerchDimensionsHint.setPreferredSize(new java.awt.Dimension(130, 23));
+        jtfMerchDimensionsHint.setPreferredSize(new java.awt.Dimension(100, 23));
         jpMerchInput18.add(jtfMerchDimensionsHint);
+
+        jlMerchCfdItemKeySeparator.setPreferredSize(new java.awt.Dimension(5, 23));
+        jpMerchInput18.add(jlMerchCfdItemKeySeparator);
+
+        jlMerchCfdItemKey.setForeground(java.awt.Color.gray);
+        jlMerchCfdItemKey.setText("ProdServ: 00000000");
+        jlMerchCfdItemKey.setToolTipText("Clave de producto o servicio");
+        jlMerchCfdItemKey.setPreferredSize(new java.awt.Dimension(110, 23));
+        jpMerchInput18.add(jlMerchCfdItemKey);
 
         jpMerchInput1.add(jpMerchInput18);
 
@@ -1632,8 +1656,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchMoveQuantity.setText("Cantidad:*");
         jlMerchMoveQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput3N3.add(jlMerchMoveQuantity);
-
-        moDecMerchMoveQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput3N3.add(moDecMerchMoveQuantity);
 
         jbMerchMoveSetQuantity.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
@@ -1800,7 +1822,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput11.add(moKeyTruckTransportConfig);
 
         jbTruckEditConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbTruckEditConfig.setToolTipText("Obtener siguiente código");
+        jbTruckEditConfig.setToolTipText("Modificar");
         jbTruckEditConfig.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTruckInput11.add(jbTruckEditConfig);
 
@@ -1874,7 +1896,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput17.add(jlTruckPermissionNumber);
 
         moTextTruckPermissionNumber.setText("TEXT");
-        moTextTruckPermissionNumber.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextTruckPermissionNumber.setPreferredSize(new java.awt.Dimension(230, 23));
         jpTruckInput17.add(moTextTruckPermissionNumber);
 
         jpTruckInput1.add(jpTruckInput17);
@@ -2204,7 +2226,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpTptFigInput.setLayout(new java.awt.GridLayout(1, 3));
 
-        jpTptFigInput1.setBorder(javax.swing.BorderFactory.createTitledBorder("Figura transporte:"));
+        jpTptFigInput1.setBorder(javax.swing.BorderFactory.createTitledBorder("Figura del transporte:"));
         jpTptFigInput1.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
         jpTptFigInput11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -2217,7 +2239,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTptFigInput11.add(moKeyTptFigTransportFigureType);
 
         jbTptFigEditType.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
-        jbTptFigEditType.setToolTipText("Obtener siguiente código");
+        jbTptFigEditType.setToolTipText("Modificar");
         jbTptFigEditType.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTptFigInput11.add(jbTptFigEditType);
 
@@ -2464,7 +2486,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpTptFigInput.add(jpTptFigInput2);
 
-        jpTptFigInput3.setBorder(javax.swing.BorderFactory.createTitledBorder("Partes de transporte:"));
+        jpTptFigInput3.setBorder(javax.swing.BorderFactory.createTitledBorder("Partes del transporte:"));
         jpTptFigInput3.setLayout(new java.awt.BorderLayout());
 
         jpTptFigInput3N.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
@@ -2656,7 +2678,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpWizardTptFigure.add(jpTptFig, java.awt.BorderLayout.NORTH);
 
-        jtpWizard.addTab("Figuras de transporte", jpWizardTptFigure);
+        jtpWizard.addTab("Figuras del transporte", jpWizardTptFigure);
 
         jPanel1.add(jtpWizard, java.awt.BorderLayout.CENTER);
 
@@ -2665,6 +2687,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpNavW.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jpNav.add(jpNavW, java.awt.BorderLayout.WEST);
 
+        jbBolNavStart.setBackground(java.awt.Color.green);
         jbBolNavStart.setText("Iniciar");
         jbBolNavStart.setPreferredSize(new java.awt.Dimension(100, 23));
         jpNavC.add(jbBolNavStart);
@@ -2673,12 +2696,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbBolNavRestart.setPreferredSize(new java.awt.Dimension(100, 23));
         jpNavC.add(jbBolNavRestart);
 
+        jbBolNavPrev.setBackground(java.awt.Color.yellow);
         jbBolNavPrev.setText("◄");
         jbBolNavPrev.setToolTipText("Ir atrás");
         jbBolNavPrev.setMargin(new java.awt.Insets(2, 0, 2, 0));
         jbBolNavPrev.setPreferredSize(new java.awt.Dimension(100, 23));
         jpNavC.add(jbBolNavPrev);
 
+        jbBolNavNext.setBackground(java.awt.Color.yellow);
         jbBolNavNext.setText("►");
         jbBolNavNext.setToolTipText("Ir adelante");
         jbBolNavNext.setMargin(new java.awt.Insets(2, 0, 2, 0));
@@ -2732,6 +2757,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbMerchOk;
     private javax.swing.JButton jbMerchPickItem;
     private javax.swing.JButton jbMerchRemove;
+    private javax.swing.JButton jbMerchSetWeightKg;
     private javax.swing.JButton jbTptFigAdd;
     private javax.swing.JButton jbTptFigCancel;
     private javax.swing.JButton jbTptFigCopy;
@@ -2801,6 +2827,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlLocName;
     private javax.swing.JLabel jlLocNotes;
     private javax.swing.JLabel jlLocSourceLocation;
+    private javax.swing.JLabel jlMerchCfdItemKey;
+    private javax.swing.JLabel jlMerchCfdItemKeySeparator;
     private javax.swing.JLabel jlMerchCurrency;
     private javax.swing.JLabel jlMerchDimensions;
     private javax.swing.JLabel jlMerchDimensions1;
@@ -4104,6 +4132,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfLocLocationId.setText("");
             
             jtfLocPk.setText("");
+            
+            moBoolLocUpdate.setValue(true);
         }
         else {
             moKeyLocLocationType.setValue(new int[] { moBolLocation.getFkLocationTypeId() });
@@ -4138,9 +4168,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             jtfLocPk.setText(DLibUtils.textKey(moBolLocation.getPrimaryKey()));
             jtfLocPk.setCaretPosition(0);
+            
+            moBoolLocUpdate.setValue(moBolLocation.getOwnLocation() == null || moBolLocation.getOwnLocation().isRegistryNew()); // update only when requested
         }
-        
-        moBoolLocUpdate.setValue(true);
     }
     
     private void editBolLocation(final boolean editing, final int action) {
@@ -4210,6 +4240,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         switch (action) { // act on original parameter
             case ACTION_ADD:
                 renderBolLocation(moBolLocation); // local registry already set
+                // default values:
+                if (moKeyLocSourceLocation.isEnabled() && moKeyLocSourceLocation.getSelectedIndex() <= 0 && moKeyLocSourceLocation.getItemCount() == 2) {
+                    moKeyLocSourceLocation.setSelectedIndex(1);
+                }
                 break;
             case ACTION_CREATE:
                 renderBolLocation(null);
@@ -4512,8 +4546,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating || adding) {
                 moGridLocations.addGridRow(moBolLocation);
             }
+            
+            int row = moGridLocations.getModel().getGridRows().indexOf(moBolLocation); // get row before refreshing grid!
             refreshBolLocations();
-            moGridLocations.setSelectedGridRow(moGridLocations.getTable().getRowCount() - 1);
+            moGridLocations.setSelectedGridRow(moGridLocations.getTable().convertRowIndexToView(row));
             
             actionPerformedLocCancel();
             
@@ -4908,7 +4944,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             itemStateChangedMerchCurrency();
             moCurMerchValue.getField().setValue(moBolMerchandise.getValue());
             moBoolMerchHazardousMaterial.setValue(moBolMerchandise.isHazardousMaterial());
-            itemStateChangedMerchIsHazardousMaterial();
+            itemStateChangedMerchHazardousMaterial();
+            moRadMerchHazardousMaterialYes.setValue(moBolMerchandise.isHazardousMaterialYes());
+            moRadMerchHazardousMaterialNo.setValue(moBolMerchandise.isHazardousMaterialNo());
+            itemStateChangedMerchHazardousMaterialYesNo();
             moTextMerchHazardousMaterialCode.setValue(moBolMerchandise.getHazardousMaterialCode());
             moTextMerchHazardousMaterialName.setValue(moBolMerchandise.getHazardousMaterialName());
             moTextMerchPackagingCode.setValue(moBolMerchandise.getPackagingCode());
@@ -4993,6 +5032,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         //moTextMerchUnitDescription.setEnabled(mbEditingMerchandise); // depends on itemStateChangedMerchItem() & itemStateChangedMerchUnit()
         moDecMerchQuantity.setEnabled(mbEditingMerchandise);
         moDecMerchWeightKg.setEnabled(mbEditingMerchandise);
+        jbMerchSetWeightKg.setEnabled(mbEditingMerchandise);
         moIntMerchDimensionsLength.setEnabled(mbEditingMerchandise);
         moIntMerchDimensionsHeight.setEnabled(mbEditingMerchandise);
         moIntMerchDimensionsWidth.setEnabled(mbEditingMerchandise);
@@ -5002,12 +5042,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyMerchCurrency.setEnabled(mbEditingMerchandise);
         itemStateChangedMerchCurrency();
         //moCurMerchValue.getField().setEnabled(mbEditingMerchandise); // depends on itemStateChangedMerchCurrency()
-        moBoolMerchHazardousMaterial.setEnabled(mbEditingMerchandise);
-        itemStateChangedMerchIsHazardousMaterial();
-        //moTextMerchHazardousMaterialCode.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
-        //moTextMerchHazardousMaterialName.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
-        //moTextMerchPackagingCode.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
-        //moTextMerchPackagingName.setEnabled(...); // depends on itemStateChangedMerchIsHazardousMaterial()
+        moBoolMerchHazardousMaterial.setEnabled(mbEditingMerchandise && moKeyMerchItem.getSelectedIndex() > 0);
+        itemStateChangedMerchHazardousMaterial();
+        //moRadMerchHazardousMaterialYes.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterial()
+        //moRadMerchHazardousMaterialNo.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterial()
+        //moTextMerchHazardousMaterialCode.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterialYesNo()
+        //moTextMerchHazardousMaterialName.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterialYesNo()
+        //moTextMerchPackagingCode.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterialYesNo()
+        //moTextMerchPackagingName.setEnabled(...); // depends on itemStateChangedMerchHazardousMaterialYesNo()
         moTextMerchTariff.setEnabled(mbEditingMerchandise && moBoolBolIntlTransport.getValue());
         moIntMerchImportRequest1.setEnabled(mbEditingMerchandise && moBoolBolIntlTransport.getValue());
         moIntMerchImportRequest2.setEnabled(mbEditingMerchandise && moBoolBolIntlTransport.getValue());
@@ -5033,6 +5075,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                break;
             case ACTION_CREATE:
                 renderBolMerchandise(null);
                 break;
@@ -5109,8 +5153,24 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // clear or refresh data:
         
         switch (action) { // act on original parameter
+            case ACTION_ADD:
+                break;
             case ACTION_CREATE:
                 renderBolMerchandiseMove(null);
+                // default values:
+                boolean setSource = false;
+                if (moKeyMerchMoveSource.isEnabled() && moKeyMerchMoveSource.getSelectedIndex() <= 0 && moKeyMerchMoveSource.getItemCount() == 2) {
+                    moKeyMerchMoveSource.setSelectedIndex(1);
+                    setSource = true;
+                }
+                boolean setDestiny = false;
+                if (moKeyMerchMoveDestiny.isEnabled() && moKeyMerchMoveDestiny.getSelectedIndex() <= 0 && moKeyMerchMoveDestiny.getItemCount() == 2) {
+                    moKeyMerchMoveDestiny.setSelectedIndex(1);
+                    setDestiny = true;
+                }
+                if (setSource && setDestiny && moDecMerchMoveQuantity.isEnabled()) {
+                    actionPerformedMerchMoveSetQuantity();
+                }
                 break;
             case ACTION_COPY:
             case ACTION_MODIFY:
@@ -5181,8 +5241,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             String ratio = DLibUtils.getDecimalFormatQuantity().format(moMerchUnit.getRatioKg()) + " x " + moMerchUnit.getCode();
             jlMerchRatioKgHint.setText(ratio);
             jlMerchRatioKgHint.setToolTipText("Equivalencia kg: " + ratio);
-            
-            moDecMerchWeightKg.setValue(moDecMerchQuantity.getValue() * moMerchUnit.getRatioKg());
+
+            if (moDecMerchWeightKg.getValue() == 0) {
+                moDecMerchWeightKg.setValue(moDecMerchQuantity.getValue() * moMerchUnit.getRatioKg());
+            }
         }
     }
     
@@ -5288,8 +5350,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
     
+    private void actionPerformedMerchSetWeightKg() {
+        moDecMerchWeightKg.setValue(0d);
+        computeMerchWeightKg();
+        moDecMerchWeightKg.requestFocusInWindow();
+    }
+    
     private void actionPerformedMerchAdd() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); // add not applicable
     }
     
     private void actionPerformedMerchCreate() {
@@ -5346,35 +5414,64 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsMerchandise.validateFields();
         
         if (validation.isValid()) {
-            if (moGridMerchandisesMoves.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm("No hay cantidades transportadas.\n"
-                    + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                validation.setMessage("Agregar cantidades transportadas.");
-                validation.setComponent(jbMerchMoveCreate);
-            }
-            else {
-                double quantityMoved = DLibUtils.parseDouble(jtfMerchQuantityMoved.getText());
-                
-                if (quantityMoved <= 0) {
-                    if (moGridMerchandisesMoves.getTable().getRowCount() > 0 && miClient.showMsgBoxConfirm(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "'"
-                            + DGuiConsts.ERR_MSG_FIELD_VAL_GREAT + DLibUtils.DecimalFormatValue6D.format(0) + ".\n"
-                            + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "'"
-                                + DGuiConsts.ERR_MSG_FIELD_VAL_GREAT + DLibUtils.DecimalFormatValue6D.format(0) + ".");
-                        validation.setComponent(jbMerchMoveCreate);
+            if (moBoolMerchHazardousMaterial.isSelected() && moRadMerchHazardousMaterialYes.isSelected()) {
+                try {
+                    DXmlCatalog xmlCatalogHazardousMaterial = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
+                    DXmlCatalog xmlCatalogPackaging = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
+
+                    if (moTextMerchHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextMerchHazardousMaterialCode.getFieldName() + "'.");
+                        validation.setComponent(moTextMerchHazardousMaterialCode);
+                    }
+                    else if (xmlCatalogHazardousMaterial.getId(moTextMerchHazardousMaterialCode.getValue()) == 0) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextMerchHazardousMaterialCode.getFieldName() + "'.");
+                        validation.setComponent(moTextMerchHazardousMaterialCode);
+                    }
+                    else if (moTextMerchPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextMerchPackagingCode.getFieldName() + "'.");
+                        validation.setComponent(moTextMerchPackagingCode);
+                    }
+                    else if (xmlCatalogPackaging.getId(moTextMerchPackagingCode.getValue()) == 0) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextMerchPackagingCode.getFieldName() + "'.");
+                        validation.setComponent(moTextMerchPackagingCode);
                     }
                 }
+                catch (Exception e) {
+                    validation.setMessage(e.getMessage());
+                }
+            }
+            
+            if (validation.isValid()) {
+                if (moGridMerchandisesMoves.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm("No hay cantidades transportadas.\n"
+                        + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                    validation.setMessage("Agregar cantidades transportadas.");
+                    validation.setComponent(jbMerchMoveCreate);
+                }
                 else {
-                    if (quantityMoved > moDecMerchQuantity.getValue()) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
-                                + DGuiConsts.ERR_MSG_FIELD_VAL_LESS_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".");
-                        validation.setComponent(jbMerchMoveModify);
+                    double quantityMoved = DLibUtils.parseDouble(jtfMerchQuantityMoved.getText());
+
+                    if (quantityMoved <= 0) {
+                        if (moGridMerchandisesMoves.getTable().getRowCount() > 0 && miClient.showMsgBoxConfirm(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "'"
+                                + DGuiConsts.ERR_MSG_FIELD_VAL_GREAT + DLibUtils.DecimalFormatValue6D.format(0) + ".\n"
+                                + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                            validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "'"
+                                    + DGuiConsts.ERR_MSG_FIELD_VAL_GREAT + DLibUtils.DecimalFormatValue6D.format(0) + ".");
+                            validation.setComponent(jbMerchMoveCreate);
+                        }
                     }
-                    else if (quantityMoved < moDecMerchQuantity.getValue() && miClient.showMsgBoxConfirm(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
-                            + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".\n"
-                            + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
-                                + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".");
-                        validation.setComponent(jbMerchMoveModify);
+                    else {
+                        if (quantityMoved > moDecMerchQuantity.getValue()) {
+                            validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
+                                    + DGuiConsts.ERR_MSG_FIELD_VAL_LESS_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".");
+                            validation.setComponent(jbMerchMoveModify);
+                        }
+                        else if (quantityMoved < moDecMerchQuantity.getValue() && miClient.showMsgBoxConfirm(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
+                                + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".\n"
+                                + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                            validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + DGuiUtils.getLabelName(jtfMerchQuantityMoved.getToolTipText()) + "', " + DLibUtils.DecimalFormatValue6D.format(quantityMoved) + ","
+                                    + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + DLibUtils.DecimalFormatValue6D.format(moDecMerchQuantity.getValue()) + ".");
+                            validation.setComponent(jbMerchMoveModify);
+                        }
                     }
                 }
             }
@@ -5398,10 +5495,29 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moIntMerchDimensionsWidth.getValue(), 
                     getMerchDimensionsUnit()));
             moBolMerchandise.setHazardousMaterial(moBoolMerchHazardousMaterial.getValue());
-            moBolMerchandise.setHazardousMaterialCode(moTextMerchHazardousMaterialCode.getValue());
-            moBolMerchandise.setHazardousMaterialName(moTextMerchHazardousMaterialName.getValue());
-            moBolMerchandise.setPackagingCode(moTextMerchPackagingCode.getValue());
-            moBolMerchandise.setPackagingName(moTextMerchPackagingName.getValue());
+            if (!moBolMerchandise.isHazardousMaterial()) {
+                moBolMerchandise.setHazardousMaterial("");
+                moBolMerchandise.setHazardousMaterialCode("");
+                moBolMerchandise.setHazardousMaterialName("");
+                moBolMerchandise.setPackagingCode("");
+                moBolMerchandise.setPackagingName("");
+            }
+            else {
+                if (moRadMerchHazardousMaterialYes.getValue()) {
+                    moBolMerchandise.setHazardousMaterial(DDbItem.HAZARDOUS_MATERIAL_Y);
+                    moBolMerchandise.setHazardousMaterialCode(moTextMerchHazardousMaterialCode.getValue());
+                    moBolMerchandise.setHazardousMaterialName(moTextMerchHazardousMaterialName.getValue());
+                    moBolMerchandise.setPackagingCode(moTextMerchPackagingCode.getValue());
+                    moBolMerchandise.setPackagingName(moTextMerchPackagingName.getValue());
+                }
+                else {
+                    moBolMerchandise.setHazardousMaterial(DDbItem.HAZARDOUS_MATERIAL_N);
+                    moBolMerchandise.setHazardousMaterialCode("");
+                    moBolMerchandise.setHazardousMaterialName("");
+                    moBolMerchandise.setPackagingCode("");
+                    moBolMerchandise.setPackagingName("");
+                }
+            }
             moBolMerchandise.setWeightKg(moDecMerchWeightKg.getValue());
             moBolMerchandise.setValue(moKeyMerchCurrency.getSelectedIndex() <= 0 ? 0.0 : moCurMerchValue.getField().getValue());
             moBolMerchandise.setTariff(moTextMerchTariff.getValue());
@@ -5429,8 +5545,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating) {
                 moGridMerchandises.addGridRow(moBolMerchandise);
             }
+            
+            int row = moGridMerchandises.getModel().getGridRows().indexOf(moBolMerchandise); // get row before refreshing grid!
             refreshBolMerchandises();
-            moGridMerchandises.setSelectedGridRow(moGridMerchandises.getTable().getRowCount() - 1);
+            moGridMerchandises.setSelectedGridRow(moGridMerchandises.getTable().convertRowIndexToView(row));
             
             actionPerformedMerchCancel();
             
@@ -5457,7 +5575,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedMerchMoveAdd() {
-        // adding not required
+        throw new UnsupportedOperationException("Not supported yet."); // add not applicable
     }
     
     private void actionPerformedMerchMoveCreate() {
@@ -5526,8 +5644,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating) {
                 moGridMerchandisesMoves.addGridRow(moBolMerchandiseMove);
             }
+            
+            int row = moGridMerchandisesMoves.getModel().getGridRows().indexOf(moBolMerchandiseMove); // get row before refreshing grid!
             refreshBolMerchandisesMoves();
-            moGridMerchandisesMoves.setSelectedGridRow(moGridMerchandisesMoves.getTable().getRowCount() - 1);
+            moGridMerchandisesMoves.setSelectedGridRow(moGridMerchandisesMoves.getTable().convertRowIndexToView(row));
             
             computeMerchQuantityMoves();
             
@@ -5540,24 +5660,45 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void itemStateChangedMerchItem() {
+        String cfdItemKey = "";
+        
         moTextMerchItemDescription.resetField();
         moKeyMerchUnit.resetField();
+        moBoolMerchHazardousMaterial.resetField();
+        itemStateChangedMerchHazardousMaterial();
         
         if (moKeyMerchItem.getSelectedIndex() <= 0) {
             moTextMerchItemDescription.setEnabled(false);
             moKeyMerchUnit.setEnabled(false);
+            moBoolMerchHazardousMaterial.setEnabled(false);
             
             moMerchItem = null;
         }
         else {
             moTextMerchItemDescription.setEnabled(mbEditingMerchandise);
             moKeyMerchUnit.setEnabled(mbEditingMerchandise);
+            moBoolMerchHazardousMaterial.setEnabled(mbEditingMerchandise);
             
             moMerchItem = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, moKeyMerchItem.getValue());
+            cfdItemKey = moMerchItem.getActualCfdItemKey();
             
             moTextMerchItemDescription.setValue(moMerchItem.getName());
             moKeyMerchUnit.setValue(new int[] { moMerchItem.getFkUnitId() });
+            moBoolMerchHazardousMaterial.setValue(moMerchItem.isHazardousMaterial());
+            itemStateChangedMerchHazardousMaterial();
+            moRadMerchHazardousMaterialYes.setValue(moMerchItem.isHazardousMaterialYes());
+            moRadMerchHazardousMaterialNo.setValue(moMerchItem.isHazardousMaterialNo());
+            itemStateChangedMerchHazardousMaterialYesNo();
+            
+            if (moRadMerchHazardousMaterialYes.isSelected()) {
+                moTextMerchHazardousMaterialCode.setValue(moMerchItem.getHazardousMaterialCode());
+                moTextMerchPackagingCode.setValue(moMerchItem.getPackagingCode());
+                computeMerchHazardousMaterialCode();
+                computeMerchPackagingCode();
+            }
         }
+        
+        jlMerchCfdItemKey.setText(TXT_CFD_ITEM_KEY + ": " + (cfdItemKey.isEmpty() ? "?" : cfdItemKey));
         
         itemStateChangedMerchUnit();
     }
@@ -5600,15 +5741,35 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         computeMerchDimensions();
     }
     
-    private void itemStateChangedMerchIsHazardousMaterial() {
+    private void itemStateChangedMerchHazardousMaterial() {
+        if (moBoolMerchHazardousMaterial.isSelected()) {
+            bgMerchHazardousMaterial.setSelected(moRadMerchHazardousMaterialYes.getModel(), true);
+            
+            moRadMerchHazardousMaterialYes.setEnabled(mbEditingMerchandise);
+            moRadMerchHazardousMaterialNo.setEnabled(mbEditingMerchandise);
+        }
+        else {
+            bgMerchHazardousMaterial.clearSelection();
+            
+            moRadMerchHazardousMaterialYes.setEnabled(false);
+            moRadMerchHazardousMaterialNo.setEnabled(false);
+        }
+        
+        itemStateChangedMerchHazardousMaterialYesNo();
+    }
+    
+    private void itemStateChangedMerchHazardousMaterialYesNo() {
         moTextMerchHazardousMaterialCode.resetField();
         moTextMerchHazardousMaterialName.resetField();
         moTextMerchPackagingCode.resetField();
         moTextMerchPackagingName.resetField();
         
-        if (moBoolMerchHazardousMaterial.isSelected()) {
+        if (moRadMerchHazardousMaterialYes.isSelected()) {
             moTextMerchHazardousMaterialCode.setEnabled(mbEditingMerchandise);
             moTextMerchPackagingCode.setEnabled(mbEditingMerchandise);
+            
+            computeMerchHazardousMaterialCode();
+            computeMerchPackagingCode();
         }
         else {
             moTextMerchHazardousMaterialCode.setEnabled(false);
@@ -5617,14 +5778,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moTextMerchHazardousMaterialName.setEnabled(false);
         moTextMerchPackagingName.setEnabled(false);
-        
-        if (moTextMerchHazardousMaterialCode.isEnabled()) {
-            moTextMerchHazardousMaterialCode.setValue(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL);
-        }
-        
-        if (moTextMerchPackagingCode.isEnabled()) {
-            moTextMerchPackagingCode.setValue(DBolUtils.DEF_CODE_PACKAGING);
-        }
     }
     
     private void focusGainedMerchHazardousMaterialCode() {
@@ -5814,6 +5967,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moFieldsTruck.resetFields();
             
             jtfTruckPk.setText("");
+            
+            moBoolTruckUpdate.setValue(true);
         }
         else {
             moKeyTruckTransportConfig.setValue(new int[] { moXmlTruckTransportConfig.getId(moBolTruck.getTransportConfigCode()) });
@@ -5823,6 +5978,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moTextTruckPlate.setValue(moBolTruck.getPlate());
             moYearTruckModel.setValue(moBolTruck.getModel());
             moKeyTruckPermissionType.setValue(new int[] { moXmlTruckPermissionType.getId(moBolTruck.getPermissionTypeCode()) });
+            itemStateChangedTruckPermissionType();
             moTextTruckPermissionNumber.setValue(moBolTruck.getPermissionNumber());
 
             moTextTruckCivilInsurance.setValue(moBolTruck.getCivilInsurance());
@@ -5836,6 +5992,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfTruckPk.setText(DLibUtils.textKey(moBolTruck.getPrimaryKey()));
             jtfTruckPk.setCaretPosition(0);
             
+            moBoolTruckUpdate.setValue(moBolTruck.getOwnTruck() == null || moBolTruck.getOwnTruck().isRegistryNew()); // update only when requested
+            
             // dependents:
             
             for (DDbBolTruckTrailer trailer : moBolTruck.getChildTrailers()) {
@@ -5843,8 +6001,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             moGridTrucksTrailers.setSelectedGridRow(0);
         }
-        
-        moBoolTruckUpdate.setValue(true);
     }
     
     private void renderBolTruckTrailer(final DDbBolTruckTrailer bolTruckTrailer) {
@@ -5854,6 +6010,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moFieldsTruckTrailer.resetFields();
             
             jtfTruckTrailPk.setText("");
+            
+            moBoolTruckTrailUpdate.setValue(true);
         }
         else {
             moKeyTruckTrailSubtype.setValue(new int[] { moXmlTruckTrailerSubtype.getId(moBolTruckTrailer.getTrailerSubtypeCode()) });
@@ -5862,9 +6020,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             jtfTruckTrailPk.setText(DLibUtils.textKey(moBolTruckTrailer.getPrimaryKey()));
             jtfTruckTrailPk.setCaretPosition(0);
+            
+            moBoolTruckTrailUpdate.setValue(moBolTruckTrailer.getOwnTrailer() == null || moBolTruckTrailer.getOwnTrailer().isRegistryNew()); // update only when requested
         }
-        
-        moBoolTruckTrailUpdate.setValue(true);
     }
     
     private void editBolTruck(final boolean editing, final int action) {
@@ -5928,6 +6086,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 break;
             case ACTION_CREATE:
                 renderBolTruck(null);
+                // default values:
                 moYearTruckModel.setValue(DLibTimeUtils.digestYear(new Date())[0]);
                 break;
             case ACTION_COPY:
@@ -6276,8 +6435,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating || adding) {
                 moGridTrucks.addGridRow(moBolTruck);
             }
+            
+            int row = moGridTrucks.getModel().getGridRows().indexOf(moBolTruck); // get row before refreshing grid!
             refreshBolTrucks();
-            moGridTrucks.setSelectedGridRow(moGridTrucks.getTable().getRowCount() - 1);
+            moGridTrucks.setSelectedGridRow(moGridTrucks.getTable().convertRowIndexToView(row));
             
             if (adding) {
                 // add as well all truck's transport figures:
@@ -6408,8 +6569,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating || adding) {
                 moGridTrucksTrailers.addGridRow(moBolTruckTrailer);
             }
+            
+            int row = moGridTrucksTrailers.getModel().getGridRows().indexOf(moBolTruckTrailer); // get row before refreshing grid!
             refreshBolTrucksTrailers();
-            moGridTrucksTrailers.setSelectedGridRow(moGridTrucksTrailers.getTable().getRowCount() - 1);
+            moGridTrucksTrailers.setSelectedGridRow(moGridTrucksTrailers.getTable().convertRowIndexToView(row));
             
             actionPerformedTruckTrailCancel();
         }
@@ -6544,6 +6707,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moFieldsTptFigure.resetFields();
             
             jtfTptFigPk.setText("");
+            
+            moBoolTptFigUpdate.setValue(true);
         }
         else {
             moKeyTptFigTransportFigureType.setValue(new int[] { moBolTptFigure.getFkTransportFigureTypeId() });
@@ -6575,6 +6740,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfTptFigPk.setText(DLibUtils.textKey(moBolTptFigure.getPrimaryKey()));
             jtfTptFigPk.setCaretPosition(0);
             
+            moBoolTptFigUpdate.setValue(moBolTptFigure.getOwnTransportFigure() == null || moBolTptFigure.getOwnTransportFigure().isRegistryNew()); // update only when requested
+            
             // dependents:
             
             for (DDbBolTransportFigureTransportPart tptPart : moBolTptFigure.getChildTransportParts()) {
@@ -6582,8 +6749,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             moGridTptFiguresTptParts.setSelectedGridRow(0);
         }
-        
-        moBoolTptFigUpdate.setValue(true);
     }
     
     private void renderBolTptFigureTptPart(final DDbBolTransportFigureTransportPart bolTptFigureTptPart) {
@@ -6593,15 +6758,17 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moFieldsTptFigureTptPart.resetFields();
             
             jtfTptFigTptPartPk.setText("");
+            
+            moBoolTptFigTptPartUpdate.setValue(true);
         }
         else {
             moKeyTptFigTptPartTransportPartType.setValue(new int[] { moBolTptFigureTptPart.getFkTransportPartTypeId() });
             
             jtfTptFigTptPartPk.setText(DLibUtils.textKey(moBolTptFigureTptPart.getPrimaryKey()));
             jtfTptFigTptPartPk.setCaretPosition(0);
+            
+            moBoolTptFigTptPartUpdate.setValue(moBolTptFigureTptPart.getOwnSysTransportPartType() == null || moBolTptFigureTptPart.getOwnSysTransportPartType().isRegistryNew()); // update only when requested
         }
-        
-        moBoolTptFigTptPartUpdate.setValue(true);
     }
     
     private void editBolTptFigure(final boolean editing, final int action) {
@@ -7054,8 +7221,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating || adding) {
                 moGridTptFigures.addGridRow(moBolTptFigure);
             }
+            
+            int row = moGridTptFigures.getModel().getGridRows().indexOf(moBolTptFigure); // get row before refreshing grid!
             refreshBolTptFigures();
-            moGridTptFigures.setSelectedGridRow(moGridTptFigures.getTable().getRowCount() - 1);
+            moGridTptFigures.setSelectedGridRow(moGridTptFigures.getTable().convertRowIndexToView(row));
             
             actionPerformedTptFigCancel();
         }
@@ -7146,8 +7315,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating || adding) {
                 moGridTptFiguresTptParts.addGridRow(moBolTptFigureTptPart);
             }
+            
+            int row = moGridTptFiguresTptParts.getModel().getGridRows().indexOf(moBolTptFigureTptPart); // get row before refreshing grid!
             refreshBolTptFiguresTptParts();
-            moGridTptFiguresTptParts.setSelectedGridRow(moGridTptFiguresTptParts.getTable().getRowCount() - 1);
+            moGridTptFiguresTptParts.setSelectedGridRow(moGridTptFiguresTptParts.getTable().convertRowIndexToView(row));
             
             actionPerformedTptFigTptPartCancel();
         }
@@ -7527,6 +7698,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // merchandises
         
         jbMerchPickItem.addActionListener(this);
+        jbMerchSetWeightKg.addActionListener(this);
         jbMerchAdd.addActionListener(this);
         jbMerchCreate.addActionListener(this);
         jbMerchCopy.addActionListener(this);
@@ -7550,6 +7722,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moRadMerchDimensionsCm.addItemListener(this);
         moRadMerchDimensionsPlg.addItemListener(this);
         moBoolMerchHazardousMaterial.addItemListener(this);
+        moRadMerchHazardousMaterialYes.addItemListener(this);
+        moRadMerchHazardousMaterialNo.addItemListener(this);
         
         moDecMerchQuantity.addFocusListener(this);
         moIntMerchDimensionsLength.addFocusListener(this);
@@ -7671,6 +7845,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         // merchandises
         
         jbMerchPickItem.removeActionListener(this);
+        jbMerchSetWeightKg.removeActionListener(this);
         jbMerchAdd.removeActionListener(this);
         jbMerchCreate.removeActionListener(this);
         jbMerchCopy.removeActionListener(this);
@@ -7694,6 +7869,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moRadMerchDimensionsCm.removeItemListener(this);
         moRadMerchDimensionsPlg.removeItemListener(this);
         moBoolMerchHazardousMaterial.removeItemListener(this);
+        moRadMerchHazardousMaterialYes.removeItemListener(this);
+        moRadMerchHazardousMaterialNo.removeItemListener(this);
         
         moDecMerchQuantity.removeFocusListener(this);
         moIntMerchDimensionsLength.removeFocusListener(this);
@@ -7855,6 +8032,20 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 moBol.initBolLocations(new Date());
                 
                 manTemplateKey = null;
+                
+                if (moDialogBol == null) {
+                    moDialogBol = new DDialogBol(miClient, "Captura rápida carta porte");
+                }
+                
+                moDialogBol.setRegistry(moBol.clone()); // cloning prevents from editing actual registry when unnecessary
+                
+                if (moDialogBol.isDialogNeeded()) {
+                    moDialogBol.setVisible(true);
+                    
+                    if (moDialogBol.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+                        moBol = (DDbBol) moDialogBol.getRegistry();
+                    }
+                }
             }
             
             ///// BEGIN OF TESTING CODE (REMOVE FRO PRODUCTION) ////////////////////
@@ -7975,10 +8166,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moGridTptFigures.setSelectedGridRow(0);
         
         if (moBol.isRegistryNew()) {
-            
+            jbSave.setEnabled(true);
         }
         else {
-            
+            jbSave.setEnabled(!moBol.isSystem() && (moBol.getChildDfr() == null || moBol.getChildDfr().getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS));
         }
 
         addAllListeners();
@@ -8117,6 +8308,19 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     @Override
+    public void actionCancel() {
+        boolean cancel = true;
+
+        if (mnFormStatus == DGuiConsts.FORM_STATUS_EDIT && jbSave.isEnabled()) {
+            cancel = miClient.showMsgBoxConfirm(DGuiConsts.MSG_CNF_FORM_CLS) == JOptionPane.YES_OPTION;
+        }
+
+        if (cancel) {
+            super.actionCancel();
+        }
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
@@ -8168,6 +8372,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbMerchPickItem) {
                 actionPerformedMerchPickItem();
+            }
+            else if (button == jbMerchSetWeightKg) {
+                actionPerformedMerchSetWeightKg();
             }
             else if (button == jbMerchAdd) {
                 actionPerformedMerchAdd();
@@ -8340,7 +8547,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 itemStateChangedBolTemplate();
             }
             else if (field == moBoolMerchHazardousMaterial) {
-                itemStateChangedMerchIsHazardousMaterial();
+                itemStateChangedMerchHazardousMaterial();
             }
         }
         else if (e.getSource() instanceof DBeanFieldKey) {
@@ -8390,6 +8597,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             if (field == moRadMerchDimensionsCm || field == moRadMerchDimensionsPlg) {
                 itemStateChangedMerchDimensions();
+            }
+            else if (field == moRadMerchHazardousMaterialYes|| field == moRadMerchHazardousMaterialNo) {
+                itemStateChangedMerchHazardousMaterialYesNo();
             }
         }
     }

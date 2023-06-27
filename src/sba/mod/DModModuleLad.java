@@ -32,6 +32,7 @@ import sba.mod.lad.db.DDbBolTruckTrailer;
 import sba.mod.lad.db.DDbLocation;
 import sba.mod.lad.db.DDbLocationDistance;
 import sba.mod.lad.db.DDbSysTransportPartType;
+import sba.mod.lad.db.DDbSysTransportType;
 import sba.mod.lad.db.DDbTrailer;
 import sba.mod.lad.db.DDbTransportFigure;
 import sba.mod.lad.db.DDbTruck;
@@ -78,8 +79,8 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
     private void initComponents() {
         mjCat = new JMenu("Catálogos");
         mjCatLocation = new JMenuItem("Ubicaciones");
-        mjCatLocationDistance = new JMenuItem("Distancias ubicaciones");
-        mjCatTransportFigure = new JMenuItem("Figuras transporte");
+        mjCatLocationDistance = new JMenuItem("Distancias entre ubicaciones");
+        mjCatTransportFigure = new JMenuItem("Figuras del transporte");
         mjCatTruck = new JMenuItem("Autotransportes");
         mjCatTrailer = new JMenuItem("Remolques");
 
@@ -99,7 +100,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
 
         mjLad = new JMenu("Traslados");
         mjLadBolReal = new JMenuItem("Cartas porte");
-        mjLadBolTemplate = new JMenuItem("Plantillas cartas porte");
+        mjLadBolTemplate = new JMenuItem("Plantillas de cartas porte");
 
         mjLad.add(mjLadBolReal);
         mjLad.addSeparator();
@@ -131,10 +132,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
 
         switch (type) {
             case DModConsts.LS_TPT_TP:
-                registry = new DDbRegistrySysFly(type) {
-                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
-                    public String getSqlWhere(int[] pk) { return "WHERE id_tpt_tp = " + pk[0] + " "; }
-                };
+                registry = new DDbSysTransportType();
                 break;
             case DModConsts.LS_LOC_TP:
                 registry = new DDbRegistrySysFly(type) {
@@ -261,7 +259,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                         + "WHERE NOT b_del ORDER BY name, id_trail ";
                 break;
             case DModConsts.LU_TRUCK:
-                settings = new DGuiCatalogueSettings("Camión", 1);
+                settings = new DGuiCatalogueSettings("Transporte", 1);
                 sql = "SELECT id_truck AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " "
                         + "FROM " + DModConsts.TablesMap.get(type) + " "
                         + "WHERE NOT b_del ORDER BY name, id_truck ";
@@ -325,7 +323,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                 view = new DViewTrailer(miClient, "Remolques");
                 break;
             case DModConsts.LU_TRUCK:
-                view = new DViewTruck(miClient, "Camiones");
+                view = new DViewTruck(miClient, "Transportes");
                 break;
             case DModConsts.LU_TRUCK_TRAIL:
                 break;
@@ -429,7 +427,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
         
         switch (type) {
             case DModConsts.L_BOL:
-                report = new DGuiReport("reps/bol.jasper", "Carta Porte");
+                report = new DGuiReport("reps/bol.jasper", "Carta porte");
                 break;
             default:
                 miClient.showMsgBoxError(DLibConsts.ERR_MSG_OPTION_UNKNOWN);
