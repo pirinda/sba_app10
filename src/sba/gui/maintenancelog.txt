@@ -1,4 +1,11 @@
 ================================================================================
+SBA 1.0 035.0
+2023-07-04/ Sergio Abraham FLORES GUTIÉRREZ
+1) Puesta a punto de emisión, timbrado e impresión de CFDI tipo "T" con complemento Carta Porte 2.0.
+2) Implementación de captura rápida de cartas porte a partir de plantillas.
+3) Adición de envío mail de cartas porte.
+
+================================================================================
 SBA 1.0 034.0
 2023-06-26/ Sergio Abraham FLORES GUTIÉRREZ
 1) Puesta a punto de emisión, timbrado e impresión de CFDI tipo "T" con complemento Carta Porte 2.0.

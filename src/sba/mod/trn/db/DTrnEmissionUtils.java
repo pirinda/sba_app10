@@ -69,6 +69,8 @@ import sba.mod.cfg.db.DDbSysCurrency;
 import sba.mod.cfg.db.DDbSysXmlSignatureProvider;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.lad.db.DDbBol;
+import sba.mod.lad.db.DDbBolTransportFigure;
+import sba.mod.lad.db.DDbTransportFigure;
 import sba.mod.lad.db.DLadBolPrinting;
 import sba.mod.trn.form.DDialogEmailSending;
 import sba.mod.trn.form.DFormDpsCancelling;
@@ -565,20 +567,20 @@ public abstract class DTrnEmissionUtils {
 
         if (dfr == null || dfr.isRegistryNew()) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\n"
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no existe.");
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no existe.");
         }
         else if (!dfr.isDfrCfdi()) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no es un CFDI.");
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no es un CFDI.");
         }
         else if (dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' ya está "
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' ya está "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
         }
         else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_PEN) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
         }
         
@@ -604,7 +606,7 @@ public abstract class DTrnEmissionUtils {
                     if (xsr != null) {
                         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                                    + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' tiene una transacción pendiente de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + " en estatus '" + xsr.getRequestStatus() + "'.\n"
+                                    + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' tiene una transacción pendiente de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + " en estatus '" + xsr.getRequestStatus() + "'.\n"
                                     + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_VER) + " de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + ".");
                         }
                         
@@ -615,7 +617,7 @@ public abstract class DTrnEmissionUtils {
                 case DModSysConsts.TX_XMS_REQ_STP_VER: // verify signature
                     if (xsr == null || xsr.getRequestType() != DModSysConsts.TX_XMS_REQ_TP_SIG) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN_VER
-                                + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no tiene transacciones pendientes de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG) + ".\n"
+                                + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no tiene transacciones pendientes de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG) + ".\n"
                                 + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_REQ) + " de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG) + ".");
                     }
                     else if (xsr.getRequestStatus() == DModSysConsts.TX_XMS_REQ_ST_FIN) {
@@ -634,17 +636,17 @@ public abstract class DTrnEmissionUtils {
 
                 if (doc instanceof DDbDps && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_ISS) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else if (doc instanceof DDbBol && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_NEW) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_NEW }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_PEN) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else {
@@ -653,20 +655,20 @@ public abstract class DTrnEmissionUtils {
                     double delay = (gap / (double) (1000 * 60 * 60));
 
                     if ((gap < 0) && 
-                            client.showMsgBoxConfirm("La fecha-hora del " + doc.getDocName() + " '" + doc.getDocNumber() + "', " + DLibUtils.DateFormatDatetime.format(doc.getDocDate().getTime()) + ",\n"
+                            client.showMsgBoxConfirm("La fecha-hora del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "', " + DLibUtils.DateFormatDatetime.format(doc.getDocDate().getTime()) + ",\n"
                                     + "no debe ser posterior a la fecha-hora actual, " + DLibUtils.DateFormatDatetime.format(now) + ".\n"
                                     + "A pesar de lo anterior, ¿desea intentar timbrarlo?") != JOptionPane.YES_OPTION) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                                + "Cambiar la fecha del " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
+                                + "Cambiar la fecha del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' "
                                 + "para que no sea posterior a la fecha-hora actual.");
                     }
                     else if (delay > DCfdi40Consts.HOURS_TO_SIGN && 
-                            client.showMsgBoxConfirm("La fecha-hora del " + doc.getDocName() + " '" + doc.getDocNumber() + "', " + DLibUtils.DateFormatDatetime.format(doc.getDocDate().getTime()) + ",\n"
+                            client.showMsgBoxConfirm("La fecha-hora del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "', " + DLibUtils.DateFormatDatetime.format(doc.getDocDate().getTime()) + ",\n"
                                     + "no debe ser anterior a la fecha-hora actual, " + DLibUtils.DateFormatDatetime.format(now) + ", por más de " + DCfdi40Consts.HOURS_TO_SIGN + " hrs.\n"
                                     + "Hay un exceso de " + DLibUtils.DecimalFormatValue4D.format(delay - DCfdi40Consts.HOURS_TO_SIGN) + " hrs. más de lo permitido.\n"
                                     + "A pesar de lo anterior, ¿desea intentar timbrarlo?") != JOptionPane.YES_OPTION) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                                + "Cambiar la fecha del " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
+                                + "Cambiar la fecha del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' "
                                 + "para que no sea anterior a la fecha-hora actual por más de " + DCfdi40Consts.HOURS_TO_SIGN + " hrs.");
                     }
                 }
@@ -674,7 +676,7 @@ public abstract class DTrnEmissionUtils {
 
             if (!sign) {
                 throw new Exception(DTrnEmissionConsts.MSG_DENIED_SIGN
-                        + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no se puede timbrar.");
+                        + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no se puede timbrar.");
             }
             else {
                 // Proceed with signature:
@@ -715,14 +717,14 @@ public abstract class DTrnEmissionUtils {
                             }
                         }
                         else {
-                            sign = client.showMsgBoxConfirm("¿Desea timbrar el " + doc.getDocName() + " '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
+                            sign = client.showMsgBoxConfirm("¿Desea timbrar el " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
                         }
                         break;
 
                     case DModSysConsts.TX_XMS_REQ_STP_VER:
                         if (confirmSign) {
                             sign = client.showMsgBoxConfirm("¿Desea confirmar la última solicitud de "
-                                    + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG) + " del " + doc.getDocName() + " '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
+                                    + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_SIG) + " del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
                         }
                         break;
 
@@ -734,7 +736,7 @@ public abstract class DTrnEmissionUtils {
                     DTrnDoc docTbs = dps != null ? dps : doc; // doc to be signed
 
                     try {
-                        client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR)); // XXX improve this!!!
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.WAIT_CURSOR)); // XXX improve this!!!
 
                         DTrnDfrUtils.signDfr(client.getSession(), docTbs, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestSubtype);
                         signed = true;
@@ -743,21 +745,21 @@ public abstract class DTrnEmissionUtils {
                         DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
                     }
                     finally {
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
+
                         client.getSession().notifySuscriptors(DModConsts.T_DFR);
 
                         if (!signed) {
-                            client.showMsgBoxWarning("El " + docTbs.getDocName() + " '" + docTbs.getDocNumber() + "' "
+                            client.showMsgBoxWarning("El " + docTbs.getDocName() + " No. '" + docTbs.getDocNumber() + "' "
                                     + "no fue timbrado.");
                         }
                         else {
-                            client.showMsgBoxInformation("El " + docTbs.getDocName() + " '" + docTbs.getDocNumber() + "' "
+                            client.showMsgBoxInformation("El " + docTbs.getDocName() + " No. '" + docTbs.getDocNumber() + "' "
                                     + "ha sido timbrado.\n"
                                     + "Quedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles.");
 
                             sendDoc(client, docTbs);
                         }
-
-                        client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                     }
                 }
             }
@@ -843,30 +845,30 @@ public abstract class DTrnEmissionUtils {
 
         if (dfr == null || dfr.isRegistryNew()) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\n"
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no existe.");
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no existe.");
         }
         else if (!dfr.isDfrCfdi()) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no es un CFDI.");
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no es un CFDI.");
         }
         else if (dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ANN) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' ya está "
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' ya está "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ANN }, DDbRegistry.FIELD_NAME) + "'.");
         }
         else if (dfr.getFkXmlStatusId() == DModSysConsts.TS_XML_ST_PEN) {
-            String message = "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' está "
+            String message = "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' está "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "',\n"
                     + "no es posible realizar una " + DTrnDfrUtils.getXmsRequestSubype(requestSubtype) + " de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".";
             
             switch (requestSubtype) {
                 case DModSysConsts.TX_XMS_REQ_STP_REQ:
                     if (client.showMsgBoxConfirm(message + "\n"
-                            + "Se puede optar por continuar esta " + DTrnDfrUtils.getXmsRequestSubype(requestSubtype) + " sólo para anular el " + doc.getDocName() + " '" + doc.getDocNumber() + "'\n"
+                            + "Se puede optar por continuar esta " + DTrnDfrUtils.getXmsRequestSubype(requestSubtype) + " sólo para anular el " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'\n"
                             + "o interrumpirla para solicitar manulamnete la acción inhabilitar (anular) de forma directa.\n"
                             + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                                + "Inhabilitar (anular) de forma directa el " + doc.getDocName() + " '" + doc.getDocNumber() + "'.");
+                                + "Inhabilitar (anular) de forma directa el " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'.");
                     }
                     break;
                     
@@ -880,7 +882,7 @@ public abstract class DTrnEmissionUtils {
         }
         else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
         }
 
@@ -905,13 +907,13 @@ public abstract class DTrnEmissionUtils {
                     if (!dfr.getCancelStatus().isEmpty()) {
                         String status = DCfdi40Utils.getEstatusCancelación(dfr.getCancelStatus());
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                                + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' parece estar en proceso de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + " en estatus '" + (status.isEmpty() ? DTrnEmissionConsts.UNKNOWN : status) + "'.\n"
+                                + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' parece estar en proceso de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + " en estatus '" + (status.isEmpty() ? DTrnEmissionConsts.UNKNOWN : status) + "'.\n"
                                 + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_VER) + " de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".");
                     }
                     else if (xsr != null) {
                         if (xsr.getRequestStatus() < DModSysConsts.TX_XMS_REQ_ST_FIN) {
                             throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                                    + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' tiene una transacción pendiente de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + " en estatus '" + xsr.getRequestStatus() + "'.\n"
+                                    + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' tiene una transacción pendiente de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + " en estatus '" + xsr.getRequestStatus() + "'.\n"
                                     + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_VER) + " de " + DTrnDfrUtils.getXmsRequestType(xsr.getRequestType()) + ".");
                         }
 
@@ -922,7 +924,7 @@ public abstract class DTrnEmissionUtils {
                 case DModSysConsts.TX_XMS_REQ_STP_VER: // verify cancellation
                     if ((xsr == null || xsr.getRequestType() != DModSysConsts.TX_XMS_REQ_TP_CAN) && dfr.getCancelStatus().isEmpty()) {
                         throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL_VER
-                                + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no tiene transacciones pendientes de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".\n"
+                                + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no tiene transacciones pendientes de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".\n"
                                 + "SUGERENCIA: Realizar una " + DTrnDfrUtils.getXmsRequestSubype(DModSysConsts.TX_XMS_REQ_STP_REQ) + " de " + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + ".");
                     }
                     else if (xsr.getRequestStatus() == DModSysConsts.TX_XMS_REQ_ST_FIN || !dfr.getCancelStatus().isEmpty()) {
@@ -942,17 +944,17 @@ public abstract class DTrnEmissionUtils {
 
                 if (doc instanceof DDbDps && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_ISS) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else if (doc instanceof DDbDps && doc.getDocStatus() != DModSysConsts.TS_DPS_ST_ISS) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_DPS_ST, new int[] { DModSysConsts.TS_DPS_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
                 }
                 else if (doc instanceof DDbDfr && doc.getDocStatus() != DModSysConsts.TS_XML_ST_ISS && doc.getDocStatus() != DModSysConsts.TS_XML_ST_PEN) {
                     throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL
-                            + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                            + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                             + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "' o "
                             + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_PEN }, DDbRegistry.FIELD_NAME) + "'.");
                 }
@@ -963,7 +965,7 @@ public abstract class DTrnEmissionUtils {
 
             if (!cancel) {
                 String message = doc instanceof DDbRegistry ? ((DDbRegistry) doc).getQueryResult() : "";
-                throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El " + doc.getDocName() + " '" + doc.getDocNumber() + "' no se puede cancelar."
+                throw new Exception(DTrnEmissionConsts.MSG_DENIED_CANCEL + "El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no se puede cancelar."
                         + (message.isEmpty() ? "" : "\n" + message));
             }
             else {
@@ -974,7 +976,7 @@ public abstract class DTrnEmissionUtils {
 
                 switch (requestSubtype) {
                     case DModSysConsts.TX_XMS_REQ_STP_REQ:
-                        cancel = client.showMsgBoxConfirm("¿Desea cancelar el " + doc.getDocName() + " '" + doc.getDocNumber() + "'?\n"
+                        cancel = client.showMsgBoxConfirm("¿Desea cancelar el " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'?\n"
                                 + "ADVERTENCIA: ¡Esta acción no se puede revertir!") == JOptionPane.YES_OPTION;
 
                         if (cancel) {
@@ -997,7 +999,7 @@ public abstract class DTrnEmissionUtils {
                     case DModSysConsts.TX_XMS_REQ_STP_VER:
                         if (annulParams.ConfirmCancel) {
                             cancel = client.showMsgBoxConfirm("¿Desea confirmar la última solicitud de "
-                                    + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + " del " + doc.getDocName() + " '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
+                                    + DTrnDfrUtils.getXmsRequestType(DModSysConsts.TX_XMS_REQ_TP_CAN) + " del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'?") == JOptionPane.YES_OPTION;
                         }
                         break;
 
@@ -1007,7 +1009,7 @@ public abstract class DTrnEmissionUtils {
 
                 if (cancel) {
                     try {
-                        client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR)); // XXX improve this!!!
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.WAIT_CURSOR)); // XXX improve this!!!
                         
                         DTrnDfrUtils.cancelDfr(client.getSession(), doc, xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey, requestSubtype, annulParams);
                         cancelled = true;
@@ -1016,19 +1018,19 @@ public abstract class DTrnEmissionUtils {
                         DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
                     }
                     finally {
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
+                        
                         client.getSession().notifySuscriptors(DModConsts.T_DFR);
 
                         if (!cancelled) {
-                            client.showMsgBoxWarning("El " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
+                            client.showMsgBoxWarning("El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' "
                                     + "no fue anulado" + (annulParams.AnnulAction == DTrnEmissionConsts.ACTION_ANNUL_CANCEL ? " ni cancelado" : "") + ".");
                         }
                         else {
-                            client.showMsgBoxWarning("El " + doc.getDocName() + " '" + doc.getDocNumber() + "' "
+                            client.showMsgBoxWarning("El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' "
                                     + "ha sido anulado" + (annulParams.AnnulAction == DTrnEmissionConsts.ACTION_ANNUL_CANCEL ? " y cancelado" : "") + "."
                                     + (annulParams.AnnulAction == DTrnEmissionConsts.ACTION_ANNUL_CANCEL ? "\nQuedan " + DLibUtils.DecimalFormatInteger.format(getStampsAvailable(client.getSession(), xsp.getPkXmlSignatureProviderId(), settings.SignatureCompanyBranchKey)) + " timbres disponibles." : ""));
                         }
-
-                        client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                     }
                 }
             }
@@ -1115,35 +1117,89 @@ public abstract class DTrnEmissionUtils {
 
             if (dfr == null || dfr.isRegistryNew()) {
                 throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\n"
-                        + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no existe.");
+                        + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no existe.");
             }
             else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
                 throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND
-                        + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                        + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                         + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
             }
             else if (dfr.getFkXmlAddendaTypeId() != DModSysConsts.TS_XML_ADD_TP_NA && dfr.getDocXmlAddenda().isEmpty()) {
                 throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND
-                        + "La addenda del registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no ha sido incorporada.");
+                        + "La addenda del registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no ha sido incorporada.");
             }
             else {
-                DDbBranchAddress branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, doc.getBizPartnerBranchAddressKey(), DDbConsts.MODE_STEALTH);
+                int formType = 0;
+                
+                if (doc instanceof DDbDps) {
+                    formType = DModConsts.T_DPS;
+                }
+                else if (doc instanceof DDbDfr) {
+                    formType = DModConsts.T_DFR;
+                }
+                else if (doc instanceof DDbBol) {
+                    formType = DModConsts.L_BOL;
+                }
+                
+                int bizPartnerClass = 0;
+                String receiver = "";
+                ArrayList<DBprEmail> emails = null;
+                DDbBranchAddress branchAddress = null;
+                DDbBolTransportFigure bolTransportFigure = null;
+                DDbTransportFigure transportFigure = null;
+                
+                switch (formType) {
+                    case DModConsts.T_DPS:
+                    case DModConsts.T_DFR:
+                        bizPartnerClass = doc.getBizPartnerCategory();
+                        receiver = (String) client.getSession().readField(DModConsts.BU_BPR, doc.getBizPartnerKey(), DDbRegistry.FIELD_NAME);
+                        branchAddress = (DDbBranchAddress) client.getSession().readRegistry(DModConsts.BU_ADD, doc.getBizPartnerBranchAddressKey(), DDbConsts.MODE_STEALTH);
 
-                if (branchAddress.countEmails() == 0) {
-                    client.showMsgBoxWarning("No se han definido correos-e para "
-                            + "'" + client.getSession().readField(DModConsts.BU_BPR, doc.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString() + "',\n"
-                            + "que es el receptor del " + doc.getDocName() + " '" + doc.getDocNumber() + "'.");
+                        if (branchAddress.countEmails() == 0) {
+                            client.showMsgBoxWarning("No se han definido correos-e para "
+                                    + "'" + client.getSession().readField(DModConsts.BU_BPR, doc.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString() + "',\n"
+                                    + "que es el receptor del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'.");
+                        }
+                        else {
+                            emails = branchAddress.createEmails();
+                        }
+                        break;
+                        
+                    case DModConsts.L_BOL:
+                        bolTransportFigure = ((DDbBol) doc).getFirstChildTransportFigure(DModSysConsts.LS_TPT_FIGURE_TP_DRIVER);
+                        
+                        if (bolTransportFigure == null) {
+                            client.showMsgBoxWarning("El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no tiene " + (String) client.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { DModSysConsts.LS_TPT_FIGURE_TP_DRIVER }, DDbRegistry.FIELD_NAME) + ".");
+                        }
+                        else {
+                            transportFigure = (DDbTransportFigure) client.getSession().readRegistry(DModConsts.LU_TPT_FIGURE, new int[] { bolTransportFigure.getFkTransportFigureId() }, DDbConsts.MODE_STEALTH);
+                            receiver = transportFigure.getName();
+                            
+                            if (transportFigure.getMail().isEmpty()) {
+                                client.showMsgBoxWarning("No se ha definido correo-e para "
+                                        + "'" + transportFigure.getName() + "',\n"
+                                        + "que es el " + (String) client.getSession().readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { DModSysConsts.LS_TPT_FIGURE_TP_DRIVER }, DDbRegistry.FIELD_NAME) + " del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "'.");
+                            }
+                            else {
+                                emails = new ArrayList<>();
+                                emails.add(new DBprEmail(transportFigure.getName(), transportFigure.getMail()));
+                            }
+                        }
+                        break;
+                        
+                    default:
+                        // nothing
                 }
 
-                DDialogEmailSending dialog = new DDialogEmailSending(client, doc.getBizPartnerCategory());
-                dialog.setBizPartner(client.getSession().readField(DModConsts.BU_BPR, doc.getBizPartnerKey(), DDbRegistry.FIELD_NAME).toString());
+                DDialogEmailSending dialog = new DDialogEmailSending(client, formType, bizPartnerClass);
+                dialog.setReceiver(receiver);
                 dialog.setDocument(WordUtils.capitalizeFully(doc.getDocName()), doc.getDocNumber());
-                dialog.setEmails(branchAddress.createEmails());
+                dialog.setEmails(emails);
                 dialog.setVisible(true);
 
                 if (dialog.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
                     try {
-                        client.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.WAIT_CURSOR));    // XXX improve this!!!
 
                         // mail properties:
 
@@ -1151,9 +1207,9 @@ public abstract class DTrnEmissionUtils {
                         String subject = configCompany.getDfrEmsSubject() + " " + doc.getDocNumber();
                         String bodyText = configCompany.getDfrEmsBody();
 
-                        ArrayList<DBprEmail> emails = dialog.getEmails();
+                        ArrayList<DBprEmail> emailsCustom = dialog.getEmails();
                         ArrayList<String> recipients = new ArrayList<>();
-                        for (DBprEmail email : emails) {
+                        for (DBprEmail email : emailsCustom) {
                             recipients.add(email.composeEmail());
                         }
 
@@ -1272,17 +1328,22 @@ public abstract class DTrnEmissionUtils {
                         DDbRegistry docSending = doc.createDocSending();
                         if (docSending != null && docSending instanceof DDbDpsSending) {
                             DDbDpsSending dpsSending = (DDbDpsSending) docSending;
-                            DTrnUtils.populateEmails(dpsSending, emails);
+                            DTrnUtils.populateEmails(dpsSending, emailsCustom);
                             dpsSending.save(client.getSession());
                         }
 
                         // notify suscriptors and user:
                         client.getSession().notifySuscriptors(DModConsts.T_DPS_SND);
-                        client.showMsgBoxInformation("El " + doc.getDocName() + " '" + doc.getDocNumber() + "' ha sido enviado.");
+                        client.showMsgBoxInformation("El " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' ha sido enviado.");
 
                         // preserve mails if requested:
                         if (dialog.isPreserveEmailsSelected()) {
-                            dialog.preserveEmails(branchAddress);
+                            if (branchAddress != null) {
+                                dialog.preserveEmails(branchAddress);
+                            }
+                            else if (transportFigure != null) {
+                                dialog.preserveEmails(transportFigure);
+                            }
                         }
                     }
                     catch (MessagingException e) {
@@ -1292,7 +1353,7 @@ public abstract class DTrnEmissionUtils {
                         DLibUtils.showException(DTrnEmissionUtils.class.getName(), e);
                     }
                     finally {
-                        client.getFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
+                        client.getFrame().getRootPane().setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // XXX improve this!!!
                     }
                 }
             }
@@ -1444,11 +1505,11 @@ public abstract class DTrnEmissionUtils {
 
         if (dfr == null || dfr.isRegistryNew()) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND + DDbConsts.ERR_MSG_REG_NOT_FOUND + "\n"
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' no existe.");
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' no existe.");
         }
         else if (dfr.getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS) {
             throw new Exception(DTrnEmissionConsts.MSG_DENIED_SEND
-                    + "El registro XML del " + doc.getDocName() + " '" + doc.getDocNumber() + "' debe estar "
+                    + "El registro XML del " + doc.getDocName() + " No. '" + doc.getDocNumber() + "' debe estar "
                     + "'" + client.getSession().readField(DModConsts.TS_XML_ST, new int[] { DModSysConsts.TS_XML_ST_ISS }, DDbRegistry.FIELD_NAME) + "'.");
         }
         else {

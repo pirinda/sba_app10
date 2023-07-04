@@ -17,7 +17,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
-import sba.lib.db.DDbRegistrySysFly;
 import sba.lib.gui.DGuiSession;
 import sba.lib.xml.DXmlUtils;
 import sba.mod.DModConsts;
@@ -70,6 +69,7 @@ public class DLadBolPrinting {
         hashMap.put("oDecimalFormatQuantity", configCompany.getDecimalFormatQuantity());
         hashMap.put("oDecimalFormatCantidad", new DecimalFormat("#,##0.000000"));
         hashMap.put("separator", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); // 5 HTML blank spaces
+        hashMap.put("sUser", moSession.readField(DModConsts.CU_USR, new int[] { moBol.getFkUserInsertId() }, DDbRegistry.FIELD_NAME));
         hashMap.put("sEdsDir", configBranch.getDfrDirectory());
         hashMap.put("nPkBol", (long) moBol.getPkBolId());
         

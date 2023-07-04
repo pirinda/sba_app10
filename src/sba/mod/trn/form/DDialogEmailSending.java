@@ -15,10 +15,12 @@ import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanFieldText;
 import sba.lib.gui.bean.DBeanFormDialog;
+import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DBprEmail;
 import sba.mod.bpr.db.DBprUtils;
 import sba.mod.bpr.db.DDbBranchAddress;
+import sba.mod.lad.db.DDbTransportFigure;
 
 /**
  *
@@ -31,10 +33,11 @@ public class DDialogEmailSending extends DBeanFormDialog {
     /**
      * Creates new form DDialogEmailSending
      * @param client GUI client.
-     * @param bizPartnerClass
+     * @param formType Form type. Supported options: DModConsts.T_DPS, DModConsts.T_DFR and DModConsts.L_BOL.
+     * @param bizPartnerClass Business partner class.
      */
-    public DDialogEmailSending(DGuiClient client, int bizPartnerClass) {
-        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, DLibConsts.UNDEFINED, DLibConsts.UNDEFINED, "Envío vía correo-e");
+    public DDialogEmailSending(DGuiClient client, int formType, int bizPartnerClass) {
+        setFormSettings(client, DGuiConsts.BEAN_FORM_EDIT, formType, DLibConsts.UNDEFINED, "Envío vía correo-e");
         mnBizPartnerClass = bizPartnerClass;
         initComponents();
         initComponentsCustom();
@@ -52,8 +55,8 @@ public class DDialogEmailSending extends DBeanFormDialog {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        jlBizPartnerClass = new javax.swing.JLabel();
-        jtfBizPartner = new javax.swing.JTextField();
+        jlReceiver = new javax.swing.JLabel();
+        jtfReceiver = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jlDocument = new javax.swing.JLabel();
         jtfDocument = new javax.swing.JTextField();
@@ -82,14 +85,14 @@ public class DDialogEmailSending extends DBeanFormDialog {
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlBizPartnerClass.setText("[Asoc. neg.:]");
-        jlBizPartnerClass.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel7.add(jlBizPartnerClass);
+        jlReceiver.setText("[Receiver:]");
+        jlReceiver.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel7.add(jlReceiver);
 
-        jtfBizPartner.setEditable(false);
-        jtfBizPartner.setFocusable(false);
-        jtfBizPartner.setPreferredSize(new java.awt.Dimension(400, 23));
-        jPanel7.add(jtfBizPartner);
+        jtfReceiver.setEditable(false);
+        jtfReceiver.setFocusable(false);
+        jtfReceiver.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel7.add(jtfReceiver);
 
         jPanel2.add(jPanel7);
 
@@ -128,11 +131,11 @@ public class DDialogEmailSending extends DBeanFormDialog {
         jlContact1.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(jlContact1);
 
-        moTextContact1.setText("dBeanFieldText1");
+        moTextContact1.setText("TEXT");
         moTextContact1.setPreferredSize(new java.awt.Dimension(225, 23));
         jPanel3.add(moTextContact1);
 
-        moTextEmail1.setText("dBeanFieldText2");
+        moTextEmail1.setText("TEXT");
         moTextEmail1.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel3.add(moTextEmail1);
 
@@ -144,11 +147,11 @@ public class DDialogEmailSending extends DBeanFormDialog {
         jlContact2.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel4.add(jlContact2);
 
-        moTextContact2.setText("dBeanFieldText1");
+        moTextContact2.setText("TEXT");
         moTextContact2.setPreferredSize(new java.awt.Dimension(225, 23));
         jPanel4.add(moTextContact2);
 
-        moTextEmail2.setText("dBeanFieldText2");
+        moTextEmail2.setText("TEXT");
         moTextEmail2.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel4.add(moTextEmail2);
 
@@ -160,17 +163,17 @@ public class DDialogEmailSending extends DBeanFormDialog {
         jlContact3.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel5.add(jlContact3);
 
-        moTextContact3.setText("dBeanFieldText1");
+        moTextContact3.setText("TEXT");
         moTextContact3.setPreferredSize(new java.awt.Dimension(225, 23));
         jPanel5.add(moTextContact3);
 
-        moTextEmail3.setText("dBeanFieldText2");
+        moTextEmail3.setText("TEXT");
         moTextEmail3.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel5.add(moTextEmail3);
 
         jPanel2.add(jPanel5);
 
-        moBoolPreserveEmails.setText("Preservar contactos y correos-e para futuros envíos");
+        moBoolPreserveEmails.setText("Preservar correos-e para futuros envíos");
         jPanel2.add(moBoolPreserveEmails);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -188,7 +191,6 @@ public class DDialogEmailSending extends DBeanFormDialog {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JLabel jlBizPartnerClass;
     private javax.swing.JLabel jlContact;
     private javax.swing.JLabel jlContact1;
     private javax.swing.JLabel jlContact2;
@@ -196,8 +198,9 @@ public class DDialogEmailSending extends DBeanFormDialog {
     private javax.swing.JLabel jlDocument;
     private javax.swing.JLabel jlDummy;
     private javax.swing.JLabel jlEmail;
-    private javax.swing.JTextField jtfBizPartner;
+    private javax.swing.JLabel jlReceiver;
     private javax.swing.JTextField jtfDocument;
+    private javax.swing.JTextField jtfReceiver;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolPreserveEmails;
     private sba.lib.gui.bean.DBeanFieldText moTextContact1;
     private sba.lib.gui.bean.DBeanFieldText moTextContact2;
@@ -219,6 +222,7 @@ public class DDialogEmailSending extends DBeanFormDialog {
         moTextContact3.setTextSettings(DGuiUtils.getLabelName(jlContact) + " 3", 50, 0);
         moTextEmail3.setTextSettings(DGuiUtils.getLabelName(jlEmail) + " 3", 50, 0);
         moTextEmail3.setTextCaseType(0);
+        moBoolPreserveEmails.setBooleanSettings(moBoolPreserveEmails.getText(), false);
         
         moFields.addField(moTextContact1);
         moFields.addField(moTextEmail1);
@@ -226,16 +230,36 @@ public class DDialogEmailSending extends DBeanFormDialog {
         moFields.addField(moTextEmail2);
         moFields.addField(moTextContact3);
         moFields.addField(moTextEmail3);
+        moFields.addField(moBoolPreserveEmails);
 
         jbSave.setText(DUtilConsts.TXT_SEND);
         moFields.setFormButton(jbSave);
         
-        jlBizPartnerClass.setText(DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass) + ":");
+        switch (mnFormType) {
+            case DModConsts.T_DPS:
+            case DModConsts.T_DFR:
+                jlReceiver.setText(DBprUtils.getBizPartnerClassNameSng(mnBizPartnerClass) + ":");
+                break;
+                
+            case DModConsts.L_BOL:
+                jlReceiver.setText("Figura transporte:");
+                
+                moTextContact1.setEnabled(false);
+                moTextEmail1.setEnabled(true);
+                moTextContact2.setEnabled(false);
+                moTextEmail2.setEnabled(false);
+                moTextContact3.setEnabled(false);
+                moTextEmail3.setEnabled(false);
+                break;
+                
+            default:
+                // nothing
+        }
     }
     
-    public void setBizPartner(final String bizPartner) {
-        jtfBizPartner.setText(bizPartner);
-        jtfBizPartner.setCaretPosition(0);
+    public void setReceiver(final String receiver) {
+        jtfReceiver.setText(receiver);
+        jtfReceiver.setCaretPosition(0);
     }
     
     public void setDocument(final String label, final String document) {
@@ -250,14 +274,17 @@ public class DDialogEmailSending extends DBeanFormDialog {
      */
     public void setEmails(final ArrayList<DBprEmail> bprEmails) {
         moFields.resetFields();
-        DBeanFieldText[] textContacts = new DBeanFieldText[] { moTextContact1, moTextContact2, moTextContact3 };
-        DBeanFieldText[] textMails = new DBeanFieldText[] { moTextEmail1, moTextEmail2, moTextEmail3 };
         
-        for (int index = 0; index < bprEmails.size() && index < 3; index++) {
-            DBprEmail bprEmail = bprEmails.get(index);
-            
-            textContacts[index].setValue(bprEmail.Contact);
-            textMails[index].setValue(bprEmail.Email);
+        if (bprEmails != null && !bprEmails.isEmpty()) {
+            DBeanFieldText[] textContacts = new DBeanFieldText[] { moTextContact1, moTextContact2, moTextContact3 };
+            DBeanFieldText[] textMails = new DBeanFieldText[] { moTextEmail1, moTextEmail2, moTextEmail3 };
+
+            for (int index = 0; index < bprEmails.size() && index < 3; index++) {
+                DBprEmail bprEmail = bprEmails.get(index);
+
+                textContacts[index].setValue(bprEmail.Contact);
+                textMails[index].setValue(bprEmail.Email);
+            }
         }
     }
     
@@ -312,6 +339,19 @@ public class DDialogEmailSending extends DBeanFormDialog {
         
         if (save) {
             branchAddress.save(miClient.getSession());
+        }
+    }
+    
+    public void preserveEmails(final DDbTransportFigure transportFigure) throws Exception {
+        boolean save = false;
+        
+        if (!moTextEmail1.getValue().isEmpty()) {
+            transportFigure.setMail(moTextEmail1.getValue());
+            save = true;
+        }
+        
+        if (save) {
+            transportFigure.save(miClient.getSession());
         }
     }
     

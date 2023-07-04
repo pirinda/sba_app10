@@ -23,6 +23,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
     protected int mnPkTransportFigureId;
     protected String msCode;
     protected String msName;
+    protected String msMail;
     protected String msFiscalId;
     protected String msForeignId;
     protected String msDriverLicense;
@@ -65,6 +66,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
     public void setPkTransportFigureId(int n) { mnPkTransportFigureId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setMail(String s) { msMail = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setForeignId(String s) { msForeignId = s; }
     public void setDriverLicense(String s) { msDriverLicense = s; }
@@ -98,6 +100,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
     public int getPkTransportFigureId() { return mnPkTransportFigureId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public String getMail() { return msMail; }
     public String getFiscalId() { return msFiscalId; }
     public String getForeignId() { return msForeignId; }
     public String getDriverLicense() { return msDriverLicense; }
@@ -145,6 +148,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
         mnPkTransportFigureId = 0;
         msCode = "";
         msName = "";
+        msMail = "";
         msFiscalId = "";
         msForeignId = "";
         msDriverLicense = "";
@@ -222,6 +226,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
             mnPkTransportFigureId = resultSet.getInt("id_tpt_figure");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            msMail = resultSet.getString("mail");
             msFiscalId = resultSet.getString("fis_id");
             msForeignId = resultSet.getString("frg_id");
             msDriverLicense = resultSet.getString("drv_lic");
@@ -278,6 +283,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
                     mnPkTransportFigureId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
+                    "'" + msMail + "', " + 
                     "'" + msFiscalId + "', " + 
                     "'" + msForeignId + "', " + 
                     "'" + msDriverLicense + "', " + 
@@ -316,6 +322,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
                     //"id_tpt_figure = " + mnPkTransportFigureId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "mail = '" + msMail + "', " +
                     "fis_id = '" + msFiscalId + "', " +
                     "frg_id = '" + msForeignId + "', " +
                     "drv_lic = '" + msDriverLicense + "', " +
@@ -360,6 +367,7 @@ public class DDbTransportFigure extends DDbRegistryUser {
         registry.setPkTransportFigureId(this.getPkTransportFigureId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setMail(this.getMail());
         registry.setFiscalId(this.getFiscalId());
         registry.setForeignId(this.getForeignId());
         registry.setDriverLicense(this.getDriverLicense());

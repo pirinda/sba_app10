@@ -24,7 +24,6 @@ import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.cfg.db.DLockUtils;
 import sba.mod.trn.db.DDbDfr;
-import sba.mod.trn.db.DTrnBolPrinting;
 import sba.mod.trn.db.DTrnDfrUtils;
 import sba.mod.trn.db.DTrnDoc;
 import sba.mod.trn.db.DTrnUtils;
@@ -112,7 +111,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     private void computeChildDfr(final DGuiSession session) throws Exception {
         boolean save = false;
 
-        if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_XML_ST_PEN && mnAuxXmlTypeId != 0) {
+        if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_DPS_ST_NEW && mnAuxXmlTypeId != 0) {
             moChildDfr = DTrnDfrUtils.createDfrFromBol(session, this, mnAuxXmlTypeId);
             save = true;
         }
@@ -244,6 +243,19 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         }
         
         return bolMerchandise;
+    }
+    
+    public DDbBolTransportFigure getFirstChildTransportFigure(final int transportFigureType) {
+        DDbBolTransportFigure bolTransportFigure = null;
+        
+        for (DDbBolTransportFigure btf : maChildTransportFigures) {
+            if (btf.getFkTransportFigureTypeId() == transportFigureType) {
+                bolTransportFigure = btf;
+                break;
+            }
+        }
+        
+        return bolTransportFigure;
     }
     
     public void initBolTemplate(final int bolTemplateId) {
@@ -846,7 +858,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
 
     @Override
     public String getDocName() {
-        return "carta porte";
+        return "traslado";
     }
 
     @Override
@@ -889,7 +901,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
 
     @Override
     public DDbRegistry createDocSending() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
@@ -909,7 +921,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_20, new DTrnBolPrinting(session, this).cratePrintMapCfdi40(), fileName);
+                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_20, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
                     break;
 
                 default:

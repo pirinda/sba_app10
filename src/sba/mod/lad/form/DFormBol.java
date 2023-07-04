@@ -576,6 +576,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTptFigCode = new javax.swing.JLabel();
         moTextTptFigCode = new sba.lib.gui.bean.DBeanFieldText();
         jbTptFigGetNextCode = new javax.swing.JButton();
+        jlTptFigMail = new javax.swing.JLabel();
+        moTextTptFigMail = new sba.lib.gui.bean.DBeanFieldText();
         jpTptFigInput14 = new javax.swing.JPanel();
         jlTptFigFiscalId = new javax.swing.JLabel();
         moTextTptFigFiscalId = new sba.lib.gui.bean.DBeanFieldText();
@@ -985,7 +987,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpLocInput13.add(jlLocCode);
 
         moTextLocCode.setText("000000");
-        moTextLocCode.setPreferredSize(new java.awt.Dimension(75, 23));
+        moTextLocCode.setPreferredSize(new java.awt.Dimension(60, 23));
         jpLocInput13.add(moTextLocCode);
 
         jbLocGetNextCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
@@ -1847,7 +1849,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTruckInput13.add(jlTruckCode);
 
         moTextTruckCode.setText("TEXT");
-        moTextTruckCode.setPreferredSize(new java.awt.Dimension(75, 23));
+        moTextTruckCode.setPreferredSize(new java.awt.Dimension(60, 23));
         jpTruckInput13.add(moTextTruckCode);
 
         jbTruckGetNextCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
@@ -2264,13 +2266,22 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpTptFigInput13.add(jlTptFigCode);
 
         moTextTptFigCode.setText("TEXT");
-        moTextTptFigCode.setPreferredSize(new java.awt.Dimension(75, 23));
+        moTextTptFigCode.setPreferredSize(new java.awt.Dimension(60, 23));
         jpTptFigInput13.add(moTextTptFigCode);
 
         jbTptFigGetNextCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
         jbTptFigGetNextCode.setToolTipText("Obtener siguiente código");
         jbTptFigGetNextCode.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTptFigInput13.add(jbTptFigGetNextCode);
+
+        jlTptFigMail.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlTptFigMail.setText("Mail:");
+        jlTptFigMail.setPreferredSize(new java.awt.Dimension(40, 23));
+        jpTptFigInput13.add(jlTptFigMail);
+
+        moTextTptFigMail.setText("TEXT");
+        moTextTptFigMail.setPreferredSize(new java.awt.Dimension(92, 23));
+        jpTptFigInput13.add(moTextTptFigMail);
 
         jpTptFigInput1.add(jpTptFigInput13);
 
@@ -2692,6 +2703,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbBolNavStart.setPreferredSize(new java.awt.Dimension(100, 23));
         jpNavC.add(jbBolNavStart);
 
+        jbBolNavRestart.setBackground(java.awt.Color.red);
         jbBolNavRestart.setText("Reiniciar");
         jbBolNavRestart.setPreferredSize(new java.awt.Dimension(100, 23));
         jpNavC.add(jbBolNavRestart);
@@ -2864,6 +2876,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlTptFigFigureCountry;
     private javax.swing.JLabel jlTptFigFiscalId;
     private javax.swing.JLabel jlTptFigForeignId;
+    private javax.swing.JLabel jlTptFigMail;
     private javax.swing.JLabel jlTptFigName;
     private javax.swing.JLabel jlTptFigTptPartTransportPartType;
     private javax.swing.JLabel jlTptFigTransportFigureType;
@@ -3165,6 +3178,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private sba.lib.gui.bean.DBeanFieldText moTextTptFigDriverLicense;
     private sba.lib.gui.bean.DBeanFieldText moTextTptFigFiscalId;
     private sba.lib.gui.bean.DBeanFieldText moTextTptFigForeignId;
+    private sba.lib.gui.bean.DBeanFieldText moTextTptFigMail;
     private sba.lib.gui.bean.DBeanFieldText moTextTptFigName;
     private sba.lib.gui.bean.DBeanFieldText moTextTruckCargoInsurance;
     private sba.lib.gui.bean.DBeanFieldText moTextTruckCargoPolicy;
@@ -3414,6 +3428,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moKeyTptFigTransportFigureType.setKeySettings(miClient, DGuiUtils.getLabelName(jlTptFigTransportFigureType), true);
         moTextTptFigName.setTextSettings(DGuiUtils.getLabelName(jlTptFigName), 200);
         moTextTptFigCode.setTextSettings(DGuiUtils.getLabelName(jlTptFigCode), 10);
+        moTextTptFigMail.setTextSettings(DGuiUtils.getLabelName(jlTptFigMail), 100, 0);
         moTextTptFigFiscalId.setTextSettings(DGuiUtils.getLabelName(jlTptFigFiscalId), 14, 13);
         moTextTptFigDriverLicense.setTextSettings(DGuiUtils.getLabelName(jlTptFigDriverLicense), 16);
         moKeyTptFigFigureCountry.setKeySettings(miClient, DGuiUtils.getLabelName(jlTptFigFigureCountry), false);
@@ -3441,6 +3456,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moFieldsTptFigure.addField(moKeyTptFigTransportFigureType, TAB_IDX_TPT_FIGURE);
         moFieldsTptFigure.addField(moTextTptFigName, TAB_IDX_TPT_FIGURE);
         moFieldsTptFigure.addField(moTextTptFigCode, TAB_IDX_TPT_FIGURE);
+        moFieldsTptFigure.addField(moTextTptFigMail, TAB_IDX_TPT_FIGURE);
         moFieldsTptFigure.addField(moTextTptFigFiscalId, TAB_IDX_TPT_FIGURE);
         moFieldsTptFigure.addField(moTextTptFigDriverLicense, TAB_IDX_TPT_FIGURE);
         moFieldsTptFigure.addField(moKeyTptFigFigureCountry, TAB_IDX_TPT_FIGURE);
@@ -6355,8 +6371,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation.setMessage("La configuración del autotransporte requiere de remolques.");
                 validation.setComponent(jbTruckTrailCreate);
             }
-            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_OPT && moGridTrucksTrailers.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm("La configuración del autotransporte permite tener de remolques, pero no lo hay.\n"
-                    + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_OPT && moGridTrucksTrailers.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm(
+                    "La configuración del autotransporte permite tener de remolques, pero no lo hay.\n" + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
                 validation.setMessage("Agregar los remolques que se requieran.");
                 validation.setComponent(jbTruckTrailCreate);
             }
@@ -6715,6 +6731,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             itemStateChangedTptFigTransportFigureType();
             moTextTptFigName.setValue(moBolTptFigure.getOwnTransportFigure().getName());
             moTextTptFigCode.setValue(moBolTptFigure.getOwnTransportFigure().getCode());
+            moTextTptFigMail.setValue(moBolTptFigure.getOwnTransportFigure().getMail());
             moTextTptFigFiscalId.setValue(moBolTptFigure.getFiscalId());
             moTextTptFigDriverLicense.setValue(moBolTptFigure.getDriverLicense());
             moKeyTptFigFigureCountry.setValue(new int[] { moBolTptFigure.getFkFigureCountryId() });
@@ -6793,6 +6810,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         itemStateChangedTptFigTransportFigureType();
         moTextTptFigName.setEnabled(mbEditingTptFigure);
         moTextTptFigCode.setEnabled(mbEditingTptFigure);
+        moTextTptFigMail.setEnabled(mbEditingTptFigure);
         jbTptFigGetNextCode.setEnabled(mbEditingTptFigure);
         moTextTptFigFiscalId.setEnabled(mbEditingTptFigure);
         //moTextTptFigDriverLicense.setEnabled(...); // depends on itemStateChangedTptFigTransportFigureType()
@@ -7144,6 +7162,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             //tptFigure.setPkTransportFigureId(...);
             tptFigure.setCode(moTextTptFigCode.getValue());
             tptFigure.setName(moTextTptFigName.getValue());
+            tptFigure.setMail(moTextTptFigMail.getValue());
             tptFigure.setFiscalId(moTextTptFigFiscalId.getValue());
             tptFigure.setForeignId(moTextTptFigForeignId.getValue());
             tptFigure.setDriverLicense(moTextTptFigDriverLicense.getValue());

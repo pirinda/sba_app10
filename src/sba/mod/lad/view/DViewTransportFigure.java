@@ -66,6 +66,7 @@ public class DViewTransportFigure extends DGridPaneView implements ActionListene
                 "tf.id_tpt_figure AS " + DDbConsts.FIELD_ID + "1, " +
                 "tf.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "tf.name AS " + DDbConsts.FIELD_NAME + ", " +
+                "tf.mail, " +
                 "tf.fis_id, " +
                 "tf.frg_id, " +
                 "tf.drv_lic, " +
@@ -113,13 +114,14 @@ public class DViewTransportFigure extends DGridPaneView implements ActionListene
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[27];
+        DGridColumnView[] columns = new DGridColumnView[28];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, DDbConsts.FIELD_TYPE, DGridConsts.COL_TITLE_TYPE);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tf.fis_id", "RFC");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tf.drv_lic", "Licencia");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "tf.mail", "Mail");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "fc.code", "País clave figura transporte");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "fc.name", "País descripción figura transporte");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tf.frg_id", "ID fiscal");

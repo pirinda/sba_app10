@@ -65,6 +65,9 @@ public class DViewBol extends DGridPaneView implements ActionListener {
      */
 
     private void initComponentsCustom() {
+        setRowButtonsEnabled(true, true, false, true, false);
+        jtbFilterDeleted.setEnabled(false);
+        
         if (!isBolTemplate()) {
             moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new DGuiDate(DGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));

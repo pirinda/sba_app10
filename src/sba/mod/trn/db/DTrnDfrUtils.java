@@ -1851,7 +1851,7 @@ public abstract class DTrnDfrUtils {
             ubicacion.getAttDistanciaRecorrida().setDouble(bolLocation.getDistanceKm());
             
             ubicacion.getEltDomicilio().getAttCalle().setString(bolLocation.getAddressStreet());
-            ubicacion.getEltDomicilio().getAttNumeroExteror().setString(bolLocation.getAddressNumberExt());
+            ubicacion.getEltDomicilio().getAttNumeroExterior().setString(bolLocation.getAddressNumberExt());
             ubicacion.getEltDomicilio().getAttNumeroInterior().setString(bolLocation.getAddressNumberInt());
             ubicacion.getEltDomicilio().getAttReferencia().setString(bolLocation.getAddressReference());
             ubicacion.getEltDomicilio().getAttCodigoPostal().setString(bolLocation.getAddressZipCode());
@@ -1898,10 +1898,17 @@ public abstract class DTrnDfrUtils {
             mercancia.getAttClaveUnidad().setString(bolMerchandise.getOwnUnit().getCfdUnitKey());
             mercancia.getAttUnidad().setString(bolMerchandise.getDescriptionUnit());
             mercancia.getAttDimensiones().setString(bolMerchandise.getDimensions());
-            mercancia.getAttMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialName());
-            mercancia.getAttCveMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialCode());
-            mercancia.getAttEmbalaje().setString(bolMerchandise.getPackagingCode());
-            mercancia.getAttDescripEmbalaje().setString(bolMerchandise.getPackagingName());
+            if (bolMerchandise.isHazardousMaterial()) {
+                if (bolMerchandise.isHazardousMaterialNo()) {
+                    mercancia.getAttMaterialPeligroso().setString(DCfdi40Catalogs.TextoNo);
+                }
+                else if (bolMerchandise.isHazardousMaterialYes()) {
+                    mercancia.getAttMaterialPeligroso().setString(DCfdi40Catalogs.TextoSí);
+                    mercancia.getAttCveMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialCode());
+                    mercancia.getAttEmbalaje().setString(bolMerchandise.getPackagingCode());
+                    mercancia.getAttDescripEmbalaje().setString(bolMerchandise.getPackagingName());
+                }
+            }
             mercancia.getAttPesoEnKg().setDouble(bolMerchandise.getWeightKg());
             
             if (bolMerchandise.getFkCurrencyId() != DModSysConsts.CS_CUR_NA) {
@@ -1992,7 +1999,7 @@ public abstract class DTrnDfrUtils {
             cfd.ver3.ccp20.DElementDomicilio domicilio = new cfd.ver3.ccp20.DElementDomicilio();
 
             domicilio.getAttCalle().setString(bolTptFigure.getAddressStreet());
-            domicilio.getAttNumeroExteror().setString(bolTptFigure.getAddressNumberExt());
+            domicilio.getAttNumeroExterior().setString(bolTptFigure.getAddressNumberExt());
             domicilio.getAttNumeroInterior().setString(bolTptFigure.getAddressNumberInt());
             domicilio.getAttReferencia().setString(bolTptFigure.getAddressReference());
             domicilio.getAttCodigoPostal().setString(bolTptFigure.getAddressZipCode());
@@ -2711,9 +2718,13 @@ public abstract class DTrnDfrUtils {
                 }
             }
             
+            if (nodeChildTimbreFiscal == null) {
+                xsr.delete(session); // delete request log
+                throw new Exception("XML element 'tfd:TimbreFiscalDigital' not found!");
+            }
             // Preserve signed XML into DFR:
 
-            timbreFiscal = new cfd.ver3.DTimbreFiscal();
+            timbreFiscal = new cfd.ver3.DTimbreFiscal(); // compatible with version 4.0
             namedNodeMapTimbreFiscal = nodeChildTimbreFiscal.getAttributes();
             
             switch (dfr.getFkXmlTypeId()) {

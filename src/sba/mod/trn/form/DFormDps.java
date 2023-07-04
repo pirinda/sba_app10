@@ -1820,9 +1820,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moKeyCurrency.setEnabled(!mbIsDpsSource && moKeyBizPartner.getSelectedIndex() > 0);
         }
 
+        moKeyPaymentType.setEnabled(enablePaymentTypeField());
+        
         if (moRegistry.getActiveRowsCount() == 0) {
             moKeyBizPartner.setEnabled(true);
-            moKeyPaymentType.setEnabled(enablePaymentTypeField());
             jbBizPartnerPick.setEnabled(true);
             jbBizPartnerEdit.setEnabled(true);
 
@@ -1832,7 +1833,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         }
         else {
             moKeyBizPartner.setEnabled(false);
-            moKeyPaymentType.setEnabled(false);
             jbBizPartnerPick.setEnabled(false);
             jbBizPartnerEdit.setEnabled(false);
 
@@ -3445,7 +3445,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         if (moKeyPaymentType.getSelectedIndex() <= 0 || moKeyPaymentType.getValue()[0] == DModSysConsts.FS_PAY_TP_NA) {
             moIntCreditDays.setEnabled(false);
             moDateCredit.setEnabled(false);
-            moKeyDfrMethodOfPayment.setEnabled(false);
+            moKeyDfrMethodOfPayment.setEnabled(false); // not enabled allways
             moKeyModeOfPaymentType.setEnabled(false);
 
             moIntCreditDays.setValue(0);
@@ -3463,7 +3463,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             
             moIntCreditDays.setEnabled(!mbIsPosModule && isCredit);
             moDateCredit.setEnabled(!mbIsPosModule && isCredit);
-            moKeyDfrMethodOfPayment.setEnabled(false);
+            moKeyDfrMethodOfPayment.setEnabled(false); // not enabled allways
             moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdiFields && isCash);
 
             moIntCreditDays.setValue(isCash ? 0 : moBizPartnerConfig.getActualCreditDays());
