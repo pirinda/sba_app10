@@ -245,6 +245,19 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
             throw new Exception(DGuiConsts.ERR_MSG_UNDEF_REG + " (Own " + DDbTruck.class.getName() + ")");
         }
         else if (moOwnTruck.isRegistryNew() || (moOwnTruck.isRegistryEdited() && mbBolUpdateOwnRegistry)) {
+            // assure that all trailers are already saved:
+            
+            int index = 0;
+            for (DDbBolTruckTrailer trailer : maChildTrailers) {
+                if (trailer.getOwnTrailer() != null) {
+                    if (trailer.getOwnTrailer().isRegistryNew()) {
+                        trailer.getOwnTrailer().save(session);
+                    }
+                    moOwnTruck.getChildTrailers().get(index).setFkTrailerId(trailer.getOwnTrailer().getPkTrailerId());
+                }
+                index++;
+            }
+            
             moOwnTruck.save(session);
         }
         

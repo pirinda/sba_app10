@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JButton;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -84,6 +85,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jPanelInput1 = new javax.swing.JPanel();
         jlInput1 = new javax.swing.JLabel();
         moDateDate = new sba.lib.gui.bean.DBeanFieldDate();
+        jlDateHelp = new javax.swing.JLabel();
         moDecQuantity = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlQuantityUnit = new javax.swing.JLabel();
         jPanelInput2 = new javax.swing.JPanel();
@@ -93,6 +95,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         moIntHourMin = new sba.lib.gui.bean.DBeanFieldInteger();
         jlHrSeparator2 = new javax.swing.JLabel();
         moIntHourSec = new sba.lib.gui.bean.DBeanFieldInteger();
+        jlHourHelp = new javax.swing.JLabel();
         moDecWeightKg = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlWeightKgUnit = new javax.swing.JLabel();
         jbSetWeightKg = new javax.swing.JButton();
@@ -115,12 +118,14 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jPanel11.add(jlElementType);
 
         jtfElementType.setEditable(false);
+        jtfElementType.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jtfElementType.setText("TEXT");
         jtfElementType.setFocusable(false);
         jtfElementType.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel11.add(jtfElementType);
 
         jlElement.setEditable(false);
+        jlElement.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlElement.setText("TEXT");
         jlElement.setFocusable(false);
         jlElement.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -177,6 +182,11 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jPanelInput1.add(jlInput1);
         jPanelInput1.add(moDateDate);
 
+        jlDateHelp.setForeground(java.awt.Color.gray);
+        jlDateHelp.setText("Formato: dd/mm/aaaa");
+        jlDateHelp.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanelInput1.add(jlDateHelp);
+
         moDecQuantity.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanelInput1.add(moDecQuantity);
 
@@ -211,6 +221,11 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
 
         moIntHourSec.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanelInput2.add(moIntHourSec);
+
+        jlHourHelp.setForeground(java.awt.Color.gray);
+        jlHourHelp.setText("Formato: hh:mm:ss (24 hr)");
+        jlHourHelp.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanelInput2.add(jlHourHelp);
 
         moDecWeightKg.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanelInput2.add(moDecWeightKg);
@@ -266,11 +281,13 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
     private javax.swing.JButton jbNavNext;
     private javax.swing.JButton jbNavPrev;
     private javax.swing.JButton jbSetWeightKg;
+    private javax.swing.JLabel jlDateHelp;
     private javax.swing.JLabel jlDescription1;
     private javax.swing.JLabel jlDescription2;
     private javax.swing.JLabel jlDescription3;
     private javax.swing.JTextField jlElement;
     private javax.swing.JLabel jlElementType;
+    private javax.swing.JLabel jlHourHelp;
     private javax.swing.JLabel jlHrSeparator1;
     private javax.swing.JLabel jlHrSeparator2;
     private javax.swing.JLabel jlInput1;
@@ -319,6 +336,8 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         moFields.addField(moDecWeightKg);
         
         moFields.setFormButton(jbSave);
+        
+        jbSave.setText(DGuiConsts.TXT_BTN_OK);
     }
     
     private boolean preserveCurrentRegistry() {
@@ -373,6 +392,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jlInput2.setText("");
         
         jPanelInput1.remove(moDateDate);
+        jPanelInput1.remove(jlDateHelp);
         jPanelInput1.remove(moDecQuantity);
         jPanelInput1.remove(jlQuantityUnit);
         
@@ -381,6 +401,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jPanelInput2.remove(moIntHourMin);
         jPanelInput2.remove(jlHrSeparator2);
         jPanelInput2.remove(moIntHourSec);
+        jPanelInput2.remove(jlHourHelp);
         jPanelInput2.remove(moDecWeightKg);
         jPanelInput2.remove(jlWeightKgUnit);
         jPanelInput2.remove(jbSetWeightKg);
@@ -390,8 +411,16 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         
         moCurrentFields = new DGuiFields();
         
+        moIntHourSec.setNextButton(null);
+        moDecQuantity.setNextButton(null);
+        moDecWeightKg.setNextButton(null);
+        
         if (moCurrentRegistry != null && maRegistries != null) {
-            jlElement.setText((maRegistries.indexOf(moCurrentRegistry) + 1) + " de " + maRegistries.size());
+            int pos = maRegistries.indexOf(moCurrentRegistry) + 1;
+            int tot = maRegistries.size();
+            boolean last = pos == tot;
+            
+            jlElement.setText(pos + " de " + tot); // current step out of total steps
             
             if (moCurrentRegistry instanceof DDbBolLocation) {
                 jtfElementType.setText("UBICACIÓN");
@@ -404,12 +433,14 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 jlInput2.setText("Hora:*");
 
                 jPanelInput1.add(moDateDate);
+                jPanelInput1.add(jlDateHelp);
                 
                 jPanelInput2.add(moIntHourHr);
                 jPanelInput2.add(jlHrSeparator1);
                 jPanelInput2.add(moIntHourMin);
                 jPanelInput2.add(jlHrSeparator2);
                 jPanelInput2.add(moIntHourSec);
+                jPanelInput2.add(jlHourHelp);
                 
                 DDbBolLocation bolLocation = (DDbBolLocation) moCurrentRegistry; // convenience variable
                 
@@ -434,6 +465,12 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 moCurrentFields.addField(moIntHourHr);
                 moCurrentFields.addField(moIntHourMin);
                 moCurrentFields.addField(moIntHourSec);
+                
+                // prepare for user input:
+                
+                moDateDate.requestFocusInWindow();
+                
+                moIntHourSec.setNextButton(last ? jbSave : jbNavNext);
             }
             else if (moCurrentRegistry instanceof DDbBolMerchandise) {
                 jtfElementType.setText("MERCANCÍA");
@@ -469,12 +506,16 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 jlQuantityUnit.setText((String) miClient.getSession().readField(DModConsts.IU_UNT, new int[] { bolMerchandise.getFkUnitId()}, DDbRegistry.FIELD_CODE));
                 moDecWeightKg.setValue(bolMerchandise.getWeightKg());
                 
-                computeWeightKg();
-                
                 // prepare current fields:
                 
                 moCurrentFields.addField(moDecQuantity);
                 moCurrentFields.addField(moDecWeightKg);
+                
+                // prepare for user input:
+                
+                moDecQuantity.requestFocusInWindow();
+                
+                moDecWeightKg.setNextButton(last ? jbSave : jbNavNext);
             }
             else if (moCurrentRegistry instanceof DDbBolMerchandiseMove) {
                 jtfElementType.setText("CANTIDAD TRANSPORTA");
@@ -493,7 +534,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 DDbBolMerchandise bolMerchandise = moBol.getChildMerchandise(new int[] { bolMerchandiseMove.getPkBolId(), bolMerchandiseMove.getPkMerchandiseId() }); // convenience variable
                 DDbItem item = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, new int[] { bolMerchandise.getFkItemId() });
                 
-                jtfDescription1.setText(item.getName());
+                jtfDescription1.setText(item.getName() + " (ProdServ: " + (item.getActualCfdItemKey().isEmpty() ? "?" : item.getActualCfdItemKey()) + ")");
                 jtfDescription1.setCaretPosition(0);
                 jtfDescription2.setText(bolMerchandise.getDescriptionItem());
                 jtfDescription2.setCaretPosition(0);
@@ -508,11 +549,36 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 // prepare current fields:
                 
                 moCurrentFields.addField(moDecQuantity);
+                
+                // prepare for user input:
+                
+                moDecQuantity.requestFocusInWindow();
+                
+                moDecQuantity.setNextButton(last ? jbSave : jbNavNext);
             }
         }
         
         jPanelInput1.repaint();
         jPanelInput2.repaint();
+    }
+    
+    private void renderCurrentRegistryAndEnableNavButtons(final int index) {
+        renderCurrentRegistry();
+        
+        jbNavPrev.setEnabled(false);
+        jbNavNext.setEnabled(false);
+        
+        if (index != -1) {
+            if (index > 0) {
+                jbNavPrev.setEnabled(true);
+            }
+
+            if (index + 1 < maRegistries.size()) {
+                jbNavNext.setEnabled(true);
+            }
+        }
+        
+        jbSave.setEnabled(index + 1 == maRegistries.size());
     }
     
     private void prepareCurrentUnit() {
@@ -536,6 +602,8 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
             
             if (!moBol.getChildMerchandises().isEmpty()) {
                 for (DDbBolMerchandise merchandise : moBol.getChildMerchandises()) {
+                    merchandise.setWeightKg(0); // to allow automatic recalculation of weigth
+                    
                     maRegistries.add(merchandise);
                     maRegistries.addAll(merchandise.getChildMoves());
                 }
@@ -547,23 +615,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
             }
         }
         
-        renderCurrentRegistry();
-        enableNavButtons(moCurrentRegistry == null ? -1 : 0);
-    }
-    
-    private void enableNavButtons(final int index) {
-        jbNavPrev.setEnabled(false);
-        jbNavNext.setEnabled(false);
-        
-        if (index != -1) {
-            if (index > 0) {
-                jbNavPrev.setEnabled(true);
-            }
-
-            if (index + 1 < maRegistries.size()) {
-                jbNavNext.setEnabled(true);
-            }
-        }
+        renderCurrentRegistryAndEnableNavButtons(moCurrentRegistry == null ? -1 : 0);
     }
     
     private void computeWeightKg() {
@@ -590,23 +642,35 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
     
     private void move(final boolean foward) {
         int index = -1;
+        boolean move = false;
+        Date oldArrivalDepartureDatetime = null;
         
         if (moCurrentRegistry != null && maRegistries != null && maRegistries.contains(moCurrentRegistry)) {
             if (preserveCurrentRegistry()) {
                 // go to previous element:
 
                 index = maRegistries.indexOf(moCurrentRegistry);
-
-                if (foward) {
-                    // next element:
-                    if (index + 1 < maRegistries.size()) {
-                        index++;
+                
+                if (index != -1) {
+                    if (foward) {
+                        // next element:
+                        if (index + 1 < maRegistries.size()) {
+                            index++;
+                            move = true;
+                        }
                     }
-                }
-                else {
-                    // previous element:
-                    if (index > 0) {
-                        index--;
+                    else {
+                        // previous element:
+                        if (index > 0) {
+                            index--;
+                            move = true;
+                        }
+                    }
+                    
+                    // preserve current arrival departure datetime:
+                    
+                    if (foward && move && moCurrentRegistry instanceof DDbBolLocation && maRegistries.get(index) instanceof DDbBolLocation) {
+                        oldArrivalDepartureDatetime = ((DDbBolLocation) moCurrentRegistry).getArrivalDepartureDatetime();
                     }
                 }
             }
@@ -616,8 +680,19 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
             moCurrentRegistry = maRegistries.get(index);
             prepareCurrentUnit();
             
-            renderCurrentRegistry();
-            enableNavButtons(index);
+            // propagate current arrival departure datetime if needed:
+            
+            if (oldArrivalDepartureDatetime != null && moCurrentRegistry instanceof DDbBolLocation) {
+                Date newArrivalDepartureDatetime = ((DDbBolLocation) moCurrentRegistry).getArrivalDepartureDatetime();
+                
+                if (newArrivalDepartureDatetime != null && newArrivalDepartureDatetime.before(oldArrivalDepartureDatetime)) {
+                    ((DDbBolLocation) moCurrentRegistry).setArrivalDepartureDatetime(oldArrivalDepartureDatetime);
+                }
+            }
+            
+            // render current registry:
+            
+            renderCurrentRegistryAndEnableNavButtons(index);
         }
     }
     

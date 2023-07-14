@@ -7,6 +7,7 @@ package sba.mod.lad.form;
 
 import cfd.ver40.DCfdi40Catalogs;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -270,6 +271,8 @@ public class DPickerCatalogAddressCounty extends DBeanFormDialog implements Acti
         moFields.resetFields();
         
         try {
+            miClient.getFrame().getRootPane().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            
             if (moOldState == null || !moOldState.Code.equals(moState.Code)) {
                 moOldState = moState.clone();
                 
@@ -290,6 +293,9 @@ public class DPickerCatalogAddressCounty extends DBeanFormDialog implements Acti
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
+        }
+        finally {
+            miClient.getFrame().getRootPane().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
         
         addAllListeners();

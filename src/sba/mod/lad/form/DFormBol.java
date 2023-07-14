@@ -129,6 +129,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected DXmlCatalog moXmlTruckTrailerSubtype;
 
     protected int[] manTemplateKey;
+    protected boolean mbForceCancel;
     
     protected String[] maBolSeries;
     protected int mnBolWeightUnitId;
@@ -295,6 +296,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpLocInput15 = new javax.swing.JPanel();
         jlLocArrivalDepartureDatetime = new javax.swing.JLabel();
         moDatetimeLocArrivalDepartureDatetime = new sba.lib.gui.bean.DBeanFieldDatetime();
+        jlLocArrivalDepartureDatetimeHelp = new javax.swing.JLabel();
         jpLocInput16 = new javax.swing.JPanel();
         jlLocSourceLocation = new javax.swing.JLabel();
         moKeyLocSourceLocation = new sba.lib.gui.bean.DBeanFieldKey();
@@ -671,6 +673,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbBolNavNext = new javax.swing.JButton();
         jpNavE = new javax.swing.JPanel();
 
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
+
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jpHeader.setLayout(new java.awt.GridLayout(1, 4));
@@ -943,6 +951,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jPanel1.add(jpHeader, java.awt.BorderLayout.NORTH);
 
+        jtpWizard.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
         jpWizardLoc.setLayout(new java.awt.BorderLayout());
 
         jpLoc.setLayout(new java.awt.BorderLayout());
@@ -1018,6 +1028,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlLocArrivalDepartureDatetime.setPreferredSize(new java.awt.Dimension(75, 23));
         jpLocInput15.add(jlLocArrivalDepartureDatetime);
         jpLocInput15.add(moDatetimeLocArrivalDepartureDatetime);
+
+        jlLocArrivalDepartureDatetimeHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/icon_help.png"))); // NOI18N
+        jlLocArrivalDepartureDatetimeHelp.setToolTipText("Formato: dd/mm/aaaa hh:mm:ss (24 hr)");
+        jlLocArrivalDepartureDatetimeHelp.setPreferredSize(new java.awt.Dimension(15, 23));
+        jpLocInput15.add(jlLocArrivalDepartureDatetimeHelp);
 
         jpLocInput1.add(jpLocInput15);
 
@@ -2732,6 +2747,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        windowActivated();
+    }//GEN-LAST:event_formWindowActivated
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgBolIntlTransportDirections;
     private javax.swing.ButtonGroup bgMerchDimensionUnits;
@@ -2831,6 +2850,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlLocAddressStreet;
     private javax.swing.JLabel jlLocAddressZipCode;
     private javax.swing.JLabel jlLocArrivalDepartureDatetime;
+    private javax.swing.JLabel jlLocArrivalDepartureDatetimeHelp;
     private javax.swing.JLabel jlLocCode;
     private javax.swing.JLabel jlLocDistanceKm;
     private javax.swing.JLabel jlLocDistanceKmUnit;
@@ -3315,20 +3335,20 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextMerchTariff.setTextSettings(DGuiUtils.getLabelName(jlMerchTariff), 10);
         moIntMerchImportRequest1.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest1.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
         moIntMerchImportRequest1.setIntegerFormat(DBolUtils.FormatSegmentImportRequest1);
-        moIntMerchImportRequest1.setMaxInteger(99);
+        moIntMerchImportRequest1.setMaxInteger(99); // 2 digits!
         moIntMerchImportRequest2.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest2.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
         moIntMerchImportRequest2.setIntegerFormat(DBolUtils.FormatSegmentImportRequest2);
-        moIntMerchImportRequest2.setMaxInteger(99);
+        moIntMerchImportRequest2.setMaxInteger(99); // 2 digits!
         moIntMerchImportRequest3.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest3.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
         moIntMerchImportRequest3.setIntegerFormat(DBolUtils.FormatSegmentImportRequest3);
-        moIntMerchImportRequest3.setMaxInteger(9999);
+        moIntMerchImportRequest3.setMaxInteger(9999); // 4 digits!
         moIntMerchImportRequest4.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest4.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
         moIntMerchImportRequest4.setIntegerFormat(DBolUtils.FormatSegmentImportRequest4);
-        moIntMerchImportRequest4.setMaxInteger(9999999);
+        moIntMerchImportRequest4.setMaxInteger(9999999); // 7 digits!
         
-        moKeyMerchMoveSource.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchMoveSource), false);
-        moKeyMerchMoveDestiny.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchMoveDestiny), false);
-        moDecMerchMoveQuantity.setDecimalSettings(DGuiUtils.getLabelName(jlMerchMoveQuantity), DGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moKeyMerchMoveSource.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchMoveSource), true);
+        moKeyMerchMoveDestiny.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchMoveDestiny), true);
+        moDecMerchMoveQuantity.setDecimalSettings(DGuiUtils.getLabelName(jlMerchMoveQuantity), DGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecMerchMoveQuantity.setDecimalFormat(DLibUtils.DecimalFormatValue6D);
         
         moFieldsMerchandise = new DGuiFields(jtpWizard);
@@ -3411,7 +3431,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         moFieldsTruck.setFormButton(jbTruckOk);
         
-        moKeyTruckTrailSubtype.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckTrailSubtype), false);
+        moKeyTruckTrailSubtype.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckTrailSubtype), true);
         moTextTruckTrailPlate.setTextSettings(DGuiUtils.getLabelName(jlTruckTrailPlate), 7);
         moBoolTruckTrailUpdate.setBooleanSettings(moBoolTruckTrailUpdate.getText(), false);
         
@@ -3667,7 +3687,34 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         return crudText;
     }
+    
+    private int countLocations(final int locationType) {
+        int count = 0;
+        
+        for (DGridRow row : moGridLocations.getModel().getGridRows()) {
+            DDbBolLocation bolLocation = (DDbBolLocation) row;
+            if (bolLocation.getFkLocationTypeId() == locationType) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    /*
+     * Protected methods
+     */
 
+    @Override
+    protected void windowActivated() {
+        if (mbForceCancel) {
+            actionCancel();
+        }
+        else {
+            super.windowActivated();
+        }
+    }
+    
     /*
      * BOL
      */
@@ -3849,8 +3896,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             else {
                 switch (jtpWizard.getSelectedIndex()) {
                     case TAB_IDX_LOCATION:
-                        if (moGridLocations.getTable().getRowCount() < 2) {
-                            validation.setMessage("Debe haber al menos dos ubicaciones.");
+                        if (countLocations(DModSysConsts.LS_LOC_TP_SRC) == 0) {
+                            validation.setMessage("Debe haber al menos una ubicación origen.");
+                            validation.setComponent(jbLocAdd);
+                        }
+                        else if (countLocations(DModSysConsts.LS_LOC_TP_DES) == 0) {
+                            validation.setMessage("Debe haber al menos una ubicación destino.");
                             validation.setComponent(jbLocAdd);
                         }
                         break;
@@ -3881,6 +3932,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         
         return can;
+    }
+    
+    private boolean isSaveAllowed() {
+        return moBol.isRegistryNew() || (!moBol.isSystem() && (moBol.getChildDfr() == null || moBol.getChildDfr().getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_PEN));
     }
 
     private void enableBolControls(final boolean start) {
@@ -3992,7 +4047,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
 
     private void enableWizardTab(final int index, final int navAction) {
-        if (index >= 0 && index <= jtpWizard.getTabCount()) {
+        if (index >= 0 && index < jtpWizard.getTabCount()) {
             // prepare tab:
             
             switch (index) {
@@ -4018,6 +4073,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             
             enableBolNavButtons(navAction);
+            
+            // enable save button:
+            
+            jbSave.setEnabled((isBolTemplate() || (index + 1 == jtpWizard.getTabCount())) && isSaveAllowed());
         }
     }
 
@@ -4330,7 +4389,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     
     private void computeLocAddressStateCode() {
         computeCatalogCode(moTextLocAddressStateCode, moTextLocAddressStateName, DBolUtils.DEF_CODE_ADDRESS_STATE, 
-                null, DCfdi40Catalogs.XML_CCP_EDO_33, false, moKeyLocAddressCountry, DBolUtils.ATT_COUNTRY);
+                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyLocAddressCountry, DBolUtils.ATT_COUNTRY);
     }
     
     private void computeLocAddressCountyCode() {
@@ -5966,7 +6025,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private boolean canBolTruckTrailerAppend() {
-        boolean can = DLibUtils.belongsTo(mnTruckIsTrailerRequired, new int[] { DXmlCatalogEntry.REQUIRED_YES, DXmlCatalogEntry.REQUIRED_NO });
+        boolean can = DLibUtils.belongsTo(mnTruckIsTrailerRequired, new int[] { DXmlCatalogEntry.REQUIRED_YES, DXmlCatalogEntry.REQUIRED_OPT });
         
         if (!can) {
             miClient.showMsgBoxWarning("No se requieren remolques.");
@@ -6445,7 +6504,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             // update own registry:
             
             moBolTruck.setBolUpdateOwnRegistry(moBoolTruckUpdate.getValue());
-
+            
             // update grid:
 
             if (creating || adding) {
@@ -6776,7 +6835,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             jtfTptFigTptPartPk.setText("");
             
-            moBoolTptFigTptPartUpdate.setValue(true);
+            moBoolTptFigTptPartUpdate.setValue(false/*true*/);
         }
         else {
             moKeyTptFigTptPartTransportPartType.setValue(new int[] { moBolTptFigureTptPart.getFkTransportPartTypeId() });
@@ -6784,7 +6843,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfTptFigTptPartPk.setText(DLibUtils.textKey(moBolTptFigureTptPart.getPrimaryKey()));
             jtfTptFigTptPartPk.setCaretPosition(0);
             
-            moBoolTptFigTptPartUpdate.setValue(moBolTptFigureTptPart.getOwnSysTransportPartType() == null || moBolTptFigureTptPart.getOwnSysTransportPartType().isRegistryNew()); // update only when requested
+            moBoolTptFigTptPartUpdate.setValue(false/*moBolTptFigureTptPart.getOwnSysTransportPartType() == null || moBolTptFigureTptPart.getOwnSysTransportPartType().isRegistryNew()*/); // update only when requested
         }
     }
     
@@ -6974,7 +7033,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         boolean updatable = mbEditingTptFigureTptPart && moBolTptFigureTptPart != null && moBolTptFigureTptPart.getOwnSysTransportPartType() != null && !moBolTptFigureTptPart.getOwnSysTransportPartType().isRegistryNew();
         
-        moBoolTptFigTptPartUpdate.setEnabled(updatable);
+        moBoolTptFigTptPartUpdate.setEnabled(false/*updatable*/);
         
         if (updatable) {
             moKeyTptFigTptPartTransportPartType.setEnabled(false);
@@ -7026,7 +7085,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     
     private void computeTptFigAddressStateCode() {
         computeCatalogCode(moTextTptFigAddressStateCode, moTextTptFigAddressStateName, DBolUtils.DEF_CODE_ADDRESS_STATE, 
-                null, DCfdi40Catalogs.XML_CCP_EDO_33, false, moKeyTptFigAddressCountry, DBolUtils.ATT_COUNTRY);
+                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyTptFigAddressCountry, DBolUtils.ATT_COUNTRY);
     }
     
     private void computeTptFigAddressCountyCode() {
@@ -8007,10 +8066,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         mnFormResult = 0;
         mbFirstActivation = true;
+        mbForceCancel = false;
 
         moSessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom(); // refresh each time this form is used
-        
-        jbSave.setEnabled(false);
         
         if (moBol.isRegistryNew()) {
             // Validate if new registry can be created:
@@ -8063,6 +8121,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     
                     if (moDialogBol.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
                         moBol = (DDbBol) moDialogBol.getRegistry();
+                    }
+                    else if (miClient.showMsgBoxConfirm("¿Desea continuar con la captura de la carta porte?") != JOptionPane.YES_OPTION) {
+                        mbForceCancel = true;
                     }
                 }
             }
@@ -8177,20 +8238,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         computeBol();
         
-        actionPerformedBolNavRestart(false);
+        actionPerformedBolNavRestart(false); // sets selected tab to 0!
 
         moGridLocations.setSelectedGridRow(0);
         moGridMerchandises.setSelectedGridRow(0);
         moGridTrucks.setSelectedGridRow(0);
         moGridTptFigures.setSelectedGridRow(0);
         
-        if (moBol.isRegistryNew()) {
-            jbSave.setEnabled(true);
-        }
-        else {
-            jbSave.setEnabled(!moBol.isSystem() && (moBol.getChildDfr() == null || moBol.getChildDfr().getFkXmlStatusId() != DModSysConsts.TS_XML_ST_ISS));
-        }
-
         addAllListeners();
     }
 
@@ -8232,32 +8286,82 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         bol.getChildLocations().clear();
         
-        for (DGridRow location : moGridLocations.getModel().getGridRows()) {
-            bol.getChildLocations().add((DDbBolLocation) location);
+        for (DGridRow row : moGridLocations.getModel().getGridRows()) {
+            DDbBolLocation bolLocation = (DDbBolLocation) row;
+            
+            bol.getChildLocations().add(bolLocation);
         }
         
         // merchandises:
         
         bol.getChildMerchandises().clear();
         
-        for (DGridRow merchandise : moGridMerchandises.getModel().getGridRows()) {
-            bol.getChildMerchandises().add((DDbBolMerchandise) merchandise);
+        for (DGridRow row : moGridMerchandises.getModel().getGridRows()) {
+            DDbBolMerchandise bolMerchandise = (DDbBolMerchandise) row;
+            
+            bol.getChildMerchandises().add(bolMerchandise);
         }
         
         // trucks:
         
         bol.getChildTrucks().clear();
         
-        for (DGridRow truck : moGridTrucks.getModel().getGridRows()) {
-            bol.getChildTrucks().add((DDbBolTruck) truck);
+        for (DGridRow row : moGridTrucks.getModel().getGridRows()) {
+            DDbBolTruck bolTruck = (DDbBolTruck) row;
+            
+            bol.getChildTrucks().add(bolTruck);
+            
+            if (bolTruck.isBolUpdateOwnRegistry()) {
+                // preserve truck trailers, transport figures and parts of transport figures:
+
+                DDbTruck truck = bolTruck.getOwnTruck();
+                
+                truck.getChildTrailers().clear();
+                
+                for (DDbBolTruckTrailer btt : bolTruck.getChildTrailers()) {
+                    DDbTruckTrailer truckTrailer = new DDbTruckTrailer();
+                    
+                    truckTrailer.setPkTruckId(bolTruck.getFkTruckId());
+                    truckTrailer.setPkTrailerId(btt.getPkTrailerId());
+                    truckTrailer.setFkTrailerId(btt.getFkTrailerId());
+                    
+                    truck.getChildTrailers().add(truckTrailer);
+                }
+                
+                truck.getChildTransportFigures().clear();
+                
+                for (DGridRow row1 : moGridTptFigures.getModel().getGridRows()) {
+                    DDbBolTransportFigure btf = (DDbBolTransportFigure) row1;
+                    DDbTruckTransportFigure truckTransportFigure = new DDbTruckTransportFigure();
+                    
+                    truckTransportFigure.setPkTruckId(bolTruck.getFkTruckId());
+                    truckTransportFigure.setPkTransportFigureId(btf.getPkTransportFigureId());
+                    truckTransportFigure.setFkTransportFigureId(btf.getFkTransportFigureId());
+                    
+                    for (DDbBolTransportFigureTransportPart tftp : btf.getChildTransportParts()) {
+                        DDbTruckTransportFigureTransportPart truckTransportFigureTransportPart = new DDbTruckTransportFigureTransportPart();
+                        
+                        truckTransportFigureTransportPart.setPkTruckId(bolTruck.getFkTruckId());
+                        truckTransportFigureTransportPart.setPkTransportFigureId(btf.getPkTransportFigureId());
+                        truckTransportFigureTransportPart.setPkTransportPartId(tftp.getPkTransportPartId());
+                        truckTransportFigureTransportPart.setFkTransportPartTypeId(tftp.getFkTransportPartTypeId());
+                        
+                        truckTransportFigure.getChildTransportParts().add(truckTransportFigureTransportPart);
+                    }
+                    
+                    truck.getChildTransportFigures().add(truckTransportFigure);
+                }
+            }
         }
         
         // save as well child transport figures:
         
         bol.getChildTransportFigures().clear();
         
-        for (DGridRow tptFigure : moGridTptFigures.getModel().getGridRows()) {
-            bol.getChildTransportFigures().add((DDbBolTransportFigure) tptFigure);
+        for (DGridRow row : moGridTptFigures.getModel().getGridRows()) {
+            DDbBolTransportFigure bolTransportFigure = (DDbBolTransportFigure) row;
+            
+            bol.getChildTransportFigures().add(bolTransportFigure);
         }
         
         bol.setAuxXmlTypeId(DModSysConsts.TS_XML_TP_CFDI_40);
@@ -8303,9 +8407,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     }
                 }
                 else {
-                    if (moGridLocations.getTable().getRowCount() < 2) {
-                        validation.setMessage("Debe haber al menos dos ubicaciones.");
-                        enableWizardTab(TAB_IDX_LOCATION, NAV_ACTION_NEXT);
+                    if (countLocations(DModSysConsts.LS_LOC_TP_SRC) == 0) {
+                        validation.setMessage("Debe haber al menos una ubicación origen.");
+                        validation.setComponent(jbLocAdd);
+                    }
+                    else if (countLocations(DModSysConsts.LS_LOC_TP_DES) == 0) {
+                        validation.setMessage("Debe haber al menos una ubicación destino.");
+                        validation.setComponent(jbLocAdd);
                     }
                     else if (moGridMerchandises.getTable().getRowCount() < 1) {
                         validation.setMessage("Debe haber al menos una mercancía.");
@@ -8330,7 +8438,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     public void actionCancel() {
         boolean cancel = true;
 
-        if (mnFormStatus == DGuiConsts.FORM_STATUS_EDIT && jbSave.isEnabled()) {
+        if (mnFormStatus == DGuiConsts.FORM_STATUS_EDIT && !mbForceCancel && isSaveAllowed()) {
             cancel = miClient.showMsgBoxConfirm(DGuiConsts.MSG_CNF_FORM_CLS) == JOptionPane.YES_OPTION;
         }
 

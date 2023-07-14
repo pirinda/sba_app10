@@ -41,6 +41,7 @@ import sba.mod.lad.db.DDbTruckTransportFigure;
 import sba.mod.lad.db.DDbTruckTransportFigureTransportPart;
 import sba.mod.lad.form.DFormBol;
 import sba.mod.lad.view.DViewBol;
+import sba.mod.lad.view.DViewBolMerchandise;
 import sba.mod.lad.view.DViewLocation;
 import sba.mod.lad.view.DViewLocationDistance;
 import sba.mod.lad.view.DViewTrailer;
@@ -63,6 +64,9 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
     private JMenu mjLad;
     private JMenuItem mjLadBolReal;
     private JMenuItem mjLadBolTemplate;
+
+    private JMenu mjRep;
+    private JMenuItem mjRepBolMerchandise;
 
     private DFormBol moFormBolReal;
     private DFormBol moFormBolTemplate;
@@ -111,6 +115,13 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
 
         mjCat.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { DModSysConsts.CS_PRV_LAD_ADM, DModSysConsts.CS_PRV_LAD_CAT }));
         mjLad.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { DModSysConsts.CS_PRV_LAD_ADM, DModSysConsts.CS_PRV_LAD_LAD }));
+
+        mjRep = new JMenu("Reportes");
+        mjRepBolMerchandise = new JMenuItem("Mercancías transportadas");
+
+        mjRep.add(mjRepBolMerchandise);
+
+        mjRepBolMerchandise.addActionListener(this);
     }
 
     /*
@@ -123,7 +134,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
 
     @Override
     public JMenu[] getMenus() {
-        return new JMenu[] { mjCat, mjLad };
+        return new JMenu[] { mjCat, mjLad, mjRep };
     }
 
     @Override
@@ -337,6 +348,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.L_BOL_LOC:
                 break;
             case DModConsts.L_BOL_MERCH:
+                view = new DViewBolMerchandise(miClient, "Mercancías transportadas");
                 break;
             case DModConsts.L_BOL_MERCH_MOVE:
                 break;
@@ -461,6 +473,9 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             }
             else if (menuItem == mjLadBolTemplate) {
                 showView(DModConsts.L_BOL, DDbBol.BOL_TEMPLATE, null);
+            }
+            else if (menuItem == mjRepBolMerchandise) {
+                showView(DModConsts.L_BOL_MERCH, 0, null);
             }
         }
     }

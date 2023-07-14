@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.grid.DGridRow;
@@ -329,7 +330,7 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
                     mnPkBolId + ", " + 
                     mnPkLocationId + ", " + 
                     "'" + msLocationId + "', " + 
-                    "NOW()" + ", " + 
+                    "'" + DLibUtils.DbmsDateFormatDatetime.format(mtArrivalDepartureDatetime) + "', " + 
                     mdDistanceKm + ", " + 
                     "'" + msAddressStreet + "', " + 
                     "'" + msAddressNumberExt + "', " + 
@@ -359,7 +360,7 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
                     //"id_bol = " + mnPkBolId + ", " +
                     //"id_loc = " + mnPkLocationId + ", " +
                     "loc_id = '" + msLocationId + "', " +
-                    "arr_dep_dt = " + "NOW()" + ", " +
+                    "arr_dep_dt = '" + DLibUtils.DbmsDateFormatDatetime.format(mtArrivalDepartureDatetime) + "', " +
                     "dist_km = " + mdDistanceKm + ", " +
                     "add_str = '" + msAddressStreet + "', " +
                     "add_num_ext = '" + msAddressNumberExt + "', " +

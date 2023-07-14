@@ -7,6 +7,7 @@ package sba.mod.lad.form;
 
 import cfd.ver40.DCfdi40Catalogs;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -240,11 +241,13 @@ public class DPickerCatalogAddressState extends DBeanFormDialog implements Actio
         moFields.resetFields();
         
         try {
+            miClient.getFrame().getRootPane().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            
             if (moOldCountry == null || !moOldCountry.Code.equals(moCountry.Code)) {
                 moOldCountry = moCountry.clone();
                 
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EDO_33, DBolUtils.ATT_COUNTRY, "", null);
+                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EDO_40, DBolUtils.ATT_COUNTRY, "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     if (entry.getBelongingCode().equals(moCountry.Code)) {
                         maGridRows.add(new DLadCatalogAddressState(entry.getCode(), entry.getName()));
@@ -260,6 +263,9 @@ public class DPickerCatalogAddressState extends DBeanFormDialog implements Actio
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
+        }
+        finally {
+            miClient.getFrame().getRootPane().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
         
         addAllListeners();

@@ -98,26 +98,30 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
      */
     
     private void computeNextNumber(final DGuiSession session) throws Exception {
-        msSql = "SELECT MAX(num) "
-                + "FROM " + getSqlTable() + " "
-                + "WHERE ser = '" + msSeries + "' AND NOT b_del;";
-        try (ResultSet resultSet = session.getStatement().executeQuery(msSql)) {
-            if (resultSet.next()) {
-                mnNumber = resultSet.getInt(1) + 1;
+        if (!mbTemplate) {
+            msSql = "SELECT MAX(num) "
+                    + "FROM " + getSqlTable() + " "
+                    + "WHERE ser = '" + msSeries + "' AND NOT b_del;";
+            try (ResultSet resultSet = session.getStatement().executeQuery(msSql)) {
+                if (resultSet.next()) {
+                    mnNumber = resultSet.getInt(1) + 1;
+                }
             }
         }
     }
     
     private void computeChildDfr(final DGuiSession session) throws Exception {
-        boolean save = false;
+        if (!mbTemplate) {
+            boolean save = false;
 
-        if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_DPS_ST_NEW && mnAuxXmlTypeId != 0) {
-            moChildDfr = DTrnDfrUtils.createDfrFromBol(session, this, mnAuxXmlTypeId);
-            save = true;
-        }
+            if (!mbDeleted && mnFkBolStatusId == DModSysConsts.TS_DPS_ST_NEW && mnAuxXmlTypeId != 0) {
+                moChildDfr = DTrnDfrUtils.createDfrFromBol(session, this, mnAuxXmlTypeId);
+                save = true;
+            }
 
-        if (save) {
-            saveChildDfr(session, true);
+            if (save) {
+                saveChildDfr(session, true);
+            }
         }
     }
 
@@ -701,15 +705,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             bolMerchandise.save(session);
         }
         
-        // save as well child trucks:
-        
-        for (DDbBolTruck bolTruck : maChildTrucks) {
-            bolTruck.setPkBolId(mnPkBolId);
-            bolTruck.setRegistryNew(true);
-            bolTruck.save(session);
-        }
-        
-        // save as well child transport figures:
+        // save as well child transport figures (before saving trucks!):
         
         for (DDbBolTransportFigure bolTransportFigure : maChildTransportFigures) {
             bolTransportFigure.setPkBolId(mnPkBolId);
@@ -717,9 +713,31 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             bolTransportFigure.save(session);
         }
         
+        // save as well child trucks (after saving transport figures!):
+        
+        for (DDbBolTruck bolTruck : maChildTrucks) {
+            if (bolTruck.isBolUpdateOwnRegistry()) {
+                // update foreign keys to transport figures:
+                
+                DDbTruck truck = (DDbTruck) bolTruck.getOwnTruck();
+
+                int index = 0;
+                for (DDbBolTransportFigure bolTransportFigure : maChildTransportFigures) {
+                    truck.getChildTransportFigures().get(index).setFkTransportFigureId(bolTransportFigure.getFkTransportFigureId());
+                    index++;
+                }
+            }
+            
+            bolTruck.setPkBolId(mnPkBolId);
+            bolTruck.setRegistryNew(true);
+            bolTruck.save(session);
+        }
+        
         // aditional processing:
         
-        computeChildDfr(session);
+        if (!mbTemplate) {
+            computeChildDfr(session);
+        }
 
         // finish registry updating:
         
