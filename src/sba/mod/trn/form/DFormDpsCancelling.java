@@ -22,9 +22,11 @@ import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
 import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
+import sba.lib.gui.DGuiField;
 import sba.lib.gui.DGuiItem;
 import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
+import sba.lib.gui.bean.DBeanFieldBoolean;
 import sba.lib.gui.bean.DBeanFieldKey;
 import sba.lib.gui.bean.DBeanFieldRadio;
 import sba.lib.gui.bean.DBeanForm;
@@ -48,6 +50,7 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
     private Date mtOriginalDate;
     private DDbSysXmlSignatureProvider moXmlSignatureProvider;
     private DecimalFormat moAnnulReasonCodeFormat;
+    private boolean mbDisableAndCancelAllowed;
 
     /**
      * Creates new form DFormDpsCancelling
@@ -75,15 +78,18 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         moPanelDps = new sba.mod.trn.form.DPanelDps();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        moBoolOptionsEnabled = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel8 = new javax.swing.JPanel();
         moRadAnnulActionDisable = new sba.lib.gui.bean.DBeanFieldRadio();
         jPanel21 = new javax.swing.JPanel();
-        moRadAnnulActionDisableCancel = new sba.lib.gui.bean.DBeanFieldRadio();
+        moRadAnnulActionDisableAndCancel = new sba.lib.gui.bean.DBeanFieldRadio();
         jPanel3 = new javax.swing.JPanel();
         moBoolRetryCancel = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel1 = new javax.swing.JPanel();
         jlAnnulReasonCode = new javax.swing.JLabel();
         moKeyAnnulReasonCode = new sba.lib.gui.bean.DBeanFieldKey();
+        jlAnnulReasonCodeHelp = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jlAnnulRelatedUuid = new javax.swing.JLabel();
         moTextAnnulRelatedUuid = new sba.lib.gui.bean.DBeanFieldText();
@@ -99,7 +105,15 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de la cancelación:"));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel5.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolOptionsEnabled.setText("Habilitar opciones de anulación del comprobante");
+        moBoolOptionsEnabled.setPreferredSize(new java.awt.Dimension(600, 23));
+        jPanel7.add(moBoolOptionsEnabled);
+
+        jPanel5.add(jPanel7);
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -112,16 +126,16 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        bgAnnulAction.add(moRadAnnulActionDisableCancel);
-        moRadAnnulActionDisableCancel.setText("ANULAR y CANCELAR comprobante: tanto en el sistema como ante la autoridad");
-        moRadAnnulActionDisableCancel.setPreferredSize(new java.awt.Dimension(600, 23));
-        jPanel21.add(moRadAnnulActionDisableCancel);
+        bgAnnulAction.add(moRadAnnulActionDisableAndCancel);
+        moRadAnnulActionDisableAndCancel.setText("ANULAR y CANCELAR comprobante: tanto en el sistema como ante la autoridad (SAT)");
+        moRadAnnulActionDisableAndCancel.setPreferredSize(new java.awt.Dimension(600, 23));
+        jPanel21.add(moRadAnnulActionDisableAndCancel);
 
         jPanel5.add(jPanel21);
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolRetryCancel.setText("Reintentar cancelar nuevamente aún si el receptor rechazó la solicitud de cancelación anterior");
+        moBoolRetryCancel.setText("Reintentar cancelar nuevamente aunque el receptor haya rechazado la solicitud de cancelación anterior");
         moBoolRetryCancel.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel3.add(moBoolRetryCancel);
 
@@ -135,6 +149,11 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
 
         moKeyAnnulReasonCode.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel1.add(moKeyAnnulReasonCode);
+
+        jlAnnulReasonCodeHelp.setForeground(java.awt.Color.gray);
+        jlAnnulReasonCodeHelp.setText("(Motivo cancelación SAT.)");
+        jlAnnulReasonCodeHelp.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel1.add(jlAnnulReasonCodeHelp);
 
         jPanel5.add(jPanel1);
 
@@ -156,17 +175,47 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         getContentPane().add(jpContainer, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgAnnulAction;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JLabel jlAnnulReasonCode;
+    private javax.swing.JLabel jlAnnulReasonCodeHelp;
+    private javax.swing.JLabel jlAnnulRelatedUuid;
+    private javax.swing.JPanel jpContainer;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolOptionsEnabled;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRetryCancel;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyAnnulReasonCode;
+    private sba.mod.trn.form.DPanelDps moPanelDps;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadAnnulActionDisable;
+    private sba.lib.gui.bean.DBeanFieldRadio moRadAnnulActionDisableAndCancel;
+    private sba.lib.gui.bean.DBeanFieldText moTextAnnulRelatedUuid;
+    // End of variables declaration//GEN-END:variables
+
+    /*
+     * Private methods:
+     */
+    
     private void initComponentsCustom() {
         DGuiUtils.setWindowBounds(this, 640, 400);
 
+        moBoolOptionsEnabled.setBooleanSettings(moBoolOptionsEnabled.getText(), false);
         moRadAnnulActionDisable.setBooleanSettings(moRadAnnulActionDisable.getText(), false);
-        moRadAnnulActionDisableCancel.setBooleanSettings(moRadAnnulActionDisableCancel.getText(), false);
+        moRadAnnulActionDisableAndCancel.setBooleanSettings(moRadAnnulActionDisableAndCancel.getText(), false);
         moBoolRetryCancel.setBooleanSettings(moBoolRetryCancel.getText(), false);
         moKeyAnnulReasonCode.setKeySettings(miClient, DGuiUtils.getLabelName(jlAnnulReasonCode), true);
         moTextAnnulRelatedUuid.setTextSettings(DGuiUtils.getLabelName(jlAnnulRelatedUuid), DCfdVer4Consts.LEN_UUID, DCfdVer4Consts.LEN_UUID);
 
+        moFields.addField(moBoolOptionsEnabled);
         moFields.addField(moRadAnnulActionDisable);
-        moFields.addField(moRadAnnulActionDisableCancel);
+        moFields.addField(moRadAnnulActionDisableAndCancel);
         moFields.addField(moBoolRetryCancel);
         moFields.addField(moKeyAnnulReasonCode);
         moFields.addField(moTextAnnulRelatedUuid);
@@ -178,46 +227,92 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         
         moAnnulReasonCodeFormat = new DecimalFormat("00");
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup bgAnnulAction;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel21;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JLabel jlAnnulReasonCode;
-    private javax.swing.JLabel jlAnnulRelatedUuid;
-    private javax.swing.JPanel jpContainer;
-    private sba.lib.gui.bean.DBeanFieldBoolean moBoolRetryCancel;
-    private sba.lib.gui.bean.DBeanFieldKey moKeyAnnulReasonCode;
-    private sba.mod.trn.form.DPanelDps moPanelDps;
-    private sba.lib.gui.bean.DBeanFieldRadio moRadAnnulActionDisable;
-    private sba.lib.gui.bean.DBeanFieldRadio moRadAnnulActionDisableCancel;
-    private sba.lib.gui.bean.DBeanFieldText moTextAnnulRelatedUuid;
-    // End of variables declaration//GEN-END:variables
-
-    /*
-     * Private methods:
-     */
     
-    private void displayXmlSignatureProviderSettings() {
-        if (moDoc.getDfr() == null || moDoc.getDfr().getFkXmlStatusId() <= DModSysConsts.TS_XML_ST_PEN || !moXmlSignatureProvider.isCancellation()) {
-            moRadAnnulActionDisableCancel.setEnabled(false);
+    @Override
+    protected void windowActivated() {
+        if (!mbCanShowForm) {
+            miClient.showMsgBoxWarning(msCanShowFormMessage);
+            msCanShowFormMessage = "";
+            mbCanShowForm = true;
+            actionCancel();
         }
-        else {
-            moRadAnnulActionDisableCancel.setEnabled(true);
+        else if (mbFirstActivation) {
+            mbFirstActivation = false;
+
+            if (mnFormStatus == DGuiConsts.FORM_STATUS_READ) {
+                jbCancel.requestFocus();
+            }
+            else {
+                boolean focusRequested = false;
+                
+                if (moKeyAnnulReasonCode.isEnabled()) {
+                    moKeyAnnulReasonCode.requestFocusInWindow();
+                    focusRequested = true;
+                }
+                else if (moRadAnnulActionDisableAndCancel.isEnabled()) {
+                    moRadAnnulActionDisableAndCancel.requestFocusInWindow();
+                    focusRequested = true;
+                }
+                else if (moRadAnnulActionDisable.isEnabled()) {
+                    moRadAnnulActionDisable.requestFocusInWindow();
+                    focusRequested = true;
+                }
+                
+                if (!focusRequested) {
+                    for (DGuiField field : moFields.getFields()) {
+                        if (field.isFocusable()) {
+                            field.getComponent().requestFocusInWindow();
+                            focusRequested = true;
+                            break;
+                        }
+                    }
+
+                    if (!focusRequested) {
+                        if (jbEdit.isEnabled()) {
+                            jbEdit.requestFocusInWindow();
+                        }
+                        else {
+                            jbCancel.requestFocusInWindow();
+                        }
+                    }
+                }
+            }
         }
-        
-        moRadAnnulActionDisable.setSelected(true);
-        itemStateChangedDisableCancel();
     }
     
-    private void itemStateChangedDisableCancel() {
-        boolean isCancel = moRadAnnulActionDisableCancel.isSelected();
+    private void displayXmlSignatureProviderSettings() {
+        mbDisableAndCancelAllowed = moDoc.getDfr() != null && moDoc.getDfr().getFkXmlStatusId() == DModSysConsts.TS_XML_ST_ISS && moXmlSignatureProvider.isCancellation();
+        
+        moBoolOptionsEnabled.setEnabled(mbDisableAndCancelAllowed);
+        moBoolOptionsEnabled.setSelected(false);
+        itemStateChangedOptionsEnabled();
+        
+        jlAnnulReasonCode.setEnabled(mbDisableAndCancelAllowed);
+        jlAnnulRelatedUuid.setEnabled(mbDisableAndCancelAllowed);
+    }
+    
+    private void itemStateChangedOptionsEnabled() {
+        if (moBoolOptionsEnabled.isSelected() && mbDisableAndCancelAllowed) {
+            moRadAnnulActionDisableAndCancel.setEnabled(true);
+            moRadAnnulActionDisable.setEnabled(true);
+        }
+        else {
+            moRadAnnulActionDisableAndCancel.setEnabled(false);
+            moRadAnnulActionDisable.setEnabled(false);
+        }
+        
+        if (mbDisableAndCancelAllowed) {
+            moRadAnnulActionDisableAndCancel.setSelected(true);
+        }
+        else {
+            moRadAnnulActionDisable.setSelected(true);
+        }
+        
+        itemStateChangedDisableAndCancel();
+    }
+    
+    private void itemStateChangedDisableAndCancel() {
+        boolean isCancel = moRadAnnulActionDisableAndCancel.isSelected();
         
         moBoolRetryCancel.resetField();
         moBoolRetryCancel.setEnabled(isCancel);
@@ -239,15 +334,17 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
     
     @Override
     public void addAllListeners() {
+        moBoolOptionsEnabled.addItemListener(this);
         moRadAnnulActionDisable.addItemListener(this);
-        moRadAnnulActionDisableCancel.addItemListener(this);
+        moRadAnnulActionDisableAndCancel.addItemListener(this);
         moKeyAnnulReasonCode.addItemListener(this);
     }
 
     @Override
     public void removeAllListeners() {
+        moBoolOptionsEnabled.removeItemListener(this);
         moRadAnnulActionDisable.removeItemListener(this);
-        moRadAnnulActionDisableCancel.removeItemListener(this);
+        moRadAnnulActionDisableAndCancel.removeItemListener(this);
         moKeyAnnulReasonCode.removeItemListener(this);
     }
 
@@ -299,6 +396,12 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
     @Override
     public DGuiValidation validateForm() {
         DGuiValidation validation = moFields.validateFields();
+        
+        if (validation.isValid()) {
+            if (mbDisableAndCancelAllowed && moRadAnnulActionDisable.isSelected()) {
+                validation.setMessage("¿Está seguro que sólo desea anular el comprobante, pero NO cancelarlo ante la autoridad (SAT)?");
+            }
+        }
 
         return validation;
     }
@@ -327,7 +430,7 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         switch (type) {
             case DModConsts.TX_DFR_ANNUL_PARAMS:
                 value = new DTrnAnnulParams(
-                        moRadAnnulActionDisable.isSelected() ? DTrnEmissionConsts.ACTION_ANNUL : DTrnEmissionConsts.ACTION_ANNUL_CANCEL,
+                        moRadAnnulActionDisableAndCancel.isSelected() ? DTrnEmissionConsts.ACTION_ANNUL_CANCEL : DTrnEmissionConsts.ACTION_ANNUL,
                         moBoolRetryCancel.getValue(),
                         moKeyAnnulReasonCode.getSelectedIndex() <= 0 ? "" : moAnnulReasonCodeFormat.format(moKeyAnnulReasonCode.getValue()[0]),
                         moTextAnnulRelatedUuid.getValue(),
@@ -342,11 +445,18 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldRadio && e.getStateChange() == ItemEvent.SELECTED) {
+        if (e.getSource() instanceof DBeanFieldBoolean) {
+            DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
+            
+            if (field == moBoolOptionsEnabled) {
+                itemStateChangedOptionsEnabled();
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldRadio && e.getStateChange() == ItemEvent.SELECTED) {
             DBeanFieldRadio field = (DBeanFieldRadio) e.getSource();
             
-            if (field == moRadAnnulActionDisable || field == moRadAnnulActionDisableCancel) {
-                itemStateChangedDisableCancel();
+            if (field == moRadAnnulActionDisable || field == moRadAnnulActionDisableAndCancel) {
+                itemStateChangedDisableAndCancel();
             }
         }
         else if (e.getSource() instanceof DBeanFieldKey && e.getStateChange() == ItemEvent.SELECTED) {

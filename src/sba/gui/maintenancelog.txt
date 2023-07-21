@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 035.4
+2023-07-20/ Sergio Abraham FLORES GUTIÉRREZ
+1) Mejora a la cancelación de comprobantes, para no omitir la cancelación ante la autoridad (SAT) por descuido.
+
+================================================================================
 SBA 1.0 035.3
 2023-07-13/ Sergio Abraham FLORES GUTIÉRREZ
 1) Mejora del flujo de captura del diálogo de captura rápida de cartas porte.
