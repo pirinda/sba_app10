@@ -32,7 +32,7 @@ public class DViewLocation extends DGridPaneView implements ActionListener {
     }
 
     private void initComponentsCustom() {
-        setRowButtonsEnabled(false);
+
     }
 
     /*

@@ -115,7 +115,7 @@ public class DPickerCatalogHazardousMaterial extends DBeanFormDialog implements 
         
         moTextHazardousMaterialName.setTextSettings(DGuiUtils.getLabelName(jlHazardousMaterial), 100);
         moTextHazardousMaterialName.setTextCaseType(0);
-        moTextHazardousMaterialCode.setTextSettings(DGuiUtils.getLabelName(jlHazardousMaterial), DBolUtils.DEF_CODE_ADDRESS_STATE.length());
+        moTextHazardousMaterialCode.setTextSettings(DGuiUtils.getLabelName(jlHazardousMaterial), DFormBolUtils.DEF_CODE_ADDRESS_STATE.length());
         moTextHazardousMaterialCode.setTextCaseType(0);
         
         moFields.addField(moTextHazardousMaterialName);
@@ -211,7 +211,7 @@ public class DPickerCatalogHazardousMaterial extends DBeanFormDialog implements 
         try {
             if (maGridRows == null) {
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL, "", "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL, "", "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     maGridRows.add(new DLadCatalogHazardousMaterial(entry.getCode(), entry.getName()));
                 }

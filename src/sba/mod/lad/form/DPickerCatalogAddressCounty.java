@@ -177,7 +177,7 @@ public class DPickerCatalogAddressCounty extends DBeanFormDialog implements Acti
         
         moTextCountyName.setTextSettings(DGuiUtils.getLabelName(jlState), 100);
         moTextCountyName.setTextCaseType(0);
-        moTextCountyCode.setTextSettings(DGuiUtils.getLabelName(jlState), DBolUtils.DEF_CODE_ADDRESS_COUNTY.length());
+        moTextCountyCode.setTextSettings(DGuiUtils.getLabelName(jlState), DFormBolUtils.DEF_CODE_ADDRESS_COUNTY.length());
         moTextCountyCode.setTextCaseType(0);
         
         moFields.addField(moTextCountyName);
@@ -277,7 +277,7 @@ public class DPickerCatalogAddressCounty extends DBeanFormDialog implements Acti
                 moOldState = moState.clone();
                 
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MUN, DBolUtils.ATT_STATE, "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MUN, DFormBolUtils.ATT_STATE, "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     if (entry.getBelongingCode().equals(moState.Code)) {
                         maGridRows.add(new DLadCatalogAddressCounty(entry.getCode(), entry.getName()));

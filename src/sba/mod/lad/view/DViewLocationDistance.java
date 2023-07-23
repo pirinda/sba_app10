@@ -32,7 +32,7 @@ public class DViewLocationDistance extends DGridPaneView implements ActionListen
     }
 
     private void initComponentsCustom() {
-        setRowButtonsEnabled(false);
+
     }
 
     /*

@@ -147,7 +147,7 @@ public class DPickerCatalogAddressState extends DBeanFormDialog implements Actio
         
         moTextStateName.setTextSettings(DGuiUtils.getLabelName(jlState), 30);
         moTextStateName.setTextCaseType(0);
-        moTextStateCode.setTextSettings(DGuiUtils.getLabelName(jlState), DBolUtils.DEF_CODE_ADDRESS_STATE.length());
+        moTextStateCode.setTextSettings(DGuiUtils.getLabelName(jlState), DFormBolUtils.DEF_CODE_ADDRESS_STATE.length());
         moTextStateCode.setTextCaseType(0);
         
         moFields.addField(moTextStateName);
@@ -247,7 +247,7 @@ public class DPickerCatalogAddressState extends DBeanFormDialog implements Actio
                 moOldCountry = moCountry.clone();
                 
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EDO_40, DBolUtils.ATT_COUNTRY, "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EDO_40, DFormBolUtils.ATT_COUNTRY, "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     if (entry.getBelongingCode().equals(moCountry.Code)) {
                         maGridRows.add(new DLadCatalogAddressState(entry.getCode(), entry.getName()));

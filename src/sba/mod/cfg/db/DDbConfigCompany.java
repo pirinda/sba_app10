@@ -849,13 +849,14 @@ public class DDbConfigCompany extends DDbRegistryUser implements DGuiConfigCompa
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
+            mbUpdatable = true;
+            mbDisableable = false;
+            mbDeletable = false;
+            
             verifyRegistryNew(session);
         }
 
         if (mbRegistryNew) {
-            mbUpdatable = true;
-            mbDisableable = false;
-            mbDeletable = false;
             mbDisabled = false;
             mbDeleted = false;
             //mbSystem = false;

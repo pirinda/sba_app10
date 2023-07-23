@@ -56,7 +56,7 @@ import sba.mod.itm.db.DDbManufacturer;
 import sba.mod.lad.db.DLadCatalogConsts;
 import sba.mod.lad.db.DLadCatalogHazardousMaterial;
 import sba.mod.lad.db.DLadCatalogPackaging;
-import sba.mod.lad.form.DBolUtils;
+import sba.mod.lad.form.DFormBolUtils;
 import sba.mod.lad.form.DPickerCatalogHazardousMaterial;
 import sba.mod.lad.form.DPickerCatalogPackaging;
 import sba.mod.trn.db.DTrnUtils;
@@ -1249,7 +1249,7 @@ public class DFormItem extends DBeanForm implements ActionListener, ItemListener
             }
             
             try {
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(catalog, "", "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(catalog, "", "", null);
                 int id = xmlCatalog.getId(textCode.getValue(), "");
                 if (id != 0) {
                     textName.setText(xmlCatalog.getName(id));
@@ -1267,12 +1267,12 @@ public class DFormItem extends DBeanForm implements ActionListener, ItemListener
     }
     
     private void computeHazardousMaterialCode() {
-        computeCatalogCode(moTextHazardousMaterialCode, jtfHazardousMaterialName, DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL, 
-                DBolUtils.FormatCodeHazardousMaterial, DCfdi40Catalogs.XML_CCP_MAT_PEL);
+        computeCatalogCode(moTextHazardousMaterialCode, jtfHazardousMaterialName, DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL, 
+                DFormBolUtils.FormatCodeHazardousMaterial, DCfdi40Catalogs.XML_CCP_MAT_PEL);
     }
     
     private void computePackagingCode() {
-        computeCatalogCode(moTextPackagingCode, jtfPackagingName, DBolUtils.DEF_CODE_PACKAGING, 
+        computeCatalogCode(moTextPackagingCode, jtfPackagingName, DFormBolUtils.DEF_CODE_PACKAGING, 
                 null, DCfdi40Catalogs.XML_CCP_EMB_TP);
     }
     
@@ -1850,13 +1850,13 @@ public class DFormItem extends DBeanForm implements ActionListener, ItemListener
     }
 
     private void focusGainedHazardousMaterialCode() {
-        if (moTextHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+        if (moTextHazardousMaterialCode.getValue().equals(DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
             moTextHazardousMaterialCode.resetField();
         }
     }
     
     private void focusGainedPackagingCode() {
-        if (moTextPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+        if (moTextPackagingCode.getValue().equals(DFormBolUtils.DEF_CODE_PACKAGING)) {
             moTextPackagingCode.resetField();
         }
     }
@@ -2510,10 +2510,10 @@ public class DFormItem extends DBeanForm implements ActionListener, ItemListener
                 if (validation.isValid()) {
                     if (moBoolHazardousMaterial.isSelected() && moRadHazardousMaterialYes.isSelected()) {
                         try {
-                            DXmlCatalog xmlCatalogHazardousMaterial = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
-                            DXmlCatalog xmlCatalogPackaging = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
+                            DXmlCatalog xmlCatalogHazardousMaterial = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
+                            DXmlCatalog xmlCatalogPackaging = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
 
-                            if (moTextHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+                            if (moTextHazardousMaterialCode.getValue().equals(DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
                                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextHazardousMaterialCode.getFieldName() + "'.");
                                 validation.setComponent(moTextHazardousMaterialCode);
                             }
@@ -2521,7 +2521,7 @@ public class DFormItem extends DBeanForm implements ActionListener, ItemListener
                                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextHazardousMaterialCode.getFieldName() + "'.");
                                 validation.setComponent(moTextHazardousMaterialCode);
                             }
-                            else if (moTextPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+                            else if (moTextPackagingCode.getValue().equals(DFormBolUtils.DEF_CODE_PACKAGING)) {
                                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextPackagingCode.getFieldName() + "'.");
                                 validation.setComponent(moTextPackagingCode);
                             }

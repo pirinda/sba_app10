@@ -36,6 +36,9 @@ public class DDbLocationDistance extends DDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
+    protected int mnOldPkLocationSourceId;
+    protected int mnOldPkLocationDestinyId;
+    
     public DDbLocationDistance() {
         super(DModConsts.LU_LOC_DIST);
         initRegistry();
@@ -68,6 +71,10 @@ public class DDbLocationDistance extends DDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
+    
+    private boolean isPrimaryKeyChanged() {
+        return (mnOldPkLocationSourceId != 0 && mnOldPkLocationDestinyId != 0) && (mnPkLocationSourceId != mnOldPkLocationSourceId || mnPkLocationDestinyId != mnOldPkLocationDestinyId);
+    }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -97,6 +104,9 @@ public class DDbLocationDistance extends DDbRegistryUser {
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        mnOldPkLocationSourceId = 0;
+        mnOldPkLocationDestinyId = 0;
     }
 
     @Override
@@ -108,6 +118,11 @@ public class DDbLocationDistance extends DDbRegistryUser {
     public String getSqlWhere() {
         return "WHERE id_loc_src = " + mnPkLocationSourceId + " "
                 + "AND id_loc_des = " + mnPkLocationDestinyId + " ";
+    }
+
+    private String getOldPrimaryKeySqlWhere() {
+        return "WHERE id_loc_src = " + mnOldPkLocationSourceId + " "
+                + "AND id_loc_des = " + mnOldPkLocationDestinyId + " ";
     }
 
     @Override
@@ -148,6 +163,9 @@ public class DDbLocationDistance extends DDbRegistryUser {
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+            
+            mnOldPkLocationSourceId = mnPkLocationSourceId;
+            mnOldPkLocationDestinyId = mnPkLocationDestinyId;
 
             mbRegistryNew = false;
         }
@@ -161,13 +179,14 @@ public class DDbLocationDistance extends DDbRegistryUser {
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
+            mbUpdatable = true;
+            mbDisableable = true;
+            mbDeletable = true;
+            
             verifyRegistryNew(session);
         }
 
         if (mbRegistryNew) {
-            mbUpdatable = true;
-            mbDisableable = true;
-            mbDeletable = true;
             mbDisabled = false;
             mbDeleted = false;
             //mbSystem = false;
@@ -194,8 +213,8 @@ public class DDbLocationDistance extends DDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_loc_src = " + mnPkLocationSourceId + ", " +
-                    //"id_loc_des = " + mnPkLocationDestinyId + ", " +
+                    "id_loc_src = " + mnPkLocationSourceId + ", " + // allow change of primary key!
+                    "id_loc_des = " + mnPkLocationDestinyId + ", " + // allow change of primary key!
                     "dist_km = " + mdDistanceKm + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -207,7 +226,7 @@ public class DDbLocationDistance extends DDbRegistryUser {
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
-                    getSqlWhere();
+                    (isPrimaryKeyChanged() ? getOldPrimaryKeySqlWhere() : getSqlWhere());
         }
 
         session.getStatement().execute(msSql);
@@ -233,6 +252,9 @@ public class DDbLocationDistance extends DDbRegistryUser {
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
+        registry.mnOldPkLocationSourceId = this.mnOldPkLocationSourceId;
+        registry.mnOldPkLocationDestinyId = this.mnOldPkLocationDestinyId;
+        
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }

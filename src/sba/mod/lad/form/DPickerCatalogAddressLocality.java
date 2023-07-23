@@ -207,7 +207,7 @@ public class DPickerCatalogAddressLocality extends DBeanFormDialog implements Ac
         
         moTextLocalityName.setTextSettings(DGuiUtils.getLabelName(jlState), 100);
         moTextLocalityName.setTextCaseType(0);
-        moTextLocalityCode.setTextSettings(DGuiUtils.getLabelName(jlState), DBolUtils.DEF_CODE_ADDRESS_LOCALITY.length());
+        moTextLocalityCode.setTextSettings(DGuiUtils.getLabelName(jlState), DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY.length());
         moTextLocalityCode.setTextCaseType(0);
         
         moFields.addField(moTextLocalityName);
@@ -307,7 +307,7 @@ public class DPickerCatalogAddressLocality extends DBeanFormDialog implements Ac
                 moOldState = moState.clone();
                 
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_LOC, DBolUtils.ATT_STATE, "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_LOC, DFormBolUtils.ATT_STATE, "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     if (entry.getBelongingCode().equals(moState.Code)) {
                         maGridRows.add(new DLadCatalogAddressLocality(entry.getCode(), entry.getName()));

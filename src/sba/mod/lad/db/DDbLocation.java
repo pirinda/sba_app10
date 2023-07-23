@@ -17,7 +17,7 @@ import sba.lib.db.DDbRegistryUser;
 import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
-import sba.mod.lad.form.DBolUtils;
+import sba.mod.lad.form.DFormBolUtils;
 
 /**
  *
@@ -170,7 +170,7 @@ public class DDbLocation extends DDbRegistryUser {
     }
     
     public void sanitize() {
-        msCode = DBolUtils.FormatCodeLocation.format(DLibUtils.parseInt(msCode));
+        msCode = DFormBolUtils.FormatCodeLocation.format(DLibUtils.parseInt(msCode));
         msCodeSource = "";
         msCodeDestiny = "";
         

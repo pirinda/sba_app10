@@ -144,7 +144,7 @@ public class DPickerElement extends DBeanFormDialog implements ActionListener, I
         moKeyFilter.setKeySettings(miClient, DGuiUtils.getLabelName(jlFilter), true);
         moTextElementName.setTextSettings(DGuiUtils.getLabelName(jlElement), 100);
         moTextElementName.setTextCaseType(0);
-        moTextElementCode.setTextSettings(DGuiUtils.getLabelName(jlElement), DBolUtils.DEF_CODE_ADDRESS_STATE.length());
+        moTextElementCode.setTextSettings(DGuiUtils.getLabelName(jlElement), DFormBolUtils.DEF_CODE_ADDRESS_STATE.length());
         moTextElementCode.setTextCaseType(0);
         
         moFields.addField(moKeyFilter);

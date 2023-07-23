@@ -253,7 +253,7 @@ public class DPickerCatalogAddressDistrict extends DBeanFormDialog implements Ac
         
         moTextDistrictName.setTextSettings(DGuiUtils.getLabelName(jlState), 100);
         moTextDistrictName.setTextCaseType(0);
-        moTextDistrictCode.setTextSettings(DGuiUtils.getLabelName(jlState), DBolUtils.DEF_CODE_ADDRESS_DISTRICT.length());
+        moTextDistrictCode.setTextSettings(DGuiUtils.getLabelName(jlState), DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT.length());
         moTextDistrictCode.setTextCaseType(0);
         
         moFields.addField(moTextDistrictName);
@@ -354,7 +354,7 @@ public class DPickerCatalogAddressDistrict extends DBeanFormDialog implements Ac
                 
                 maGridRows = new ArrayList<>();
                 boolean found = false;
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_COL + "_" + DLibUtils.textLeft(msZipCode, 1), DBolUtils.ATT_ZIP, "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_COL + "_" + DLibUtils.textLeft(msZipCode, 1), DFormBolUtils.ATT_ZIP, "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     if (entry.getBelongingCode().equals(msZipCode)) {
                         found = true;

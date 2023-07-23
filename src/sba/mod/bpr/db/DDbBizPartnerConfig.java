@@ -260,13 +260,14 @@ public class DDbBizPartnerConfig extends DDbRegistryUser {
         mnQueryResultId = DDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
+            mbUpdatable = true;
+            mbDisableable = true;
+            mbDeletable = true;
+            
             verifyRegistryNew(session);
         }
 
         if (mbRegistryNew) {
-            mbUpdatable = true;
-            mbDisableable = true;
-            mbDeletable = true;
             mbDisabled = false;
             mbDeleted = false;
             //mbSystem = false;

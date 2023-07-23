@@ -40,6 +40,11 @@ import sba.mod.lad.db.DDbTruckTrailer;
 import sba.mod.lad.db.DDbTruckTransportFigure;
 import sba.mod.lad.db.DDbTruckTransportFigureTransportPart;
 import sba.mod.lad.form.DFormBol;
+import sba.mod.lad.form.DFormLocation;
+import sba.mod.lad.form.DFormLocationDistance;
+import sba.mod.lad.form.DFormTrailer;
+import sba.mod.lad.form.DFormTransportFigure;
+import sba.mod.lad.form.DFormTruck;
 import sba.mod.lad.view.DViewBol;
 import sba.mod.lad.view.DViewBolMerchandise;
 import sba.mod.lad.view.DViewLocation;
@@ -68,6 +73,11 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
     private JMenu mjRep;
     private JMenuItem mjRepBolMerchandise;
 
+    private DFormLocation moFormLocation;
+    private DFormLocationDistance moFormLocationDistance;
+    private DFormTransportFigure moformTptFigure;
+    private DFormTrailer moformTrailer;
+    private DFormTruck moformTruck;
     private DFormBol moFormBolReal;
     private DFormBol moFormBolTemplate;
 
@@ -386,14 +396,24 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.LS_TPT_PART_TP:
                 break;
             case DModConsts.LU_LOC:
+                if (moFormLocation == null) moFormLocation = new DFormLocation(miClient, "Ubicación");
+                form = moFormLocation;
                 break;
             case DModConsts.LU_LOC_DIST:
+                if (moFormLocationDistance == null) moFormLocationDistance = new DFormLocationDistance(miClient, "Distancia entre ubicaciones");
+                form = moFormLocationDistance;
                 break;
             case DModConsts.LU_TPT_FIGURE:
+                if (moformTptFigure == null) moformTptFigure = new DFormTransportFigure(miClient, "Figura del transporte");
+                form = moformTptFigure;
                 break;
             case DModConsts.LU_TRAIL:
+                if (moformTrailer == null) moformTrailer = new DFormTrailer(miClient, "Remolque");
+                form = moformTrailer;
                 break;
             case DModConsts.LU_TRUCK:
+                if (moformTruck == null) moformTruck = new DFormTruck(miClient, "Autotransporte");
+                form = moformTruck;
                 break;
             case DModConsts.LU_TRUCK_TRAIL:
                 break;

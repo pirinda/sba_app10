@@ -19,7 +19,10 @@ import sba.lib.grid.DGridColumnForm;
 import sba.lib.grid.DGridConsts;
 import sba.lib.grid.DGridPaneForm;
 import sba.lib.gui.DGuiClient;
+import sba.lib.gui.DGuiField;
 import sba.lib.gui.DGuiSession;
+import sba.lib.gui.bean.DBeanFieldKey;
+import sba.lib.gui.bean.DBeanFieldText;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.itm.db.DDbItem;
@@ -41,7 +44,7 @@ import sba.mod.lad.db.DDbTruck;
  *
  * @author Sergio Flores
  */
-public abstract class DBolUtils {
+public abstract class DFormBolUtils {
     
     public static final String NA = "ND"; // not available
     
@@ -91,6 +94,69 @@ public abstract class DBolUtils {
         return xmlCatalog;
     }
 
+    public static void computeCatalogCode(final DBeanFieldText textCode, final DBeanFieldText textName, final String defaultCode, final DecimalFormat formatCode, 
+            final String catalog, final boolean appendFirstCharCodeToCatalog, final DGuiField fieldFilter, final String attributeFilter) {
+        if (textCode.getValue().isEmpty()) {
+            // clear code & name:
+            textCode.setValue(defaultCode);
+            textName.resetField();
+        }
+        else {
+            if (formatCode != null) {
+                textCode.setValue(formatCode.format(DLibUtils.parseInt(textCode.getValue())));
+            }
+            else {
+                textCode.setValue(textCode.getValue().toUpperCase());
+            }
+            
+            String filter = "";
+            boolean missingFilter = false;
+            
+            if (fieldFilter != null) {
+                if (fieldFilter instanceof DBeanFieldText) {
+                    if (!((DBeanFieldText) fieldFilter).getValue().isEmpty()) {
+                        filter = ((DBeanFieldText) fieldFilter).getValue();
+                    }
+                    else {
+                        missingFilter = true;
+                    }
+                }
+                else if (fieldFilter instanceof DBeanFieldKey) {
+                    if (((DBeanFieldKey) fieldFilter).getSelectedIndex() > 0) {
+                        filter = ((DBeanFieldKey) fieldFilter).getSelectedItem().getCode();
+                    }
+                    else {
+                        missingFilter = true;
+                    }
+                }
+            }
+            
+            if (missingFilter) {
+                textName.setValue("(" + DUtilConsts.TXT_SELECT + " " + fieldFilter.getFieldName() + ")");
+            }
+            else {
+                try {
+                    String catalogName = catalog;
+                    if (appendFirstCharCodeToCatalog) {
+                        catalogName += "_" + DLibUtils.textLeft(filter, 1);
+                    }
+                    
+                    DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(catalogName, attributeFilter, "", null);
+                    int id = xmlCatalog.getId(textCode.getValue(), filter);
+                    if (id != 0) {
+                        textName.setValue(xmlCatalog.getName(id));
+                    }
+                    else {
+                        textName.setValue("(" + DLibUtils.textProperCase(textName.getFieldName()) + " " + DUtilConsts.TXT_UNKNOWN.toLowerCase() + ")");
+                    }
+                }
+                catch (Exception e) {
+                    DLibUtils.showException(DFormBolUtils.class.getName(), e);
+                }
+            }
+        }
+    }
+    
     /**
      * Check if contry code equals MEX, USA or CAN.
      * @param countryCode Country code.
@@ -365,6 +431,7 @@ public abstract class DBolUtils {
         
         return grid;
     }
+    
     /**
      * Get next code for desired table.
      * @param session GUI session.

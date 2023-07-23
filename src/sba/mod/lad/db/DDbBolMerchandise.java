@@ -18,7 +18,7 @@ import sba.lib.gui.DGuiSession;
 import sba.mod.DModConsts;
 import sba.mod.itm.db.DDbItem;
 import sba.mod.itm.db.DDbUnit;
-import sba.mod.lad.form.DBolUtils;
+import sba.mod.lad.form.DFormBolUtils;
 
 /**
  *
@@ -207,10 +207,10 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         int n4 = DLibUtils.parseInt(section4);
         
         if (n1 != 0 && n2 != 0 && n3 != 0 && n4 != 0) {
-            importRequest = DBolUtils.FormatSegmentImportRequest1.format(DLibUtils.parseInt(section1)) + SEPARATOR_IMP_REQ +
-                    DBolUtils.FormatSegmentImportRequest2.format(DLibUtils.parseInt(section2)) + SEPARATOR_IMP_REQ +
-                    DBolUtils.FormatSegmentImportRequest3.format(DLibUtils.parseInt(section3)) + SEPARATOR_IMP_REQ +
-                    DBolUtils.FormatSegmentImportRequest4.format(DLibUtils.parseInt(section4));
+            importRequest = DFormBolUtils.FormatSegmentImportRequest1.format(DLibUtils.parseInt(section1)) + SEPARATOR_IMP_REQ +
+                    DFormBolUtils.FormatSegmentImportRequest2.format(DLibUtils.parseInt(section2)) + SEPARATOR_IMP_REQ +
+                    DFormBolUtils.FormatSegmentImportRequest3.format(DLibUtils.parseInt(section3)) + SEPARATOR_IMP_REQ +
+                    DFormBolUtils.FormatSegmentImportRequest4.format(DLibUtils.parseInt(section4));
         }
         
         return importRequest;
@@ -593,10 +593,10 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
         public String Section4;
         
         public ImporRequest(final String section1, final String section2, final String section3, final String section4) {
-            Section1 = DBolUtils.FormatSegmentImportRequest1.format(DLibUtils.parseInt(section1));
-            Section2 = DBolUtils.FormatSegmentImportRequest2.format(DLibUtils.parseInt(section2));
-            Section3 = DBolUtils.FormatSegmentImportRequest3.format(DLibUtils.parseInt(section3));
-            Section4 = DBolUtils.FormatSegmentImportRequest4.format(DLibUtils.parseInt(section4));
+            Section1 = DFormBolUtils.FormatSegmentImportRequest1.format(DLibUtils.parseInt(section1));
+            Section2 = DFormBolUtils.FormatSegmentImportRequest2.format(DLibUtils.parseInt(section2));
+            Section3 = DFormBolUtils.FormatSegmentImportRequest3.format(DLibUtils.parseInt(section3));
+            Section4 = DFormBolUtils.FormatSegmentImportRequest4.format(DLibUtils.parseInt(section4));
         }
         
         /**

@@ -32,7 +32,7 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
     }
 
     private void initComponentsCustom() {
-        setRowButtonsEnabled(false);
+
     }
 
     /*

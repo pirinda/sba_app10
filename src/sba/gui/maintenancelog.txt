@@ -1,4 +1,14 @@
 ================================================================================
+SBA 1.0 035.5
+2023-07-22/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de catálogo ubicaciones.
+2) Implementación de catálogo distancias entre ubicaciones.
+3) Implementación de catálogo figuras del transporte.
+4) Implementación de catálogo autotransportes.
+5) Implementación de catálogo remolques.
+6) Correcciones menores en forma de captura cartas porte.
+
+================================================================================
 SBA 1.0 035.4
 2023-07-20/ Sergio Abraham FLORES GUTIÉRREZ
 1) Mejora a la cancelación de comprobantes, para no omitir la cancelación ante la autoridad (SAT) por descuido.

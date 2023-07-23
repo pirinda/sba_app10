@@ -17,7 +17,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -40,7 +39,6 @@ import sba.lib.grid.DGridPaneForm;
 import sba.lib.grid.DGridRow;
 import sba.lib.gui.DGuiClient;
 import sba.lib.gui.DGuiConsts;
-import sba.lib.gui.DGuiField;
 import sba.lib.gui.DGuiFields;
 import sba.lib.gui.DGuiItem;
 import sba.lib.gui.DGuiParams;
@@ -2289,6 +2287,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTptFigGetNextCode.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTptFigInput13.add(jbTptFigGetNextCode);
 
+        jlTptFigMail.setForeground(new java.awt.Color(0, 102, 102));
         jlTptFigMail.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlTptFigMail.setText("Mail:");
         jlTptFigMail.setPreferredSize(new java.awt.Dimension(40, 23));
@@ -3253,7 +3252,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextLocCode.setTextSettings(DGuiUtils.getLabelName(jlLocCode), 6, 6);
         moDatetimeLocArrivalDepartureDatetime.setDateSettings(miClient, DGuiUtils.getLabelName(jlLocArrivalDepartureDatetime), true);
         moKeyLocSourceLocation.setKeySettings(miClient, DGuiUtils.getLabelName(jlLocSourceLocation), true);
-        moDecLocDistanceKm.setDecimalSettings(DGuiUtils.getLabelName(jlLocDistanceKm), DGuiConsts.GUI_TYPE_DEC, mbCanShowForm);
+        moDecLocDistanceKm.setDecimalSettings(DGuiUtils.getLabelName(jlLocDistanceKm), DGuiConsts.GUI_TYPE_DEC, true);
         moDecLocDistanceKm.setDecimalFormat(DLibUtils.DecimalFormatValue2D);
         moBoolLocUpdate.setBooleanSettings(moBoolLocUpdate.getText(), false);
         
@@ -3334,16 +3333,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextMerchPackagingName.setTextSettings(DGuiUtils.getLabelName(jlMerchPackaging) + ": " + moTextMerchPackagingName.getToolTipText(), 100, 0);
         moTextMerchTariff.setTextSettings(DGuiUtils.getLabelName(jlMerchTariff), 10);
         moIntMerchImportRequest1.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest1.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
-        moIntMerchImportRequest1.setIntegerFormat(DBolUtils.FormatSegmentImportRequest1);
+        moIntMerchImportRequest1.setIntegerFormat(DFormBolUtils.FormatSegmentImportRequest1);
         moIntMerchImportRequest1.setMaxInteger(99); // 2 digits!
         moIntMerchImportRequest2.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest2.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
-        moIntMerchImportRequest2.setIntegerFormat(DBolUtils.FormatSegmentImportRequest2);
+        moIntMerchImportRequest2.setIntegerFormat(DFormBolUtils.FormatSegmentImportRequest2);
         moIntMerchImportRequest2.setMaxInteger(99); // 2 digits!
         moIntMerchImportRequest3.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest3.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
-        moIntMerchImportRequest3.setIntegerFormat(DBolUtils.FormatSegmentImportRequest3);
+        moIntMerchImportRequest3.setIntegerFormat(DFormBolUtils.FormatSegmentImportRequest3);
         moIntMerchImportRequest3.setMaxInteger(9999); // 4 digits!
         moIntMerchImportRequest4.setIntegerSettings(DGuiUtils.getLabelName(jlMerchImportRequest) + ": " + moIntMerchImportRequest4.getToolTipText(), DGuiConsts.GUI_TYPE_INT_RAW, true);
-        moIntMerchImportRequest4.setIntegerFormat(DBolUtils.FormatSegmentImportRequest4);
+        moIntMerchImportRequest4.setIntegerFormat(DFormBolUtils.FormatSegmentImportRequest4);
         moIntMerchImportRequest4.setMaxInteger(9999999); // 7 digits!
         
         moKeyMerchMoveSource.setKeySettings(miClient, DGuiUtils.getLabelName(jlMerchMoveSource), true);
@@ -3449,6 +3448,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextTptFigName.setTextSettings(DGuiUtils.getLabelName(jlTptFigName), 200);
         moTextTptFigCode.setTextSettings(DGuiUtils.getLabelName(jlTptFigCode), 10);
         moTextTptFigMail.setTextSettings(DGuiUtils.getLabelName(jlTptFigMail), 100, 0);
+        moTextTptFigMail.setTextCaseType(0);
         moTextTptFigFiscalId.setTextSettings(DGuiUtils.getLabelName(jlTptFigFiscalId), 14, 13);
         moTextTptFigDriverLicense.setTextSettings(DGuiUtils.getLabelName(jlTptFigDriverLicense), 16);
         moKeyTptFigFigureCountry.setKeySettings(miClient, DGuiUtils.getLabelName(jlTptFigFigureCountry), false);
@@ -3511,7 +3511,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moFieldsTptFigureTptPart.setFormButton(jbTptFigTptPartOk);
         
         try {
-            maBolSeries = DBolUtils.getBolSeries(miClient.getSession(), (String) miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] {DModSysConsts.LS_TPT_TP_TRUCK}, DDbRegistry.FIELD_CODE));
+            maBolSeries = DFormBolUtils.getBolSeries(miClient.getSession(), (String) miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] {DModSysConsts.LS_TPT_TP_TRUCK}, DDbRegistry.FIELD_CODE));
 
             moXmlTruckTransportConfig = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_CFG_AUTO, "xml/" + DCfdi40Catalogs.XML_CCP_CFG_AUTO + DXmlCatalog.XmlFileExt, false, "", "", new String[] { "trailer" });
             moXmlTruckPermissionType = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_PERM_TP, "xml/" + DCfdi40Catalogs.XML_CCP_PERM_TP + DXmlCatalog.XmlFileExt, false);
@@ -3521,31 +3521,31 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moXmlTruckPermissionType.populateCatalog(moKeyTruckPermissionType);
             moXmlTruckTrailerSubtype.populateCatalog((moKeyTruckTrailSubtype));
             
-            mnBolWeightUnitId = DBolUtils.getWeightUnitId(miClient.getSession());
+            mnBolWeightUnitId = DFormBolUtils.getWeightUnitId(miClient.getSession());
         }
         catch (Exception e) {
             DLibUtils.showException(this, e);
         }
         
-        moGridLocations = DBolUtils.createGridLocations(miClient, this);
+        moGridLocations = DFormBolUtils.createGridLocations(miClient, this);
         jpWizardLoc.add(moGridLocations, BorderLayout.CENTER);
         
-        moGridMerchandises = DBolUtils.createGridMerchandises(miClient, this);
+        moGridMerchandises = DFormBolUtils.createGridMerchandises(miClient, this);
         jpWizardMerch.add(moGridMerchandises, BorderLayout.CENTER);
         
-        moGridMerchandisesMoves = DBolUtils.createGridMerchandisesMoves(miClient, this);
+        moGridMerchandisesMoves = DFormBolUtils.createGridMerchandisesMoves(miClient, this);
         jpMerchMoveGrid.add(moGridMerchandisesMoves, BorderLayout.CENTER);
         
-        moGridTrucks = DBolUtils.createGridTrucks(miClient, this);
+        moGridTrucks = DFormBolUtils.createGridTrucks(miClient, this);
         jpWizardTruck.add(moGridTrucks, BorderLayout.CENTER);
         
-        moGridTrucksTrailers = DBolUtils.createGridTrucksTrailers(miClient, this);
+        moGridTrucksTrailers = DFormBolUtils.createGridTrucksTrailers(miClient, this);
         jpTruckTrailGrid.add(moGridTrucksTrailers, BorderLayout.CENTER);
         
-        moGridTptFigures = DBolUtils.createGridTptFigures(miClient, this);
+        moGridTptFigures = DFormBolUtils.createGridTptFigures(miClient, this);
         jpWizardTptFigure.add(moGridTptFigures, BorderLayout.CENTER);
         
-        moGridTptFiguresTptParts = DBolUtils.createGridTptFiguresTptParts(miClient, this);
+        moGridTptFiguresTptParts = DFormBolUtils.createGridTptFiguresTptParts(miClient, this);
         jpTptFigTptPartGrid.add(moGridTptFiguresTptParts, BorderLayout.CENTER);
     }
 
@@ -3598,69 +3598,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 
                 renderGridRows.invoke(this);
                 grid.setSelectedGridRow(index);
-            }
-        }
-    }
-    
-    private void computeCatalogCode(final DBeanFieldText textCode, final DBeanFieldText textName, final String defaultCode, final DecimalFormat formatCode, 
-            final String catalog, final boolean appendFirstCharCodeToCatalog, final DGuiField fieldFilter, final String attributeFilter) {
-        if (textCode.getValue().isEmpty()) {
-            // clear code & name:
-            textCode.setValue(defaultCode);
-            textName.resetField();
-        }
-        else {
-            if (formatCode != null) {
-                textCode.setValue(formatCode.format(DLibUtils.parseInt(textCode.getValue())));
-            }
-            else {
-                textCode.setValue(textCode.getValue().toUpperCase());
-            }
-            
-            String filter = "";
-            boolean missingFilter = false;
-            
-            if (fieldFilter != null) {
-                if (fieldFilter instanceof DBeanFieldText) {
-                    if (!((DBeanFieldText) fieldFilter).getValue().isEmpty()) {
-                        filter = ((DBeanFieldText) fieldFilter).getValue();
-                    }
-                    else {
-                        missingFilter = true;
-                    }
-                }
-                else if (fieldFilter instanceof DBeanFieldKey) {
-                    if (((DBeanFieldKey) fieldFilter).getSelectedIndex() > 0) {
-                        filter = ((DBeanFieldKey) fieldFilter).getSelectedItem().getCode();
-                    }
-                    else {
-                        missingFilter = true;
-                    }
-                }
-            }
-            
-            if (missingFilter) {
-                textName.setValue("(" + DUtilConsts.TXT_SELECT + " " + fieldFilter.getFieldName() + ")");
-            }
-            else {
-                try {
-                    String catalogName = catalog;
-                    if (appendFirstCharCodeToCatalog) {
-                        catalogName += "_" + DLibUtils.textLeft(filter, 1);
-                    }
-                    
-                    DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(catalogName, attributeFilter, "", null);
-                    int id = xmlCatalog.getId(textCode.getValue(), filter);
-                    if (id != 0) {
-                        textName.setValue(xmlCatalog.getName(id));
-                    }
-                    else {
-                        textName.setValue("(" + DLibUtils.textProperCase(textName.getFieldName()) + " " + DUtilConsts.TXT_UNKNOWN.toLowerCase() + ")");
-                    }
-                }
-                catch (Exception e) {
-                    DLibUtils.showException(this, e);
-                }
             }
         }
     }
@@ -4202,7 +4139,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moBolLocation == null) {
             moFieldsLocation.resetFields();
             
-            moTextLocCode.setValue(DBolUtils.DEF_CODE_LOCATION);
+            moTextLocCode.setValue(DFormBolUtils.DEF_CODE_LOCATION);
             
             jtfLocLocationId.setText("");
             
@@ -4375,7 +4312,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     
     private void computeLocCode() {
         // format location code:
-        moTextLocCode.setValue(DBolUtils.FormatCodeLocation.format(DLibUtils.parseInt(moTextLocCode.getValue())));
+        moTextLocCode.setValue(DFormBolUtils.FormatCodeLocation.format(DLibUtils.parseInt(moTextLocCode.getValue())));
         
         // compose location ID:
         if (moKeyLocLocationType.getSelectedIndex() <= 0) {
@@ -4388,23 +4325,23 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void computeLocAddressStateCode() {
-        computeCatalogCode(moTextLocAddressStateCode, moTextLocAddressStateName, DBolUtils.DEF_CODE_ADDRESS_STATE, 
-                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyLocAddressCountry, DBolUtils.ATT_COUNTRY);
+        DFormBolUtils.computeCatalogCode(moTextLocAddressStateCode, moTextLocAddressStateName, DFormBolUtils.DEF_CODE_ADDRESS_STATE, 
+                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyLocAddressCountry, DFormBolUtils.ATT_COUNTRY);
     }
     
     private void computeLocAddressCountyCode() {
-        computeCatalogCode(moTextLocAddressCountyCode, moTextLocAddressCountyName, DBolUtils.DEF_CODE_ADDRESS_COUNTY, 
-                DBolUtils.FormatCodeAddressCounty, DCfdi40Catalogs.XML_CCP_MUN, false, moTextLocAddressStateCode, DBolUtils.ATT_STATE);
+        DFormBolUtils.computeCatalogCode(moTextLocAddressCountyCode, moTextLocAddressCountyName, DFormBolUtils.DEF_CODE_ADDRESS_COUNTY, 
+                DFormBolUtils.FormatCodeAddressCounty, DCfdi40Catalogs.XML_CCP_MUN, false, moTextLocAddressStateCode, DFormBolUtils.ATT_STATE);
     }
 
     private void computeLocAddressLocalityCode() {
-        computeCatalogCode(moTextLocAddressLocalityCode, moTextLocAddressLocalityName, DBolUtils.DEF_CODE_ADDRESS_LOCALITY, 
-                DBolUtils.FormatCodeAddressLocality, DCfdi40Catalogs.XML_CCP_LOC, false, moTextLocAddressStateCode, DBolUtils.ATT_STATE);
+        DFormBolUtils.computeCatalogCode(moTextLocAddressLocalityCode, moTextLocAddressLocalityName, DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY, 
+                DFormBolUtils.FormatCodeAddressLocality, DCfdi40Catalogs.XML_CCP_LOC, false, moTextLocAddressStateCode, DFormBolUtils.ATT_STATE);
     }
 
     private void computeLocAddressDistrictCode() {
-        computeCatalogCode(moTextLocAddressDistrictCode, moTextLocAddressDistrictName, DBolUtils.DEF_CODE_ADDRESS_DISTRICT, 
-                DBolUtils.FormatCodeAddressDistrict, DCfdi40Catalogs.XML_CCP_COL, true, moTextLocAddressZipCode, DBolUtils.ATT_ZIP);
+        DFormBolUtils.computeCatalogCode(moTextLocAddressDistrictCode, moTextLocAddressDistrictName, DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT, 
+                DFormBolUtils.FormatCodeAddressDistrict, DCfdi40Catalogs.XML_CCP_COL, true, moTextLocAddressZipCode, DFormBolUtils.ATT_ZIP);
     }
 
     @SuppressWarnings("unchecked")
@@ -4434,9 +4371,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     
     private void actionPerformedLocGetNextCode() {
         try {
-            if (moTextLocCode.getValue().equals(DBolUtils.DEF_CODE_LOCATION) || 
+            if (moTextLocCode.getValue().equals(DFormBolUtils.DEF_CODE_LOCATION) || 
                     miClient.showMsgBoxConfirm("¿Está seguro que desea obtener el siguiente código para el campo '" + DGuiUtils.getLabelName(jlLocCode) + "'?") == JOptionPane.YES_OPTION) {
-                int nextCode = DBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_LOC, moKeyLocLocationType.getValue()[0]);
+                int nextCode = DFormBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_LOC, moKeyLocLocationType.getValue()[0]);
                 moTextLocCode.setValue("" + nextCode);
                 moTextLocCode.requestFocusInWindow();
                 computeLocCode();
@@ -4514,11 +4451,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsLocation.validateFields();
         
         if (validation.isValid()) {
-            if (moTextLocCode.getValue().equals(DBolUtils.DEF_CODE_LOCATION)) {
+            if (moTextLocCode.getValue().equals(DFormBolUtils.DEF_CODE_LOCATION)) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextLocCode.getFieldName() + "'.");
                 validation.setComponent(moTextLocCode);
             }
-            else if (moTextLocAddressStateCode.isEnabled() && moTextLocAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+            else if (moTextLocAddressStateCode.isEnabled() && moTextLocAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextLocAddressStateCode.getFieldName() + "'.");
                 validation.setComponent(moTextLocAddressStateCode);
             }
@@ -4669,7 +4606,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             if (moBolLocation != null && moBolLocation.getOwnLocation() != null && !moBolLocation.getOwnLocation().isRegistryNew() && moDecLocDistanceKm.isEnabled()) {
                 try {
-                    moDecLocDistanceKm.setValue(DBolUtils.getDistanceKm(miClient.getSession(), (DDbLocation) moKeyLocSourceLocation.getSelectedItem().getComplement(), moBolLocation.getOwnLocation()));
+                    moDecLocDistanceKm.setValue(DFormBolUtils.getDistanceKm(miClient.getSession(), (DDbLocation) moKeyLocSourceLocation.getSelectedItem().getComplement(), moBolLocation.getOwnLocation()));
                 }
                 catch (Exception e) {
                     DLibUtils.showException(this, e);
@@ -4710,8 +4647,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             String countryCode = moKeyLocAddressCountry.getSelectedItem().getCode(); // convenience variable
-            boolean applyStateCatalog = DBolUtils.applyStateCatalog(countryCode);
-            boolean applyAddressCatalogs = DBolUtils.applyAddressCatalogs(countryCode);
+            boolean applyStateCatalog = DFormBolUtils.applyStateCatalog(countryCode);
+            boolean applyAddressCatalogs = DFormBolUtils.applyAddressCatalogs(countryCode);
             
             moTextLocAddressStateCode.setEnabled(mbEditingLocation && applyStateCatalog);
             moTextLocAddressStateName.setEnabled(mbEditingLocation && !applyStateCatalog);
@@ -4729,48 +4666,48 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         
         if (moTextLocAddressStateCode.isEnabled()) {
-            moTextLocAddressStateCode.setValue(DBolUtils.DEF_CODE_ADDRESS_STATE);
+            moTextLocAddressStateCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_STATE);
         }
         
         if (moTextLocAddressCountyCode.isEnabled()) {
-            moTextLocAddressCountyCode.setValue(DBolUtils.DEF_CODE_ADDRESS_COUNTY);
+            moTextLocAddressCountyCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY);
         }
         
         if (moTextLocAddressLocalityCode.isEnabled()) {
-            moTextLocAddressLocalityCode.setValue(DBolUtils.DEF_CODE_ADDRESS_LOCALITY);
+            moTextLocAddressLocalityCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY);
         }
         
         if (moTextLocAddressDistrictCode.isEnabled()) {
-            moTextLocAddressDistrictCode.setValue(DBolUtils.DEF_CODE_ADDRESS_DISTRICT);
+            moTextLocAddressDistrictCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT);
         }
     }
     
     private void focusGainedLocCode() {
-        if (moTextLocCode.getValue().equals(DBolUtils.DEF_CODE_LOCATION)) {
+        if (moTextLocCode.getValue().equals(DFormBolUtils.DEF_CODE_LOCATION)) {
             moTextLocCode.resetField();
         }
     }
     
     private void focusGainedLocAddressStateCode() {
-        if (moTextLocAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+        if (moTextLocAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
             moTextLocAddressStateCode.resetField();
         }
     }
     
     private void focusGainedLocAddressCountyCode() {
-        if (moTextLocAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+        if (moTextLocAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
             moTextLocAddressCountyCode.resetField();
         }
     }
     
     private void focusGainedLocAddressLocalityCode() {
-        if (moTextLocAddressLocalityCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
+        if (moTextLocAddressLocalityCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
             moTextLocAddressLocalityCode.resetField();
         }
     }
     
     private void focusGainedLocAddressDistrictCode() {
-        if (moTextLocAddressDistrictCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_DISTRICT)) {
+        if (moTextLocAddressDistrictCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT)) {
             moTextLocAddressDistrictCode.resetField();
         }
     }
@@ -4795,7 +4732,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         computeLocAddressDistrictCode();
     }
     
-    private void keyTypedLocAddressStateCode(final KeyEvent keyEvent) {
+    private void keyReleasedLocAddressStateCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyLocAddressCountry.validateField();
             
@@ -4822,12 +4759,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedLocAddressCountyCode(final KeyEvent keyEvent) {
+    private void keyReleasedLocAddressCountyCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyLocAddressCountry.validateField();
             
             if (validation.isValid()) {
-                if (moTextLocAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                if (moTextLocAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
                     validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
                     validation.setComponent(moTextLocAddressStateCode);
                 }
@@ -4858,7 +4795,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedLocAddressLocalityCode(final KeyEvent keyEvent) {
+    private void keyReleasedLocAddressLocalityCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyLocAddressCountry.validateField();
             
@@ -4866,11 +4803,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation = moTextLocAddressStateCode.validateField();
                 
                 if (validation.isValid()) {
-                    if (moTextLocAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                    if (moTextLocAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
                         validation.setComponent(moTextLocAddressStateCode);
                     }
-                    else if (moTextLocAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+                    else if (moTextLocAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressCounty) + "'.");
                         validation.setComponent(moTextLocAddressCountyCode);
                     }
@@ -4904,7 +4841,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedLocAddressDistrictCode(final KeyEvent keyEvent) {
+    private void keyReleasedLocAddressDistrictCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyLocAddressCountry.validateField();
             
@@ -4912,15 +4849,15 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation = moTextLocAddressStateCode.validateField();
                 
                 if (validation.isValid()) {
-                    if (moTextLocAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                    if (moTextLocAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
                         validation.setComponent(moTextLocAddressStateCode);
                     }
-                    else if (moTextLocAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+                    else if (moTextLocAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressCounty) + "'.");
                         validation.setComponent(moTextLocAddressCountyCode);
                     }
-                    else if (moTextLocAddressLocalityCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
+                    else if (moTextLocAddressLocalityCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressLocality) + "'.");
                         validation.setComponent(moTextLocAddressLocalityCode);
                     }
@@ -5332,7 +5269,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     moRadMerchDimensionsCm.isSelected() ? DCfdi40Catalogs.CcpDimensiónCm : DCfdi40Catalogs.CcpDimensiónPlg));
         }
         else {
-            jtfMerchDimensionsHint.setText(DBolUtils.NA);
+            jtfMerchDimensionsHint.setText(DFormBolUtils.NA);
         }
         
         jtfMerchDimensionsHint.setCaretPosition(0);
@@ -5347,19 +5284,19 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     "" + moIntMerchImportRequest4.getValue()));
         }
         else {
-            jtfMerchImportRequestHint.setText(DBolUtils.NA);
+            jtfMerchImportRequestHint.setText(DFormBolUtils.NA);
         }
         
         jtfMerchImportRequestHint.setCaretPosition(0);
     }
     
     private void computeMerchHazardousMaterialCode() {
-        computeCatalogCode(moTextMerchHazardousMaterialCode, moTextMerchHazardousMaterialName, DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL, 
-                DBolUtils.FormatCodeHazardousMaterial, DCfdi40Catalogs.XML_CCP_MAT_PEL, false, null, "");
+        DFormBolUtils.computeCatalogCode(moTextMerchHazardousMaterialCode, moTextMerchHazardousMaterialName, DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL, 
+                DFormBolUtils.FormatCodeHazardousMaterial, DCfdi40Catalogs.XML_CCP_MAT_PEL, false, null, "");
     }
     
     private void computeMerchPackagingCode() {
-        computeCatalogCode(moTextMerchPackagingCode, moTextMerchPackagingName, DBolUtils.DEF_CODE_PACKAGING, 
+        DFormBolUtils.computeCatalogCode(moTextMerchPackagingCode, moTextMerchPackagingName, DFormBolUtils.DEF_CODE_PACKAGING, 
                 null, DCfdi40Catalogs.XML_CCP_EMB_TP, false, null, "");
     }
     
@@ -5491,10 +5428,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (validation.isValid()) {
             if (moBoolMerchHazardousMaterial.isSelected() && moRadMerchHazardousMaterialYes.isSelected()) {
                 try {
-                    DXmlCatalog xmlCatalogHazardousMaterial = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
-                    DXmlCatalog xmlCatalogPackaging = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
+                    DXmlCatalog xmlCatalogHazardousMaterial = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_MAT_PEL);
+                    DXmlCatalog xmlCatalogPackaging = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP);
 
-                    if (moTextMerchHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+                    if (moTextMerchHazardousMaterialCode.getValue().equals(DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextMerchHazardousMaterialCode.getFieldName() + "'.");
                         validation.setComponent(moTextMerchHazardousMaterialCode);
                     }
@@ -5502,7 +5439,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextMerchHazardousMaterialCode.getFieldName() + "'.");
                         validation.setComponent(moTextMerchHazardousMaterialCode);
                     }
-                    else if (moTextMerchPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+                    else if (moTextMerchPackagingCode.getValue().equals(DFormBolUtils.DEF_CODE_PACKAGING)) {
                         validation.setMessage(DGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextMerchPackagingCode.getFieldName() + "'.");
                         validation.setComponent(moTextMerchPackagingCode);
                     }
@@ -5856,13 +5793,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void focusGainedMerchHazardousMaterialCode() {
-        if (moTextMerchHazardousMaterialCode.getValue().equals(DBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
+        if (moTextMerchHazardousMaterialCode.getValue().equals(DFormBolUtils.DEF_CODE_HAZARDOUS_MATERIAL)) {
             moTextMerchHazardousMaterialCode.resetField();
         }
     }
     
     private void focusGainedMerchPackagingCode() {
-        if (moTextMerchPackagingCode.getValue().equals(DBolUtils.DEF_CODE_PACKAGING)) {
+        if (moTextMerchPackagingCode.getValue().equals(DFormBolUtils.DEF_CODE_PACKAGING)) {
             moTextMerchPackagingCode.resetField();
         }
     }
@@ -5887,7 +5824,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         computeMerchPackagingCode();
     }
     
-    private void keyTypedMerchHazardousMaterialCode(final KeyEvent keyEvent) {
+    private void keyReleasedMerchHazardousMaterialCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyMerchItem.validateField();
             
@@ -5910,7 +5847,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
     
-    private void keyTypedMerchPackagingCode(final KeyEvent keyEvent) {
+    private void keyReleasedMerchPackagingCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyMerchItem.validateField();
             
@@ -6343,7 +6280,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         try {
             if (moTextTruckCode.getValue().isEmpty() || 
                     miClient.showMsgBoxConfirm("¿Está seguro que desea obtener el siguiente código para el campo '" + DGuiUtils.getLabelName(jlTruckCode) + "'?") == JOptionPane.YES_OPTION) {
-                int nextCode = DBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_TRUCK, 0);
+                int nextCode = DFormBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_TRUCK, 0);
                 moTextTruckCode.setValue("" + nextCode);
                 moTextTruckCode.requestFocusInWindow();
             }
@@ -6668,7 +6605,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         else {
             moKeyTruckTransportConfig.setToolTipText(moKeyTruckTransportConfig.getSelectedItem().getItem());
             
-            switch (((HashMap<String, String>) moKeyTruckTransportConfig.getSelectedItem().getComplement()).get(DBolUtils.ATT_TRAILER)) {
+            switch (((HashMap<String, String>) moKeyTruckTransportConfig.getSelectedItem().getComplement()).get(DFormBolUtils.ATT_TRAILER)) {
                 case DXmlCatalogEntry.VAL_REQUIRED_NO:
                     mnTruckIsTrailerRequired = DXmlCatalogEntry.REQUIRED_NO;
                     jtfTruckTrailIsNeeded.setText(DXmlCatalogEntry.TXT_REQUIRED_NO);
@@ -7084,23 +7021,23 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void computeTptFigAddressStateCode() {
-        computeCatalogCode(moTextTptFigAddressStateCode, moTextTptFigAddressStateName, DBolUtils.DEF_CODE_ADDRESS_STATE, 
-                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyTptFigAddressCountry, DBolUtils.ATT_COUNTRY);
+        DFormBolUtils.computeCatalogCode(moTextTptFigAddressStateCode, moTextTptFigAddressStateName, DFormBolUtils.DEF_CODE_ADDRESS_STATE, 
+                null, DCfdi40Catalogs.XML_CCP_EDO_40, false, moKeyTptFigAddressCountry, DFormBolUtils.ATT_COUNTRY);
     }
     
     private void computeTptFigAddressCountyCode() {
-        computeCatalogCode(moTextTptFigAddressCountyCode, moTextTptFigAddressCountyName, DBolUtils.DEF_CODE_ADDRESS_COUNTY, 
-                DBolUtils.FormatCodeAddressCounty, DCfdi40Catalogs.XML_CCP_MUN, false, moTextTptFigAddressStateCode, DBolUtils.ATT_STATE);
+        DFormBolUtils.computeCatalogCode(moTextTptFigAddressCountyCode, moTextTptFigAddressCountyName, DFormBolUtils.DEF_CODE_ADDRESS_COUNTY, 
+                DFormBolUtils.FormatCodeAddressCounty, DCfdi40Catalogs.XML_CCP_MUN, false, moTextTptFigAddressStateCode, DFormBolUtils.ATT_STATE);
     }
 
     private void computeTptFigAddressLocalityCode() {
-        computeCatalogCode(moTextTptFigAddressLocalityCode, moTextTptFigAddressLocalityName, DBolUtils.DEF_CODE_ADDRESS_LOCALITY, 
-                DBolUtils.FormatCodeAddressLocality, DCfdi40Catalogs.XML_CCP_LOC, false, moTextTptFigAddressStateCode, DBolUtils.ATT_STATE);
+        DFormBolUtils.computeCatalogCode(moTextTptFigAddressLocalityCode, moTextTptFigAddressLocalityName, DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY, 
+                DFormBolUtils.FormatCodeAddressLocality, DCfdi40Catalogs.XML_CCP_LOC, false, moTextTptFigAddressStateCode, DFormBolUtils.ATT_STATE);
     }
 
     private void computeTptFigAddressDistrictCode() {
-        computeCatalogCode(moTextTptFigAddressDistrictCode, moTextTptFigAddressDistrictName, DBolUtils.DEF_CODE_ADDRESS_DISTRICT, 
-                DBolUtils.FormatCodeAddressDistrict, DCfdi40Catalogs.XML_CCP_COL, true, moTextTptFigAddressZipCode, DBolUtils.ATT_ZIP);
+        DFormBolUtils.computeCatalogCode(moTextTptFigAddressDistrictCode, moTextTptFigAddressDistrictName, DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT, 
+                DFormBolUtils.FormatCodeAddressDistrict, DCfdi40Catalogs.XML_CCP_COL, true, moTextTptFigAddressZipCode, DFormBolUtils.ATT_ZIP);
     }
     
     private void actionPerformedTptFigEditType() {
@@ -7115,7 +7052,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         try {
             if (moTextTptFigCode.getValue().isEmpty() || 
                     miClient.showMsgBoxConfirm("¿Está seguro que desea obtener el siguiente código para el campo '" + DGuiUtils.getLabelName(jlTptFigCode) + "'?") == JOptionPane.YES_OPTION) {
-                int nextCode = DBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_TPT_FIGURE, 0);
+                int nextCode = DFormBolUtils.getNextCode(miClient.getSession(), DModConsts.LU_TPT_FIGURE, 0);
                 moTextTptFigCode.setValue("" + nextCode);
                 moTextTptFigCode.requestFocusInWindow();
             }
@@ -7191,7 +7128,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTptFigFigureCountry.getFieldName() + "'.");
                 validation.setComponent(moKeyTptFigFigureCountry);
             }
-            else if (moTextTptFigAddressStateCode.isEnabled() && moTextTptFigAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+            else if (moTextTptFigAddressStateCode.isEnabled() && moTextTptFigAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
                 validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moTextTptFigAddressStateCode.getFieldName() + "'.");
                 validation.setComponent(moTextTptFigAddressStateCode);
             }
@@ -7471,8 +7408,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             String countryCode = moKeyTptFigAddressCountry.getSelectedItem().getCode(); // convenience variable
-            boolean applyStateCatalog = DBolUtils.applyStateCatalog(countryCode);
-            boolean applyAddressCatalogs = DBolUtils.applyAddressCatalogs(countryCode);
+            boolean applyStateCatalog = DFormBolUtils.applyStateCatalog(countryCode);
+            boolean applyAddressCatalogs = DFormBolUtils.applyAddressCatalogs(countryCode);
             
             moTextTptFigAddressStateCode.setEnabled(mbEditingTptFigure && applyStateCatalog);
             moTextTptFigAddressStateName.setEnabled(mbEditingTptFigure && !applyStateCatalog);
@@ -7490,42 +7427,42 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         
         if (moTextTptFigAddressStateCode.isEnabled()) {
-            moTextTptFigAddressStateCode.setValue(DBolUtils.DEF_CODE_ADDRESS_STATE);
+            moTextTptFigAddressStateCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_STATE);
         }
         
         if (moTextTptFigAddressCountyCode.isEnabled()) {
-            moTextTptFigAddressCountyCode.setValue(DBolUtils.DEF_CODE_ADDRESS_COUNTY);
+            moTextTptFigAddressCountyCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY);
         }
         
         if (moTextTptFigAddressLocalityCode.isEnabled()) {
-            moTextTptFigAddressLocalityCode.setValue(DBolUtils.DEF_CODE_ADDRESS_LOCALITY);
+            moTextTptFigAddressLocalityCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY);
         }
         
         if (moTextTptFigAddressDistrictCode.isEnabled()) {
-            moTextTptFigAddressDistrictCode.setValue(DBolUtils.DEF_CODE_ADDRESS_DISTRICT);
+            moTextTptFigAddressDistrictCode.setValue(DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT);
         }
     }
     
     private void focusGainedTptFigAddressStateCode() {
-        if (moTextTptFigAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
+        if (moTextTptFigAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
             moTextTptFigAddressStateCode.resetField();
         }
     }
     
     private void focusGainedTptFigAddressCountyCode() {
-        if (moTextTptFigAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+        if (moTextTptFigAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
             moTextTptFigAddressCountyCode.resetField();
         }
     }
     
     private void focusGainedTptFigAddressLocalityCode() {
-        if (moTextTptFigAddressLocalityCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
+        if (moTextTptFigAddressLocalityCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
             moTextTptFigAddressLocalityCode.resetField();
         }
     }
     
     private void focusGainedTptFigAddressDistrictCode() {
-        if (moTextTptFigAddressDistrictCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_DISTRICT)) {
+        if (moTextTptFigAddressDistrictCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_DISTRICT)) {
             moTextTptFigAddressDistrictCode.resetField();
         }
     }
@@ -7546,7 +7483,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         computeTptFigAddressDistrictCode();
     }
     
-    private void keyTypedTptFigAddressStateCode(final KeyEvent keyEvent) {
+    private void keyReleasedTptFigAddressStateCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyTptFigAddressCountry.validateField();
             
@@ -7573,13 +7510,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedTptFigAddressCountyCode(final KeyEvent keyEvent) {
+    private void keyReleasedTptFigAddressCountyCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyTptFigAddressCountry.validateField();
             
             if (validation.isValid()) {
-                if (moTextTptFigAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
-                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
+                if (moTextTptFigAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressState) + "'.");
                     validation.setComponent(moTextTptFigAddressStateCode);
                 }
             }
@@ -7609,7 +7546,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedTptFigAddressLocalityCode(final KeyEvent keyEvent) {
+    private void keyReleasedTptFigAddressLocalityCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyTptFigAddressCountry.validateField();
             
@@ -7617,12 +7554,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation = moTextTptFigAddressStateCode.validateField();
                 
                 if (validation.isValid()) {
-                    if (moTextTptFigAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
+                    if (moTextTptFigAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressState) + "'.");
                         validation.setComponent(moTextTptFigAddressStateCode);
                     }
-                    else if (moTextTptFigAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressCounty) + "'.");
+                    else if (moTextTptFigAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressCounty) + "'.");
                         validation.setComponent(moTextTptFigAddressCountyCode);
                     }
                 }
@@ -7655,7 +7592,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
 
-    private void keyTypedTptFigAddressDistrictCode(final KeyEvent keyEvent) {
+    private void keyReleasedTptFigAddressDistrictCode(final KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
             DGuiValidation validation = moKeyTptFigAddressCountry.validateField();
             
@@ -7663,16 +7600,16 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 validation = moTextTptFigAddressStateCode.validateField();
                 
                 if (validation.isValid()) {
-                    if (moTextTptFigAddressStateCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_STATE)) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressState) + "'.");
+                    if (moTextTptFigAddressStateCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_STATE)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressState) + "'.");
                         validation.setComponent(moTextTptFigAddressStateCode);
                     }
-                    else if (moTextTptFigAddressCountyCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressCounty) + "'.");
+                    else if (moTextTptFigAddressCountyCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_COUNTY)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressCounty) + "'.");
                         validation.setComponent(moTextTptFigAddressCountyCode);
                     }
-                    else if (moTextTptFigAddressLocalityCode.getValue().equals(DBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
-                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlLocAddressLocality) + "'.");
+                    else if (moTextTptFigAddressLocalityCode.getValue().equals(DFormBolUtils.DEF_CODE_ADDRESS_LOCALITY)) {
+                        validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + DGuiUtils.getLabelName(jlTptFigAddressLocality) + "'.");
                         validation.setComponent(moTextTptFigAddressLocalityCode);
                     }
                     else {
@@ -7728,7 +7665,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     /*
-     * DBeanForm
+     * DBeanForm methods
      */
 
     @Override
@@ -8433,6 +8370,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         return validation;
     }
+    
+    /*
+     * Listeners methods
+     */
 
     @Override
     public void actionCancel() {
@@ -8846,34 +8787,34 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             DBeanFieldText field = (DBeanFieldText) e.getSource();
             
             if (field == moTextLocAddressStateCode) {
-                keyTypedLocAddressStateCode(e);
+                keyReleasedLocAddressStateCode(e);
             }
             else if (field == moTextLocAddressCountyCode) {
-                keyTypedLocAddressCountyCode(e);
+                keyReleasedLocAddressCountyCode(e);
             }
             else if (field == moTextLocAddressLocalityCode) {
-                keyTypedLocAddressLocalityCode(e);
+                keyReleasedLocAddressLocalityCode(e);
             }
             else if (field == moTextLocAddressDistrictCode) {
-                keyTypedLocAddressDistrictCode(e);
+                keyReleasedLocAddressDistrictCode(e);
             }
             else if (field == moTextMerchHazardousMaterialCode) {
-                keyTypedMerchHazardousMaterialCode(e);
+                keyReleasedMerchHazardousMaterialCode(e);
             }
             else if (field == moTextMerchPackagingCode) {
-                keyTypedMerchPackagingCode(e);
+                keyReleasedMerchPackagingCode(e);
             }
             else if (field == moTextTptFigAddressStateCode) {
-                keyTypedTptFigAddressStateCode(e);
+                keyReleasedTptFigAddressStateCode(e);
             }
             else if (field == moTextTptFigAddressCountyCode) {
-                keyTypedTptFigAddressCountyCode(e);
+                keyReleasedTptFigAddressCountyCode(e);
             }
             else if (field == moTextTptFigAddressLocalityCode) {
-                keyTypedTptFigAddressLocalityCode(e);
+                keyReleasedTptFigAddressLocalityCode(e);
             }
             else if (field == moTextTptFigAddressDistrictCode) {
-                keyTypedTptFigAddressDistrictCode(e);
+                keyReleasedTptFigAddressDistrictCode(e);
             }
         }
     }

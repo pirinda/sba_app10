@@ -70,7 +70,7 @@ import sba.mod.lad.db.DDbBolTransportFigure;
 import sba.mod.lad.db.DDbBolTransportFigureTransportPart;
 import sba.mod.lad.db.DDbBolTruck;
 import sba.mod.lad.db.DDbBolTruckTrailer;
-import sba.mod.lad.form.DBolUtils;
+import sba.mod.lad.form.DFormBolUtils;
 
 /**
  * Utilities related to CFD generation and PAC transaction control for CFD signing and cancelling.
@@ -1859,14 +1859,14 @@ public abstract class DTrnDfrUtils {
             String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolLocation.getFkAddressCountryId() });
             ubicacion.getEltDomicilio().getAttPais().setString(countryCode);
             
-            if (DBolUtils.applyStateCatalog(countryCode)) {
+            if (DFormBolUtils.applyStateCatalog(countryCode)) {
                 ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateCode());
             }
             else {
                 ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateName());
             }
             
-            if (DBolUtils.applyAddressCatalogs(countryCode)) {
+            if (DFormBolUtils.applyAddressCatalogs(countryCode)) {
                 ubicacion.getEltDomicilio().getAttColonia().setString(bolLocation.getAddressDistrictCode());
                 ubicacion.getEltDomicilio().getAttLocalidad().setString(bolLocation.getAddressLocalityCode());
                 ubicacion.getEltDomicilio().getAttMunicipio().setString(bolLocation.getAddressCountyCode());
@@ -2007,14 +2007,14 @@ public abstract class DTrnDfrUtils {
             String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolTptFigure.getFkAddressCountryId() });
             domicilio.getAttPais().setString(countryCode);
             
-            if (DBolUtils.applyStateCatalog(countryCode)) {
+            if (DFormBolUtils.applyStateCatalog(countryCode)) {
                 domicilio.getAttEstado().setString(bolTptFigure.getAddressStateCode());
             }
             else {
                 domicilio.getAttEstado().setString(bolTptFigure.getAddressStateName());
             }
             
-            if (DBolUtils.applyAddressCatalogs(countryCode)) {
+            if (DFormBolUtils.applyAddressCatalogs(countryCode)) {
                 domicilio.getAttColonia().setString(bolTptFigure.getAddressDistrictCode());
                 domicilio.getAttLocalidad().setString(bolTptFigure.getAddressLocalityCode());
                 domicilio.getAttMunicipio().setString(bolTptFigure.getAddressCountyCode());

@@ -115,7 +115,7 @@ public class DPickerCatalogPackaging extends DBeanFormDialog implements ActionLi
         
         moTextPackagingName.setTextSettings(DGuiUtils.getLabelName(jlPackaging), 100);
         moTextPackagingName.setTextCaseType(0);
-        moTextPackagingCode.setTextSettings(DGuiUtils.getLabelName(jlPackaging), DBolUtils.DEF_CODE_ADDRESS_STATE.length());
+        moTextPackagingCode.setTextSettings(DGuiUtils.getLabelName(jlPackaging), DFormBolUtils.DEF_CODE_ADDRESS_STATE.length());
         moTextPackagingCode.setTextCaseType(0);
         
         moFields.addField(moTextPackagingName);
@@ -211,7 +211,7 @@ public class DPickerCatalogPackaging extends DBeanFormDialog implements ActionLi
         try {
             if (maGridRows == null) {
                 maGridRows = new ArrayList<>();
-                DXmlCatalog xmlCatalog = DBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP, "", "", null);
+                DXmlCatalog xmlCatalog = DFormBolUtils.getXmlCatalog(DCfdi40Catalogs.XML_CCP_EMB_TP, "", "", null);
                 for (DXmlCatalogEntry entry : xmlCatalog.getEntries()) {
                     maGridRows.add(new DLadCatalogPackaging(entry.getCode(), entry.getName()));
                 }

@@ -32,7 +32,7 @@ public class DViewTransportFigure extends DGridPaneView implements ActionListene
     }
 
     private void initComponentsCustom() {
-        setRowButtonsEnabled(false);
+
     }
 
     /*
