@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import sa.lib.SLibUtils;
 import sba.gui.DGuiClientSessionCustom;
 import sba.gui.cat.DXmlCatalog;
 import sba.gui.cat.DXmlCatalogEntry;
@@ -121,7 +122,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected DDbBolTransportFigureTransportPart moBolTptFigureTptPart;
     
     protected DDialogBol moDialogBol;
-    
+
+    protected String msTransportTypeTruckCode;
     protected DXmlCatalog moXmlTruckTransportConfig;
     protected DXmlCatalog moXmlTruckPermissionType;
     protected DXmlCatalog moXmlTruckTrailerSubtype;
@@ -129,7 +131,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected int[] manTemplateKey;
     protected boolean mbForceCancel;
     
-    protected String[] maBolSeries;
     protected int mnBolWeightUnitId;
     protected double mdBolDistanceKm;
     protected double mdBolMerchandiseWeightKg;
@@ -664,12 +665,14 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTptFigCancel = new javax.swing.JButton();
         jpNav = new javax.swing.JPanel();
         jpNavW = new javax.swing.JPanel();
+        jtfOwnBranch = new javax.swing.JTextField();
         jpNavC = new javax.swing.JPanel();
         jbBolNavStart = new javax.swing.JButton();
         jbBolNavRestart = new javax.swing.JButton();
         jbBolNavPrev = new javax.swing.JButton();
         jbBolNavNext = new javax.swing.JButton();
         jpNavE = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -2709,7 +2712,15 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpNav.setLayout(new java.awt.BorderLayout());
 
-        jpNavW.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpNavW.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jtfOwnBranch.setEditable(false);
+        jtfOwnBranch.setText("TEXT");
+        jtfOwnBranch.setToolTipText("Sucursal");
+        jtfOwnBranch.setFocusable(false);
+        jtfOwnBranch.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpNavW.add(jtfOwnBranch);
+
         jpNav.add(jpNavW, java.awt.BorderLayout.WEST);
 
         jbBolNavStart.setBackground(java.awt.Color.green);
@@ -2738,7 +2749,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpNav.add(jpNavC, java.awt.BorderLayout.CENTER);
 
-        jpNavE.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpNavE.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jLabel1.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpNavE.add(jLabel1);
+
         jpNav.add(jpNavE, java.awt.BorderLayout.EAST);
 
         jPanel1.add(jpNav, java.awt.BorderLayout.SOUTH);
@@ -2754,6 +2769,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.ButtonGroup bgBolIntlTransportDirections;
     private javax.swing.ButtonGroup bgMerchDimensionUnits;
     private javax.swing.ButtonGroup bgMerchHazardousMaterial;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton jbBolNavNext;
     private javax.swing.JButton jbBolNavPrev;
@@ -3097,6 +3113,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTextField jtfMerchImportRequestHint;
     private javax.swing.JTextField jtfMerchMoveCrud;
     private javax.swing.JTextField jtfMerchQuantityMoved;
+    private javax.swing.JTextField jtfOwnBranch;
     private javax.swing.JTextField jtfTptFigCrud;
     private javax.swing.JTextField jtfTptFigPk;
     private javax.swing.JTextField jtfTptFigTptPartCrud;
@@ -3511,8 +3528,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moFieldsTptFigureTptPart.setFormButton(jbTptFigTptPartOk);
         
         try {
-            maBolSeries = DFormBolUtils.getBolSeries(miClient.getSession(), (String) miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] {DModSysConsts.LS_TPT_TP_TRUCK}, DDbRegistry.FIELD_CODE));
-
+            msTransportTypeTruckCode = (String) miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] { DModSysConsts.LS_TPT_TP_TRUCK }, DDbRegistry.FIELD_CODE);
+            
             moXmlTruckTransportConfig = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_CFG_AUTO, "xml/" + DCfdi40Catalogs.XML_CCP_CFG_AUTO + DXmlCatalog.XmlFileExt, false, "", "", new String[] { "trailer" });
             moXmlTruckPermissionType = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_PERM_TP, "xml/" + DCfdi40Catalogs.XML_CCP_PERM_TP + DXmlCatalog.XmlFileExt, false);
             moXmlTruckTrailerSubtype = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_REM_STP, "xml/" + DCfdi40Catalogs.XML_CCP_REM_STP + DXmlCatalog.XmlFileExt, false);
@@ -6359,18 +6376,32 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsTruck.validateFields();
         
         if (validation.isValid()) {
-            if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_NO && moGridTrucksTrailers.getTable().getRowCount() > 0) {
-                validation.setMessage("La configuración del autotransporte no requiere de remolques.");
-                validation.setComponent(jbTruckTrailCreate);
-            }
-            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_YES && moGridTrucksTrailers.getTable().getRowCount() == 0) {
-                validation.setMessage("La configuración del autotransporte requiere de remolques.");
-                validation.setComponent(jbTruckTrailCreate);
-            }
-            else if (mnTruckIsTrailerRequired == DXmlCatalogEntry.REQUIRED_OPT && moGridTrucksTrailers.getTable().getRowCount() == 0 && miClient.showMsgBoxConfirm(
-                    "La configuración del autotransporte permite tener de remolques, pero no lo hay.\n" + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                validation.setMessage("Agregar los remolques que se requieran.");
-                validation.setComponent(jbTruckTrailCreate);
+            String configCode = moKeyTruckTransportConfig.getSelectedItem().getCode();
+            
+            switch (mnTruckIsTrailerRequired) {
+                case DXmlCatalogEntry.REQUIRED_NO:
+                    if (moGridTrucksTrailers.getTable().getRowCount() > 0) {
+                        validation.setMessage("La configuración del autotransporte '" + configCode + "' no requiere de remolques.");
+                        validation.setComponent(jbTruckTrailCreate);
+                    }
+                    break;
+                case DXmlCatalogEntry.REQUIRED_YES:
+                    if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
+                        validation.setMessage("La configuración del autotransporte '" + configCode + "' requiere de remolques.");
+                        validation.setComponent(jbTruckTrailCreate);
+                    }
+                    break;
+                case DXmlCatalogEntry.REQUIRED_OPT:
+                    if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
+                        if (!configCode.equals(DCfdi40Catalogs.CcpConfigAutotransporteVl) && miClient.showMsgBoxConfirm(
+                                "La configuración del autotransporte '" + configCode + "' permite tener de remolques, pero no los hay.\n" + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                            validation.setMessage("Agregar los remolques que se requieran.");
+                            validation.setComponent(jbTruckTrailCreate);
+                        }
+                    }
+                    break;
+                default:
+                    // nothing
             }
         }
         
@@ -7965,8 +7996,17 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     @Override
     @SuppressWarnings("unchecked")
     public void reloadCatalogues() {
+        String[] branchBolSeries = null;
+        
+        try {
+            branchBolSeries = DFormBolUtils.getBolSeries(miClient.getSession(), moSessionCustom.getBranchKey(), msTransportTypeTruckCode);
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
+        }
+        
         moKeyBolSeries.removeAllItems();
-        for (String bolSeries : maBolSeries) {
+        for (String bolSeries : branchBolSeries) {
             moKeyBolSeries.addItem(new DGuiItem(bolSeries));
         }
         
@@ -8113,6 +8153,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         else {
             jtfBolBolTemplate.setText("");
         }
+        
+        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moSessionCustom.getBranchKey(), DDbRegistry.FIELD_CODE));
+        jtfOwnBranch.setCaretPosition(0);
         
         renderBolLocation(null);
         renderBolMerchandise(null);

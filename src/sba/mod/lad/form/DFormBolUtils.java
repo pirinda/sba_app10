@@ -191,26 +191,19 @@ public abstract class DFormBolUtils {
         }
         return unitId;
     }
-
+    
     /**
-     * Get BOL series for required transport type.
-     * BOL number series, e.g., 01=;02=A;03=B,C (code of transport type and number series, separated by semicolon).
-     * @param session GUI session.
+     * Parse BOL series.
+     * @param bolSeries BOL series as set in configuration.
      * @param transportTypeCode SAT code for required transport type.
-     * @return If found, BOL series, otherwise <code>null</code>.
-     * @throws Exception
+     * @return 
      */
-    public static String[] getBolSeries(final DGuiSession session, final String transportTypeCode) throws Exception {
+    private static String[] parseBolSeries(final String bolSeries, final String transportTypeCode) {
         String[] series = null;
-        String bolSeries = "";
-        String sql = "SELECT bol_ser " + "FROM " + DModConsts.TablesMap.get(DModConsts.CU_CFG_CO) + " " + "WHERE id_bpr = " + DUtilConsts.BPR_CO_ID + ";";
-        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
-            if (resultSet.next()) {
-                bolSeries = resultSet.getString("bol_ser");
-            }
-        }
+        
         if (!bolSeries.isEmpty()) {
             String[] configs = DLibUtils.textExplode(bolSeries, ";");
+            
             if (configs.length > 0) {
                 for (String config : configs) {
                     String[] configByType = config.split("=");
@@ -230,6 +223,44 @@ public abstract class DFormBolUtils {
                 }
             }
         }
+        
+        return series;
+    }
+
+    /**
+     * Get BOL series for required transport type. First in company's branch configuration, then in company's configuration.
+     * BOL number series, e.g., 01=;02=A;03=B,C (code of transport type and number series, separated by semicolon).
+     * @param session GUI session.
+     * @param branchKey Current company's branch key.
+     * @param transportTypeCode SAT code for required transport type.
+     * @return If found, BOL series, otherwise <code>null</code>.
+     * @throws Exception
+     */
+    public static String[] getBolSeries(final DGuiSession session, final int[] branchKey, final String transportTypeCode) throws Exception {
+        String[] series = null;
+        String bolSeries = "";
+        String sql;
+        
+        sql = "SELECT bol_ser " + "FROM " + DModConsts.TablesMap.get(DModConsts.CU_CFG_BRA) + " " + "WHERE id_bpr = " + branchKey[0] + " AND id_bra = " + branchKey[1] + ";";
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                bolSeries = resultSet.getString("bol_ser");
+            }
+        }
+        
+        series = parseBolSeries(bolSeries, transportTypeCode);
+        
+        if (series == null) {
+            sql = "SELECT bol_ser " + "FROM " + DModConsts.TablesMap.get(DModConsts.CU_CFG_CO) + " " + "WHERE id_bpr = " + branchKey[0] + ";";
+            try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+                if (resultSet.next()) {
+                    bolSeries = resultSet.getString("bol_ser");
+                }
+            }
+            
+            series = parseBolSeries(bolSeries, transportTypeCode);
+        }
+        
         return series;
     }
     

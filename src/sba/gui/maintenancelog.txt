@@ -1,4 +1,10 @@
 ================================================================================
+SBA 1.0 036
+2023-07-31/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de series de cartas porte por sucursal de la empresa.
+2) Emisión de cartas porte según la razon social asignada a la sucursal de la empresa.
+
+================================================================================
 SBA 1.0 035.5
 2023-07-22/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de catálogo ubicaciones.

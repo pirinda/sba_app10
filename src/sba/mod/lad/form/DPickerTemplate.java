@@ -88,9 +88,10 @@ public class DPickerTemplate extends DBeanFormDialog implements KeyListener {
             @Override
             public void createGridColumns() {
                 int col = 0;
-                DGridColumnForm[] columns = new DGridColumnForm[2];
+                DGridColumnForm[] columns = new DGridColumnForm[3];
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "Nombre");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "Código");
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT_CODE_CO, DUtilConsts.TXT_BRANCH + " empresa");
 
                 for (DGridColumnForm column : columns) {
                     moModel.getGridColumns().add(column);
@@ -126,10 +127,11 @@ public class DPickerTemplate extends DBeanFormDialog implements KeyListener {
     }
 
     private void retreiveGridOptions() throws Exception {
-        String sql = "SELECT id_bol AS _id, temp_code, temp_name "
-                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL) + " "
-                + "WHERE NOT b_del AND b_temp "
-                + "ORDER BY temp_name, temp_code, id_bol;";
+        String sql = "SELECT bol.id_bol AS _id, bol.temp_code, bol.temp_name, bra.code "
+                + "FROM " + DModConsts.TablesMap.get(DModConsts.L_BOL) + " AS bol "
+                + "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.BU_BRA) + " AS bra ON bra.id_bpr = bol.fk_own_bpr AND bra.id_bra = bol.fk_own_bra "
+                + "WHERE NOT bol.b_del AND b_temp "
+                + "ORDER BY bol.temp_name, bol.temp_code, bol.id_bol;";
 
         maGridRows = new ArrayList<>();
 
@@ -139,11 +141,12 @@ public class DPickerTemplate extends DBeanFormDialog implements KeyListener {
             while (resultSet.next()) {
                 DGridRowOptionPicker row = new DGridRowOptionPicker(new int[] { resultSet.getInt("_id") });
 
-                row.setRowName(resultSet.getString("temp_name"));
-                row.setRowCode(resultSet.getString("temp_code"));
+                row.setRowName(resultSet.getString("bol.temp_name"));
+                row.setRowCode(resultSet.getString("bol.temp_code"));
 
-                row.getValues().add(resultSet.getString("temp_name")); // 0
-                row.getValues().add(resultSet.getString("temp_code")); // 1
+                row.getValues().add(resultSet.getString("bol.temp_name")); // 0
+                row.getValues().add(resultSet.getString("bol.temp_code")); // 1
+                row.getValues().add(resultSet.getString("bra.code")); // 2
 
                 maGridRows.add(row);
             }
