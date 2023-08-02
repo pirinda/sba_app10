@@ -17,6 +17,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -7996,18 +7997,27 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     @Override
     @SuppressWarnings("unchecked")
     public void reloadCatalogues() {
-        String[] branchBolSeries = null;
+        int[] branchKey = !moBol.isRegistryNew() ? moBol.getCompanyBranchKey() : moSessionCustom.getBranchKey();
+        ArrayList<String> seriesArray = new ArrayList<>();
         
         try {
-            branchBolSeries = DFormBolUtils.getBolSeries(miClient.getSession(), moSessionCustom.getBranchKey(), msTransportTypeTruckCode);
+            String[] bolSeries = DFormBolUtils.getBolSeries(miClient.getSession(), branchKey, msTransportTypeTruckCode);
+            
+            for (String series : bolSeries) {
+                seriesArray.add(series);
+            }
+            
+            if (!moBol.isRegistryNew() && !seriesArray.contains(moBol.getSeries())) {
+                seriesArray.add(0, moBol.getSeries()); // add original series at first position
+            }
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
         }
         
         moKeyBolSeries.removeAllItems();
-        for (String bolSeries : branchBolSeries) {
-            moKeyBolSeries.addItem(new DGuiItem(bolSeries));
+        for (String series : seriesArray) {
+            moKeyBolSeries.addItem(new DGuiItem(series));
         }
         
         miClient.getSession().populateCatalogue(moKeyBolIntlTransportCountry, DModConsts.CS_CTY, 0, null);
@@ -8154,7 +8164,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfBolBolTemplate.setText("");
         }
         
-        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moSessionCustom.getBranchKey(), DDbRegistry.FIELD_CODE));
+        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moBol.getCompanyBranchKey(), DDbRegistry.FIELD_CODE));
         jtfOwnBranch.setCaretPosition(0);
         
         renderBolLocation(null);

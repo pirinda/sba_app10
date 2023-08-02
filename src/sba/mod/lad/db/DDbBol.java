@@ -220,6 +220,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     public DDbLock getAuxLock() { return moAuxLock; }
     
     public int[] getCompanyKey() { return new int[] { mnFkOwnerBizPartnerId }; }
+    @Override
     public int[] getCompanyBranchKey() { return new int[] { mnFkOwnerBizPartnerId, mnFkOwnerBranchId }; }
     public String getBolNumber() { return DTrnUtils.composeDpsNumber(msSeries, mnNumber); }
     

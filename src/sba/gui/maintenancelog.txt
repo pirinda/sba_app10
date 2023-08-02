@@ -1,5 +1,10 @@
 ================================================================================
-SBA 1.0 036
+SBA 1.0 036.1
+2023-08-01/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección a manejo de series de la carta porte y al despliegue de la sucursal de la carta porte.
+
+================================================================================
+SBA 1.0 036.0
 2023-07-31/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de series de cartas porte por sucursal de la empresa.
 2) Emisión de cartas porte según la razon social asignada a la sucursal de la empresa.
