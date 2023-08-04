@@ -75,9 +75,17 @@ public class DLadBolPrinting {
         
         // Complemento carta porte:
         
+        DDbBizPartner bizPartner;
         DDbSysCountry country = (DDbSysCountry) moSession.readRegistry(DModConsts.CS_CTY, new int[] { moBol.getFkIntlTransportCountryId() });
         DDbSysTransportType intlWayTransportType = (DDbSysTransportType) moSession.readRegistry(DModConsts.LS_TPT_TP, new int[] { moBol.getFkIntlWayTransportTypeId() });
         DDbUnit unit = (DDbUnit) moSession.readRegistry(DModConsts.IU_UNT, new int[] { moBol.getFkMerchandiseWeightUnitId() });
+        
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() != 0) {
+            bizPartner = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+        }
+        else {
+            bizPartner = ((DDbConfigCompany) moSession.getConfigCompany()).getChildBizPartner();
+        }
         
         hashMap.put("ccpVersion", moBol.getVersion());
         hashMap.put("ccpTranspInternac", moBol.getIntlTransport());
@@ -85,8 +93,8 @@ public class DLadBolPrinting {
         hashMap.put("ccpPaisOrigenDestino", country.getCode() + " - " + country.getName());
         hashMap.put("ccpViaEntradaSalida", intlWayTransportType.getCode() + " - " + intlWayTransportType.getName());
         hashMap.put("ccpTotalDistRec", moBol.getDistanceKm());
-        hashMap.put("ccpRfcRemitDestin", ((DDbConfigCompany) moSession.getConfigCompany()).getChildBizPartner().getFiscalId());
-        hashMap.put("ccpNombreRemitDestin", ((DDbConfigCompany) moSession.getConfigCompany()).getChildBizPartner().getPrintableName());
+        hashMap.put("ccpRfcRemitDestin", bizPartner.getFiscalId());
+        hashMap.put("ccpNombreRemitDestin", bizPartner.getPrintableName());
         hashMap.put("ccpPesoBrutoTotal", moBol.getMerchandiseWeight());
         hashMap.put("ccpUnidadPeso", unit.getCfdUnitKey() + " - " + unit.getName());
         hashMap.put("ccpNumTotalMercancias", moBol.getMerchandiseNumber());
