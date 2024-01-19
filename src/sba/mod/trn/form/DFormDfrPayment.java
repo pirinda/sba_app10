@@ -2150,7 +2150,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             if (DLibUtils.compareKeys(moKeyPayCurrency.getValue(), moKeyDocCurrency.getValue())) {
                 doctoRelacionado.getAttEquivalenciaDR().setDouble(1);
-                doctoRelacionado.getAttEquivalenciaDR().setDecimals(0);
+                doctoRelacionado.getAttEquivalenciaDR().setDecimals(10);
             }
             else {
                 doctoRelacionado.getAttEquivalenciaDR().setDouble(moDecDocExchangeRate.getValue());
