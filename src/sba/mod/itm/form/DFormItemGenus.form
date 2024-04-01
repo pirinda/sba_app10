@@ -14,7 +14,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-12,0,0,3,112"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,38,0,0,3,-64"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -41,7 +41,6 @@
             <Property name="columns" type="int" value="2"/>
             <Property name="horizontalGap" type="int" value="5"/>
             <Property name="rows" type="int" value="1"/>
-            <Property name="verticalGap" type="int" value="5"/>
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="jPanel1">
@@ -56,9 +55,33 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
+                <Container class="javax.swing.JPanel" name="jPanel14">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="jlItemFamily">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Familia &#xed;tems:*"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[100, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyItemFamily">
+                      <Properties>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[250, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
                 <Container class="javax.swing.JPanel" name="jPanel11">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -131,30 +154,6 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanel14">
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
-                    <Property name="verticalGap" type="int" value="0"/>
-                  </Layout>
-                  <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlItemFamily">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Familia &#xed;tems:*"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[100, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyItemFamily">
-                      <Properties>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[250, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
                 <Container class="javax.swing.JPanel" name="jPanel19">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -186,9 +185,16 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
+                <Container class="javax.swing.JPanel" name="jPanel17">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                </Container>
                 <Container class="javax.swing.JPanel" name="jPanel15">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -213,7 +219,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanel17">
+                <Container class="javax.swing.JPanel" name="jPanel18">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
@@ -244,13 +250,6 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanel18">
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
-                    <Property name="verticalGap" type="int" value="0"/>
-                  </Layout>
-                </Container>
                 <Container class="javax.swing.JPanel" name="jPanel47">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -273,7 +272,6 @@
             <Property name="columns" type="int" value="2"/>
             <Property name="horizontalGap" type="int" value="5"/>
             <Property name="rows" type="int" value="1"/>
-            <Property name="verticalGap" type="int" value="5"/>
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="jPanel7">
@@ -296,8 +294,8 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                     <Property name="columns" type="int" value="1"/>
-                    <Property name="rows" type="int" value="9"/>
-                    <Property name="verticalGap" type="int" value="5"/>
+                    <Property name="rows" type="int" value="10"/>
+                    <Property name="verticalGap" type="int" value="3"/>
                   </Layout>
                   <SubComponents>
                     <Container class="javax.swing.JPanel" name="jPanel3">
@@ -318,7 +316,7 @@
                         <Component class="sba.lib.gui.bean.DBeanFieldText" name="moTextCode">
                           <Properties>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
+                              <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -375,6 +373,81 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Container class="javax.swing.JPanel" name="jPanel23">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlXccCofeprisSector">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Sector COFEPRIS:*"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyXccCofeprisSector">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[250, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="jbEditXcc">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/sba/gui/img/cmd_std_edit.gif"/>
+                            </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Modificar cat&#xe1;logos carta porte"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[23, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jPanel40">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlXccPharmaceiticalForm">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Forma farmac.:*"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyXccPharmaceuticalForm">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlXccSpecialConditions">
+                          <Properties>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="Conds. esps.:*"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[85, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyXccSpecialConditions">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                     <Container class="javax.swing.JPanel" name="jPanel22">
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -384,42 +457,25 @@
                       <SubComponents>
                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolCodeEditable">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="C&#xf3;digo editable"/>
+                            <Property name="text" type="java.lang.String" value="C&#xf3;digo modif."/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolNameEditable">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Nombre editable"/>
+                            <Property name="text" type="java.lang.String" value="Nombre modif."/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolIngredientApplying">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Ingrediente"/>
+                            <Property name="text" type="java.lang.String" value="Ingrediente(s)"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel23">
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
-                      <SubComponents>
-                        <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBulk">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="A granel"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -432,11 +488,19 @@
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
+                        <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBulk">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="A granel"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[105, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
                         <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolInventoriable">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Inventariable"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -444,7 +508,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Lotes"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -452,7 +516,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="N&#xfa;meros serie"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -508,7 +572,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Longitud:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
+                              <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -532,7 +596,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Un. virtuales"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -540,7 +604,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Un. contenidas"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -548,7 +612,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Un. conversi&#xf3;n"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -565,7 +629,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Sin precios"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -573,7 +637,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Sin descuentos"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -581,7 +645,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Sin comisiones"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[115, 23]"/>
+                              <Dimension value="[105, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -606,7 +670,6 @@
                     <Property name="columns" type="int" value="2"/>
                     <Property name="horizontalGap" type="int" value="5"/>
                     <Property name="rows" type="int" value="1"/>
-                    <Property name="verticalGap" type="int" value="5"/>
                   </Layout>
                   <SubComponents>
                     <Container class="javax.swing.JPanel" name="jPanel32">
@@ -621,7 +684,7 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                         <Property name="columns" type="int" value="1"/>
                         <Property name="rows" type="int" value="5"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Container class="javax.swing.JPanel" name="jPanel33">
@@ -758,7 +821,7 @@
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                         <Property name="columns" type="int" value="1"/>
                         <Property name="rows" type="int" value="5"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Container class="javax.swing.JPanel" name="jPanel28">
@@ -896,7 +959,6 @@
                     <Property name="columns" type="int" value="2"/>
                     <Property name="horizontalGap" type="int" value="5"/>
                     <Property name="rows" type="int" value="1"/>
-                    <Property name="verticalGap" type="int" value="5"/>
                   </Layout>
                   <SubComponents>
                     <Container class="javax.swing.JPanel" name="jPanel38">
@@ -919,75 +981,50 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
-                            <Property name="rows" type="int" value="3"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="rows" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
-                            <Container class="javax.swing.JPanel" name="jPanel40">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementLengthApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Lon."/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[50, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementSurfaceApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Sup."/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[50, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementVolumeApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Vol."/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[50, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jPanel44">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementMassApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Masa"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[50, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementTimeApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Tiempo"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jPanel45">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                            </Container>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementLengthApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Longitud"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[65, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementSurfaceApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Superficie"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[65, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementVolumeApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Volumen"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[65, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementMassApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Masa"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[65, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMeasurementTimeApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Tiempo"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[65, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
                           </SubComponents>
                         </Container>
                       </SubComponents>
@@ -1012,45 +1049,20 @@
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
-                            <Property name="rows" type="int" value="3"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="rows" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
-                            <Container class="javax.swing.JPanel" name="jPanel43">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolWeightGrossApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Peso bruto"/>
-                                  </Properties>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jPanel48">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
-                                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolWeightDeliveryApplying">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Peso flete"/>
-                                  </Properties>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jPanel46">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                            </Container>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolWeightGrossApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Peso bruto"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolWeightDeliveryApplying">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Peso flete"/>
+                              </Properties>
+                            </Component>
                           </SubComponents>
                         </Container>
                       </SubComponents>

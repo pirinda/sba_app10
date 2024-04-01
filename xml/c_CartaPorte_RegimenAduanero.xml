@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="IMD" name="Definitivo de importación." impo_expo="Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="EXD" name="Definitivo de exportación." impo_expo="Salida" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="ITR" name="Temporales de importación para retomar al extranjero en el mismo estado." impo_expo="Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="ITE" name="Temporales de importación para elaboración, transformación o reparación para empresas con programa IMMEX." impo_expo="Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="ETR" name="Temporales de exportación para retornar al país en el mismo estado." impo_expo="Salida" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="ETE" name="Temporales de exportación para elaboración, transformación o reparación." impo_expo="Salida" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="DFI" name="Depósito Fiscal." impo_expo="Salida,Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="RFE" name="Elaboración, transformación o reparación en recinto fiscalizado." impo_expo="Salida,Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="RFS" name="Recinto fiscalizado estratégico." impo_expo="Salida,Entrada" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="TRA" name="Tránsitos." impo_expo="Salida,Entrada" term_start="2023-11-25" term_end=""/>
+</Catalog>

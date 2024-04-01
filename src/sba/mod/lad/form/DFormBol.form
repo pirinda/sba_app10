@@ -2,8 +2,6 @@
 
 <Form version="1.2" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="bgBolIntlTransportDirections">
-    </Component>
     <Component class="javax.swing.ButtonGroup" name="bgMerchDimensionUnits">
     </Component>
     <Component class="javax.swing.ButtonGroup" name="bgMerchHazardousMaterial">
@@ -62,8 +60,8 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
-                <Property name="rows" type="int" value="4"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="rows" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
                 <Container class="javax.swing.JPanel" name="jpHeaderBol1">
@@ -179,8 +177,34 @@
                     <Component class="javax.swing.JTextField" name="jtfBolUuid">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Courier New" size="10" style="0"/>
+                        </Property>
                         <Property name="text" type="java.lang.String" value="F5343B75-9A23-4E25-979A-03CA560FEE62"/>
-                        <Property name="toolTipText" type="java.lang.String" value="UUID"/>
+                        <Property name="toolTipText" type="java.lang.String" value="UUID del CFDI"/>
+                        <Property name="focusable" type="boolean" value="false"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[230, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jpHeaderBol5">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JTextField" name="jtfBolCompUuid">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Courier New" size="10" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="CCC43B75-9A23-4E25-979A-03CA560FEE62"/>
+                        <Property name="toolTipText" type="java.lang.String" value="UUID del complemento"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[230, 23]"/>
@@ -191,19 +215,19 @@
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="jpHeaderIntl">
+            <Container class="javax.swing.JPanel" name="jpHeaderCfg">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Transporte internacional:"/>
+                    <TitledBorder title="Configuraci&#xf3;n del transporte:"/>
                   </Border>
                 </Property>
               </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
-                <Property name="rows" type="int" value="4"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="rows" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
                 <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBolIntlTransport">
@@ -214,62 +238,59 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Container class="javax.swing.JPanel" name="jpHeaderIntl2">
+                <Container class="javax.swing.JPanel" name="jpHeaderCfg2">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlBolIntlTransportDirection">
+                    <Component class="javax.swing.JTextField" name="jtfBolIntlTransport">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="E/S:*"/>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="text" type="java.lang.String" value="TEXT"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Transporte internacional"/>
+                        <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[60, 23]"/>
+                          <Dimension value="[202, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="sba.lib.gui.bean.DBeanFieldRadio" name="moRadBolIntlTransportDirectionIn">
+                    <Component class="javax.swing.JButton" name="jbBolSetIntlTransport">
                       <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="bgBolIntlTransportDirections"/>
-                        </Property>
-                        <Property name="selected" type="boolean" value="true"/>
-                        <Property name="text" type="java.lang.String" value="Entrada"/>
+                        <Property name="text" type="java.lang.String" value="..."/>
+                        <Property name="toolTipText" type="java.lang.String" value="Configurar transporte internacional..."/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sba.lib.gui.bean.DBeanFieldRadio" name="moRadBolIntlTransportDirectionOut">
-                      <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="bgBolIntlTransportDirections"/>
-                        </Property>
-                        <Property name="text" type="java.lang.String" value="Salida"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
+                          <Dimension value="[23, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jpHeaderIntl3">
+                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBolIsthmus">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Es registro Istmo"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[230, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JPanel" name="jpHeaderIntl4">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlBolIntlTransportCountry">
+                    <Component class="javax.swing.JLabel" name="jlBolIsthmusOrigin">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Pa&#xed;s:*"/>
+                        <Property name="text" type="java.lang.String" value="P. origen:*"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[60, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyBolIntlTransportCountry">
+                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyBolIsthmusOrigin">
                       <Properties>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[165, 23]"/>
@@ -278,22 +299,22 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jpHeaderIntl4">
+                <Container class="javax.swing.JPanel" name="jpHeaderIntl45">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlBolIntlWayTransportType">
+                    <Component class="javax.swing.JLabel" name="jlBolIsthmusDestiny">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="V&#xed;a E/S:*"/>
+                        <Property name="text" type="java.lang.String" value="P. destino:*"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[60, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyBolIntlWayTransportType">
+                    <Component class="sba.lib.gui.bean.DBeanFieldKey" name="moKeyBolIsthmusDestiny">
                       <Properties>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[165, 23]"/>
@@ -315,8 +336,8 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
-                <Property name="rows" type="int" value="4"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="rows" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
                 <Container class="javax.swing.JPanel" name="jpHeaderLocMerch1">
@@ -488,6 +509,11 @@
                     </Component>
                   </SubComponents>
                 </Container>
+                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMerchandiseInverseLogistics">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Es log&#xed;stica inversa, recolecci&#xf3;n, devoluci&#xf3;n"/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jpHeaderTemp">
@@ -501,8 +527,8 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                 <Property name="columns" type="int" value="1"/>
-                <Property name="rows" type="int" value="4"/>
-                <Property name="verticalGap" type="int" value="5"/>
+                <Property name="rows" type="int" value="5"/>
+                <Property name="verticalGap" type="int" value="3"/>
               </Layout>
               <SubComponents>
                 <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBolTemplate">
@@ -590,16 +616,18 @@
                     </Component>
                   </SubComponents>
                 </Container>
+                <Container class="javax.swing.JPanel" name="jpHeaderTemp5">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                </Container>
               </SubComponents>
             </Container>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JTabbedPane" name="jtpWizard">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="14" style="0"/>
-            </Property>
-          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="Center"/>
@@ -611,8 +639,8 @@
             <Container class="javax.swing.JPanel" name="jpWizardLoc">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Ubicaciones">
-                    <Property name="tabTitle" type="java.lang.String" value="Ubicaciones"/>
+                  <JTabbedPaneConstraints tabName="1. Ubicaciones">
+                    <Property name="tabTitle" type="java.lang.String" value="1. Ubicaciones"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -652,7 +680,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpLocInput11">
@@ -936,7 +964,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpLocInput21">
@@ -1220,7 +1248,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpLocInput31">
@@ -1313,6 +1341,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jbLocAdd">
@@ -1420,6 +1449,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="jtfLocCrud">
@@ -1470,8 +1500,8 @@
             <Container class="javax.swing.JPanel" name="jpWizardMerch">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Mercanc&#xed;as">
-                    <Property name="tabTitle" type="java.lang.String" value="Mercanc&#xed;as"/>
+                  <JTabbedPaneConstraints tabName="2. Mercanc&#xed;as">
+                    <Property name="tabTitle" type="java.lang.String" value="2. Mercanc&#xed;as"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -1511,7 +1541,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpMerchInput11">
@@ -1853,7 +1883,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpMerchInput21">
@@ -2135,7 +2165,7 @@
                               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                                 <Property name="columns" type="int" value="1"/>
                                 <Property name="rows" type="int" value="4"/>
-                                <Property name="verticalGap" type="int" value="5"/>
+                                <Property name="verticalGap" type="int" value="3"/>
                               </Layout>
                               <SubComponents>
                                 <Container class="javax.swing.JPanel" name="jpMerchInput3N1">
@@ -2374,6 +2404,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jbMerchAdd">
@@ -2481,6 +2512,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="jtfMerchCrud">
@@ -2531,8 +2563,8 @@
             <Container class="javax.swing.JPanel" name="jpWizardTruck">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Autotransporte">
-                    <Property name="tabTitle" type="java.lang.String" value="Autotransporte"/>
+                  <JTabbedPaneConstraints tabName="3. Autotransporte">
+                    <Property name="tabTitle" type="java.lang.String" value="3. Autotransporte"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -2572,7 +2604,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpTruckInput11">
@@ -2678,6 +2710,39 @@
                                 <Property name="verticalGap" type="int" value="0"/>
                               </Layout>
                               <SubComponents>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Peso bruto:*"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[75, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecTruckWeightTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.00"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[75, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightTonUnit">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="ton"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[25, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
+                            </Container>
+                            <Container class="javax.swing.JPanel" name="jpTruckInput15">
+
+                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                                <Property name="alignment" type="int" value="0"/>
+                                <Property name="verticalGap" type="int" value="0"/>
+                              </Layout>
+                              <SubComponents>
                                 <Component class="javax.swing.JLabel" name="jlTruckPlate">
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Placa:*"/>
@@ -2694,20 +2759,12 @@
                                     </Property>
                                   </Properties>
                                 </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jpTruckInput15">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
                                 <Component class="javax.swing.JLabel" name="jlTruckModel">
                                   <Properties>
+                                    <Property name="horizontalAlignment" type="int" value="0"/>
                                     <Property name="text" type="java.lang.String" value="Modelo:*"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
+                                      <Dimension value="[70, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -2833,7 +2890,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpTruckInput21">
@@ -3035,7 +3092,7 @@
                               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                                 <Property name="columns" type="int" value="1"/>
                                 <Property name="rows" type="int" value="4"/>
-                                <Property name="verticalGap" type="int" value="5"/>
+                                <Property name="verticalGap" type="int" value="3"/>
                               </Layout>
                               <SubComponents>
                                 <Container class="javax.swing.JPanel" name="jpTruckInput3N1">
@@ -3322,6 +3379,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jbTruckAdd">
@@ -3429,6 +3487,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="jtfTruckCrud">
@@ -3479,8 +3538,8 @@
             <Container class="javax.swing.JPanel" name="jpWizardTptFigure">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Figuras del transporte">
-                    <Property name="tabTitle" type="java.lang.String" value="Figuras del transporte"/>
+                  <JTabbedPaneConstraints tabName="4. Figuras del transporte">
+                    <Property name="tabTitle" type="java.lang.String" value="4. Figuras del transporte"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -3520,7 +3579,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpTptFigInput11">
@@ -3807,7 +3866,7 @@
                           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                             <Property name="columns" type="int" value="1"/>
                             <Property name="rows" type="int" value="8"/>
-                            <Property name="verticalGap" type="int" value="5"/>
+                            <Property name="verticalGap" type="int" value="3"/>
                           </Layout>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="jpTptFigInput21">
@@ -4100,7 +4159,7 @@
                               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                                 <Property name="columns" type="int" value="1"/>
                                 <Property name="rows" type="int" value="4"/>
-                                <Property name="verticalGap" type="int" value="5"/>
+                                <Property name="verticalGap" type="int" value="3"/>
                               </Layout>
                               <SubComponents>
                                 <Container class="javax.swing.JPanel" name="jpTptFigInput3N1">
@@ -4369,6 +4428,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jbTptFigAdd">
@@ -4476,6 +4536,7 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="3"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="jtfTptFigCrud">

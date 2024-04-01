@@ -66,6 +66,7 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
                 "t.id_truck AS " + DDbConsts.FIELD_ID + "1, " +
                 "t.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "t.name AS " + DDbConsts.FIELD_NAME + ", " +
+                "t.weight_ton, " +
                 "t.plate, " +
                 "t.model, " +
                 "t.tpt_config_code, " +
@@ -99,10 +100,11 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[21];
+        DGridColumnView[] columns = new DGridColumnView[22];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_AMT, "t.weight_ton", "Peso bruto (ton)");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "t.plate", "Placas");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_CAL_YEAR, "t.model", "Modelo");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "t.tpt_config_code", "Config. vehicular clave");

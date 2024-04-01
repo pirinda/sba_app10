@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="Materia prima" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="02" name="Materia procesada" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="03" name="Materia terminada(producto terminado)" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="04" name="Materia para la industria manufacturera" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="05" name="Otra" term_start="2023-11-25" term_end=""/>
+</Catalog>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Entry id="1" code="01" name="Pedimento" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="02" name="Autorización de importación temporal" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="03" name="Autorización de importación temporal de embarcaciones" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="04" name="Autorización de importación temporal de mercancías, destinadas al mantenimiento y reparación de las mercancías importadas temporalmente" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="05" name="Autorización para la importación de vehículos especialmente construidos o transformados, equipados con dispositivos o aparatos diversos para cumplir con contrato derivado de licitación pública" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="06" name="Aviso de exportación temporal" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="07" name="Aviso de traslado de mercancías de empresas con Programa IMMEX, RFE u Operador Económico Autorizado" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="08" name="Aviso para el traslado de autopartes ubicadas en la franja o región fronteriza a la industria terminal automotriz o manufacturera de vehículos de autotransporte en el resto del territorio nacional" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="09" name="Constancia de importación temporal, retorno o transferencia de contenedores" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="10" name="Constancia de transferencia de mercancías" term_start="2023-11-25" term_end=""/>
+<Entry id="11" code="11" name="Autorización de donación de mercancías al Fisco Federal que se encuentren en el extranjero" term_start="2023-11-25" term_end=""/>
+<Entry id="12" code="12" name="Cuaderno ATA" term_start="2023-11-25" term_end=""/>
+<Entry id="13" code="13" name="Listas de intercambio" term_start="2023-11-25" term_end=""/>
+<Entry id="14" code="14" name="Permiso de Importación Temporal" term_start="2023-11-25" term_end=""/>
+<Entry id="15" code="15" name="Permiso de importación temporal de casa rodante" term_start="2023-11-25" term_end=""/>
+<Entry id="16" code="16" name="Permiso de importación temporal de embarcaciones" term_start="2023-11-25" term_end=""/>
+<Entry id="17" code="17" name="Solicitud de donación de mercancías en casos de emergencias o desastres naturales" term_start="2023-11-25" term_end=""/>
+<Entry id="18" code="18" name="Aviso de consolidado" term_start="2023-11-25" term_end=""/>
+<Entry id="19" code="19" name="Aviso de cruce de mercancias" term_start="2023-11-25" term_end=""/>
+<Entry id="20" code="20" name="Otro" term_start="2023-11-25" term_end=""/>
+</Catalog>

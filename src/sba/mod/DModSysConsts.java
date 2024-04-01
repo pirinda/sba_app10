@@ -648,6 +648,7 @@ public abstract class DModSysConsts {
     public static final int[] TS_XML_STP_VER_CRP_1 = new int[] { 3, 1 };
     public static final int[] TS_XML_STP_VER_CRP_2 = new int[] { 3, 2 };
     public static final int[] TS_XML_STP_VER_CCP_2 = new int[] { 4, 1 };
+    public static final int[] TS_XML_STP_VER_CCP_3 = new int[] { 4, 2 };
 
     public static final int TS_XML_ST_NA = 1;
     public static final int TS_XML_ST_PEN = 2;
@@ -821,6 +822,17 @@ public abstract class DModSysConsts {
     public static final int LS_TPT_FIGURE_TP_LEASER = 3; // Leaser
     public static final int LS_TPT_FIGURE_TP_NOTIFIED = 4; // Notified
 
+    public static final int LS_XCC_COFEPRIS_SECT_NA = 0; // Not applicable
+    public static final int LS_XCC_COFEPRIS_SECT_MEDS = 1; // Medicines
+    public static final int LS_XCC_COFEPRIS_SECT_PREC_CHEM = 2; // Precursors & chemicals
+    public static final int LS_XCC_COFEPRIS_SECT_PSYC_NARC = 3; // Psychotropics & narcotics
+    public static final int LS_XCC_COFEPRIS_SECT_TOXC_SUBS = 4; // Toxic substances
+    public static final int LS_XCC_COFEPRIS_SECT_PEST_FERT = 5; // Pesticides & fertilizers
+
+    public static final int LS_XCC_PHARM_FORM_NA = 0; // Not applicable
+    
+    public static final int LS_XCC_SPEC_COND_NA = 0; // Not applicable
+    
     public static final int PARAM_YEAR = 101;
     public static final int PARAM_DATE = 102;
     public static final int PARAM_QTY = 103;

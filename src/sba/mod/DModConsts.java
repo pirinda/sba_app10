@@ -358,6 +358,9 @@ public abstract class DModConsts {
     public static final int LS_LOC_TP = 910002;
     public static final int LS_TPT_FIGURE_TP = 910011;
     public static final int LS_TPT_PART_TP = 910012;
+    public static final int LS_XCC_COFEPRIS_SECT = 910031;
+    public static final int LS_XCC_PHARM_FORM = 910032;
+    public static final int LS_XCC_SPEC_COND = 910033;
 
     public static final int LU_LOC = 920002;
     public static final int LU_LOC_DIST = 920003;
@@ -376,6 +379,8 @@ public abstract class DModConsts {
     public static final int L_BOL_TRUCK_TRAIL = 930026;
     public static final int L_BOL_TPT_FIGURE = 930027;
     public static final int L_BOL_TPT_FIGURE_TPT_PART = 930028;
+    
+    public static final int LX_BOL_INTL_TPT = 940101;
     
     public static final int LR_BOL = 950001;
 
@@ -598,6 +603,9 @@ public abstract class DModConsts {
         TablesMap.put(LS_LOC_TP, "ls_loc_tp");
         TablesMap.put(LS_TPT_FIGURE_TP, "ls_tpt_figure_tp");
         TablesMap.put(LS_TPT_PART_TP, "ls_tpt_part_tp");
+        TablesMap.put(LS_XCC_COFEPRIS_SECT, "ls_xcc_cofepris_sect");
+        TablesMap.put(LS_XCC_PHARM_FORM, "ls_xcc_pharm_form");
+        TablesMap.put(LS_XCC_SPEC_COND, "ls_xcc_spec_cond");
 
         TablesMap.put(LU_LOC, "lu_loc");
         TablesMap.put(LU_LOC_DIST, "lu_loc_dist");

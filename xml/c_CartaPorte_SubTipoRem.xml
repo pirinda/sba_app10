@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Entry id="1" code="CTR001" name="Caballete" term_start="2021-06-01" term_end=""/>
-<Entry id="2" code="CTR002" name="Caja" term_start="2021-06-01" term_end=""/>
-<Entry id="3" code="CTR003" name="Caja Abierta" term_start="2021-06-01" term_end=""/>
-<Entry id="4" code="CTR004" name="Caja Cerrada" term_start="2021-06-01" term_end=""/>
-<Entry id="5" code="CTR005" name="Caja De Recolección Con Cargador Frontal" term_start="2021-06-01" term_end=""/>
-<Entry id="6" code="CTR006" name="Caja Refrigerada" term_start="2021-06-01" term_end=""/>
-<Entry id="7" code="CTR007" name="Caja Seca" term_start="2021-06-01" term_end=""/>
-<Entry id="8" code="CTR008" name="Caja Transferencia" term_start="2021-06-01" term_end=""/>
-<Entry id="9" code="CTR009" name="Cama Baja o Cuello Ganso" term_start="2021-06-01" term_end=""/>
-<Entry id="10" code="CTR010" name="Chasis Portacontenedor" term_start="2021-06-01" term_end=""/>
-<Entry id="11" code="CTR011" name="Convencional De Chasis" term_start="2021-06-01" term_end=""/>
-<Entry id="12" code="CTR012" name="Equipo Especial" term_start="2021-06-01" term_end=""/>
-<Entry id="13" code="CTR013" name="Estacas" term_start="2021-06-01" term_end=""/>
-<Entry id="14" code="CTR014" name="Góndola Madrina" term_start="2021-06-01" term_end=""/>
-<Entry id="15" code="CTR015" name="Grúa Industrial" term_start="2021-06-01" term_end=""/>
-<Entry id="16" code="CTR016" name="Grúa " term_start="2021-06-01" term_end=""/>
-<Entry id="17" code="CTR017" name="Integral" term_start="2021-06-01" term_end=""/>
-<Entry id="18" code="CTR018" name="Jaula" term_start="2021-06-01" term_end=""/>
-<Entry id="19" code="CTR019" name="Media Redila" term_start="2021-06-01" term_end=""/>
-<Entry id="20" code="CTR020" name="Pallet o Celdillas" term_start="2021-06-01" term_end=""/>
-<Entry id="21" code="CTR021" name="Plataforma" term_start="2021-06-01" term_end=""/>
-<Entry id="22" code="CTR022" name="Plataforma Con Grúa" term_start="2021-06-01" term_end=""/>
-<Entry id="23" code="CTR023" name="Plataforma Encortinada" term_start="2021-06-01" term_end=""/>
-<Entry id="24" code="CTR024" name="Redilas" term_start="2021-06-01" term_end=""/>
-<Entry id="25" code="CTR025" name="Refrigerador" term_start="2021-06-01" term_end=""/>
-<Entry id="26" code="CTR026" name="Revolvedora" term_start="2021-06-01" term_end=""/>
-<Entry id="27" code="CTR027" name="Semicaja" term_start="2021-06-01" term_end=""/>
-<Entry id="28" code="CTR028" name="Tanque" term_start="2021-06-01" term_end=""/>
-<Entry id="29" code="CTR029" name="Tolva" term_start="2021-06-01" term_end=""/>
-<Entry id="30" code="CTR031" name="Volteo" term_start="2021-06-01" term_end=""/>
-<Entry id="31" code="CTR032" name="Volteo Desmontable" term_start="2021-06-01" term_end=""/>
+<Entry id="1" code="CTR001" name="Caballete" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="CTR002" name="Caja" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="CTR003" name="Caja Abierta" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="CTR004" name="Caja Cerrada" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="CTR005" name="Caja De Recolección Con Cargador Frontal" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="CTR006" name="Caja Refrigerada" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="CTR007" name="Caja Seca" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="CTR008" name="Caja Transferencia" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="CTR009" name="Cama Baja o Cuello Ganso" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="CTR010" name="Chasis Portacontenedor" term_start="2023-11-25" term_end=""/>
+<Entry id="11" code="CTR011" name="Convencional De Chasis" term_start="2023-11-25" term_end=""/>
+<Entry id="12" code="CTR012" name="Equipo Especial" term_start="2023-11-25" term_end=""/>
+<Entry id="13" code="CTR013" name="Estacas" term_start="2023-11-25" term_end=""/>
+<Entry id="14" code="CTR014" name="Góndola Madrina" term_start="2023-11-25" term_end=""/>
+<Entry id="15" code="CTR015" name="Grúa Industrial" term_start="2023-11-25" term_end=""/>
+<Entry id="16" code="CTR016" name="Grúa " term_start="2023-11-25" term_end=""/>
+<Entry id="17" code="CTR017" name="Integral" term_start="2023-11-25" term_end=""/>
+<Entry id="18" code="CTR018" name="Jaula" term_start="2023-11-25" term_end=""/>
+<Entry id="19" code="CTR019" name="Media Redila" term_start="2023-11-25" term_end=""/>
+<Entry id="20" code="CTR020" name="Pallet o Celdillas" term_start="2023-11-25" term_end=""/>
+<Entry id="21" code="CTR021" name="Plataforma" term_start="2023-11-25" term_end=""/>
+<Entry id="22" code="CTR022" name="Plataforma Con Grúa" term_start="2023-11-25" term_end=""/>
+<Entry id="23" code="CTR023" name="Plataforma Encortinada" term_start="2023-11-25" term_end=""/>
+<Entry id="24" code="CTR024" name="Redilas" term_start="2023-11-25" term_end=""/>
+<Entry id="25" code="CTR025" name="Refrigerador" term_start="2023-11-25" term_end=""/>
+<Entry id="26" code="CTR026" name="Revolvedora" term_start="2023-11-25" term_end=""/>
+<Entry id="27" code="CTR027" name="Semicaja" term_start="2023-11-25" term_end=""/>
+<Entry id="28" code="CTR028" name="Tanque" term_start="2023-11-25" term_end=""/>
+<Entry id="29" code="CTR029" name="Tolva" term_start="2023-11-25" term_end=""/>
+<Entry id="30" code="CTR031" name="Volteo" term_start="2023-11-25" term_end=""/>
+<Entry id="31" code="CTR032" name="Volteo Desmontable" term_start="2023-11-25" term_end=""/>
 </Catalog>

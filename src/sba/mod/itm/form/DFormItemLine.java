@@ -94,8 +94,16 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
         jPanel18 = new javax.swing.JPanel();
-        moBoolBulk = new sba.lib.gui.bean.DBeanFieldBoolean();
+        jlXccCofeprisSector = new javax.swing.JLabel();
+        moKeyXccCofeprisSector = new sba.lib.gui.bean.DBeanFieldKey();
+        jbEditXcc = new javax.swing.JButton();
+        jPanel28 = new javax.swing.JPanel();
+        jlXccPharmaceiticalForm = new javax.swing.JLabel();
+        moKeyXccPharmaceuticalForm = new sba.lib.gui.bean.DBeanFieldKey();
+        jlXccSpecialConditions = new javax.swing.JLabel();
+        moKeyXccSpecialConditions = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel19 = new javax.swing.JPanel();
+        moBoolBulk = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolInventoriable = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolLotApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolSerialNumberApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
@@ -125,10 +133,10 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         jpContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Clasificación:"));
-        jPanel5.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+        jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -153,11 +161,11 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jPanel2.add(jPanel5);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración:"));
-        jPanel6.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+        jPanel6.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolTaxGroupByUser.setText("Configuración manual de impuestos");
+        moBoolTaxGroupByUser.setText("Configuración manual de grupo de impuestos");
         moBoolTaxGroupByUser.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel11.add(moBoolTaxGroupByUser);
 
@@ -197,12 +205,12 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         jpContainer.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jPanel15.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel15.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel24.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel24.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(6, 1, 0, 3));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -241,24 +249,55 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolBulk.setText("A granel");
-        moBoolBulk.setPreferredSize(new java.awt.Dimension(115, 23));
-        jPanel18.add(moBoolBulk);
+        jlXccCofeprisSector.setText("Sector COFEPRIS:*");
+        jlXccCofeprisSector.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel18.add(jlXccCofeprisSector);
+
+        moKeyXccCofeprisSector.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel18.add(moKeyXccCofeprisSector);
+
+        jbEditXcc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbEditXcc.setToolTipText("Modificar catálogos carta porte");
+        jbEditXcc.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel18.add(jbEditXcc);
 
         jPanel1.add(jPanel18);
 
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlXccPharmaceiticalForm.setText("Forma farmac.:*");
+        jlXccPharmaceiticalForm.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel28.add(jlXccPharmaceiticalForm);
+
+        moKeyXccPharmaceuticalForm.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel28.add(moKeyXccPharmaceuticalForm);
+
+        jlXccSpecialConditions.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlXccSpecialConditions.setText("Conds. esps.:*");
+        jlXccSpecialConditions.setPreferredSize(new java.awt.Dimension(85, 23));
+        jPanel28.add(jlXccSpecialConditions);
+
+        moKeyXccSpecialConditions.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel28.add(moKeyXccSpecialConditions);
+
+        jPanel1.add(jPanel28);
+
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        moBoolBulk.setText("A granel");
+        moBoolBulk.setPreferredSize(new java.awt.Dimension(105, 23));
+        jPanel19.add(moBoolBulk);
+
         moBoolInventoriable.setText("Inventariable");
-        moBoolInventoriable.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolInventoriable.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel19.add(moBoolInventoriable);
 
         moBoolLotApplying.setText("Lotes");
-        moBoolLotApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolLotApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel19.add(moBoolLotApplying);
 
         moBoolSerialNumberApplying.setText("Números serie");
-        moBoolSerialNumberApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolSerialNumberApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel19.add(moBoolSerialNumberApplying);
 
         jPanel1.add(jPanel19);
@@ -266,15 +305,15 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolFreeOfPrice.setText("Sin precios");
-        moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfPrice);
 
         moBoolFreeOfDiscount.setText("Sin descuentos");
-        moBoolFreeOfDiscount.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfDiscount.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfDiscount);
 
         moBoolFreeOfCommission.setText("Sin comisiones");
-        moBoolFreeOfCommission.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfCommission.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfCommission);
 
         jPanel1.add(jPanel26);
@@ -286,7 +325,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         jPanel25.setBorder(javax.swing.BorderFactory.createTitledBorder("Propiedades del registro:"));
         jPanel25.setLayout(new java.awt.BorderLayout());
 
-        jPanel17.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel17.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -365,7 +404,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeItemLine();
 
-        DGuiUtils.setWindowBounds(this, 880, 550);
+        DGuiUtils.setWindowBounds(this, 960, 600);
 
         mnParamItemGenusId = DLibConsts.UNDEFINED;
 
@@ -377,6 +416,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), lenCode == 0 || lenCode > 10 ? 10 : lenCode);
         moTextCfdItemKey.setTextSettings(DGuiUtils.getLabelName(jlCfdItemKey), 8, 0);
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 25);
+        moKeyXccCofeprisSector.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccCofeprisSector), true);
+        moKeyXccPharmaceuticalForm.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccPharmaceiticalForm), true);
+        moKeyXccSpecialConditions.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccSpecialConditions), true);
         moBoolBulk.setBooleanSettings(moBoolBulk.getText(), false);
         moBoolInventoriable.setBooleanSettings(moBoolInventoriable.getText(), false);
         moBoolLotApplying.setBooleanSettings(moBoolLotApplying.getText(), false);
@@ -398,6 +440,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moFields.addField(moTextCode);
         moFields.addField(moTextCfdItemKey);
         moFields.addField(moTextName);
+        moFields.addField(moKeyXccCofeprisSector);
+        moFields.addField(moKeyXccPharmaceuticalForm);
+        moFields.addField(moKeyXccSpecialConditions);
         moFields.addField(moBoolBulk);
         moFields.addField(moBoolInventoriable);
         moFields.addField(moBoolLotApplying);
@@ -436,6 +481,14 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         }
     }
 
+    private void actionEditXcc() {
+        jbEditXcc.setEnabled(false);
+        moKeyXccCofeprisSector.setEnabled(true);
+        moKeyXccCofeprisSector.requestFocusInWindow();
+        
+        itemStateXccCofeprisSector();
+    }
+    
     private void actionNewBrand() {
         DDbBrand brand = null;
 
@@ -509,6 +562,18 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         itemStateBoolInventoriable();
     }
 
+    private void itemStateXccCofeprisSector() {
+        boolean enable = moKeyXccCofeprisSector.getSelectedIndex() > 0 && moKeyXccCofeprisSector.getValue()[0] != DModSysConsts.LS_XCC_COFEPRIS_SECT_NA;
+        
+        moKeyXccPharmaceuticalForm.setEnabled(enable);
+        moKeyXccSpecialConditions.setEnabled(enable);
+        
+        if (!enable) {
+            moKeyXccPharmaceuticalForm.setValue(new int[] { DModSysConsts.LS_XCC_PHARM_FORM_NA });
+            moKeyXccSpecialConditions.setValue(new int[] { DModSysConsts.LS_XCC_SPEC_COND_NA });
+        }
+    }
+
     private void itemStateBoolInventoriable() {
         if (moBoolInventoriable.getValue()) {
             moBoolLotApplying.setEnabled(moItemGenus == null ? false : moItemGenus.isLotApplying());
@@ -563,6 +628,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -570,6 +636,7 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JButton jbEditXcc;
     private javax.swing.JButton jbNewBrand;
     private javax.swing.JButton jbNewManufacturer;
     private javax.swing.JLabel jlAbpItem;
@@ -584,6 +651,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlTaxGroup;
     private javax.swing.JLabel jlUnit;
+    private javax.swing.JLabel jlXccCofeprisSector;
+    private javax.swing.JLabel jlXccPharmaceiticalForm;
+    private javax.swing.JLabel jlXccSpecialConditions;
     private javax.swing.JPanel jpContainer;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolAbpItemByUser;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBulk;
@@ -602,6 +672,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     private sba.lib.gui.bean.DBeanFieldKey moKeyManufacturer;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTaxGroup;
     private sba.lib.gui.bean.DBeanFieldKey moKeyUnit;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccCofeprisSector;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccPharmaceuticalForm;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccSpecialConditions;
     private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
@@ -609,22 +682,26 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
     @Override
     public void addAllListeners() {
+        jbEditXcc.addActionListener(this);
         jbNewBrand.addActionListener(this);
         jbNewManufacturer.addActionListener(this);
         moKeyItemGenus.addItemListener(this);
-        moBoolInventoriable.addItemListener(this);
+        moKeyXccCofeprisSector.addItemListener(this);
         moBoolTaxGroupByUser.addItemListener(this);
         moBoolAbpItemByUser.addItemListener(this);
+        moBoolInventoriable.addItemListener(this);
     }
 
     @Override
     public void removeAllListeners() {
+        jbEditXcc.removeActionListener(this);
         jbNewBrand.removeActionListener(this);
         jbNewManufacturer.removeActionListener(this);
         moKeyItemGenus.removeItemListener(this);
-        moBoolInventoriable.removeItemListener(this);
+        moKeyXccCofeprisSector.removeItemListener(this);
         moBoolTaxGroupByUser.removeItemListener(this);
         moBoolAbpItemByUser.removeItemListener(this);
+        moBoolInventoriable.removeItemListener(this);
     }
 
     @Override
@@ -636,6 +713,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         miClient.getSession().populateCatalogue(moKeyItemGenus, DModConsts.IU_GEN, DLibConsts.UNDEFINED, paramsItemGenus);
         miClient.getSession().populateCatalogue(moKeyTaxGroup, DModConsts.FU_TAX_GRP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyAbpItem, DModConsts.F_ABP_ITM, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccCofeprisSector, DModConsts.LS_XCC_COFEPRIS_SECT, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccPharmaceuticalForm, DModConsts.LS_XCC_PHARM_FORM, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccSpecialConditions, DModConsts.LS_XCC_SPEC_COND, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyBrand, DModConsts.IU_BRD, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyManufacturer, DModConsts.IU_MFR, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyComponent, DModConsts.IU_CMP, DLibConsts.UNDEFINED, null);
@@ -662,6 +742,10 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
                 moRegistry.setFkItemGenusId(mnParamItemGenusId);
                 mnParamItemGenusId = DLibConsts.UNDEFINED;
             }
+            
+            moRegistry.setFkXccCofeprisSectorId(DModSysConsts.LS_XCC_COFEPRIS_SECT_NA);
+            moRegistry.setFkXccPharmaceuticalFormId(DModSysConsts.LS_XCC_PHARM_FORM_NA);
+            moRegistry.setFkXccSpecialConditionsId(DModSysConsts.LS_XCC_SPEC_COND_NA);
 
             jtfRegistryKey.setText("");
         }
@@ -691,6 +775,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         moKeyUnit.setValue(new int[] { moRegistry.getFkUnitId() });
         moKeyTaxGroup.setValue(new int[] { moRegistry.getFkTaxGroupId_n() });
         moKeyAbpItem.setValue(new int[] { moRegistry.getFkAbpItemId_n() });
+        moKeyXccCofeprisSector.setValue(new int[] { moRegistry.getFkXccCofeprisSectorId() });
+        moKeyXccPharmaceuticalForm.setValue(new int[] { moRegistry.getFkXccPharmaceuticalFormId() });
+        moKeyXccSpecialConditions.setValue(new int[] { moRegistry.getFkXccSpecialConditionsId() });
 
         moBoolTaxGroupByUser.setValue(moRegistry.getFkTaxGroupId_n() != DLibConsts.UNDEFINED);
         moBoolAbpItemByUser.setValue(moRegistry.getFkAbpItemId_n() != DLibConsts.UNDEFINED);
@@ -718,6 +805,11 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         itemStateBoolTaxGroupByUser();
         itemStateBoolAbpItemByUser();
 
+        jbEditXcc.setEnabled(true);
+        moKeyXccCofeprisSector.setEnabled(false);
+        moKeyXccPharmaceuticalForm.setEnabled(false);
+        moKeyXccSpecialConditions.setEnabled(false);
+        
         moTextCode.setEnabled(configCompany.isCodeItemLineApplying());
         moKeyBrand.setEnabled(configCompany.isBrandApplying());
         moKeyManufacturer.setEnabled(configCompany.isManufacturerApplying());
@@ -751,6 +843,9 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         registry.setFkUnitId(moKeyUnit.getValue()[0]);
         registry.setFkTaxGroupId_n(!moBoolTaxGroupByUser.getValue() ? DLibConsts.UNDEFINED : moKeyTaxGroup.getValue()[0]);
         registry.setFkAbpItemId_n(!moBoolAbpItemByUser.getValue() ? DLibConsts.UNDEFINED : moKeyAbpItem.getValue()[0]);
+        registry.setFkXccCofeprisSectorId(moKeyXccCofeprisSector.getValue()[0]);
+        registry.setFkXccPharmaceuticalFormId(moKeyXccPharmaceuticalForm.getValue()[0]);
+        registry.setFkXccSpecialConditionsId(moKeyXccSpecialConditions.getValue()[0]);
 
         return registry;
     }
@@ -758,6 +853,19 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
     @Override
     public DGuiValidation validateForm() {
         DGuiValidation validation = moFields.validateFields();
+        
+        if (validation.isValid()) {
+            boolean isCofeprisSectorMedicines = moKeyXccCofeprisSector.getValue()[0] == DModSysConsts.LS_XCC_COFEPRIS_SECT_MEDS;
+            
+            if (isCofeprisSectorMedicines && moKeyXccPharmaceuticalForm.getValue()[0] == DModSysConsts.LS_XCC_PHARM_FORM_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyXccPharmaceuticalForm.getFieldName() + "'.");
+                validation.setComponent(moKeyXccPharmaceuticalForm);
+            }
+            else if (isCofeprisSectorMedicines && moKeyXccSpecialConditions.getValue()[0] == DModSysConsts.LS_XCC_SPEC_COND_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyXccSpecialConditions.getFieldName() + "'.");
+                validation.setComponent(moKeyXccSpecialConditions);
+            }
+        }
 
         return validation;
     }
@@ -777,7 +885,10 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
 
-            if (button == jbNewBrand) {
+            if (button == jbEditXcc) {
+                actionEditXcc();
+            }
+            else if (button == jbNewBrand) {
                 actionNewBrand();
             }
             else if (button == jbNewManufacturer) {
@@ -788,13 +899,14 @@ public class DFormItemLine extends DBeanForm implements ActionListener, ItemList
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldKey) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+        if (e.getSource() instanceof DBeanFieldKey && e.getStateChange() == ItemEvent.SELECTED) {
+            DBeanFieldKey field = (DBeanFieldKey) e.getSource();
 
-                if (field == moKeyItemGenus) {
-                    itemStateKeyItemGenus();
-                }
+            if (field == moKeyItemGenus) {
+                itemStateKeyItemGenus();
+            }
+            else if (field == moKeyXccCofeprisSector) {
+                itemStateXccCofeprisSector();
             }
         }
         else if (e.getSource() instanceof DBeanFieldBoolean) {

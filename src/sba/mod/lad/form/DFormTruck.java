@@ -76,9 +76,12 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         moTextTruckCode = new sba.lib.gui.bean.DBeanFieldText();
         jbTruckGetNextCode = new javax.swing.JButton();
         jpTruckInput14 = new javax.swing.JPanel();
+        jlTruckWeightTon = new javax.swing.JLabel();
+        moDecTruckWeightTon = new sba.lib.gui.bean.DBeanFieldDecimal();
+        jlTruckWeightTonUnit = new javax.swing.JLabel();
+        jpTruckInput15 = new javax.swing.JPanel();
         jlTruckPlate = new javax.swing.JLabel();
         moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
-        jpTruckInput15 = new javax.swing.JPanel();
         jlTruckModel = new javax.swing.JLabel();
         moYearTruckModel = new sba.lib.gui.bean.DBeanFieldCalendarYear();
         jpTruckInput16 = new javax.swing.JPanel();
@@ -165,20 +168,32 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
 
         jpTruckInput14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlTruckPlate.setText("Placa:*");
-        jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput14.add(jlTruckPlate);
+        jlTruckWeightTon.setText("Peso bruto:*");
+        jlTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput14.add(jlTruckWeightTon);
 
-        moTextTruckPlate.setText("TEXT");
-        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput14.add(moTextTruckPlate);
+        moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput14.add(moDecTruckWeightTon);
+
+        jlTruckWeightTonUnit.setText("ton");
+        jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jpTruckInput14.add(jlTruckWeightTonUnit);
 
         jpTruckInput1.add(jpTruckInput14);
 
         jpTruckInput15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlTruckPlate.setText("Placa:*");
+        jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput15.add(jlTruckPlate);
+
+        moTextTruckPlate.setText("TEXT");
+        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput15.add(moTextTruckPlate);
+
+        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlTruckModel.setText("Modelo:*");
-        jlTruckModel.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlTruckModel.setPreferredSize(new java.awt.Dimension(65, 23));
         jpTruckInput15.add(jlTruckModel);
         jpTruckInput15.add(moYearTruckModel);
 
@@ -324,6 +339,8 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
     private javax.swing.JLabel jlTruckPlate;
     private javax.swing.JLabel jlTruckPrime;
     private javax.swing.JLabel jlTruckTransportConfig;
+    private javax.swing.JLabel jlTruckWeightTon;
+    private javax.swing.JLabel jlTruckWeightTonUnit;
     private javax.swing.JPanel jpHeader;
     private javax.swing.JPanel jpTruckInput1;
     private javax.swing.JPanel jpTruckInput11;
@@ -343,6 +360,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
     private javax.swing.JPanel jpTruckInput27;
     private javax.swing.JPanel jpTruckInput28;
     private sba.lib.gui.bean.DBeanCompoundFieldCurrency moCurTruckPrime;
+    private sba.lib.gui.bean.DBeanFieldDecimal moDecTruckWeightTon;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTruckPermissionType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTruckTransportConfig;
     private sba.lib.gui.bean.DBeanFieldText moTextTruckCargoInsurance;
@@ -368,6 +386,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         moKeyTruckTransportConfig.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckTransportConfig), true);
         moTextTruckName.setTextSettings(DGuiUtils.getLabelName(jlTruckName), 100);
         moTextTruckCode.setTextSettings(DGuiUtils.getLabelName(jlTruckCode), 10);
+        moDecTruckWeightTon.setDecimalSettings(DGuiUtils.getLabelName(jlTruckWeightTon), DGuiConsts.GUI_TYPE_DEC_AMT, true);
         moTextTruckPlate.setTextSettings(DGuiUtils.getLabelName(jlTruckPlate), 7);
         moYearTruckModel.setCalendarSettings(DGuiUtils.getLabelName(jlTruckModel));
         moKeyTruckPermissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckPermissionType), true);
@@ -385,6 +404,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         moFields.addField(moKeyTruckTransportConfig);
         moFields.addField(moTextTruckName);
         moFields.addField(moTextTruckCode);
+        moFields.addField(moDecTruckWeightTon);
         moFields.addField(moTextTruckPlate);
         moFields.addField(moYearTruckModel);
         moFields.addField(moKeyTruckPermissionType);
@@ -423,6 +443,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
             itemStateChangedTruckTransportConfig();
             moTextTruckName.setValue(moTruck.getName());
             moTextTruckCode.setValue(moTruck.getCode());
+            moDecTruckWeightTon.setValue(moTruck.getWeightTon());
             moTextTruckPlate.setValue(moTruck.getPlate());
             moYearTruckModel.setValue(moTruck.getModel());
             moKeyTruckPermissionType.setValue(new int[] { moXmlTruckPermissionType.getId(moTruck.getPermissionTypeCode()) });
@@ -554,6 +575,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         
         truck.setCode(moTextTruckCode.getValue());
         truck.setName(moTextTruckName.getValue());
+        truck.setWeightTon(moDecTruckWeightTon.getValue());
         truck.setPlate(moTextTruckPlate.getValue());
         truck.setModel(moYearTruckModel.getValue());
         DGuiItem guiItem1 = moKeyTruckTransportConfig.getSelectedItem();

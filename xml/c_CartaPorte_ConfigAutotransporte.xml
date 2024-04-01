@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Entry id="1" code="VL" name="Vehículo ligero de carga (2 llantas en el eje delantero y 2 llantas en el eje trasero)" axis="2" tires="4" trailer="0, 1" term_start="2021-12-01" term_end=""/>
-<Entry id="2" code="C2" name="Camión Unitario (2 llantas en el eje delantero y 4 llantas en el eje trasero)" axis="2" tires="6" trailer="0" term_start="2021-06-01" term_end=""/>
-<Entry id="3" code="C3" name="Camión Unitario (2 llantas en el eje delantero y 6 o 8 llantas en los dos ejes traseros)" axis="3" tires="8 o 10" trailer="0" term_start="2021-06-01" term_end=""/>
-<Entry id="4" code="C2R2" name="Camión-Remolque (6 llantas en el camión y 8 llantas en remolque)" axis="4" tires="14" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="5" code="C3R2" name="Camión-Remolque (10 llantas en el camión y 8 llantas en remolque)" axis="5" tires="18" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="6" code="C2R3" name="Camión-Remolque (6 llantas en el camión y 12 llantas en remolque)" axis="5" tires="18" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="7" code="C3R3" name="Camión-Remolque (10 llantas en el camión y 12 llantas en remolque)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="8" code="T2S1" name="Tractocamión Articulado (6 llantas en el tractocamión, 4 llantas en el semirremolque)" axis="3" tires="10" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="9" code="T2S2" name="Tractocamión Articulado (6 llantas en el tractocamión, 8 llantas en el semirremolque)" axis="4" tires="14" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="10" code="T2S3" name="Tractocamión Articulado (6 llantas en el tractocamión, 12 llantas en el semirremolque)" axis="5" tires="18" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="11" code="T3S1" name="Tractocamión Articulado (10 llantas en el tractocamión, 4 llantas en el semirremolque)" axis="4" tires="14" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="12" code="T3S2" name="Tractocamión Articulado (10 llantas en el tractocamión, 8 llantas en el semirremolque)" axis="5" tires="18" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="13" code="T3S3" name="Tractocamión Articulado (10 llantas en el tractocamión, 12 llantas en el semirremolque)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="14" code="T2S1R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" axis="5" tires="18" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="15" code="T2S2R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="16" code="T2S1R3" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="17" code="T3S1R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="18" code="T3S1R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" axis="7" tires="26" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="19" code="T3S2R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" axis="7" tires="26" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="20" code="T3S2R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 12 llantas en el remolque)" axis="8" tires="30" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="21" code="T3S2R4" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 16 llantas en el remolque)" axis="9" tires="34" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="22" code="T2S2S2" name="Tractocamión Semirremolque-Semirremolque (6 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="6" tires="22" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="23" code="T3S2S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="7" tires="26" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="24" code="T3S3S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 12 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="8" tires="30" trailer="1" term_start="2021-06-01" term_end=""/>
-<Entry id="25" code="OTROEVGP" name="Especializado de carga Voluminosa y/o Gran Peso" axis="" tires="" trailer="0, 1" term_start="2021-12-01" term_end=""/>
-<Entry id="26" code="OTROSG" name="Servicio de Grúas" axis="" tires="" trailer="0" term_start="2021-06-01" term_end=""/>
-<Entry id="27" code="GPLUTA" name="Grúa de Pluma Tipo A" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="28" code="GPLUTB" name="Grúa de Pluma Tipo B" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="29" code="GPLUTC" name="Grúa de Pluma Tipo C" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="30" code="GPLUTD" name="Grúa de Pluma Tipo D" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="31" code="GPLATA" name="Grúa de Plataforma Tipo A" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="32" code="GPLATB" name="Grúa de Plataforma Tipo B" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="33" code="GPLATC" name="Grúa de Plataforma Tipo C" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
-<Entry id="34" code="GPLATD" name="Grúa de Plataforma Tipo D" axis="" tires="" trailer="0" term_start="2021-12-01" term_end=""/>
+<Entry id="1" code="VL" name="Vehículo ligero de carga (2 llantas en el eje delantero y 2 llantas en el eje trasero)" axis="2" tires="4" trailer="0, 1" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="C2" name="Camión Unitario (2 llantas en el eje delantero y 4 llantas en el eje trasero)" axis="2" tires="6" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="C3" name="Camión Unitario (2 llantas en el eje delantero y 6 o 8 llantas en los dos ejes traseros)" axis="3" tires="8 o 10" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="C2R2" name="Camión-Remolque (6 llantas en el camión y 8 llantas en remolque)" axis="4" tires="14" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="C3R2" name="Camión-Remolque (10 llantas en el camión y 8 llantas en remolque)" axis="5" tires="18" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="C2R3" name="Camión-Remolque (6 llantas en el camión y 12 llantas en remolque)" axis="5" tires="18" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="C3R3" name="Camión-Remolque (10 llantas en el camión y 12 llantas en remolque)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="T2S1" name="Tractocamión Articulado (6 llantas en el tractocamión, 4 llantas en el semirremolque)" axis="3" tires="10" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="T2S2" name="Tractocamión Articulado (6 llantas en el tractocamión, 8 llantas en el semirremolque)" axis="4" tires="14" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="T2S3" name="Tractocamión Articulado (6 llantas en el tractocamión, 12 llantas en el semirremolque)" axis="5" tires="18" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="11" code="T3S1" name="Tractocamión Articulado (10 llantas en el tractocamión, 4 llantas en el semirremolque)" axis="4" tires="14" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="12" code="T3S2" name="Tractocamión Articulado (10 llantas en el tractocamión, 8 llantas en el semirremolque)" axis="5" tires="18" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="13" code="T3S3" name="Tractocamión Articulado (10 llantas en el tractocamión, 12 llantas en el semirremolque)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="14" code="T2S1R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" axis="5" tires="18" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="15" code="T2S2R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="16" code="T2S1R3" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="17" code="T3S1R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="18" code="T3S1R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" axis="7" tires="26" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="19" code="T3S2R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" axis="7" tires="26" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="20" code="T3S2R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 12 llantas en el remolque)" axis="8" tires="30" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="21" code="T3S2R4" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 16 llantas en el remolque)" axis="9" tires="34" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="22" code="T2S2S2" name="Tractocamión Semirremolque-Semirremolque (6 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="6" tires="22" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="23" code="T3S2S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="7" tires="26" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="24" code="T3S3S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 12 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" axis="8" tires="30" trailer="1" term_start="2023-11-25" term_end=""/>
+<Entry id="25" code="OTROEVGP" name="Especializado de carga Voluminosa y/o Gran Peso" axis="" tires="" trailer="0, 1" term_start="2023-11-25" term_end=""/>
+<Entry id="26" code="OTROSG" name="Servicio de Grúas" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="27" code="GPLUTA" name="Grúa de Pluma Tipo A" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="28" code="GPLUTB" name="Grúa de Pluma Tipo B" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="29" code="GPLUTC" name="Grúa de Pluma Tipo C" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="30" code="GPLUTD" name="Grúa de Pluma Tipo D" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="31" code="GPLATA" name="Grúa de Plataforma Tipo A" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="32" code="GPLATB" name="Grúa de Plataforma Tipo B" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="33" code="GPLATC" name="Grúa de Plataforma Tipo C" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
+<Entry id="34" code="GPLATD" name="Grúa de Plataforma Tipo D" axis="" tires="" trailer="0" term_start="2023-11-25" term_end=""/>
 </Catalog>

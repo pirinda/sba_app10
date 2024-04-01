@@ -74,6 +74,9 @@ public class DDbItemGenus extends DDbRegistryUser {
     protected int mnFkSerialNumberTypeId;
     protected int mnFkTaxGroupId;
     protected int mnFkAbpItemId;
+    protected int mnFkXccCofeprisSectorId;
+    protected int mnFkXccPharmaceuticalFormId;
+    protected int mnFkXccSpecialConditionsId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -136,6 +139,9 @@ public class DDbItemGenus extends DDbRegistryUser {
     public void setFkSerialNumberTypeId(int n) { mnFkSerialNumberTypeId = n; }
     public void setFkTaxGroupId(int n) { mnFkTaxGroupId = n; }
     public void setFkAbpItemId(int n) { mnFkAbpItemId = n; }
+    public void setFkXccCofeprisSectorId(int n) { mnFkXccCofeprisSectorId = n; }
+    public void setFkXccPharmaceuticalFormId(int n) { mnFkXccPharmaceuticalFormId = n; }
+    public void setFkXccSpecialConditionsId(int n) { mnFkXccSpecialConditionsId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -191,6 +197,9 @@ public class DDbItemGenus extends DDbRegistryUser {
     public int getFkSerialNumberTypeId() { return mnFkSerialNumberTypeId; }
     public int getFkTaxGroupId() { return mnFkTaxGroupId; }
     public int getFkAbpItemId() { return mnFkAbpItemId; }
+    public int getFkXccCofeprisSectorId() { return mnFkXccCofeprisSectorId; }
+    public int getFkXccPharmaceuticalFormId() { return mnFkXccPharmaceuticalFormId; }
+    public int getFkXccSpecialConditionsId() { return mnFkXccSpecialConditionsId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -260,6 +269,9 @@ public class DDbItemGenus extends DDbRegistryUser {
         mnFkSerialNumberTypeId = 0;
         mnFkTaxGroupId = 0;
         mnFkAbpItemId = 0;
+        mnFkXccCofeprisSectorId = 0;
+        mnFkXccPharmaceuticalFormId = 0;
+        mnFkXccSpecialConditionsId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -358,6 +370,9 @@ public class DDbItemGenus extends DDbRegistryUser {
             mnFkSerialNumberTypeId = resultSet.getInt("fk_snr_tp");
             mnFkTaxGroupId = resultSet.getInt("fk_tax_grp");
             mnFkAbpItemId = resultSet.getInt("fk_abp_itm");
+            mnFkXccCofeprisSectorId = resultSet.getInt("fk_xcc_cofepris_sect");
+            mnFkXccPharmaceuticalFormId = resultSet.getInt("fk_xcc_pharm_form");
+            mnFkXccSpecialConditionsId = resultSet.getInt("fk_xcc_spec_cond");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -436,6 +451,9 @@ public class DDbItemGenus extends DDbRegistryUser {
                     mnFkSerialNumberTypeId + ", " +
                     mnFkTaxGroupId + ", " +
                     mnFkAbpItemId + ", " +
+                    mnFkXccCofeprisSectorId + ", " + 
+                    mnFkXccPharmaceuticalFormId + ", " + 
+                    mnFkXccSpecialConditionsId + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -496,6 +514,9 @@ public class DDbItemGenus extends DDbRegistryUser {
                     "fk_snr_tp = " + mnFkSerialNumberTypeId + ", " +
                     "fk_tax_grp = " + mnFkTaxGroupId + ", " +
                     "fk_abp_itm = " + mnFkAbpItemId + ", " +
+                    "fk_xcc_cofepris_sect = " + mnFkXccCofeprisSectorId + ", " +
+                    "fk_xcc_pharm_form = " + mnFkXccPharmaceuticalFormId + ", " +
+                    "fk_xcc_spec_cond = " + mnFkXccSpecialConditionsId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -562,6 +583,9 @@ public class DDbItemGenus extends DDbRegistryUser {
         registry.setFkSerialNumberTypeId(this.getFkSerialNumberTypeId());
         registry.setFkTaxGroupId(this.getFkTaxGroupId());
         registry.setFkAbpItemId(this.getFkAbpItemId());
+        registry.setFkXccCofeprisSectorId(this.getFkXccCofeprisSectorId());
+        registry.setFkXccPharmaceuticalFormId(this.getFkXccPharmaceuticalFormId());
+        registry.setFkXccSpecialConditionsId(this.getFkXccSpecialConditionsId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

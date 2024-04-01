@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 037.0
+2024-04-01/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación del Complemento Carta Porte 3.0.
+
+================================================================================
 SBA 1.0 036.3
 2024-01-18/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de nueva disposición fiscal para expresar el atributo EquivalenciaDR a 10 decimales en el complemento de recepción de pagos 2.0 cuando la moneda del pago y del documento es la misma.

@@ -59,7 +59,7 @@ public class DFormItemFamily extends DBeanForm {
         jpContainer.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jpContainer.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(2, 1, 0, 3));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -91,6 +91,8 @@ public class DFormItemFamily extends DBeanForm {
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeItemFamily();
 
+        DGuiUtils.setWindowBounds(this, 400, 250);
+        
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode.getText()), lenCode == 0 || lenCode > 5 ? 5 : lenCode);
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName.getText()), 50);
         

@@ -11,8 +11,11 @@
 
 package sba.mod.itm.form;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.JButton;
 import sba.lib.DLibConsts;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
@@ -22,6 +25,7 @@ import sba.lib.gui.DGuiFieldKeyGroup;
 import sba.lib.gui.DGuiUtils;
 import sba.lib.gui.DGuiValidation;
 import sba.lib.gui.bean.DBeanFieldBoolean;
+import sba.lib.gui.bean.DBeanFieldKey;
 import sba.lib.gui.bean.DBeanForm;
 import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
@@ -32,7 +36,7 @@ import sba.mod.itm.db.DDbItemGenus;
  *
  * @author Sergio Flores
  */
-public class DFormItemGenus extends DBeanForm implements ItemListener {
+public class DFormItemGenus extends DBeanForm implements ActionListener, ItemListener {
 
     private DDbItemGenus moRegistry;
     private DGuiFieldKeyGroup moFieldKeyGroup;
@@ -56,6 +60,9 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jpContainer = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
+        jlItemFamily = new javax.swing.JLabel();
+        moKeyItemFamily = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel11 = new javax.swing.JPanel();
         jlItemCategory = new javax.swing.JLabel();
         moKeyItemCategory = new sba.lib.gui.bean.DBeanFieldKey();
@@ -65,20 +72,17 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel13 = new javax.swing.JPanel();
         jlItemType = new javax.swing.JLabel();
         moKeyItemType = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel14 = new javax.swing.JPanel();
-        jlItemFamily = new javax.swing.JLabel();
-        moKeyItemFamily = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel19 = new javax.swing.JPanel();
         moBoolItemLineApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel5 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jlTaxGroup = new javax.swing.JLabel();
         moKeyTaxGroup = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel17 = new javax.swing.JPanel();
+        jPanel18 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jlAbpItem = new javax.swing.JLabel();
         moKeyAbpItem = new sba.lib.gui.bean.DBeanFieldKey();
-        jPanel18 = new javax.swing.JPanel();
         jPanel47 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -92,13 +96,21 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel4 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sba.lib.gui.bean.DBeanFieldText();
+        jPanel23 = new javax.swing.JPanel();
+        jlXccCofeprisSector = new javax.swing.JLabel();
+        moKeyXccCofeprisSector = new sba.lib.gui.bean.DBeanFieldKey();
+        jbEditXcc = new javax.swing.JButton();
+        jPanel40 = new javax.swing.JPanel();
+        jlXccPharmaceiticalForm = new javax.swing.JLabel();
+        moKeyXccPharmaceuticalForm = new sba.lib.gui.bean.DBeanFieldKey();
+        jlXccSpecialConditions = new javax.swing.JLabel();
+        moKeyXccSpecialConditions = new sba.lib.gui.bean.DBeanFieldKey();
         jPanel22 = new javax.swing.JPanel();
         moBoolCodeEditable = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolNameEditable = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolIngredientApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jPanel23 = new javax.swing.JPanel();
-        moBoolBulk = new sba.lib.gui.bean.DBeanFieldBoolean();
         jPanel24 = new javax.swing.JPanel();
+        moBoolBulk = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolInventoriable = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolLotApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolSerialNumberApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
@@ -155,28 +167,33 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel37 = new javax.swing.JPanel();
         jPanel38 = new javax.swing.JPanel();
         jPanel39 = new javax.swing.JPanel();
-        jPanel40 = new javax.swing.JPanel();
         moBoolMeasurementLengthApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolMeasurementSurfaceApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolMeasurementVolumeApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jPanel44 = new javax.swing.JPanel();
         moBoolMeasurementMassApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
         moBoolMeasurementTimeApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jPanel45 = new javax.swing.JPanel();
         jPanel41 = new javax.swing.JPanel();
         jPanel42 = new javax.swing.JPanel();
-        jPanel43 = new javax.swing.JPanel();
         moBoolWeightGrossApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jPanel48 = new javax.swing.JPanel();
         moBoolWeightDeliveryApplying = new sba.lib.gui.bean.DBeanFieldBoolean();
-        jPanel46 = new javax.swing.JPanel();
 
         jpContainer.setLayout(new java.awt.BorderLayout(5, 0));
 
-        jPanel2.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Clasificación:"));
-        jPanel1.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
+
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlItemFamily.setText("Familia ítems:*");
+        jlItemFamily.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel14.add(jlItemFamily);
+
+        moKeyItemFamily.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel14.add(moKeyItemFamily);
+
+        jPanel1.add(jPanel14);
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -211,17 +228,6 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel1.add(jPanel13);
 
-        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlItemFamily.setText("Familia ítems:*");
-        jlItemFamily.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel14.add(jlItemFamily);
-
-        moKeyItemFamily.setPreferredSize(new java.awt.Dimension(250, 23));
-        jPanel14.add(moKeyItemFamily);
-
-        jPanel1.add(jPanel14);
-
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolItemLineApplying.setText("Aplica línea de ítems");
@@ -233,7 +239,10 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel2.add(jPanel1);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración:"));
-        jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel5.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel5.add(jPanel17);
 
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -246,8 +255,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel5.add(jPanel15);
 
-        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel5.add(jPanel17);
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel5.add(jPanel18);
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -260,9 +269,6 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel5.add(jPanel20);
 
-        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel5.add(jPanel18);
-
         jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel5.add(jPanel47);
 
@@ -270,12 +276,12 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jpContainer.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jPanel6.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel6.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel7.setLayout(new java.awt.BorderLayout());
 
-        jPanel9.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
+        jPanel9.setLayout(new java.awt.GridLayout(10, 1, 0, 3));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -283,7 +289,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel3.add(jlCode);
 
-        moTextCode.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextCode.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel3.add(moTextCode);
 
         jlCfdItemKey.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -312,42 +318,73 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel9.add(jPanel4);
 
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlXccCofeprisSector.setText("Sector COFEPRIS:*");
+        jlXccCofeprisSector.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel23.add(jlXccCofeprisSector);
+
+        moKeyXccCofeprisSector.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel23.add(moKeyXccCofeprisSector);
+
+        jbEditXcc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_edit.gif"))); // NOI18N
+        jbEditXcc.setToolTipText("Modificar catálogos carta porte");
+        jbEditXcc.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel23.add(jbEditXcc);
+
+        jPanel9.add(jPanel23);
+
+        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlXccPharmaceiticalForm.setText("Forma farmac.:*");
+        jlXccPharmaceiticalForm.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel40.add(jlXccPharmaceiticalForm);
+
+        moKeyXccPharmaceuticalForm.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel40.add(moKeyXccPharmaceuticalForm);
+
+        jlXccSpecialConditions.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlXccSpecialConditions.setText("Conds. esps.:*");
+        jlXccSpecialConditions.setPreferredSize(new java.awt.Dimension(85, 23));
+        jPanel40.add(jlXccSpecialConditions);
+
+        moKeyXccSpecialConditions.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel40.add(moKeyXccSpecialConditions);
+
+        jPanel9.add(jPanel40);
+
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolCodeEditable.setText("Código editable");
-        moBoolCodeEditable.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolCodeEditable.setText("Código modif.");
+        moBoolCodeEditable.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel22.add(moBoolCodeEditable);
 
-        moBoolNameEditable.setText("Nombre editable");
-        moBoolNameEditable.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolNameEditable.setText("Nombre modif.");
+        moBoolNameEditable.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel22.add(moBoolNameEditable);
 
-        moBoolIngredientApplying.setText("Ingrediente");
-        moBoolIngredientApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolIngredientApplying.setText("Ingrediente(s)");
+        moBoolIngredientApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel22.add(moBoolIngredientApplying);
 
         jPanel9.add(jPanel22);
 
-        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        moBoolBulk.setText("A granel");
-        moBoolBulk.setPreferredSize(new java.awt.Dimension(115, 23));
-        jPanel23.add(moBoolBulk);
-
-        jPanel9.add(jPanel23);
-
         jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        moBoolBulk.setText("A granel");
+        moBoolBulk.setPreferredSize(new java.awt.Dimension(105, 23));
+        jPanel24.add(moBoolBulk);
+
         moBoolInventoriable.setText("Inventariable");
-        moBoolInventoriable.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolInventoriable.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel24.add(moBoolInventoriable);
 
         moBoolLotApplying.setText("Lotes");
-        moBoolLotApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolLotApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel24.add(moBoolLotApplying);
 
         moBoolSerialNumberApplying.setText("Números serie");
-        moBoolSerialNumberApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolSerialNumberApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel24.add(moBoolSerialNumberApplying);
 
         jPanel9.add(jPanel24);
@@ -373,7 +410,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel21.add(moTextSerialNumberName);
 
         jlSerialNumberLength.setText("Longitud:");
-        jlSerialNumberLength.setPreferredSize(new java.awt.Dimension(50, 23));
+        jlSerialNumberLength.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel21.add(jlSerialNumberLength);
 
         moIntSerialNumberLength.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -384,15 +421,15 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolUnitsVirtualApplying.setText("Un. virtuales");
-        moBoolUnitsVirtualApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolUnitsVirtualApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel25.add(moBoolUnitsVirtualApplying);
 
         moBoolUnitsContainedApplying.setText("Un. contenidas");
-        moBoolUnitsContainedApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolUnitsContainedApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel25.add(moBoolUnitsContainedApplying);
 
         moBoolUnitsPackageApplying.setText("Un. conversión");
-        moBoolUnitsPackageApplying.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolUnitsPackageApplying.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel25.add(moBoolUnitsPackageApplying);
 
         jPanel9.add(jPanel25);
@@ -400,15 +437,15 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolFreeOfPrice.setText("Sin precios");
-        moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfPrice.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfPrice);
 
         moBoolFreeOfDiscount.setText("Sin descuentos");
-        moBoolFreeOfDiscount.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfDiscount.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfDiscount);
 
         moBoolFreeOfCommission.setText("Sin comisiones");
-        moBoolFreeOfCommission.setPreferredSize(new java.awt.Dimension(115, 23));
+        moBoolFreeOfCommission.setPreferredSize(new java.awt.Dimension(105, 23));
         jPanel26.add(moBoolFreeOfCommission);
 
         jPanel9.add(jPanel26);
@@ -419,10 +456,10 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel8.setLayout(new java.awt.BorderLayout());
 
-        jPanel10.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel10.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel32.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración código ítems:"));
-        jPanel32.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel32.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -482,7 +519,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel10.add(jPanel32);
 
         jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración nombre ítems:"));
-        jPanel27.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel27.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -543,43 +580,32 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         jPanel8.add(jPanel10, java.awt.BorderLayout.PAGE_START);
 
-        jPanel37.setLayout(new java.awt.GridLayout(1, 2, 5, 5));
+        jPanel37.setLayout(new java.awt.GridLayout(1, 2, 5, 0));
 
         jPanel38.setBorder(javax.swing.BorderFactory.createTitledBorder("Dimensiones físicas:"));
         jPanel38.setLayout(new java.awt.BorderLayout());
 
-        jPanel39.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel39.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
-        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        moBoolMeasurementLengthApplying.setText("Longitud");
+        moBoolMeasurementLengthApplying.setPreferredSize(new java.awt.Dimension(65, 23));
+        jPanel39.add(moBoolMeasurementLengthApplying);
 
-        moBoolMeasurementLengthApplying.setText("Lon.");
-        moBoolMeasurementLengthApplying.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel40.add(moBoolMeasurementLengthApplying);
+        moBoolMeasurementSurfaceApplying.setText("Superficie");
+        moBoolMeasurementSurfaceApplying.setPreferredSize(new java.awt.Dimension(65, 23));
+        jPanel39.add(moBoolMeasurementSurfaceApplying);
 
-        moBoolMeasurementSurfaceApplying.setText("Sup.");
-        moBoolMeasurementSurfaceApplying.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel40.add(moBoolMeasurementSurfaceApplying);
-
-        moBoolMeasurementVolumeApplying.setText("Vol.");
-        moBoolMeasurementVolumeApplying.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel40.add(moBoolMeasurementVolumeApplying);
-
-        jPanel39.add(jPanel40);
-
-        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        moBoolMeasurementVolumeApplying.setText("Volumen");
+        moBoolMeasurementVolumeApplying.setPreferredSize(new java.awt.Dimension(65, 23));
+        jPanel39.add(moBoolMeasurementVolumeApplying);
 
         moBoolMeasurementMassApplying.setText("Masa");
-        moBoolMeasurementMassApplying.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel44.add(moBoolMeasurementMassApplying);
+        moBoolMeasurementMassApplying.setPreferredSize(new java.awt.Dimension(65, 23));
+        jPanel39.add(moBoolMeasurementMassApplying);
 
         moBoolMeasurementTimeApplying.setText("Tiempo");
-        moBoolMeasurementTimeApplying.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel44.add(moBoolMeasurementTimeApplying);
-
-        jPanel39.add(jPanel44);
-
-        jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel39.add(jPanel45);
+        moBoolMeasurementTimeApplying.setPreferredSize(new java.awt.Dimension(65, 23));
+        jPanel39.add(moBoolMeasurementTimeApplying);
 
         jPanel38.add(jPanel39, java.awt.BorderLayout.NORTH);
 
@@ -588,24 +614,13 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         jPanel41.setBorder(javax.swing.BorderFactory.createTitledBorder("Peso:"));
         jPanel41.setLayout(new java.awt.BorderLayout());
 
-        jPanel42.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
-
-        jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel42.setLayout(new java.awt.GridLayout(5, 1, 0, 3));
 
         moBoolWeightGrossApplying.setText("Peso bruto");
-        jPanel43.add(moBoolWeightGrossApplying);
-
-        jPanel42.add(jPanel43);
-
-        jPanel48.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel42.add(moBoolWeightGrossApplying);
 
         moBoolWeightDeliveryApplying.setText("Peso flete");
-        jPanel48.add(moBoolWeightDeliveryApplying);
-
-        jPanel42.add(jPanel48);
-
-        jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel42.add(jPanel46);
+        jPanel42.add(moBoolWeightDeliveryApplying);
 
         jPanel41.add(jPanel42, java.awt.BorderLayout.NORTH);
 
@@ -623,20 +638,23 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private void initComponentsCustom() {
         int lenCode = ((DDbConfigCompany) miClient.getSession().getConfigCompany()).getLengthCodeItemGenus();
 
-        DGuiUtils.setWindowBounds(this, 880, 550);
+        DGuiUtils.setWindowBounds(this, 960, 600);
         
         moFieldKeyGroup = new DGuiFieldKeyGroup(miClient);
 
+        moKeyItemFamily.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemFamily), true);
         moKeyItemCategory.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemCategory), true);
         moKeyItemClass.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemClass), true);
         moKeyItemType.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemType), true);
-        moKeyItemFamily.setKeySettings(miClient, DGuiUtils.getLabelName(jlItemFamily), true);
         moBoolItemLineApplying.setBooleanSettings(moBoolItemLineApplying.getText(), false);
         moKeyTaxGroup.setKeySettings(miClient, DGuiUtils.getLabelName(jlTaxGroup), true);
         moKeyAbpItem.setKeySettings(miClient, DGuiUtils.getLabelName(jlAbpItem), true);
         moTextCode.setTextSettings(DGuiUtils.getLabelName(jlCode), lenCode == 0 || lenCode > 5 ? 5 : lenCode);
         moTextCfdItemKey.setTextSettings(DGuiUtils.getLabelName(jlCfdItemKey), 8);
         moTextName.setTextSettings(DGuiUtils.getLabelName(jlName), 25);
+        moKeyXccCofeprisSector.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccCofeprisSector), true);
+        moKeyXccPharmaceuticalForm.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccPharmaceiticalForm), true);
+        moKeyXccSpecialConditions.setKeySettings(miClient, DGuiUtils.getLabelName(jlXccSpecialConditions), true);
         moBoolCodeEditable.setBooleanSettings(moBoolCodeEditable.getText(), false);
         moBoolNameEditable.setBooleanSettings(moBoolNameEditable.getText(), false);
         moBoolIngredientApplying.setBooleanSettings(moBoolIngredientApplying.getText(), false);
@@ -671,16 +689,19 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moBoolWeightGrossApplying.setBooleanSettings(moBoolWeightGrossApplying.getText(), false);
         moBoolWeightDeliveryApplying.setBooleanSettings(moBoolWeightDeliveryApplying.getText(), false);
 
+        moFields.addField(moKeyItemFamily);
         moFields.addField(moKeyItemCategory);
         moFields.addField(moKeyItemClass);
         moFields.addField(moKeyItemType);
-        moFields.addField(moKeyItemFamily);
         moFields.addField(moBoolItemLineApplying);
         moFields.addField(moKeyTaxGroup);
         moFields.addField(moKeyAbpItem);
         moFields.addField(moTextCode);
         moFields.addField(moTextCfdItemKey);
         moFields.addField(moTextName);
+        moFields.addField(moKeyXccCofeprisSector);
+        moFields.addField(moKeyXccPharmaceuticalForm);
+        moFields.addField(moKeyXccSpecialConditions);
         moFields.addField(moBoolCodeEditable);
         moFields.addField(moBoolNameEditable);
         moFields.addField(moBoolIngredientApplying);
@@ -716,6 +737,26 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moFields.addField(moBoolWeightDeliveryApplying);
 
         moFields.setFormButton(jbSave);
+    }
+    
+    private void actionEditXcc() {
+        jbEditXcc.setEnabled(false);
+        moKeyXccCofeprisSector.setEnabled(true);
+        moKeyXccCofeprisSector.requestFocusInWindow();
+        
+        itemStateXccCofeprisSector();
+    }
+    
+    private void itemStateXccCofeprisSector() {
+        boolean enable = moKeyXccCofeprisSector.getSelectedIndex() > 0 && moKeyXccCofeprisSector.getValue()[0] != DModSysConsts.LS_XCC_COFEPRIS_SECT_NA;
+        
+        moKeyXccPharmaceuticalForm.setEnabled(enable);
+        moKeyXccSpecialConditions.setEnabled(enable);
+        
+        if (!enable) {
+            moKeyXccPharmaceuticalForm.setValue(new int[] { DModSysConsts.LS_XCC_PHARM_FORM_NA });
+            moKeyXccSpecialConditions.setValue(new int[] { DModSysConsts.LS_XCC_SPEC_COND_NA });
+        }
     }
 
     private void itemStateBoolItemLineApplying() {
@@ -804,12 +845,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel40;
     private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
-    private javax.swing.JPanel jPanel43;
-    private javax.swing.JPanel jPanel44;
-    private javax.swing.JPanel jPanel45;
-    private javax.swing.JPanel jPanel46;
     private javax.swing.JPanel jPanel47;
-    private javax.swing.JPanel jPanel48;
     private javax.swing.JPanel jPanel49;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel50;
@@ -817,6 +853,7 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JButton jbEditXcc;
     private javax.swing.JLabel jlAbpItem;
     private javax.swing.JLabel jlCfdItemKey;
     private javax.swing.JLabel jlCfdItemKeyHint;
@@ -840,6 +877,9 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private javax.swing.JLabel jlSerialNumberName;
     private javax.swing.JLabel jlSerialNumberType;
     private javax.swing.JLabel jlTaxGroup;
+    private javax.swing.JLabel jlXccCofeprisSector;
+    private javax.swing.JLabel jlXccPharmaceiticalForm;
+    private javax.swing.JLabel jlXccSpecialConditions;
     private javax.swing.JPanel jpContainer;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBulk;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolCodeEditable;
@@ -880,6 +920,9 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     private sba.lib.gui.bean.DBeanFieldKey moKeyItemType;
     private sba.lib.gui.bean.DBeanFieldKey moKeySerialNumberType;
     private sba.lib.gui.bean.DBeanFieldKey moKeyTaxGroup;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccCofeprisSector;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccPharmaceuticalForm;
+    private sba.lib.gui.bean.DBeanFieldKey moKeyXccSpecialConditions;
     private sba.lib.gui.bean.DBeanFieldText moTextCfdItemKey;
     private sba.lib.gui.bean.DBeanFieldText moTextCode;
     private sba.lib.gui.bean.DBeanFieldText moTextName;
@@ -888,6 +931,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
     @Override
     public void addAllListeners() {
+        jbEditXcc.addActionListener(this);
+        moKeyXccCofeprisSector.addItemListener(this);
         moBoolItemLineApplying.addItemListener(this);
         moBoolInventoriable.addItemListener(this);
         moBoolSerialNumberApplying.addItemListener(this);
@@ -895,6 +940,8 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
     @Override
     public void removeAllListeners() {
+        jbEditXcc.removeActionListener(this);
+        moKeyXccCofeprisSector.removeItemListener(this);
         moBoolItemLineApplying.removeItemListener(this);
         moBoolInventoriable.removeItemListener(this);
         moBoolSerialNumberApplying.removeItemListener(this);
@@ -911,6 +958,9 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         miClient.getSession().populateCatalogue(moKeyItemFamily, DModConsts.IU_FAM, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTaxGroup, DModConsts.FU_TAX_GRP, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyAbpItem, DModConsts.F_ABP_ITM, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccCofeprisSector, DModConsts.LS_XCC_COFEPRIS_SECT, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccPharmaceuticalForm, DModConsts.LS_XCC_PHARM_FORM, DLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyXccSpecialConditions, DModConsts.LS_XCC_SPEC_COND, DLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeySerialNumberType, DModConsts.IS_SNR_TP, DLibConsts.UNDEFINED, null);
     }
 
@@ -928,11 +978,16 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
-            jtfRegistryKey.setText("");
 
             if (moRegistry.getFkTaxGroupId() == DLibConsts.UNDEFINED) {
                 moRegistry.setFkTaxGroupId(configCompany.getFkTaxGroupId_n());
             }
+            
+            moRegistry.setFkXccCofeprisSectorId(DModSysConsts.LS_XCC_COFEPRIS_SECT_NA);
+            moRegistry.setFkXccPharmaceuticalFormId(DModSysConsts.LS_XCC_PHARM_FORM_NA);
+            moRegistry.setFkXccSpecialConditionsId(DModSysConsts.LS_XCC_SPEC_COND_NA);
+            
+            jtfRegistryKey.setText("");
         }
         else {
             jtfRegistryKey.setText(DLibUtils.textKey(moRegistry.getPrimaryKey()));
@@ -981,7 +1036,10 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         moKeySerialNumberType.setValue(new int[] { moRegistry.getFkSerialNumberTypeId() });
         moKeyTaxGroup.setValue(new int[] { moRegistry.getFkTaxGroupId() });
         moKeyAbpItem.setValue(new int[] { moRegistry.getFkAbpItemId() });
-
+        moKeyXccCofeprisSector.setValue(new int[] { moRegistry.getFkXccCofeprisSectorId() });
+        moKeyXccPharmaceuticalForm.setValue(new int[] { moRegistry.getFkXccPharmaceuticalFormId() });
+        moKeyXccSpecialConditions.setValue(new int[] { moRegistry.getFkXccSpecialConditionsId() });
+        
         if (!configCompany.isItemCodeApplying() || !configCompany.isCodeItemGenusApplying()) {
             moTextCode.resetField();
         }
@@ -1067,9 +1125,15 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         itemStateBoolInventoriable();
         itemStateBoolSerialNumberApplying();
 
+        jbEditXcc.setEnabled(true);
+        moKeyXccCofeprisSector.setEnabled(false);
+        moKeyXccPharmaceuticalForm.setEnabled(false);
+        moKeyXccSpecialConditions.setEnabled(false);
+        
+        moBoolItemLineApplying.setEnabled(configCompany.isItemLineApplying());
         moTextCode.setEnabled(configCompany.isItemCodeApplying() && configCompany.isCodeItemGenusApplying());
         moBoolCodeEditable.setEnabled(configCompany.isItemCodeApplying() && configCompany.isCodeItemGenusApplying());
-        moBoolItemLineApplying.setEnabled(configCompany.isItemLineApplying());
+        
         moIntCodeOrderItemGenus.setEnabled(configCompany.isItemCodeApplying() && configCompany.isCodeItemGenusApplying());
         moIntCodeOrderItemLine.setEnabled(configCompany.isItemCodeApplying() && configCompany.isCodeItemLineApplying() && moBoolItemLineApplying.getValue());
         moIntCodeOrderBrand.setEnabled(configCompany.isItemCodeApplying() && configCompany.isBrandApplying() && configCompany.isCodeBrandApplying());
@@ -1148,6 +1212,9 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         registry.setFkSerialNumberTypeId(moKeySerialNumberType.getValue()[0]);
         registry.setFkTaxGroupId(moKeyTaxGroup.getValue()[0]);
         registry.setFkAbpItemId(moKeyAbpItem.getValue()[0]);
+        registry.setFkXccCofeprisSectorId(moKeyXccCofeprisSector.getValue()[0]);
+        registry.setFkXccPharmaceuticalFormId(moKeyXccPharmaceuticalForm.getValue()[0]);
+        registry.setFkXccSpecialConditionsId(moKeyXccSpecialConditions.getValue()[0]);
 
         return registry;
     }
@@ -1157,16 +1224,26 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
         DGuiValidation validation = moFields.validateFields();
 
         if (validation.isValid()) {
-            if (moBoolInventoriable.getValue() && !DLibUtils.belongsTo(moKeyItemClass.getValue(), new int[][] { DModSysConsts.IS_ITM_CL_SAL_PRO, DModSysConsts.IS_ITM_CL_PUR_CON })) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + moBoolInventoriable.getText());
+            boolean isCofeprisSectorMedicines = moKeyXccCofeprisSector.getValue()[0] == DModSysConsts.LS_XCC_COFEPRIS_SECT_MEDS;
+            
+            if (isCofeprisSectorMedicines && moKeyXccPharmaceuticalForm.getValue()[0] == DModSysConsts.LS_XCC_PHARM_FORM_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyXccPharmaceuticalForm.getFieldName() + "'.");
+                validation.setComponent(moKeyXccPharmaceuticalForm);
+            }
+            else if (isCofeprisSectorMedicines && moKeyXccSpecialConditions.getValue()[0] == DModSysConsts.LS_XCC_SPEC_COND_NA) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyXccSpecialConditions.getFieldName() + "'.");
+                validation.setComponent(moKeyXccSpecialConditions);
+            }
+            else if (moBoolInventoriable.getValue() && !DLibUtils.belongsTo(moKeyItemClass.getValue(), new int[][] { DModSysConsts.IS_ITM_CL_SAL_PRO, DModSysConsts.IS_ITM_CL_PUR_CON })) {
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moBoolInventoriable.getFieldName()+ "'.");
                 validation.setComponent(moBoolInventoriable);
             }
             else if (moBoolLotApplying.getValue() && moBoolSerialNumberApplying.getValue()) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + moBoolLotApplying.getText());
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moBoolLotApplying.getFieldName() + "'.");
                 validation.setComponent(moBoolLotApplying);
             }
             else if (moBoolSerialNumberApplying.getValue() && moKeySerialNumberType.getValue()[0] == DModSysConsts.IS_SNR_TP_NA) {
-                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + DGuiUtils.getLabelName(jlSerialNumberType.getText()));
+                validation.setMessage(DGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeySerialNumberType.getFieldName() + "'.");
                 validation.setComponent(moKeySerialNumberType);
             }
         }
@@ -1175,8 +1252,26 @@ public class DFormItemGenus extends DBeanForm implements ItemListener {
     }
 
     @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+            
+            if (button == jbEditXcc) {
+                actionEditXcc();
+            }
+        }
+    }
+
+    @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() instanceof DBeanFieldBoolean) {
+        if (e.getSource() instanceof DBeanFieldKey && e.getStateChange() == ItemEvent.SELECTED) {
+            DBeanFieldKey field = (DBeanFieldKey) e.getSource();
+            
+            if (field == moKeyXccCofeprisSector) {
+                itemStateXccCofeprisSector();
+            }
+        }
+        else if (e.getSource() instanceof DBeanFieldBoolean) {
             DBeanFieldBoolean field = (DBeanFieldBoolean) e.getSource();
 
             if (field == moBoolItemLineApplying) {

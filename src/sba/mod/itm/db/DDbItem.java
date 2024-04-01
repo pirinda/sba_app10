@@ -38,6 +38,7 @@ public class DDbItem extends DDbRegistryUser {
     protected String msItemName;
     protected String msItemPresentation;
     protected String msIngredient;
+    protected String msRegisterNumber;
     protected double mdMeasurementLength;
     protected double mdMeasurementSurface;
     protected double mdMeasurementVolume;
@@ -85,9 +86,12 @@ public class DDbItem extends DDbRegistryUser {
     protected int mnFkUnitVirtualId;
     protected int mnFkUnitContainedId;
     protected int mnFkItemPackageId_n;
-    protected int mnFkTaxGroupId_n;
     protected int mnFkTaxRegimeId;
+    protected int mnFkTaxGroupId_n;
     protected int mnFkAbpItemId_n;
+    protected int mnFkXccCofeprisSectorId;
+    protected int mnFkXccPharmaceuticalFormId;
+    protected int mnFkXccSpecialConditionsId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -207,6 +211,7 @@ public class DDbItem extends DDbRegistryUser {
     public void setItemName(String s) { msItemName = s; }
     public void setItemPresentation(String s) { msItemPresentation = s; }
     public void setIngredient(String s) { msIngredient = s; }
+    public void setRegisterNumber(String s) { msRegisterNumber = s; }
     public void setMeasurementLength(double d) { mdMeasurementLength = d; }
     public void setMeasurementSurface(double d) { mdMeasurementSurface = d; }
     public void setMeasurementVolume(double d) { mdMeasurementVolume = d; }
@@ -252,9 +257,12 @@ public class DDbItem extends DDbRegistryUser {
     public void setFkUnitVirtualId(int n) { mnFkUnitVirtualId = n; }
     public void setFkUnitContainedId(int n) { mnFkUnitContainedId = n; }
     public void setFkItemPackageId_n(int n) { mnFkItemPackageId_n = n; }
-    public void setFkTaxGroupId_n(int n) { mnFkTaxGroupId_n = n; }
     public void setFkTaxRegimeId(int n) { mnFkTaxRegimeId = n; }
+    public void setFkTaxGroupId_n(int n) { mnFkTaxGroupId_n = n; }
     public void setFkAbpItemId_n(int n) { mnFkAbpItemId_n = n; }
+    public void setFkXccCofeprisSectorId(int n) { mnFkXccCofeprisSectorId = n; }
+    public void setFkXccPharmaceuticalFormId(int n) { mnFkXccPharmaceuticalFormId = n; }
+    public void setFkXccSpecialConditionsId(int n) { mnFkXccSpecialConditionsId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -267,6 +275,7 @@ public class DDbItem extends DDbRegistryUser {
     public String getItemName() { return msItemName; }
     public String getItemPresentation() { return msItemPresentation; }
     public String getIngredient() { return msIngredient; }
+    public String getRegisterNumber() { return msRegisterNumber; }
     public double getMeasurementLength() { return mdMeasurementLength; }
     public double getMeasurementSurface() { return mdMeasurementSurface; }
     public double getMeasurementVolume() { return mdMeasurementVolume; }
@@ -312,9 +321,12 @@ public class DDbItem extends DDbRegistryUser {
     public int getFkUnitVirtualId() { return mnFkUnitVirtualId; }
     public int getFkUnitContainedId() { return mnFkUnitContainedId; }
     public int getFkItemPackageId_n() { return mnFkItemPackageId_n; }
-    public int getFkTaxGroupId_n() { return mnFkTaxGroupId_n; }
     public int getFkTaxRegimeId() { return mnFkTaxRegimeId; }
+    public int getFkTaxGroupId_n() { return mnFkTaxGroupId_n; }
     public int getFkAbpItemId_n() { return mnFkAbpItemId_n; }
+    public int getFkXccCofeprisSectorId() { return mnFkXccCofeprisSectorId; }
+    public int getFkXccPharmaceuticalFormId() { return mnFkXccPharmaceuticalFormId; }
+    public int getFkXccSpecialConditionsId() { return mnFkXccSpecialConditionsId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -374,6 +386,7 @@ public class DDbItem extends DDbRegistryUser {
         msItemName = "";
         msItemPresentation = "";
         msIngredient = "";
+        msRegisterNumber = "";
         mdMeasurementLength = 0;
         mdMeasurementSurface = 0;
         mdMeasurementVolume = 0;
@@ -419,9 +432,12 @@ public class DDbItem extends DDbRegistryUser {
         mnFkUnitVirtualId = 0;
         mnFkUnitContainedId = 0;
         mnFkItemPackageId_n = 0;
-        mnFkTaxGroupId_n = 0;
         mnFkTaxRegimeId = 0;
+        mnFkTaxGroupId_n = 0;
         mnFkAbpItemId_n = 0;
+        mnFkXccCofeprisSectorId = 0;
+        mnFkXccPharmaceuticalFormId = 0;
+        mnFkXccSpecialConditionsId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -487,6 +503,7 @@ public class DDbItem extends DDbRegistryUser {
             msItemName = resultSet.getString("itm_name");
             msItemPresentation = resultSet.getString("itm_pres");
             msIngredient = resultSet.getString("ing");
+            msRegisterNumber = resultSet.getString("reg_num");
             mdMeasurementLength = resultSet.getDouble("mst_len");
             mdMeasurementSurface = resultSet.getDouble("mst_sur");
             mdMeasurementVolume = resultSet.getDouble("mst_vol");
@@ -532,9 +549,12 @@ public class DDbItem extends DDbRegistryUser {
             mnFkUnitVirtualId = resultSet.getInt("fk_unt_vir");
             mnFkUnitContainedId = resultSet.getInt("fk_unt_con");
             mnFkItemPackageId_n = resultSet.getInt("fk_itm_pac_n");
-            mnFkTaxGroupId_n = resultSet.getInt("fk_tax_grp_n");
             mnFkTaxRegimeId = resultSet.getInt("fk_tax_reg");
+            mnFkTaxGroupId_n = resultSet.getInt("fk_tax_grp_n");
             mnFkAbpItemId_n = resultSet.getInt("fk_abp_itm_n");
+            mnFkXccCofeprisSectorId = resultSet.getInt("fk_xcc_cofepris_sect");
+            mnFkXccPharmaceuticalFormId = resultSet.getInt("fk_xcc_pharm_form");
+            mnFkXccSpecialConditionsId = resultSet.getInt("fk_xcc_spec_cond");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -617,6 +637,7 @@ public class DDbItem extends DDbRegistryUser {
                     "'" + msItemName + "', " +
                     "'" + msItemPresentation + "', " +
                     "'" + msIngredient + "', " +
+                    "'" + msRegisterNumber + "', " + 
                     mdMeasurementLength + ", " +
                     mdMeasurementSurface + ", " +
                     mdMeasurementVolume + ", " +
@@ -662,9 +683,12 @@ public class DDbItem extends DDbRegistryUser {
                     mnFkUnitVirtualId + ", " +
                     mnFkUnitContainedId + ", " +
                     (mnFkItemPackageId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPackageId_n) + ", " +
-                    (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
                     mnFkTaxRegimeId + ", " + 
+                    (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
                     (mnFkAbpItemId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAbpItemId_n) + ", " +
+                    mnFkXccCofeprisSectorId + ", " + 
+                    mnFkXccPharmaceuticalFormId + ", " + 
+                    mnFkXccSpecialConditionsId + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -682,6 +706,7 @@ public class DDbItem extends DDbRegistryUser {
                     "itm_name = '" + msItemName + "', " +
                     "itm_pres = '" + msItemPresentation + "', " +
                     "ing = '" + msIngredient + "', " +
+                    "reg_num = '" + msRegisterNumber + "', " +
                     "mst_len = " + mdMeasurementLength + ", " +
                     "mst_sur = " + mdMeasurementSurface + ", " +
                     "mst_vol = " + mdMeasurementVolume + ", " +
@@ -727,9 +752,12 @@ public class DDbItem extends DDbRegistryUser {
                     "fk_unt_vir = " + mnFkUnitVirtualId + ", " +
                     "fk_unt_con = " + mnFkUnitContainedId + ", " +
                     "fk_itm_pac_n = " + (mnFkItemPackageId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPackageId_n) + ", " +
-                    "fk_tax_grp_n = " + (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
                     "fk_tax_reg = " + mnFkTaxRegimeId + ", " +
+                    "fk_tax_grp_n = " + (mnFkTaxGroupId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkTaxGroupId_n) + ", " +
                     "fk_abp_itm_n = " + (mnFkAbpItemId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAbpItemId_n) + ", " +
+                    "fk_xcc_cofepris_sect = " + mnFkXccCofeprisSectorId + ", " +
+                    "fk_xcc_pharm_form = " + mnFkXccPharmaceuticalFormId + ", " +
+                    "fk_xcc_spec_cond = " + mnFkXccSpecialConditionsId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -767,6 +795,7 @@ public class DDbItem extends DDbRegistryUser {
         registry.setItemName(this.getItemName());
         registry.setItemPresentation(this.getItemPresentation());
         registry.setIngredient(this.getIngredient());
+        registry.setRegisterNumber(this.getRegisterNumber());
         registry.setMeasurementLength(this.getMeasurementLength());
         registry.setMeasurementSurface(this.getMeasurementSurface());
         registry.setMeasurementVolume(this.getMeasurementVolume());
@@ -812,9 +841,12 @@ public class DDbItem extends DDbRegistryUser {
         registry.setFkUnitVirtualId(this.getFkUnitVirtualId());
         registry.setFkUnitContainedId(this.getFkUnitContainedId());
         registry.setFkItemPackageId_n(this.getFkItemPackageId_n());
-        registry.setFkTaxGroupId_n(this.getFkTaxGroupId_n());
         registry.setFkTaxRegimeId(this.getFkTaxRegimeId());
+        registry.setFkTaxGroupId_n(this.getFkTaxGroupId_n());
         registry.setFkAbpItemId_n(this.getFkAbpItemId_n());
+        registry.setFkXccCofeprisSectorId(this.getFkXccCofeprisSectorId());
+        registry.setFkXccPharmaceuticalFormId(this.getFkXccPharmaceuticalFormId());
+        registry.setFkXccSpecialConditionsId(this.getFkXccSpecialConditionsId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

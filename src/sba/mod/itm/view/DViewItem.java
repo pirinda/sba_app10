@@ -48,6 +48,7 @@ public class DViewItem extends DGridPaneView {
                 "v.code AS " + DDbConsts.FIELD_CODE + ", " +
                 "v.name AS " + DDbConsts.FIELD_NAME + ", " +
                 "v.ing, " +
+                "v.reg_num, " +
                 "gen.name, " +
                 "lin.name, " +
                 "brd.name, " +
@@ -70,6 +71,9 @@ public class DViewItem extends DGridPaneView {
                 "v.hazard_mat, " +
                 "v.hazard_mat_code, " +
                 "v.pack_code, " +
+                "CONCAT(xcs.code, ' - ', xcs.name) AS _xcs_name, " +
+                "CONCAT(xpf.code, ' - ', xpf.name) AS _xpf_name, " +
+                "CONCAT(xsc.code, ' - ', xsc.name) AS _xsc_name, " +
                 "v.b_can_upd AS " + DDbConsts.FIELD_CAN_UPD + ", " +
                 "v.b_can_dis AS " + DDbConsts.FIELD_CAN_DIS + ", " +
                 "v.b_can_del AS " + DDbConsts.FIELD_CAN_DEL + ", " +
@@ -97,6 +101,12 @@ public class DViewItem extends DGridPaneView {
                 "v.fk_unt = unt.id_unt " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CS_TAX_REG) + " AS tr ON " +
                 "v.fk_tax_reg = tr.id_tax_reg " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LS_XCC_COFEPRIS_SECT) + " AS xcs ON " +
+                "v.fk_xcc_cofepris_sect = xcs.id_xcc_cofepris_sect " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LS_XCC_PHARM_FORM) + " AS xpf ON " +
+                "v.fk_xcc_pharm_form = xpf.id_xcc_pharm_form " +
+                "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.LS_XCC_SPEC_COND) + " AS xsc ON " +
+                "v.fk_xcc_spec_cond = xsc.id_xcc_spec_cond " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS ui ON " +
                 "v.fk_usr_ins = ui.id_usr " +
                 "INNER JOIN " + DModConsts.TablesMap.get(DModConsts.CU_USR) + " AS uu ON " +
@@ -112,7 +122,7 @@ public class DViewItem extends DGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        DGridColumnView[] columns = new DGridColumnView[32];
+        DGridColumnView[] columns = new DGridColumnView[36];
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_ITM_L, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_ITM, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
@@ -122,9 +132,13 @@ public class DViewItem extends DGridPaneView {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "mfr.name", "Fabricante");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "cmp.name", "Componente");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "dep.name", "Departamento");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.cfd_itm_key", "Clave ProdServ (SAT)");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "unt.code", "Unidad");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.ing", "Ingrediente");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.cfd_itm_key", "Clave ProdServ (SAT)");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "_xcs_name", "Sector COFEPRIS");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "_xpf_name", "Forma farmacéutica");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "_xsc_name", "Condiciones especiales");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.ing", "Ingrediente(s)");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.reg_num", "Registro número");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_buk", "A granel");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_inv", "Inventariable");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_BOOL_M, "v.b_lot", "Lotes");

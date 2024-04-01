@@ -53,6 +53,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     protected double mdDistanceKm;
     protected double mdMerchandiseWeight;
     protected int mnMerchandiseNumber;
+    protected boolean mbMerchandiseInverseLogistics;
+    protected boolean mbIsthmus;
+    protected String msIsthmusOrigin;
+    protected String msIsthmusDestiny;
+    protected String msBolUuid;
     protected boolean mbTemplate;
     protected String msTemplateCode;
     protected String msTemplateName;
@@ -160,6 +165,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     public void setDistanceKm(double d) { mdDistanceKm = d; }
     public void setMerchandiseWeight(double d) { mdMerchandiseWeight = d; }
     public void setMerchandiseNumber(int n) { mnMerchandiseNumber = n; }
+    public void setMerchandiseInverseLogistics(boolean b) { mbMerchandiseInverseLogistics = b; }
+    public void setIsthmus(boolean b) { mbIsthmus = b; }
+    public void setIsthmusOrigin(String s) { msIsthmusOrigin = s; }
+    public void setIsthmusDestiny(String s) { msIsthmusDestiny = s; }
+    public void setBolUuid(String s) { msBolUuid = s; }
     public void setTemplate(boolean b) { mbTemplate = b; }
     public void setTemplateCode(String s) { msTemplateCode = s; }
     public void setTemplateName(String s) { msTemplateName = s; }
@@ -187,6 +197,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     public double getDistanceKm() { return mdDistanceKm; }
     public double getMerchandiseWeight() { return mdMerchandiseWeight; }
     public int getMerchandiseNumber() { return mnMerchandiseNumber; }
+    public boolean isMerchandiseInverseLogistics() { return mbMerchandiseInverseLogistics; }
+    public boolean isIsthmus() { return mbIsthmus; }
+    public String getIsthmusOrigin() { return msIsthmusOrigin; }
+    public String getIsthmusDestiny() { return msIsthmusDestiny; }
+    public String getBolUuid() { return msBolUuid; }
     public boolean isTemplate() { return mbTemplate; }
     public String getTemplateCode() { return msTemplateCode; }
     public String getTemplateName() { return msTemplateName; }
@@ -331,6 +346,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         mdDistanceKm = 0;
         mdMerchandiseWeight = 0;
         mnMerchandiseNumber = 0;
+        mbMerchandiseInverseLogistics = false;
+        mbIsthmus = false;
+        msIsthmusOrigin = "";
+        msIsthmusDestiny = "";
+        msBolUuid = "";
         mbTemplate = false;
         msTemplateCode = "";
         msTemplateName = "";
@@ -412,6 +432,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
             mdDistanceKm = resultSet.getDouble("dist_km");
             mdMerchandiseWeight = resultSet.getDouble("merch_weight");
             mnMerchandiseNumber = resultSet.getInt("merch_num");
+            mbMerchandiseInverseLogistics = resultSet.getBoolean("b_merch_inv_log");
+            mbIsthmus = resultSet.getBoolean("b_isthmus");
+            msIsthmusOrigin = resultSet.getString("isthmus_orig");
+            msIsthmusDestiny = resultSet.getString("isthmus_dest");
+            msBolUuid = resultSet.getString("bol_uuid");
             mbTemplate = resultSet.getBoolean("b_temp");
             msTemplateCode = resultSet.getString("temp_code");
             msTemplateName = resultSet.getString("temp_name");
@@ -529,6 +554,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     mdDistanceKm + ", " + 
                     mdMerchandiseWeight + ", " + 
                     mnMerchandiseNumber + ", " + 
+                    (mbMerchandiseInverseLogistics ? 1 : 0) + ", " + 
+                    (mbIsthmus ? 1 : 0) + ", " + 
+                    "'" + msIsthmusOrigin + "', " + 
+                    "'" + msIsthmusDestiny + "', " + 
+                    "'" + msBolUuid + "', " + 
                     (mbTemplate ? 1 : 0) + ", " + 
                     "'" + msTemplateCode + "', " + 
                     "'" + msTemplateName + "', " + 
@@ -561,6 +591,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     "dist_km = " + mdDistanceKm + ", " +
                     "merch_weight = " + mdMerchandiseWeight + ", " +
                     "merch_num = " + mnMerchandiseNumber + ", " +
+                    "b_merch_inv_log = " + (mbMerchandiseInverseLogistics ? 1 : 0) + ", " +
+                    "b_isthmus = " + (mbIsthmus ? 1 : 0) + ", " +
+                    "isthmus_orig = '" + msIsthmusOrigin + "', " +
+                    "isthmus_dest = '" + msIsthmusDestiny + "', " +
+                    "bol_uuid = '" + msBolUuid + "', " +
                     "b_temp = " + (mbTemplate ? 1 : 0) + ", " +
                     "temp_code = '" + msTemplateCode + "', " +
                     "temp_name = '" + msTemplateName + "', " +
@@ -760,6 +795,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         registry.setDistanceKm(this.getDistanceKm());
         registry.setMerchandiseWeight(this.getMerchandiseWeight());
         registry.setMerchandiseNumber(this.getMerchandiseNumber());
+        registry.setMerchandiseInverseLogistics(this.isMerchandiseInverseLogistics());
+        registry.setIsthmus(this.isIsthmus());
+        registry.setIsthmusOrigin(this.getIsthmusOrigin());
+        registry.setIsthmusDestiny(this.getIsthmusDestiny());
+        registry.setBolUuid(this.getBolUuid());
         registry.setTemplate(this.isTemplate());
         registry.setTemplateCode(this.getTemplateCode());
         registry.setTemplateName(this.getTemplateName());

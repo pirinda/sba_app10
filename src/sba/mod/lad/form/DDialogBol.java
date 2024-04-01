@@ -79,16 +79,16 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jPanel13 = new javax.swing.JPanel();
         jlDescription2 = new javax.swing.JLabel();
         jtfDescription2 = new javax.swing.JTextField();
-        jPanel16 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
         jlDescription3 = new javax.swing.JLabel();
         jtfDescription3 = new javax.swing.JTextField();
-        jPanelInput1 = new javax.swing.JPanel();
+        jPanel15 = new javax.swing.JPanel();
         jlInput1 = new javax.swing.JLabel();
         moDateDate = new sba.lib.gui.bean.DBeanFieldDate();
         jlDateHelp = new javax.swing.JLabel();
         moDecQuantity = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlQuantityUnit = new javax.swing.JLabel();
-        jPanelInput2 = new javax.swing.JPanel();
+        jPanel16 = new javax.swing.JPanel();
         jlInput2 = new javax.swing.JLabel();
         moIntHourHr = new sba.lib.gui.bean.DBeanFieldInteger();
         jlHrSeparator1 = new javax.swing.JLabel();
@@ -109,7 +109,7 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jpBol.setBorder(javax.swing.BorderFactory.createTitledBorder("Carta porte:"));
         jpBol.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(6, 1, 0, 3));
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -161,90 +161,90 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
 
         jPanel1.add(jPanel13);
 
-        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDescription3.setText("Descripción 3:");
         jlDescription3.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel16.add(jlDescription3);
+        jPanel14.add(jlDescription3);
 
         jtfDescription3.setEditable(false);
         jtfDescription3.setText("TEXT");
         jtfDescription3.setFocusable(false);
         jtfDescription3.setPreferredSize(new java.awt.Dimension(400, 23));
-        jPanel16.add(jtfDescription3);
+        jPanel14.add(jtfDescription3);
 
-        jPanel1.add(jPanel16);
+        jPanel1.add(jPanel14);
 
-        jPanelInput1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInput1.setText("Captura 1:");
         jlInput1.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanelInput1.add(jlInput1);
-        jPanelInput1.add(moDateDate);
+        jPanel15.add(jlInput1);
+        jPanel15.add(moDateDate);
 
         jlDateHelp.setForeground(java.awt.Color.gray);
         jlDateHelp.setText("Formato: dd/mm/aaaa");
         jlDateHelp.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanelInput1.add(jlDateHelp);
+        jPanel15.add(jlDateHelp);
 
         moDecQuantity.setPreferredSize(new java.awt.Dimension(90, 23));
-        jPanelInput1.add(moDecQuantity);
+        jPanel15.add(moDecQuantity);
 
         jlQuantityUnit.setText("kg");
         jlQuantityUnit.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanelInput1.add(jlQuantityUnit);
+        jPanel15.add(jlQuantityUnit);
 
-        jPanel1.add(jPanelInput1);
+        jPanel1.add(jPanel15);
 
-        jPanelInput2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInput2.setText("Captura 2:");
         jlInput2.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanelInput2.add(jlInput2);
+        jPanel16.add(jlInput2);
 
         moIntHourHr.setText("00");
         moIntHourHr.setPreferredSize(new java.awt.Dimension(25, 23));
-        jPanelInput2.add(moIntHourHr);
+        jPanel16.add(moIntHourHr);
 
         jlHrSeparator1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlHrSeparator1.setText(":");
         jlHrSeparator1.setPreferredSize(new java.awt.Dimension(5, 23));
-        jPanelInput2.add(jlHrSeparator1);
+        jPanel16.add(jlHrSeparator1);
 
         moIntHourMin.setPreferredSize(new java.awt.Dimension(25, 23));
-        jPanelInput2.add(moIntHourMin);
+        jPanel16.add(moIntHourMin);
 
         jlHrSeparator2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlHrSeparator2.setText(":");
         jlHrSeparator2.setPreferredSize(new java.awt.Dimension(5, 23));
-        jPanelInput2.add(jlHrSeparator2);
+        jPanel16.add(jlHrSeparator2);
 
         moIntHourSec.setPreferredSize(new java.awt.Dimension(25, 23));
-        jPanelInput2.add(moIntHourSec);
+        jPanel16.add(moIntHourSec);
 
         jlHourHelp.setForeground(java.awt.Color.gray);
         jlHourHelp.setText("Formato: hh:mm:ss (24 hr)");
         jlHourHelp.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanelInput2.add(jlHourHelp);
+        jPanel16.add(jlHourHelp);
 
         moDecWeightKg.setPreferredSize(new java.awt.Dimension(90, 23));
-        jPanelInput2.add(moDecWeightKg);
+        jPanel16.add(moDecWeightKg);
 
         jlWeightKgUnit.setText("kg");
         jlWeightKgUnit.setPreferredSize(new java.awt.Dimension(20, 23));
-        jPanelInput2.add(jlWeightKgUnit);
+        jPanel16.add(jlWeightKgUnit);
 
         jbSetWeightKg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
         jbSetWeightKg.setToolTipText("Asignar peso bruto");
         jbSetWeightKg.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanelInput2.add(jbSetWeightKg);
+        jPanel16.add(jbSetWeightKg);
 
         jlRatioKgHint.setForeground(java.awt.Color.gray);
         jlRatioKgHint.setText("1.000 x unidad");
         jlRatioKgHint.setPreferredSize(new java.awt.Dimension(90, 23));
-        jPanelInput2.add(jlRatioKgHint);
+        jPanel16.add(jlRatioKgHint);
 
-        jPanel1.add(jPanelInput2);
+        jPanel1.add(jPanel16);
 
         jpBol.add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -275,9 +275,9 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanelInput1;
-    private javax.swing.JPanel jPanelInput2;
     private javax.swing.JButton jbNavNext;
     private javax.swing.JButton jbNavPrev;
     private javax.swing.JButton jbSetWeightKg;
@@ -391,21 +391,21 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
         jlInput1.setText("");
         jlInput2.setText("");
         
-        jPanelInput1.remove(moDateDate);
-        jPanelInput1.remove(jlDateHelp);
-        jPanelInput1.remove(moDecQuantity);
-        jPanelInput1.remove(jlQuantityUnit);
+        jPanel15.remove(moDateDate);
+        jPanel15.remove(jlDateHelp);
+        jPanel15.remove(moDecQuantity);
+        jPanel15.remove(jlQuantityUnit);
         
-        jPanelInput2.remove(moIntHourHr);
-        jPanelInput2.remove(jlHrSeparator1);
-        jPanelInput2.remove(moIntHourMin);
-        jPanelInput2.remove(jlHrSeparator2);
-        jPanelInput2.remove(moIntHourSec);
-        jPanelInput2.remove(jlHourHelp);
-        jPanelInput2.remove(moDecWeightKg);
-        jPanelInput2.remove(jlWeightKgUnit);
-        jPanelInput2.remove(jbSetWeightKg);
-        jPanelInput2.remove(jlRatioKgHint);
+        jPanel16.remove(moIntHourHr);
+        jPanel16.remove(jlHrSeparator1);
+        jPanel16.remove(moIntHourMin);
+        jPanel16.remove(jlHrSeparator2);
+        jPanel16.remove(moIntHourSec);
+        jPanel16.remove(jlHourHelp);
+        jPanel16.remove(moDecWeightKg);
+        jPanel16.remove(jlWeightKgUnit);
+        jPanel16.remove(jbSetWeightKg);
+        jPanel16.remove(jlRatioKgHint);
         
         moFields.resetFields();
         
@@ -432,15 +432,15 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 jlInput1.setText("Fecha:*");
                 jlInput2.setText("Hora:*");
 
-                jPanelInput1.add(moDateDate);
-                jPanelInput1.add(jlDateHelp);
+                jPanel15.add(moDateDate);
+                jPanel15.add(jlDateHelp);
                 
-                jPanelInput2.add(moIntHourHr);
-                jPanelInput2.add(jlHrSeparator1);
-                jPanelInput2.add(moIntHourMin);
-                jPanelInput2.add(jlHrSeparator2);
-                jPanelInput2.add(moIntHourSec);
-                jPanelInput2.add(jlHourHelp);
+                jPanel16.add(moIntHourHr);
+                jPanel16.add(jlHrSeparator1);
+                jPanel16.add(moIntHourMin);
+                jPanel16.add(jlHrSeparator2);
+                jPanel16.add(moIntHourSec);
+                jPanel16.add(jlHourHelp);
                 
                 DDbBolLocation bolLocation = (DDbBolLocation) moCurrentRegistry; // convenience variable
                 
@@ -482,13 +482,13 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 jlInput1.setText("Cantidad:*");
                 jlInput2.setText("Peso bruto:*");
                 
-                jPanelInput1.add(moDecQuantity);
-                jPanelInput1.add(jlQuantityUnit);
+                jPanel15.add(moDecQuantity);
+                jPanel15.add(jlQuantityUnit);
                 
-                jPanelInput2.add(moDecWeightKg);
-                jPanelInput2.add(jlWeightKgUnit);
-                jPanelInput2.add(jbSetWeightKg);
-                jPanelInput2.add(jlRatioKgHint);
+                jPanel16.add(moDecWeightKg);
+                jPanel16.add(jlWeightKgUnit);
+                jPanel16.add(jbSetWeightKg);
+                jPanel16.add(jlRatioKgHint);
                 
                 DDbBolMerchandise bolMerchandise = (DDbBolMerchandise) moCurrentRegistry; // convenience variable
                 DDbItem item = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, new int[] { bolMerchandise.getFkItemId() });
@@ -527,8 +527,8 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
                 jlInput1.setText("Cantidad:*");
                 jlInput2.setText("");
                 
-                jPanelInput1.add(moDecQuantity);
-                jPanelInput1.add(jlQuantityUnit);
+                jPanel15.add(moDecQuantity);
+                jPanel15.add(jlQuantityUnit);
                 
                 DDbBolMerchandiseMove bolMerchandiseMove = (DDbBolMerchandiseMove) moCurrentRegistry; // convenience variable
                 DDbBolMerchandise bolMerchandise = moBol.getChildMerchandise(new int[] { bolMerchandiseMove.getPkBolId(), bolMerchandiseMove.getPkMerchandiseId() }); // convenience variable
@@ -558,8 +558,8 @@ public class DDialogBol extends DBeanFormDialog implements ActionListener, Focus
             }
         }
         
-        jPanelInput1.repaint();
-        jPanelInput2.repaint();
+        jPanel15.repaint();
+        jPanel16.repaint();
     }
     
     private void renderCurrentRegistryAndEnableNavButtons(final int index) {

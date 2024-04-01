@@ -24,6 +24,7 @@ public class DDbTruck extends DDbRegistryUser {
     protected int mnPkTruckId;
     protected String msCode;
     protected String msName;
+    protected double mdWeightTon;
     protected String msPlate;
     protected int mnModel;
     protected String msTransportConfigCode;
@@ -64,6 +65,7 @@ public class DDbTruck extends DDbRegistryUser {
     public void setPkTruckId(int n) { mnPkTruckId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setWeightTon(double d) { mdWeightTon = d; }
     public void setPlate(String s) { msPlate = s; }
     public void setModel(int n) { mnModel = n; }
     public void setTransportConfigCode(String s) { msTransportConfigCode = s; }
@@ -82,6 +84,7 @@ public class DDbTruck extends DDbRegistryUser {
     public int getPkTruckId() { return mnPkTruckId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public double getWeightTon() { return mdWeightTon; }
     public String getPlate() { return msPlate; }
     public int getModel() { return mnModel; }
     public String getTransportConfigCode() { return msTransportConfigCode; }
@@ -117,6 +120,7 @@ public class DDbTruck extends DDbRegistryUser {
         mnPkTruckId = 0;
         msCode = "";
         msName = "";
+        mdWeightTon = 0;
         msPlate = "";
         mnModel = 0;
         msTransportConfigCode = "";
@@ -192,6 +196,7 @@ public class DDbTruck extends DDbRegistryUser {
             mnPkTruckId = resultSet.getInt("id_truck");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            mdWeightTon = resultSet.getDouble("weight_ton");
             msPlate = resultSet.getString("plate");
             mnModel = resultSet.getInt("model");
             msTransportConfigCode = resultSet.getString("tpt_config_code");
@@ -271,6 +276,7 @@ public class DDbTruck extends DDbRegistryUser {
                     mnPkTruckId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
+                    mdWeightTon + ", " + 
                     "'" + msPlate + "', " + 
                     mnModel + ", " + 
                     "'" + msTransportConfigCode + "', " + 
@@ -304,6 +310,7 @@ public class DDbTruck extends DDbRegistryUser {
                     //"id_truck = " + mnPkTruckId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "weight_ton = " + mdWeightTon + ", " +
                     "plate = '" + msPlate + "', " +
                     "model = " + mnModel + ", " +
                     "tpt_config_code = '" + msTransportConfigCode + "', " +
@@ -378,6 +385,7 @@ public class DDbTruck extends DDbRegistryUser {
         registry.setPkTruckId(this.getPkTruckId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setWeightTon(this.getWeightTon());
         registry.setPlate(this.getPlate());
         registry.setModel(this.getModel());
         registry.setTransportConfigCode(this.getTransportConfigCode());

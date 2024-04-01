@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Entry id="1" code="TPAF01" name="Autotransporte Federal de carga general." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="2" code="TPAF02" name="Transporte privado de carga." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="3" code="TPAF03" name="Autotransporte Federal de Carga Especializada de materiales y residuos peligrosos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="4" code="TPAF04" name="Transporte de automóviles sin rodar en vehículo tipo góndola." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="5" code="TPAF05" name="Transporte de carga de gran peso y/o volumen de hasta 90 toneladas." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="6" code="TPAF06" name="Transporte de carga especializada de gran peso y/o volumen de más 90 toneladas." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="7" code="TPAF07" name="Transporte Privado de materiales y residuos peligrosos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="8" code="TPAF08" name="Autotransporte internacional de carga de largo recorrido." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="9" code="TPAF09" name="Autotransporte internacional de carga especializada de materiales y residuos peligrosos de largo recorrido." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="10" code="TPAF10" name="Autotransporte Federal de Carga General cuyo ámbito de aplicación comprende la franja fronteriza con Estados Unidos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="11" code="TPAF11" name="Autotransporte Federal de Carga Especializada cuyo ámbito de aplicación comprende la franja fronteriza con Estados Unidos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="12" code="TPAF12" name="Servicio auxiliar de arrastre en las vías generales de comunicación." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="13" code="TPAF13" name="Servicio auxiliar de servicios de arrastre, arrastre y salvamento, y depósito de vehículos en las vías generales de comunicación." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="14" code="TPAF14" name="Servicio de paquetería y mensajería en las vías generales de comunicación." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="15" code="TPAF15" name="Transporte especial para el tránsito de grúas industriales con peso máximo de 90 toneladas." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="16" code="TPAF16" name="Servicio federal para empresas arrendadoras servicio público federal." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="17" code="TPAF17" name="Empresas trasladistas de vehículos nuevos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="18" code="TPAF18" name="Empresas fabricantes o distribuidoras de vehículos nuevos." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="19" code="TPAF19" name="Autorización expresa para circular en los caminos y puentes de jurisdicción federal con configuraciones de tractocamión doblemente articulado." transp_codes="01" term_start="2021-06-01" term_end=""/>
-<Entry id="20" code="TPAF20" name="Autotransporte Federal de Carga Especializada de fondos y valores." transp_codes="01" term_start="2021-07-02" term_end=""/>
-<Entry id="21" code="TPTM01" name="Permiso temporal para navegación de cabotaje" transp_codes="02" term_start="2021-06-01" term_end=""/>
-<Entry id="22" code="TPTA01" name="Concesión y/o autorización para el servicio regular nacional y/o internacional para empresas mexicanas" transp_codes="03" term_start="2021-06-01" term_end=""/>
-<Entry id="23" code="TPTA02" name="Permiso para el servicio aéreo regular de empresas extranjeras" transp_codes="03" term_start="2021-06-01" term_end=""/>
-<Entry id="24" code="TPTA03" name="Permiso para el servicio nacional e internacional no regular de fletamento" transp_codes="03" term_start="2021-06-01" term_end=""/>
-<Entry id="25" code="TPTA04" name="Permiso para el servicio nacional e internacional no regular de taxi aéreo" transp_codes="03" term_start="2021-06-01" term_end=""/>
-<Entry id="26" code="TPXX00" name="Permiso no contemplado en el catálogo." transp_codes="01,02,03" term_start="2021-07-02" term_end=""/>
+<Entry id="1" code="TPAF01" name="Autotransporte Federal de carga general." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="TPAF02" name="Transporte privado de carga." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="TPAF03" name="Autotransporte Federal de Carga Especializada de materiales y residuos peligrosos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="TPAF04" name="Transporte de automóviles sin rodar en vehículo tipo góndola." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="TPAF05" name="Transporte de carga de gran peso y/o volumen de hasta 90 toneladas." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="TPAF06" name="Transporte de carga especializada de gran peso y/o volumen de más 90 toneladas." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="TPAF07" name="Transporte Privado de materiales y residuos peligrosos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="TPAF08" name="Autotransporte internacional de carga de largo recorrido." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="TPAF09" name="Autotransporte internacional de carga especializada de materiales y residuos peligrosos de largo recorrido." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="TPAF10" name="Autotransporte Federal de Carga General cuyo ámbito de aplicación comprende la franja fronteriza con Estados Unidos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="11" code="TPAF11" name="Autotransporte Federal de Carga Especializada cuyo ámbito de aplicación comprende la franja fronteriza con Estados Unidos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="12" code="TPAF12" name="Servicio auxiliar de arrastre en las vías generales de comunicación." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="13" code="TPAF13" name="Servicio auxiliar de servicios de arrastre, arrastre y salvamento, y depósito de vehículos en las vías generales de comunicación." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="14" code="TPAF14" name="Servicio de paquetería y mensajería en las vías generales de comunicación." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="15" code="TPAF15" name="Transporte especial para el tránsito de grúas industriales con peso máximo de 90 toneladas." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="16" code="TPAF16" name="Servicio federal para empresas arrendadoras servicio público federal." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="17" code="TPAF17" name="Empresas trasladistas de vehículos nuevos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="18" code="TPAF18" name="Empresas fabricantes o distribuidoras de vehículos nuevos." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="19" code="TPAF19" name="Autorización expresa para circular en los caminos y puentes de jurisdicción federal con configuraciones de tractocamión doblemente articulado." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="20" code="TPAF20" name="Autotransporte Federal de Carga Especializada de fondos y valores." transp_codes="01" term_start="2023-11-25" term_end=""/>
+<Entry id="21" code="TPTM01" name="Permiso temporal para navegación de cabotaje" transp_codes="02" term_start="2023-11-25" term_end=""/>
+<Entry id="22" code="TPTA01" name="Concesión y/o autorización para el servicio regular nacional y/o internacional para empresas mexicanas" transp_codes="03" term_start="2023-11-25" term_end=""/>
+<Entry id="23" code="TPTA02" name="Permiso para el servicio aéreo regular de empresas extranjeras" transp_codes="03" term_start="2023-11-25" term_end=""/>
+<Entry id="24" code="TPTA03" name="Permiso para el servicio nacional e internacional no regular de fletamento" transp_codes="03" term_start="2023-11-25" term_end=""/>
+<Entry id="25" code="TPTA04" name="Permiso para el servicio nacional e internacional no regular de taxi aéreo" transp_codes="03" term_start="2023-11-25" term_end=""/>
+<Entry id="26" code="TPXX00" name="Permiso no contemplado en el catálogo." transp_codes="01,02,03" term_start="2023-11-25" term_end=""/>
 </Catalog>

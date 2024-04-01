@@ -1,683 +1,667 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Catalog xmlns="http://www.pirinda.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Entry id="1" code="01" name="Aguascalientes" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="2" code="01" name="Ensenada" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="3" code="01" name="Ciudad Constitución" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="4" code="01" name="San Francisco de Campeche" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="5" code="01" name="Ciudad Acuña" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="6" code="01" name="Colima" state="COL" term_start="2017-01-01" term_end=""/>
-<Entry id="7" code="01" name="Santa Rosalía de Camargo" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="8" code="01" name="Comitán de Domínguez" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="9" code="01" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="10" code="01" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="11" code="01" name="Victoria de Durango" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="12" code="01" name="Acapulco de Juárez" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="13" code="01" name="Acámbaro" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="14" code="01" name="Actopan" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="15" code="01" name="Ameca" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="16" code="01" name="Ciudad Adolfo López Mateos" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="17" code="01" name="Apatzingán de la Constitución" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="18" code="01" name="Cuautla (Cuautla de Morelos)" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="19" code="01" name="Santiago Ixcuintla" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="20" code="01" name="Ciudad Apodaca" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="21" code="01" name="Juchitán (Juchitán de Zaragoza)" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="22" code="01" name="Atlixco" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="23" code="01" name="Querétaro" state="QUE" term_start="2017-01-01" term_end=""/>
-<Entry id="24" code="01" name="Cancún" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="25" code="01" name="Los Mochis" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="26" code="01" name="Ciudad Valles" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="27" code="01" name="San Luis Río Colorado" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="28" code="01" name="Cárdenas" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="29" code="01" name="Altamira" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="30" code="01" name="Apizaco" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="31" code="01" name="Acayucan" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="32" code="01" name="Mérida" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="33" code="01" name="Fresnillo" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="34" code="02" name="Calvillo" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="35" code="02" name="Mexicali" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="36" code="02" name="La Paz" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="37" code="02" name="Ciudad del Carmen" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="38" code="02" name="Frontera" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="39" code="02" name="Manzanillo" state="COL" term_start="2017-01-01" term_end=""/>
-<Entry id="40" code="02" name="Chihuahua" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="41" code="02" name="San Cristóbal de las Casas" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="42" code="02" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="43" code="02" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="44" code="02" name="Gómez Palacio" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="45" code="02" name="Chilpancingo de los Bravo" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="46" code="02" name="San miguel de Allende" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="47" code="02" name="Apan" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="48" code="02" name="Ciudad Guzmán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="49" code="02" name="Chimalhuacán" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="50" code="02" name="Los Reyes de Salgado" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="51" code="02" name="Cuernavaca" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="52" code="02" name="Tepic" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="53" code="02" name="San Pedro Garza García" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="54" code="02" name="Oaxaca de Juárez" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="55" code="02" name="Izúcar de Matamoros" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="56" code="02" name="San Juan del Rio" state="QUE" term_start="2017-01-01" term_end=""/>
-<Entry id="57" code="02" name="Cozumel" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="58" code="02" name="Culiacán Rosales" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="59" code="02" name="Ébano" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="60" code="02" name="Agua Prieta" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="61" code="02" name="Villahermosa" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="62" code="02" name="Ciudad Camargo" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="63" code="02" name="Villa Vicente Guerrero" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="64" code="02" name="Naranjos" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="65" code="02" name="Tizimín" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="66" code="02" name="Jerez de García Salinas" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="67" code="03" name="San Francisco de los Romo" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="68" code="03" name="Tecate" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="69" code="03" name="Cabo San Lucas" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="70" code="03" name="Calkini" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="71" code="03" name="Matamoros" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="72" code="03" name="Tecoman" state="COL" term_start="2017-01-01" term_end=""/>
-<Entry id="73" code="03" name="Cuauhtémoc" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="74" code="03" name="Tapachula de Córdova y Ordóñez" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="75" code="03" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="76" code="03" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="77" code="03" name="Ciudad Lerdo" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="78" code="03" name="Iguala de la Independencia" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="79" code="03" name="Celaya" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="80" code="03" name="Pachuca de Soto" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="81" code="03" name="Guadalajara" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="82" code="03" name="Coacalco de Berriozabal" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="83" code="03" name="Ciudad Hidalgo" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="84" code="03" name="Galeana" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="85" code="03" name="Tuxpan" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="86" code="03" name="Ciudad General Escobedo" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="87" code="03" name="Salina Cruz" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="88" code="03" name="Puebla (Heroica Puebla)" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="89" code="03" name="Felipe Carrillo Puerto" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="90" code="03" name="Escuinapa de Hidalgo" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="91" code="03" name="Matehuala" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="92" code="03" name="Heroica Caborca" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="93" code="03" name="Comalcalco" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="94" code="03" name="Ciudad Madero" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="95" code="03" name="Tlaxcala (Tlaxcala de Xicotencatl)" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="96" code="03" name="Boca del RÍo" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="97" code="03" name="Ticul" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="98" code="03" name="Zacatecas" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="99" code="04" name="Jesús María" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="100" code="04" name="Tijuana" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="101" code="04" name="San José del Cabo" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="102" code="04" name="Candelaria" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="103" code="04" name="Monclova" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="104" code="04" name="Ciudad de Villa de Álvarez" state="COL" term_start="2017-01-01" term_end=""/>
-<Entry id="105" code="04" name="Delicias" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="106" code="04" name="Tuxtla Gutiérrez" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="107" code="04" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="108" code="04" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="109" code="04" name="Santiago Papasquiaro" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="110" code="04" name="Taxco de Alarcón" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="111" code="04" name="Cortazar" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="112" code="04" name="Cd. de Fray Bernardino de Sahagún" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="113" code="04" name="Lagos de Moreno" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="114" code="04" name="Cuautitlán Izcalli" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="115" code="04" name="Jacona de Plancarte" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="116" code="04" name="Jojutla" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="117" code="04" name="Acaponeta" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="118" code="04" name="Guadalupe" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="119" code="04" name="San Juan Bautista Tuxtepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="120" code="04" name="San Martín Texmelucan de Labastida" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="121" code="04" name="El Pueblito" state="QUE" term_start="2017-01-01" term_end=""/>
-<Entry id="122" code="04" name="Chetumal" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="123" code="04" name="Guasave" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="124" code="04" name="Rioverde" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="125" code="04" name="Ciudad Obregón" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="126" code="04" name="Emiliano Zapata" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="127" code="04" name="Ciudad Mante" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="128" code="04" name="Huamantla" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="129" code="04" name="Coatepec" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="130" code="04" name="Motul de Carrillo Puerto" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="131" code="04" name="Guadalupe" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="132" code="05" name="Pabellón de Arteaga" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="133" code="05" name="Playas de Rosarito" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="134" code="05" name="Loreto" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="135" code="05" name="Escárcega" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="136" code="05" name="Parras de la Fuente" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="137" code="05" name="Ciudad de Armería" state="COL" term_start="2017-01-01" term_end=""/>
-<Entry id="138" code="05" name="Hidalgo del Parral" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="139" code="05" name="Venustiano Carranza" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="140" code="05" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="141" code="05" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="142" code="05" name="Canatlán" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="143" code="05" name="Arcelia" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="144" code="05" name="Guanajuato" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="145" code="05" name="Tula de Allende" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="146" code="05" name="Ocotlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="147" code="05" name="Ecatepec de Morelos" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="148" code="05" name="La piedad de Cabadas" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="149" code="05" name="Puente de Ixtla" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="150" code="05" name="Tecuala" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="151" code="05" name="Linares" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="152" code="05" name="Matías Romero Avendaño" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="153" code="05" name="Tehuacan" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="154" code="05" name="Playa del Carmen" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="155" code="05" name="Mazatlán" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="156" code="05" name="San Luis Potosí" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="157" code="05" name="Empalme" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="158" code="05" name="Jalpa de Méndez" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="159" code="05" name="Heroica Matamoros" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="160" code="05" name="Calpulalpan" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="161" code="05" name="Agua dulce" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="162" code="05" name="Valladolid" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="163" code="05" name="Río Grande" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="164" code="06" name="Rincón de Romos" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="165" code="06" name="Rodolfo Sánchez T. (Maneadero)" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="166" code="06" name="Puerto Adolfo López Mateos" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="167" code="06" name="Sabancuy" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="168" code="06" name="Piedras Negras" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="169" code="06" name="Juárez" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="170" code="06" name="Jiquipilas" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="171" code="06" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="172" code="06" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="173" code="06" name="San Juan del Río del Centauro del Norte" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="174" code="06" name="Ayutla de los Libres" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="175" code="06" name="Irapuato" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="176" code="06" name="Tulancingo" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="177" code="06" name="Puerto Vallarta" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="178" code="06" name="Huixquilucan de Degollado" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="179" code="06" name="Morelia" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="180" code="06" name="Santa Rosa Treinta" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="181" code="06" name="Compostela" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="182" code="06" name="Montemorelos" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="183" code="06" name="Heroica Ciudad de Huajuapan de León" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="184" code="06" name="Teziutlan" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="185" code="06" name="Kantunilkín" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="186" code="06" name="Guamúchil" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="187" code="06" name="Soledad de Graciano Sánchez" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="188" code="06" name="Heroica Guaymas" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="189" code="06" name="Nuevo Laredo" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="190" code="06" name="Chiautempan" state="TLA" term_start="2017-01-01" term_end=""/>
-<Entry id="191" code="06" name="Coatzacoalcos" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="192" code="06" name="Kanasín" state="YUC" term_start="2017-01-01" term_end=""/>
-<Entry id="193" code="06" name="Ciudad Cuauhtémoc" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="194" code="07" name="Asientos" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="195" code="07" name="San Felipe" state="BCN" term_start="2017-01-01" term_end=""/>
-<Entry id="196" code="07" name="Todos Santos" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="197" code="07" name="Hopelchén" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="198" code="07" name="Sabinas" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="199" code="07" name="Nuevo Casas Grandes" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="200" code="07" name="Villaflores" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="201" code="07" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="202" code="07" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="203" code="07" name="Peñón Blanco" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="204" code="07" name="Atoyac de Álvarez" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="205" code="07" name="León de los Aldama" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="206" code="07" name="Zimapan" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="207" code="07" name="San Juan de los Lagos" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="208" code="07" name="Los Reyes Acaquilpan (La Paz)" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="209" code="07" name="Pátzcuaro" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="210" code="07" name="Zacatepec de Hidalgo" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="211" code="07" name="Francisco I. Madero (Puga)" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="212" code="07" name="Monterrey" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="213" code="07" name="Loma Bonita" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="214" code="07" name="San Andrés Cholula" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="215" code="07" name="Isla Mujeres" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="216" code="07" name="Navolato" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="217" code="07" name="Charcas" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="218" code="07" name="Hermosillo" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="219" code="07" name="Macuspana" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="220" code="07" name="Reynosa" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="221" code="07" name="Córdoba" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="222" code="07" name="Ojocaliente" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="223" code="08" name="Tepezalá" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="224" code="08" name="Heroica Mulegé" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="225" code="08" name="Champotón" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="226" code="08" name="Saltillo" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="227" code="08" name="Las Margaritas" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="228" code="08" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="229" code="08" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="230" code="08" name="Francisco I. Madero" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="231" code="08" name="Moroleón" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="232" code="08" name="Huejutla de Reyes" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="233" code="08" name="Tepatitlán de Morelos" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="234" code="08" name="Metepec" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="235" code="08" name="Sahuayo de Morelos" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="236" code="08" name="Tlaquiltenango" state="MOR" term_start="2017-01-01" term_end=""/>
-<Entry id="237" code="08" name="Villa Hidalgo (El Nuevo)" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="238" code="08" name="Ciudad Sabinas Hidalgo" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="239" code="08" name="Puerto Escondido" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="240" code="08" name="San Pedro Cholula" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="241" code="08" name="Bacalar" state="ROO" term_start="2017-01-01" term_end=""/>
-<Entry id="242" code="08" name="Quila" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="243" code="08" name="Salinas de Hidalgo" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="244" code="08" name="Huatabampo" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="245" code="08" name="Tenosique de Pino Suárez" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="246" code="08" name="Ciudad Río Bravo" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="247" code="08" name="Tres Valles" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="248" code="08" name="Villa Hidalgo" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="249" code="09" name="Cosío" state="AGU" term_start="2017-01-01" term_end=""/>
-<Entry id="250" code="09" name="Villa Alberto Andrés Alvarado Arámburo" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="251" code="09" name="Hecelchakán" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="252" code="09" name="Nueva Rosita" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="253" code="09" name="Madera" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="254" code="09" name="Arriaga" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="255" code="09" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="256" code="09" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="257" code="09" name="Nombre de Dios" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="258" code="09" name="San Jerónimo de Juárez" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="259" code="09" name="Salamanca" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="260" code="09" name="Tlaxcoapan" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="261" code="09" name="Tlaquepaque" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="262" code="09" name="Naucalpan de Juárez" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="263" code="09" name="Uruapan" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="264" code="09" name="Ruiz" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="265" code="09" name="San Nicolás de los Garza" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="266" code="09" name="Río Grande o Piedra Parada" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="267" code="09" name="Huauchinango" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="268" code="09" name="Ahome" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="269" code="09" name="Cárdenas" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="270" code="09" name="Navojoa" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="271" code="09" name="Teapa" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="272" code="09" name="San Fernando" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="273" code="09" name="Jáltipan de Morelos" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="274" code="09" name="Villanueva" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="275" code="10" name="San Ignacio" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="276" code="10" name="San Pedro" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="277" code="10" name="Colonia Anáhuac" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="278" code="10" name="Palenque" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="279" code="10" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="280" code="10" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="281" code="10" name="Vicente Guerrero" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="282" code="10" name="Ciudad Apaxtla de Castrejón" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="283" code="10" name="San Francisco del Rincón" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="284" code="10" name="Tizayuca" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="285" code="10" name="Zapopan" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="286" code="10" name="Ciudad Nezahualcoyotl" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="287" code="10" name="Zacapu" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="288" code="10" name="San Blas" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="289" code="10" name="Ciudad Santa Catarina" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="290" code="10" name="Acatlán de Osorio" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="291" code="10" name="Higuera de Zaragoza" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="292" code="10" name="Cerritos" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="293" code="10" name="Heroica Nogales" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="294" code="10" name="Paraíso" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="295" code="10" name="Tampico" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="296" code="10" name="Xalapa-Enríquez" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="297" code="10" name="Villa de Cos" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="298" code="11" name="Guerrero Negro" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="299" code="11" name="Pomuch" state="CAM" term_start="2017-01-01" term_end=""/>
-<Entry id="300" code="11" name="Torreón" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="301" code="11" name="Juan Aldama" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="302" code="11" name="Ocosingo" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="303" code="11" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="304" code="11" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="305" code="11" name="El Salto" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="306" code="11" name="Ciudad Altamirano" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="307" code="11" name="Silao" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="308" code="11" name="Santiago Tulantepec" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="309" code="11" name="Tlajomulco de Zúñiga" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="310" code="11" name="Villa Nicolás Romero" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="311" code="11" name="Zamora de Hidalgo" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="312" code="11" name="Ixtlán del Río" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="313" code="11" name="Doctor Arroyo" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="314" code="11" name="Santiago Suchilquitongo" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="315" code="11" name="Cuautlancingo" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="316" code="11" name="Choix" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="317" code="11" name="Tamuin" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="318" code="11" name="Puerto Peñasco" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="319" code="11" name="Frontera" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="320" code="11" name="Ciudad Victoria" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="321" code="11" name="Minatitlán" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="322" code="11" name="Nochistlán de Mejía" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="323" code="12" name="Santa Rosalía" state="BCS" term_start="2017-01-01" term_end=""/>
-<Entry id="324" code="12" name="Castaños" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="325" code="12" name="José Mariano Jiménez" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="326" code="12" name="Tonalá" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="327" code="12" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="328" code="12" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="329" code="12" name="Santa María del Oro" state="DUR" term_start="2017-01-01" term_end=""/>
-<Entry id="330" code="12" name="Buenavista de Cuellar" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="331" code="12" name="Jerécuaro" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="332" code="12" name="Ixmiquilpan" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="333" code="12" name="Tonalá" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="334" code="12" name="Tecamac de Felipe Villanueva" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="335" code="12" name="Heroica Zitácuaro" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="336" code="12" name="Bucerías" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="337" code="12" name="Ciénega de Flores" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="338" code="12" name="San Felipe Jalapa de Díaz" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="339" code="12" name="Tepeaca" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="340" code="12" name="Villa Unión" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="341" code="12" name="Tamasopo" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="342" code="12" name="Heroica Ciudad de Cananea" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="343" code="12" name="Cunduacán" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="344" code="12" name="González" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="345" code="12" name="Orizaba" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="346" code="12" name="Víctor Rosales" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="347" code="13" name="Francisco I. Madero (Chávez)" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="348" code="13" name="Manuel Ojinaga" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="349" code="13" name="Mapastepec" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="350" code="13" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="351" code="13" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="352" code="13" name="Cutzamala de Pinzón" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="353" code="13" name="Santiago Maravatío" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="354" code="13" name="Tepeji del Rio" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="355" code="13" name="Tuxpan" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="356" code="13" name="Tepotzotlán" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="357" code="13" name="Paracho de Verduzco" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="358" code="13" name="Las Varas" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="359" code="13" name="Hualahuises" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="360" code="13" name="Bahias de Huatulco" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="361" code="13" name="Tecamachalco" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="362" code="13" name="Sinaloa de Leyva" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="363" code="13" name="Ciudad del Maíz" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="364" code="13" name="Sonoita" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="365" code="13" name="Huimanguillo" state="TAB" term_start="2017-01-01" term_end=""/>
-<Entry id="366" code="13" name="Jaumave" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="367" code="13" name="Papantla de Olarte" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="368" code="13" name="Valparaíso" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="369" code="14" name="Cuatro Ciénegas de Carranza" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="370" code="14" name="Bachíniva" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="371" code="14" name="Las Rosas" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="372" code="14" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="373" code="14" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="374" code="14" name="Coyuca de Catalán" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="375" code="14" name="Romita" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="376" code="14" name="Cruz Azul" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="377" code="14" name="Tototlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="378" code="14" name="Tlalnepantla de Baz" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="379" code="14" name="Tangancícuaro de Arista" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="380" code="14" name="Xalisco" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="381" code="14" name="Putla Villa de Guerrero" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="382" code="14" name="Zacatlán" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="383" code="14" name="Mocorito" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="384" code="14" name="Cedral" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="385" code="14" name="Magdalena de Kino" state="SON" term_start="2017-01-01" term_end=""/>
-<Entry id="386" code="14" name="Ciudad Gustavo Díaz Ordaz" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="387" code="14" name="Poza Rica de Hidalgo" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="388" code="14" name="Luis Moya" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="389" code="15" name="Nadadores" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="390" code="15" name="Saucillo" state="CHH" term_start="2017-01-01" term_end=""/>
-<Entry id="391" code="15" name="Chiapa de Corzo" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="392" code="15" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="393" code="15" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="394" code="15" name="Tierra Colorada" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="395" code="15" name="Tarandacuao" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="396" code="15" name="Tepeapulco" state="HID" term_start="2017-01-01" term_end=""/>
-<Entry id="397" code="15" name="San Diego de Alejandría" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="398" code="15" name="Santa Maria Tultepec" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="399" code="15" name="Maravatío de Ocampo" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="400" code="15" name="San pedro Lagunillas" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="401" code="15" name="Cadereyta Jiménez" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="402" code="15" name="Cosolapa" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="403" code="15" name="Xicotepec" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="404" code="15" name="Angostura" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="405" code="15" name="Tierra Nueva" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="406" code="15" name="Estación Manuel (Úrsulo Galván)" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="407" code="15" name="San Andrés Tuxtla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="408" code="15" name="Moyahua de Estrada" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="409" code="16" name="Ramos Arizpe" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="410" code="16" name="Cacahoatán" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="411" code="16" name="Ciudad de México" state="CMX" term_start="2022-01-01" term_end=""/>
-<Entry id="412" code="16" name="Ciudad de México" state="DIF" term_start="2017-01-01" term_end="2022-12-31"/>
-<Entry id="413" code="16" name="Coyuca de Benítez" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="414" code="16" name="Huanímaro" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="415" code="16" name="La Resolana" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="416" code="16" name="Tultitlán de Mariano Escobedo" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="417" code="16" name="Zinapécuaro de Figueroa" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="418" code="16" name="La peñita de Jaltemba" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="419" code="16" name="Tlacolula de Matamoros" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="420" code="16" name="Ciudad Serdán" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="421" code="16" name="San Blas" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="422" code="16" name="Villa de Reyes" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="423" code="16" name="Xicoténcatl" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="424" code="16" name="Túxpam de Rodríguez Cano" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="425" code="16" name="Sombrerete" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="426" code="17" name="Nava" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="427" code="17" name="Ocozocoautla de Espinosa" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="428" code="17" name="Olinalá" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="429" code="17" name="Comonfort" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="430" code="17" name="Atotonilco el Alto" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="431" code="17" name="Cuautitlán" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="432" code="17" name="Puruándiro" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="433" code="17" name="Jala" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="434" code="17" name="Santiago" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="435" code="17" name="San Pablo Villa de Mitla" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="436" code="17" name="Amozoc" state="PUE" term_start="2017-01-01" term_end=""/>
-<Entry id="437" code="17" name="La Cruz" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="438" code="17" name="Fracción el Refugio" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="439" code="17" name="Ciudad Miguel Alemán" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="440" code="17" name="Veracruz" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="441" code="17" name="Jalpa" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="442" code="18" name="Zaragoza" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="443" code="18" name="Cintalapa de Figueroa" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="444" code="18" name="Marquelia" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="445" code="18" name="Uriangato" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="446" code="18" name="Jalostotitlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="447" code="18" name="Ixtapaluca" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="448" code="18" name="Yurécuaro" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="449" code="18" name="Ahuacatlán" state="NAY" term_start="2017-01-01" term_end=""/>
-<Entry id="450" code="18" name="El cercado" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="451" code="18" name="Natividad" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="452" code="18" name="El rosario" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="453" code="18" name="Tamazunchale" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="454" code="18" name="Soto la Marina" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="455" code="18" name="Tierra Blanca" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="456" code="18" name="Loreto" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="457" code="19" name="San Buenaventura" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="458" code="19" name="Pichucalco" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="459" code="19" name="Zumpango del Río" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="460" code="19" name="Pénjamo" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="461" code="19" name="Poncitlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="462" code="19" name="Texcoco de Mora" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="463" code="19" name="Huetamo de Núñez" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="464" code="19" name="Teotitlán de Flores Magón" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="465" code="19" name="Estación Naranjo" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="466" code="19" name="Santa María del Río" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="467" code="19" name="Ciudad Tula" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="468" code="19" name="Cosamaloapan" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="469" code="19" name="Juan Aldama" state="ZAC" term_start="2017-01-01" term_end=""/>
-<Entry id="470" code="20" name="Ciudad Melchor Múzquiz" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="471" code="20" name="Puerto Madero (San Benito)" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="472" code="20" name="San Luis de la Loma" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="473" code="20" name="Cuerámaro" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="474" code="20" name="Arandas" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="475" code="20" name="Toluca de Lerdo" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="476" code="20" name="Tacámbaro de Codallos" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="477" code="20" name="Anáhuac" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="478" code="20" name="Santa María Huatulco" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="479" code="20" name="Aguaruto" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="480" code="20" name="El Naranjo" state="SLP" term_start="2017-01-01" term_end=""/>
-<Entry id="481" code="20" name="Nueva Ciudad Guerrero" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="482" code="20" name="Carlos A. Carrillo" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="483" code="21" name="Viesca" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="484" code="21" name="Pijijiapan" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="485" code="21" name="Petatlán" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="486" code="21" name="Empalme Escobedo (Escobedo)" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="487" code="21" name="Talpa de Allende" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="488" code="21" name="Valle de Chalco Solidaridad" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="489" code="21" name="Ciudad Lázaro Cárdenas" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="490" code="21" name="García" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="491" code="21" name="San Juan Bautista Cuicatlán" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="492" code="21" name="Cosalá" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="493" code="21" name="Valle Hermoso" state="TAM" term_start="2017-01-01" term_end=""/>
-<Entry id="494" code="21" name="Pánuco" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="495" code="22" name="Morelos" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="496" code="22" name="Reforma" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="497" code="22" name="La Unión" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="498" code="22" name="San Luis de la Paz" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="499" code="22" name="Etzatlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="500" code="22" name="Tejupilco de Hidalgo" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="501" code="22" name="Las Guacamayas" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="502" code="22" name="Ciudad Benito Juárez" state="NLE" term_start="2017-01-01" term_end=""/>
-<Entry id="503" code="22" name="Villa Sola de Vega" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="504" code="22" name="San Ignacio" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="505" code="22" name="Tampico Alto" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="506" code="23" name="Arteaga" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="507" code="23" name="Huixtla" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="508" code="23" name="San Luis San Pedro" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="509" code="23" name="Valle de Santiago" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="510" code="23" name="Sayula" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="511" code="23" name="Chalco de Díaz Covarrubias" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="512" code="23" name="Jiquilpan de Juárez" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="513" code="23" name="Ocotlán de Morelos" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="514" code="23" name="Topolobampo" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="515" code="23" name="Tempoal de Sánchez" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="516" code="24" name="Allende" state="COA" term_start="2017-01-01" term_end=""/>
-<Entry id="517" code="24" name="Motozintla de Mendoza" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="518" code="24" name="Teloloapan" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="519" code="24" name="Abasolo" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="520" code="24" name="Ahualulco de Mercado" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="521" code="24" name="Amatepec" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="522" code="24" name="Tuxpan" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="523" code="24" name="Villa de Zaachila" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="524" code="24" name="Lic. Benito Juárez (Campo Gobierno)" state="SIN" term_start="2017-01-01" term_end=""/>
-<Entry id="525" code="24" name="Tantoyuca" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="526" code="25" name="Acala" state="CHP" term_start="2017-01-01" term_end=""/>
-<Entry id="527" code="25" name="Técpan de Galeana" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="528" code="25" name="Rincón de Tamayo" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="529" code="25" name="Autlán de Navarro" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="530" code="25" name="Cotija de la Paz" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="531" code="25" name="Miahuatlán de Porfirio Díaz" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="532" code="25" name="Gutiérrez Zamora" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="533" code="26" name="Huitzuco" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="534" code="26" name="Villagrán" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="535" code="26" name="Magdalena" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="536" code="26" name="Melchor Ocampo" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="537" code="26" name="Nueva Italia de Ruiz" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="538" code="26" name="Unión Hidalgo" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="539" code="26" name="Platón Sánchez" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="540" code="27" name="Tixtla de Guerrero" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="541" code="27" name="Yuriria" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="542" code="27" name="San Julián" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="543" code="27" name="San Vicente Chicoloapan de Juárez" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="544" code="27" name="Cuitzeo del Porvenir" state="MIC" term_start="2017-01-01" term_end=""/>
-<Entry id="545" code="27" name="El Camarón" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="546" code="27" name="Juan Rodríguez Clara" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="547" code="28" name="Tepecoacuilco de Trujano" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="548" code="28" name="Apaseo el Grande" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="549" code="28" name="Cocula" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="550" code="28" name="Capulhuac" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="551" code="28" name="San Pedro Mixtepec -Dto. 22-" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="552" code="28" name="Huatusco de Chicuellar" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="553" code="29" name="San Marcos" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="554" code="29" name="Purísima de Bustos" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="555" code="29" name="El Grullo" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="556" code="29" name="Juchitepec de Mariano Riva Palacio" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="557" code="29" name="Santa Cruz Itundujia" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="558" code="29" name="Ixtaczoquitlán" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="559" code="30" name="Azoyú" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="560" code="30" name="Salvatierra" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="561" code="30" name="San Miguel el Alto" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="562" code="30" name="Tequixquiac" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="563" code="30" name="Chahuites" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="564" code="30" name="Río Blanco" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="565" code="31" name="Tlapehuala" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="566" code="31" name="Marfil" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="567" code="31" name="Tala" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="568" code="31" name="Xonacatlán" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="569" code="31" name="Heroica Ciudad de Ejutla de Crespo" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="570" code="31" name="Isla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="571" code="32" name="San Luis Acatlán" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="572" code="32" name="San José Iturbide" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="573" code="32" name="La Barca" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="574" code="32" name="San Mateo Atenco" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="575" code="32" name="San Pedro Tapanatepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="576" code="32" name="Cuitláhuac" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="577" code="33" name="Chilapa de Álvarez" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="578" code="33" name="Apaseo el Alto" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="579" code="33" name="Jamay" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="580" code="33" name="Vicente Camalote" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="581" code="33" name="Fortín de las Flores" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="582" code="34" name="Tlapa de Comonfort" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="583" code="34" name="Ciudad Manuel Doblado" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="584" code="34" name="Yahualica de González Gallo" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="585" code="34" name="Villa de Tamazulápam del Progreso" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="586" code="34" name="Alvarado" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="587" code="35" name="Tlalixtaquilla" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="588" code="35" name="Jaral del Progreso" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="589" code="35" name="Colotlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="590" code="35" name="San Juan Bautista lo de Soto" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="591" code="35" name="José Cardel" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="592" code="36" name="Cuajinicuilapa" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="593" code="36" name="San Diego de la Unión" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="594" code="36" name="Cihuatlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="595" code="36" name="Chiconcuac" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="596" code="36" name="San Juan Cacahuatepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="597" code="36" name="Banderilla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="598" code="37" name="Huamuxtitlan" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="599" code="37" name="Santa Cruz Juventino Rosas" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="600" code="37" name="Zapotiltic" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="601" code="37" name="San Pedro Totolapa" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="602" code="37" name="Paraje Nuevo" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="603" code="38" name="Cruz Grande" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="604" code="38" name="Doctor Mora" state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="605" code="38" name="Villa Corona" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="606" code="38" name="San Miguel el Grande" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="607" code="38" name="Playa Vicente" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="608" code="39" name="Ocotito" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="609" code="39" name="Dolores Hgo. Cuna de la Indep. Nal." state="GUA" term_start="2017-01-01" term_end=""/>
-<Entry id="610" code="39" name="Teocaltiche" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="611" code="39" name="Almoloya de Juárez" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="612" code="39" name="Zimatlán de Álvarez" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="613" code="39" name="Altotonga" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="614" code="40" name="Copala" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="615" code="40" name="Ocoyoacac" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="616" code="40" name="San Pablo Huitzo" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="617" code="40" name="Juan Díaz Covarrubias" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="618" code="41" name="Zihuatanejo" state="GRO" term_start="2017-01-01" term_end=""/>
-<Entry id="619" code="41" name="Tequila" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="620" code="41" name="Zumpango" state="MEX" term_start="2017-01-01" term_end=""/>
-<Entry id="621" code="41" name="San Francisco Telixtlahuaca" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="622" code="41" name="Cuichapa" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="623" code="42" name="El Quince (San José el Quince)" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="624" code="42" name="Mariscala de Juárez" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="625" code="42" name="Santiago Tuxtla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="626" code="43" name="San José el Verde (El Verde)" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="627" code="43" name="Santiago Pinotepa Nacional" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="628" code="43" name="Huayacocotla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="629" code="44" name="Jocotepec" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="630" code="44" name="Santiago Jamiltepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="631" code="44" name="Paso de Ovejas" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="632" code="45" name="Tecalitlán" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="633" code="45" name="San Pedro Pochutla" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="634" code="45" name="Catemaco" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="635" code="46" name="Chapala" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="636" code="46" name="Heroica Ciudad de Tlaxiaco" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="637" code="46" name="Nogales" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="638" code="47" name="Ajijic" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="639" code="47" name="San Juan Bautista Valle Nacional" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="640" code="47" name="Las Choapas" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="641" code="48" name="San Ignacio Cerro Gordo" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="642" code="48" name="Lagunas" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="643" code="48" name="General Miguel Alemán (Potrero Nuevo)" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="644" code="49" name="Zacoalco de Torres" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="645" code="49" name="Ciudad Ixtepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="646" code="49" name="Coatzintla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="647" code="50" name="Huejuquilla el Alto" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="648" code="50" name="Santiago Juxtlahuaca" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="649" code="50" name="Ángel R. Cabada" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="650" code="51" name="Villa Hidalgo" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="651" code="51" name="San Sebastián Tecomaxtlahuaca" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="652" code="51" name="San Rafael" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="653" code="52" name="Unión de San Antonio" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="654" code="52" name="Asunción Nochixtlán" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="655" code="52" name="Tlacojalpan" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="656" code="53" name="Las Pintitas" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="657" code="53" name="San Francisco Ixhuatán" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="658" code="53" name="Cosoleacaque" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="659" code="54" name="Tamazula de Gordiano" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="660" code="54" name="San Blas Atempa" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="661" code="54" name="Lerdo de Tejada" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="662" code="55" name="Acatlán de Juárez" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="663" code="55" name="Santo Domingo Tehuantepec" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="664" code="55" name="Tihuatlán" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="665" code="56" name="Valle de Guadalupe" state="JAL" term_start="2017-01-01" term_end=""/>
-<Entry id="666" code="56" name="Cuilápam de Guerrero" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="667" code="56" name="Atoyac" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="668" code="57" name="El Rosario" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="669" code="57" name="Huiloapan de Cuauhtémoc" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="670" code="58" name="Santa Lucia del Camino" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="671" code="58" name="Cazones de Herrera" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="672" code="59" name="San Antonio de la Cal" state="OAX" term_start="2017-01-01" term_end=""/>
-<Entry id="673" code="59" name="Yecuatla" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="674" code="60" name="Soledad de Doblado" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="675" code="61" name="Cerro Azul" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="676" code="62" name="Tezonapa" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="677" code="66" name="Sihuapan" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="678" code="67" name="El Higo" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="679" code="68" name="Paso del Macho" state="VER" term_start="2017-01-01" term_end=""/>
-<Entry id="680" code="69" name="Tlapacoyan" state="VER" term_start="2017-01-01" term_end=""/>
+<Entry id="1" code="01" name="Aguascalientes" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="2" code="01" name="Ensenada" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="3" code="01" name="Ciudad Constitución" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="4" code="01" name="San Francisco de Campeche" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="5" code="01" name="Ciudad Acuña" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="6" code="01" name="Colima" state="COL" term_start="2023-11-25" term_end=""/>
+<Entry id="7" code="01" name="Santa Rosalía de Camargo" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="8" code="01" name="Comitán de Domínguez" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="9" code="01" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="10" code="01" name="Victoria de Durango" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="11" code="01" name="Acapulco de Juárez" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="12" code="01" name="Acámbaro" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="13" code="01" name="Actopan" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="14" code="01" name="Ameca" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="15" code="01" name="Ciudad Adolfo López Mateos" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="16" code="01" name="Apatzingán de la Constitución" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="17" code="01" name="Cuautla (Cuautla de Morelos)" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="18" code="01" name="Santiago Ixcuintla" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="19" code="01" name="Ciudad Apodaca" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="20" code="01" name="Juchitán (Juchitán de Zaragoza)" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="21" code="01" name="Atlixco" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="22" code="01" name="Querétaro" state="QUE" term_start="2023-11-25" term_end=""/>
+<Entry id="23" code="01" name="Cancún" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="24" code="01" name="Los Mochis" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="25" code="01" name="Ciudad Valles" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="26" code="01" name="San Luis Río Colorado" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="27" code="01" name="Cárdenas" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="28" code="01" name="Altamira" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="29" code="01" name="Apizaco" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="30" code="01" name="Acayucan" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="31" code="01" name="Mérida" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="32" code="01" name="Fresnillo" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="33" code="02" name="Calvillo" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="34" code="02" name="Mexicali" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="35" code="02" name="La Paz" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="36" code="02" name="Ciudad del Carmen" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="37" code="02" name="Frontera" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="38" code="02" name="Manzanillo" state="COL" term_start="2023-11-25" term_end=""/>
+<Entry id="39" code="02" name="Chihuahua" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="40" code="02" name="San Cristóbal de las Casas" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="41" code="02" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="42" code="02" name="Gómez Palacio" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="43" code="02" name="Chilpancingo de los Bravo" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="44" code="02" name="San miguel de Allende" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="45" code="02" name="Apan" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="46" code="02" name="Ciudad Guzmán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="47" code="02" name="Chimalhuacán" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="48" code="02" name="Los Reyes de Salgado" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="49" code="02" name="Cuernavaca" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="50" code="02" name="Tepic" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="51" code="02" name="San Pedro Garza García" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="52" code="02" name="Oaxaca de Juárez" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="53" code="02" name="Izúcar de Matamoros" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="54" code="02" name="San Juan del Rio" state="QUE" term_start="2023-11-25" term_end=""/>
+<Entry id="55" code="02" name="Cozumel" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="56" code="02" name="Culiacán Rosales" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="57" code="02" name="Ébano" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="58" code="02" name="Agua Prieta" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="59" code="02" name="Villahermosa" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="60" code="02" name="Ciudad Camargo" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="61" code="02" name="Villa Vicente Guerrero" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="62" code="02" name="Naranjos" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="63" code="02" name="Tizimín" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="64" code="02" name="Jerez de García Salinas" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="65" code="03" name="San Francisco de los Romo" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="66" code="03" name="Tecate" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="67" code="03" name="Cabo San Lucas" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="68" code="03" name="Calkini" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="69" code="03" name="Matamoros" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="70" code="03" name="Tecoman" state="COL" term_start="2023-11-25" term_end=""/>
+<Entry id="71" code="03" name="Cuauhtémoc" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="72" code="03" name="Tapachula de Córdova y Ordóñez" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="73" code="03" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="74" code="03" name="Ciudad Lerdo" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="75" code="03" name="Iguala de la Independencia" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="76" code="03" name="Celaya" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="77" code="03" name="Pachuca de Soto" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="78" code="03" name="Guadalajara" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="79" code="03" name="Coacalco de Berriozabal" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="80" code="03" name="Ciudad Hidalgo" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="81" code="03" name="Galeana" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="82" code="03" name="Tuxpan" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="83" code="03" name="Ciudad General Escobedo" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="84" code="03" name="Salina Cruz" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="85" code="03" name="Puebla (Heroica Puebla)" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="86" code="03" name="Felipe Carrillo Puerto" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="87" code="03" name="Escuinapa de Hidalgo" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="88" code="03" name="Matehuala" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="89" code="03" name="Heroica Caborca" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="90" code="03" name="Comalcalco" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="91" code="03" name="Ciudad Madero" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="92" code="03" name="Tlaxcala (Tlaxcala de Xicotencatl)" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="93" code="03" name="Boca del RÍo" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="94" code="03" name="Ticul" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="95" code="03" name="Zacatecas" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="96" code="04" name="Jesús María" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="97" code="04" name="Tijuana" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="98" code="04" name="San José del Cabo" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="99" code="04" name="Candelaria" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="100" code="04" name="Monclova" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="101" code="04" name="Ciudad de Villa de Álvarez" state="COL" term_start="2023-11-25" term_end=""/>
+<Entry id="102" code="04" name="Delicias" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="103" code="04" name="Tuxtla Gutiérrez" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="104" code="04" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="105" code="04" name="Santiago Papasquiaro" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="106" code="04" name="Taxco de Alarcón" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="107" code="04" name="Cortazar" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="108" code="04" name="Cd. de Fray Bernardino de Sahagún" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="109" code="04" name="Lagos de Moreno" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="110" code="04" name="Cuautitlán Izcalli" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="111" code="04" name="Jacona de Plancarte" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="112" code="04" name="Jojutla" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="113" code="04" name="Acaponeta" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="114" code="04" name="Guadalupe" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="115" code="04" name="San Juan Bautista Tuxtepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="116" code="04" name="San Martín Texmelucan de Labastida" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="117" code="04" name="El Pueblito" state="QUE" term_start="2023-11-25" term_end=""/>
+<Entry id="118" code="04" name="Chetumal" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="119" code="04" name="Guasave" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="120" code="04" name="Rioverde" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="121" code="04" name="Ciudad Obregón" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="122" code="04" name="Emiliano Zapata" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="123" code="04" name="Ciudad Mante" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="124" code="04" name="Huamantla" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="125" code="04" name="Coatepec" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="126" code="04" name="Motul de Carrillo Puerto" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="127" code="04" name="Guadalupe" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="128" code="05" name="Pabellón de Arteaga" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="129" code="05" name="Playas de Rosarito" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="130" code="05" name="Loreto" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="131" code="05" name="Escárcega" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="132" code="05" name="Parras de la Fuente" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="133" code="05" name="Ciudad de Armería" state="COL" term_start="2023-11-25" term_end=""/>
+<Entry id="134" code="05" name="Hidalgo del Parral" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="135" code="05" name="Venustiano Carranza" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="136" code="05" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="137" code="05" name="Canatlán" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="138" code="05" name="Arcelia" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="139" code="05" name="Guanajuato" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="140" code="05" name="Tula de Allende" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="141" code="05" name="Ocotlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="142" code="05" name="Ecatepec de Morelos" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="143" code="05" name="La piedad de Cabadas" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="144" code="05" name="Puente de Ixtla" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="145" code="05" name="Tecuala" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="146" code="05" name="Linares" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="147" code="05" name="Matías Romero Avendaño" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="148" code="05" name="Tehuacan" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="149" code="05" name="Playa del Carmen" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="150" code="05" name="Mazatlán" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="151" code="05" name="San Luis Potosí" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="152" code="05" name="Empalme" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="153" code="05" name="Jalpa de Méndez" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="154" code="05" name="Heroica Matamoros" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="155" code="05" name="Calpulalpan" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="156" code="05" name="Agua dulce" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="157" code="05" name="Valladolid" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="158" code="05" name="Río Grande" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="159" code="06" name="Rincón de Romos" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="160" code="06" name="Rodolfo Sánchez T. (Maneadero)" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="161" code="06" name="Puerto Adolfo López Mateos" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="162" code="06" name="Sabancuy" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="163" code="06" name="Piedras Negras" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="164" code="06" name="Juárez" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="165" code="06" name="Jiquipilas" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="166" code="06" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="167" code="06" name="San Juan del Río del Centauro del Norte" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="168" code="06" name="Ayutla de los Libres" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="169" code="06" name="Irapuato" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="170" code="06" name="Tulancingo" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="171" code="06" name="Puerto Vallarta" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="172" code="06" name="Huixquilucan de Degollado" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="173" code="06" name="Morelia" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="174" code="06" name="Santa Rosa Treinta" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="175" code="06" name="Compostela" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="176" code="06" name="Montemorelos" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="177" code="06" name="Heroica Ciudad de Huajuapan de León" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="178" code="06" name="Teziutlan" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="179" code="06" name="Kantunilkín" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="180" code="06" name="Guamúchil" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="181" code="06" name="Soledad de Graciano Sánchez" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="182" code="06" name="Heroica Guaymas" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="183" code="06" name="Nuevo Laredo" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="184" code="06" name="Chiautempan" state="TLA" term_start="2023-11-25" term_end=""/>
+<Entry id="185" code="06" name="Coatzacoalcos" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="186" code="06" name="Kanasín" state="YUC" term_start="2023-11-25" term_end=""/>
+<Entry id="187" code="06" name="Ciudad Cuauhtémoc" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="188" code="07" name="Asientos" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="189" code="07" name="San Felipe" state="BCN" term_start="2023-11-25" term_end=""/>
+<Entry id="190" code="07" name="Todos Santos" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="191" code="07" name="Hopelchén" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="192" code="07" name="Sabinas" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="193" code="07" name="Nuevo Casas Grandes" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="194" code="07" name="Villaflores" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="195" code="07" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="196" code="07" name="Peñón Blanco" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="197" code="07" name="Atoyac de Álvarez" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="198" code="07" name="León de los Aldama" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="199" code="07" name="Zimapan" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="200" code="07" name="San Juan de los Lagos" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="201" code="07" name="Los Reyes Acaquilpan (La Paz)" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="202" code="07" name="Pátzcuaro" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="203" code="07" name="Zacatepec de Hidalgo" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="204" code="07" name="Francisco I. Madero (Puga)" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="205" code="07" name="Monterrey" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="206" code="07" name="Loma Bonita" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="207" code="07" name="San Andrés Cholula" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="208" code="07" name="Isla Mujeres" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="209" code="07" name="Navolato" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="210" code="07" name="Charcas" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="211" code="07" name="Hermosillo" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="212" code="07" name="Macuspana" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="213" code="07" name="Reynosa" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="214" code="07" name="Córdoba" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="215" code="07" name="Ojocaliente" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="216" code="08" name="Tepezalá" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="217" code="08" name="Heroica Mulegé" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="218" code="08" name="Champotón" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="219" code="08" name="Saltillo" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="220" code="08" name="Las Margaritas" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="221" code="08" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="222" code="08" name="Francisco I. Madero" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="223" code="08" name="Moroleón" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="224" code="08" name="Huejutla de Reyes" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="225" code="08" name="Tepatitlán de Morelos" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="226" code="08" name="Metepec" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="227" code="08" name="Sahuayo de Morelos" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="228" code="08" name="Tlaquiltenango" state="MOR" term_start="2023-11-25" term_end=""/>
+<Entry id="229" code="08" name="Villa Hidalgo (El Nuevo)" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="230" code="08" name="Ciudad Sabinas Hidalgo" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="231" code="08" name="Puerto Escondido" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="232" code="08" name="San Pedro Cholula" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="233" code="08" name="Bacalar" state="ROO" term_start="2023-11-25" term_end=""/>
+<Entry id="234" code="08" name="Quila" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="235" code="08" name="Salinas de Hidalgo" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="236" code="08" name="Huatabampo" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="237" code="08" name="Tenosique de Pino Suárez" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="238" code="08" name="Ciudad Río Bravo" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="239" code="08" name="Tres Valles" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="240" code="08" name="Villa Hidalgo" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="241" code="09" name="Cosío" state="AGU" term_start="2023-11-25" term_end=""/>
+<Entry id="242" code="09" name="Villa Alberto Andrés Alvarado Arámburo" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="243" code="09" name="Hecelchakán" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="244" code="09" name="Nueva Rosita" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="245" code="09" name="Madera" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="246" code="09" name="Arriaga" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="247" code="09" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="248" code="09" name="Nombre de Dios" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="249" code="09" name="San Jerónimo de Juárez" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="250" code="09" name="Salamanca" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="251" code="09" name="Tlaxcoapan" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="252" code="09" name="Tlaquepaque" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="253" code="09" name="Naucalpan de Juárez" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="254" code="09" name="Uruapan" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="255" code="09" name="Ruiz" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="256" code="09" name="San Nicolás de los Garza" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="257" code="09" name="Río Grande o Piedra Parada" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="258" code="09" name="Huauchinango" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="259" code="09" name="Ahome" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="260" code="09" name="Cárdenas" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="261" code="09" name="Navojoa" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="262" code="09" name="Teapa" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="263" code="09" name="San Fernando" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="264" code="09" name="Jáltipan de Morelos" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="265" code="09" name="Villanueva" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="266" code="10" name="San Ignacio" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="267" code="10" name="San Pedro" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="268" code="10" name="Colonia Anáhuac" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="269" code="10" name="Palenque" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="270" code="10" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="271" code="10" name="Vicente Guerrero" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="272" code="10" name="Ciudad Apaxtla de Castrejón" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="273" code="10" name="San Francisco del Rincón" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="274" code="10" name="Tizayuca" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="275" code="10" name="Zapopan" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="276" code="10" name="Ciudad Nezahualcoyotl" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="277" code="10" name="Zacapu" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="278" code="10" name="San Blas" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="279" code="10" name="Ciudad Santa Catarina" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="280" code="10" name="Acatlán de Osorio" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="281" code="10" name="Higuera de Zaragoza" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="282" code="10" name="Cerritos" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="283" code="10" name="Heroica Nogales" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="284" code="10" name="Paraíso" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="285" code="10" name="Tampico" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="286" code="10" name="Xalapa-Enríquez" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="287" code="10" name="Villa de Cos" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="288" code="11" name="Guerrero Negro" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="289" code="11" name="Pomuch" state="CAM" term_start="2023-11-25" term_end=""/>
+<Entry id="290" code="11" name="Torreón" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="291" code="11" name="Juan Aldama" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="292" code="11" name="Ocosingo" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="293" code="11" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="294" code="11" name="El Salto" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="295" code="11" name="Ciudad Altamirano" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="296" code="11" name="Silao" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="297" code="11" name="Santiago Tulantepec" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="298" code="11" name="Tlajomulco de Zúñiga" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="299" code="11" name="Villa Nicolás Romero" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="300" code="11" name="Zamora de Hidalgo" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="301" code="11" name="Ixtlán del Río" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="302" code="11" name="Doctor Arroyo" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="303" code="11" name="Santiago Suchilquitongo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="304" code="11" name="Cuautlancingo" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="305" code="11" name="Choix" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="306" code="11" name="Tamuin" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="307" code="11" name="Puerto Peñasco" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="308" code="11" name="Frontera" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="309" code="11" name="Ciudad Victoria" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="310" code="11" name="Minatitlán" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="311" code="11" name="Nochistlán de Mejía" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="312" code="12" name="Santa Rosalía" state="BCS" term_start="2023-11-25" term_end=""/>
+<Entry id="313" code="12" name="Castaños" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="314" code="12" name="José Mariano Jiménez" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="315" code="12" name="Tonalá" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="316" code="12" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="317" code="12" name="Santa María del Oro" state="DUR" term_start="2023-11-25" term_end=""/>
+<Entry id="318" code="12" name="Buenavista de Cuellar" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="319" code="12" name="Jerécuaro" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="320" code="12" name="Ixmiquilpan" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="321" code="12" name="Tonalá" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="322" code="12" name="Tecamac de Felipe Villanueva" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="323" code="12" name="Heroica Zitácuaro" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="324" code="12" name="Bucerías" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="325" code="12" name="Ciénega de Flores" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="326" code="12" name="San Felipe Jalapa de Díaz" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="327" code="12" name="Tepeaca" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="328" code="12" name="Villa Unión" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="329" code="12" name="Tamasopo" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="330" code="12" name="Heroica Ciudad de Cananea" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="331" code="12" name="Cunduacán" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="332" code="12" name="González" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="333" code="12" name="Orizaba" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="334" code="12" name="Víctor Rosales" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="335" code="13" name="Francisco I. Madero (Chávez)" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="336" code="13" name="Manuel Ojinaga" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="337" code="13" name="Mapastepec" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="338" code="13" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="339" code="13" name="Cutzamala de Pinzón" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="340" code="13" name="Santiago Maravatío" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="341" code="13" name="Tepeji del Rio" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="342" code="13" name="Tuxpan" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="343" code="13" name="Tepotzotlán" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="344" code="13" name="Paracho de Verduzco" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="345" code="13" name="Las Varas" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="346" code="13" name="Hualahuises" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="347" code="13" name="Bahias de Huatulco" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="348" code="13" name="Tecamachalco" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="349" code="13" name="Sinaloa de Leyva" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="350" code="13" name="Ciudad del Maíz" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="351" code="13" name="Sonoita" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="352" code="13" name="Huimanguillo" state="TAB" term_start="2023-11-25" term_end=""/>
+<Entry id="353" code="13" name="Jaumave" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="354" code="13" name="Papantla de Olarte" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="355" code="13" name="Valparaíso" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="356" code="14" name="Cuatro Ciénegas de Carranza" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="357" code="14" name="Bachíniva" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="358" code="14" name="Las Rosas" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="359" code="14" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="360" code="14" name="Coyuca de Catalán" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="361" code="14" name="Romita" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="362" code="14" name="Cruz Azul" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="363" code="14" name="Tototlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="364" code="14" name="Tlalnepantla de Baz" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="365" code="14" name="Tangancícuaro de Arista" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="366" code="14" name="Xalisco" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="367" code="14" name="Putla Villa de Guerrero" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="368" code="14" name="Zacatlán" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="369" code="14" name="Mocorito" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="370" code="14" name="Cedral" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="371" code="14" name="Magdalena de Kino" state="SON" term_start="2023-11-25" term_end=""/>
+<Entry id="372" code="14" name="Ciudad Gustavo Díaz Ordaz" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="373" code="14" name="Poza Rica de Hidalgo" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="374" code="14" name="Luis Moya" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="375" code="15" name="Nadadores" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="376" code="15" name="Saucillo" state="CHH" term_start="2023-11-25" term_end=""/>
+<Entry id="377" code="15" name="Chiapa de Corzo" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="378" code="15" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="379" code="15" name="Tierra Colorada" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="380" code="15" name="Tarandacuao" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="381" code="15" name="Tepeapulco" state="HID" term_start="2023-11-25" term_end=""/>
+<Entry id="382" code="15" name="San Diego de Alejandría" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="383" code="15" name="Santa Maria Tultepec" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="384" code="15" name="Maravatío de Ocampo" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="385" code="15" name="San pedro Lagunillas" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="386" code="15" name="Cadereyta Jiménez" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="387" code="15" name="Cosolapa" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="388" code="15" name="Xicotepec" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="389" code="15" name="Angostura" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="390" code="15" name="Tierra Nueva" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="391" code="15" name="Estación Manuel (Úrsulo Galván)" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="392" code="15" name="San Andrés Tuxtla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="393" code="15" name="Moyahua de Estrada" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="394" code="16" name="Ramos Arizpe" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="395" code="16" name="Cacahoatán" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="396" code="16" name="Ciudad de México" state="CMX" term_start="2023-11-25" term_end=""/>
+<Entry id="397" code="16" name="Coyuca de Benítez" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="398" code="16" name="Huanímaro" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="399" code="16" name="La Resolana" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="400" code="16" name="Tultitlán de Mariano Escobedo" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="401" code="16" name="Zinapécuaro de Figueroa" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="402" code="16" name="La peñita de Jaltemba" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="403" code="16" name="Tlacolula de Matamoros" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="404" code="16" name="Ciudad Serdán" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="405" code="16" name="San Blas" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="406" code="16" name="Villa de Reyes" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="407" code="16" name="Xicoténcatl" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="408" code="16" name="Túxpam de Rodríguez Cano" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="409" code="16" name="Sombrerete" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="410" code="17" name="Nava" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="411" code="17" name="Ocozocoautla de Espinosa" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="412" code="17" name="Olinalá" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="413" code="17" name="Comonfort" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="414" code="17" name="Atotonilco el Alto" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="415" code="17" name="Cuautitlán" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="416" code="17" name="Puruándiro" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="417" code="17" name="Jala" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="418" code="17" name="Santiago" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="419" code="17" name="San Pablo Villa de Mitla" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="420" code="17" name="Amozoc" state="PUE" term_start="2023-11-25" term_end=""/>
+<Entry id="421" code="17" name="La Cruz" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="422" code="17" name="Fracción el Refugio" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="423" code="17" name="Ciudad Miguel Alemán" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="424" code="17" name="Veracruz" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="425" code="17" name="Jalpa" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="426" code="18" name="Zaragoza" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="427" code="18" name="Cintalapa de Figueroa" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="428" code="18" name="Marquelia" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="429" code="18" name="Uriangato" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="430" code="18" name="Jalostotitlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="431" code="18" name="Ixtapaluca" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="432" code="18" name="Yurécuaro" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="433" code="18" name="Ahuacatlán" state="NAY" term_start="2023-11-25" term_end=""/>
+<Entry id="434" code="18" name="El cercado" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="435" code="18" name="Natividad" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="436" code="18" name="El rosario" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="437" code="18" name="Tamazunchale" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="438" code="18" name="Soto la Marina" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="439" code="18" name="Tierra Blanca" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="440" code="18" name="Loreto" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="441" code="19" name="San Buenaventura" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="442" code="19" name="Pichucalco" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="443" code="19" name="Zumpango del Río" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="444" code="19" name="Pénjamo" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="445" code="19" name="Poncitlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="446" code="19" name="Texcoco de Mora" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="447" code="19" name="Huetamo de Núñez" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="448" code="19" name="Teotitlán de Flores Magón" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="449" code="19" name="Estación Naranjo" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="450" code="19" name="Santa María del Río" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="451" code="19" name="Ciudad Tula" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="452" code="19" name="Cosamaloapan" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="453" code="19" name="Juan Aldama" state="ZAC" term_start="2023-11-25" term_end=""/>
+<Entry id="454" code="20" name="Ciudad Melchor Múzquiz" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="455" code="20" name="Puerto Madero (San Benito)" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="456" code="20" name="San Luis de la Loma" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="457" code="20" name="Cuerámaro" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="458" code="20" name="Arandas" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="459" code="20" name="Toluca de Lerdo" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="460" code="20" name="Tacámbaro de Codallos" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="461" code="20" name="Anáhuac" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="462" code="20" name="Santa María Huatulco" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="463" code="20" name="Aguaruto" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="464" code="20" name="El Naranjo" state="SLP" term_start="2023-11-25" term_end=""/>
+<Entry id="465" code="20" name="Nueva Ciudad Guerrero" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="466" code="20" name="Carlos A. Carrillo" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="467" code="21" name="Viesca" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="468" code="21" name="Pijijiapan" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="469" code="21" name="Petatlán" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="470" code="21" name="Empalme Escobedo (Escobedo)" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="471" code="21" name="Talpa de Allende" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="472" code="21" name="Valle de Chalco Solidaridad" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="473" code="21" name="Ciudad Lázaro Cárdenas" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="474" code="21" name="García" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="475" code="21" name="San Juan Bautista Cuicatlán" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="476" code="21" name="Cosalá" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="477" code="21" name="Valle Hermoso" state="TAM" term_start="2023-11-25" term_end=""/>
+<Entry id="478" code="21" name="Pánuco" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="479" code="22" name="Morelos" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="480" code="22" name="Reforma" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="481" code="22" name="La Unión" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="482" code="22" name="San Luis de la Paz" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="483" code="22" name="Etzatlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="484" code="22" name="Tejupilco de Hidalgo" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="485" code="22" name="Las Guacamayas" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="486" code="22" name="Ciudad Benito Juárez" state="NLE" term_start="2023-11-25" term_end=""/>
+<Entry id="487" code="22" name="Villa Sola de Vega" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="488" code="22" name="San Ignacio" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="489" code="22" name="Tampico Alto" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="490" code="23" name="Arteaga" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="491" code="23" name="Huixtla" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="492" code="23" name="San Luis San Pedro" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="493" code="23" name="Valle de Santiago" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="494" code="23" name="Sayula" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="495" code="23" name="Chalco de Díaz Covarrubias" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="496" code="23" name="Jiquilpan de Juárez" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="497" code="23" name="Ocotlán de Morelos" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="498" code="23" name="Topolobampo" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="499" code="23" name="Tempoal de Sánchez" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="500" code="24" name="Allende" state="COA" term_start="2023-11-25" term_end=""/>
+<Entry id="501" code="24" name="Motozintla de Mendoza" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="502" code="24" name="Teloloapan" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="503" code="24" name="Abasolo" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="504" code="24" name="Ahualulco de Mercado" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="505" code="24" name="Amatepec" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="506" code="24" name="Tuxpan" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="507" code="24" name="Villa de Zaachila" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="508" code="24" name="Lic. Benito Juárez (Campo Gobierno)" state="SIN" term_start="2023-11-25" term_end=""/>
+<Entry id="509" code="24" name="Tantoyuca" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="510" code="25" name="Acala" state="CHP" term_start="2023-11-25" term_end=""/>
+<Entry id="511" code="25" name="Técpan de Galeana" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="512" code="25" name="Rincón de Tamayo" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="513" code="25" name="Autlán de Navarro" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="514" code="25" name="Cotija de la Paz" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="515" code="25" name="Miahuatlán de Porfirio Díaz" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="516" code="25" name="Gutiérrez Zamora" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="517" code="26" name="Huitzuco" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="518" code="26" name="Villagrán" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="519" code="26" name="Magdalena" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="520" code="26" name="Melchor Ocampo" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="521" code="26" name="Nueva Italia de Ruiz" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="522" code="26" name="Unión Hidalgo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="523" code="26" name="Platón Sánchez" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="524" code="27" name="Tixtla de Guerrero" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="525" code="27" name="Yuriria" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="526" code="27" name="San Julián" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="527" code="27" name="San Vicente Chicoloapan de Juárez" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="528" code="27" name="Cuitzeo del Porvenir" state="MIC" term_start="2023-11-25" term_end=""/>
+<Entry id="529" code="27" name="El Camarón" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="530" code="27" name="Juan Rodríguez Clara" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="531" code="28" name="Tepecoacuilco de Trujano" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="532" code="28" name="Apaseo el Grande" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="533" code="28" name="Cocula" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="534" code="28" name="Capulhuac" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="535" code="28" name="San Pedro Mixtepec -Dto. 22-" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="536" code="28" name="Huatusco de Chicuellar" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="537" code="29" name="San Marcos" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="538" code="29" name="Purísima de Bustos" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="539" code="29" name="El Grullo" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="540" code="29" name="Juchitepec de Mariano Riva Palacio" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="541" code="29" name="Santa Cruz Itundujia" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="542" code="29" name="Ixtaczoquitlán" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="543" code="30" name="Azoyú" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="544" code="30" name="Salvatierra" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="545" code="30" name="San Miguel el Alto" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="546" code="30" name="Tequixquiac" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="547" code="30" name="Chahuites" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="548" code="30" name="Río Blanco" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="549" code="31" name="Tlapehuala" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="550" code="31" name="Marfil" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="551" code="31" name="Tala" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="552" code="31" name="Xonacatlán" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="553" code="31" name="Heroica Ciudad de Ejutla de Crespo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="554" code="31" name="Isla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="555" code="32" name="San Luis Acatlán" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="556" code="32" name="San José Iturbide" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="557" code="32" name="La Barca" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="558" code="32" name="San Mateo Atenco" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="559" code="32" name="San Pedro Tapanatepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="560" code="32" name="Cuitláhuac" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="561" code="33" name="Chilapa de Álvarez" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="562" code="33" name="Apaseo el Alto" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="563" code="33" name="Jamay" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="564" code="33" name="Vicente Camalote" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="565" code="33" name="Fortín de las Flores" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="566" code="34" name="Tlapa de Comonfort" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="567" code="34" name="Ciudad Manuel Doblado" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="568" code="34" name="Yahualica de González Gallo" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="569" code="34" name="Villa de Tamazulápam del Progreso" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="570" code="34" name="Alvarado" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="571" code="35" name="Tlalixtaquilla" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="572" code="35" name="Jaral del Progreso" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="573" code="35" name="Colotlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="574" code="35" name="San Juan Bautista lo de Soto" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="575" code="35" name="José Cardel" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="576" code="36" name="Cuajinicuilapa" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="577" code="36" name="San Diego de la Unión" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="578" code="36" name="Cihuatlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="579" code="36" name="Chiconcuac" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="580" code="36" name="San Juan Cacahuatepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="581" code="36" name="Banderilla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="582" code="37" name="Huamuxtitlan" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="583" code="37" name="Santa Cruz Juventino Rosas" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="584" code="37" name="Zapotiltic" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="585" code="37" name="San Pedro Totolapa" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="586" code="37" name="Paraje Nuevo" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="587" code="38" name="Cruz Grande" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="588" code="38" name="Doctor Mora" state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="589" code="38" name="Villa Corona" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="590" code="38" name="San Miguel el Grande" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="591" code="38" name="Playa Vicente" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="592" code="39" name="Ocotito" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="593" code="39" name="Dolores Hgo. Cuna de la Indep. Nal." state="GUA" term_start="2023-11-25" term_end=""/>
+<Entry id="594" code="39" name="Teocaltiche" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="595" code="39" name="Almoloya de Juárez" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="596" code="39" name="Zimatlán de Álvarez" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="597" code="39" name="Altotonga" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="598" code="40" name="Copala" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="599" code="40" name="Ocoyoacac" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="600" code="40" name="San Pablo Huitzo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="601" code="40" name="Juan Díaz Covarrubias" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="602" code="41" name="Zihuatanejo" state="GRO" term_start="2023-11-25" term_end=""/>
+<Entry id="603" code="41" name="Tequila" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="604" code="41" name="Zumpango" state="MEX" term_start="2023-11-25" term_end=""/>
+<Entry id="605" code="41" name="San Francisco Telixtlahuaca" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="606" code="41" name="Cuichapa" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="607" code="42" name="El Quince (San José el Quince)" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="608" code="42" name="Mariscala de Juárez" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="609" code="42" name="Santiago Tuxtla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="610" code="43" name="San José el Verde (El Verde)" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="611" code="43" name="Santiago Pinotepa Nacional" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="612" code="43" name="Huayacocotla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="613" code="44" name="Jocotepec" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="614" code="44" name="Santiago Jamiltepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="615" code="44" name="Paso de Ovejas" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="616" code="45" name="Tecalitlán" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="617" code="45" name="San Pedro Pochutla" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="618" code="45" name="Catemaco" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="619" code="46" name="Chapala" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="620" code="46" name="Heroica Ciudad de Tlaxiaco" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="621" code="46" name="Nogales" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="622" code="47" name="Ajijic" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="623" code="47" name="San Juan Bautista Valle Nacional" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="624" code="47" name="Las Choapas" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="625" code="48" name="San Ignacio Cerro Gordo" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="626" code="48" name="Lagunas" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="627" code="48" name="General Miguel Alemán (Potrero Nuevo)" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="628" code="49" name="Zacoalco de Torres" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="629" code="49" name="Ciudad Ixtepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="630" code="49" name="Coatzintla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="631" code="50" name="Huejuquilla el Alto" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="632" code="50" name="Santiago Juxtlahuaca" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="633" code="50" name="Ángel R. Cabada" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="634" code="51" name="Villa Hidalgo" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="635" code="51" name="San Sebastián Tecomaxtlahuaca" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="636" code="51" name="San Rafael" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="637" code="52" name="Unión de San Antonio" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="638" code="52" name="Asunción Nochixtlán" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="639" code="52" name="Tlacojalpan" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="640" code="53" name="Las Pintitas" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="641" code="53" name="San Francisco Ixhuatán" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="642" code="53" name="Cosoleacaque" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="643" code="54" name="Tamazula de Gordiano" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="644" code="54" name="San Blas Atempa" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="645" code="54" name="Lerdo de Tejada" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="646" code="55" name="Acatlán de Juárez" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="647" code="55" name="Santo Domingo Tehuantepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="648" code="55" name="Tihuatlán" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="649" code="56" name="Valle de Guadalupe" state="JAL" term_start="2023-11-25" term_end=""/>
+<Entry id="650" code="56" name="Cuilápam de Guerrero" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="651" code="56" name="Atoyac" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="652" code="57" name="El Rosario" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="653" code="57" name="Huiloapan de Cuauhtémoc" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="654" code="58" name="Santa Lucia del Camino" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="655" code="58" name="Cazones de Herrera" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="656" code="59" name="San Antonio de la Cal" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="657" code="59" name="Yecuatla" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="658" code="60" name="Soledad de Doblado" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="659" code="61" name="Cerro Azul" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="660" code="62" name="Tezonapa" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="661" code="66" name="Sihuapan" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="662" code="67" name="El Higo" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="663" code="68" name="Paso del Macho" state="VER" term_start="2023-11-25" term_end=""/>
+<Entry id="664" code="69" name="Tlapacoyan" state="VER" term_start="2023-11-25" term_end=""/>
 </Catalog>

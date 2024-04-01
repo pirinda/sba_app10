@@ -170,6 +170,24 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.LS_TPT_PART_TP:
                 registry = new DDbSysTransportPartType();
                 break;
+            case DModConsts.LS_XCC_COFEPRIS_SECT:
+                registry = new DDbRegistrySysFly(type) {
+                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
+                    public String getSqlWhere(int[] pk) { return "WHERE id_xcc_cofepris_sect = " + pk[0] + " "; }
+                };
+                break;
+            case DModConsts.LS_XCC_PHARM_FORM:
+                registry = new DDbRegistrySysFly(type) {
+                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
+                    public String getSqlWhere(int[] pk) { return "WHERE id_xcc_pharm_form = " + pk[0] + " "; }
+                };
+                break;
+            case DModConsts.LS_XCC_SPEC_COND:
+                registry = new DDbRegistrySysFly(type) {
+                    public String getSqlTable() { return DModConsts.TablesMap.get(mnRegistryType); }
+                    public String getSqlWhere(int[] pk) { return "WHERE id_xcc_spec_cond = " + pk[0] + " "; }
+                };
+                break;
             case DModConsts.LU_LOC:
                 registry = new DDbLocation();
                 break;
@@ -259,6 +277,27 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                         + "FROM " + DModConsts.TablesMap.get(type) + " "
                         + "WHERE NOT b_del ORDER BY sort ";
                 break;
+            case DModConsts.LS_XCC_COFEPRIS_SECT:
+                settings = new DGuiCatalogueSettings("Sector COFEPRIS", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_xcc_cofepris_sect AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " "
+                        + "FROM " + DModConsts.TablesMap.get(type) + " "
+                        + "WHERE NOT b_del ORDER BY sort ";
+                break;
+            case DModConsts.LS_XCC_PHARM_FORM:
+                settings = new DGuiCatalogueSettings("Forma farmacéutica", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_xcc_pharm_form AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " "
+                        + "FROM " + DModConsts.TablesMap.get(type) + " "
+                        + "WHERE NOT b_del ORDER BY sort ";
+                break;
+            case DModConsts.LS_XCC_SPEC_COND:
+                settings = new DGuiCatalogueSettings("Condiciones especiales transporte", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_xcc_spec_cond AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + ", code AS " + DDbConsts.FIELD_CODE + " "
+                        + "FROM " + DModConsts.TablesMap.get(type) + " "
+                        + "WHERE NOT b_del ORDER BY sort ";
+                break;
             case DModConsts.LU_LOC:
                 settings = new DGuiCatalogueSettings("Ubicación", 1);
                 sql = "SELECT id_loc AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " "
@@ -329,6 +368,12 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                 break;
             case DModConsts.LS_TPT_FIGURE_TP:
                 break;
+            case DModConsts.LS_XCC_COFEPRIS_SECT:
+                break;
+            case DModConsts.LS_XCC_PHARM_FORM:
+                break;
+            case DModConsts.LS_XCC_SPEC_COND:
+                break;
             case DModConsts.LS_TPT_PART_TP:
                 break;
             case DModConsts.LU_LOC:
@@ -394,6 +439,12 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
             case DModConsts.LS_TPT_FIGURE_TP:
                 break;
             case DModConsts.LS_TPT_PART_TP:
+                break;
+            case DModConsts.LS_XCC_COFEPRIS_SECT:
+                break;
+            case DModConsts.LS_XCC_PHARM_FORM:
+                break;
+            case DModConsts.LS_XCC_SPEC_COND:
                 break;
             case DModConsts.LU_LOC:
                 if (moFormLocation == null) moFormLocation = new DFormLocation(miClient, "Ubicación");
