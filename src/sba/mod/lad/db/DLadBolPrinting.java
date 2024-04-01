@@ -88,11 +88,15 @@ public class DLadBolPrinting {
         }
         
         hashMap.put("ccpVersion", moBol.getVersion());
+        hashMap.put("ccpIdCCP", moBol.getBolUuid());
         hashMap.put("ccpTranspInternac", moBol.getIntlTransport());
         hashMap.put("ccpEntradaSalidaMerc", moBol.getIntlTransportDirection());
         hashMap.put("ccpPaisOrigenDestino", country.getCode() + " - " + country.getName());
         hashMap.put("ccpViaEntradaSalida", intlWayTransportType.getCode() + " - " + intlWayTransportType.getName());
         hashMap.put("ccpTotalDistRec", moBol.getDistanceKm());
+        hashMap.put("ccpRegistroISTMO", moBol.isIsthmus() ? DCfdi40Catalogs.TextoSí : "");
+        hashMap.put("ccpUbicacionPoloOrigen", moBol.isIsthmus() ? moBol.getIsthmusOrigin() : "");
+        hashMap.put("ccpUbicacionPoloDestino", moBol.isIsthmus() ? moBol.getIsthmusDestiny() : "");
         hashMap.put("ccpRfcRemitDestin", bizPartner.getFiscalId());
         hashMap.put("ccpNombreRemitDestin", bizPartner.getPrintableName());
         hashMap.put("ccpPesoBrutoTotal", moBol.getMerchandiseWeight());

@@ -6505,6 +6505,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             //moBolTruck.setPkBolId(...);
             //moBolTruck.setPkTruckId(...); // updated already by DDbBolTruck.updateFromOwnTruck()
+            //moBolTruck.setWeightTon(...); // updated already by DDbBolTruck.updateFromOwnTruck()
             //moBolTruck.setPlate(...); // updated already by DDbBolTruck.updateFromOwnTruck()
             //moBolTruck.setModel(...); // updated already by DDbBolTruck.updateFromOwnTruck()
             //moBolTruck.setTransportConfigCode(...); // updated already by DDbBolTruck.updateFromOwnTruck()

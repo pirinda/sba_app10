@@ -980,7 +980,16 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                     throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
 
                 case DModSysConsts.TS_XML_TP_CFDI_40:
-                    DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_20, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
+                    switch (msVersion) {
+                        case cfd.ver3.ccp20.DElementCartaPorte.VERSION:
+                            DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_20, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
+                            break;
+                        case cfd.ver4.ccp30.DElementCartaPorte.VERSION:
+                            DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_30, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
+                            break;
+                        default:
+                            throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+                    }
                     break;
 
                 default:

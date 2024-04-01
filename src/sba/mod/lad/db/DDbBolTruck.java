@@ -380,6 +380,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     
     public void updateFromOwnTruck() {
         if (moOwnTruck != null) {
+            setWeightTon(moOwnTruck.getWeightTon());
             setPlate(moOwnTruck.getPlate());
             setModel(moOwnTruck.getModel());
             setTransportConfigCode(moOwnTruck.getTransportConfigCode());
