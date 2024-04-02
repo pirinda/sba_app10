@@ -174,7 +174,7 @@
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JTextField" name="jtfBolUuid">
+                    <Component class="javax.swing.JTextField" name="jtfBolDfrUuid">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -197,7 +197,7 @@
                     <Property name="verticalGap" type="int" value="0"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JTextField" name="jtfBolCompUuid">
+                    <Component class="javax.swing.JTextField" name="jtfBolBolUuid">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -509,7 +509,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolMerchandiseInverseLogistics">
+                <Component class="sba.lib.gui.bean.DBeanFieldBoolean" name="moBoolBolMerchandiseInverseLogistics">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Es log&#xed;stica inversa, recolecci&#xf3;n, devoluci&#xf3;n"/>
                   </Properties>
@@ -2728,7 +2728,7 @@
                                 </Component>
                                 <Component class="javax.swing.JLabel" name="jlTruckWeightTonUnit">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="ton"/>
+                                    <Property name="text" type="java.lang.String" value="Tn"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[25, 23]"/>
                                     </Property>

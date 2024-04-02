@@ -533,10 +533,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
     public void save(DGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = DDbConsts.SAVE_ERROR;
-
+        
         if (mbRegistryNew) {
             if (!mbTemplate) {
                 computeNextNumber(session);
+                msBolUuid = "CCC" + java.util.UUID.randomUUID().toString().substring(3).toUpperCase();
             }
             
             computePrimaryKey(session);
@@ -988,7 +989,7 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                             DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_30, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
                             break;
                         default:
-                            throw new UnsupportedOperationException("Not supported yet.");  // no plans for supporting it later
+                            throw new UnsupportedOperationException("Not supported yet.");  // invalid complement version
                     }
                     break;
 

@@ -175,7 +175,7 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(moDecTruckWeightTon);
 
-        jlTruckWeightTonUnit.setText("ton");
+        jlTruckWeightTonUnit.setText("Tn");
         jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
         jpTruckInput14.add(jlTruckWeightTonUnit);
 

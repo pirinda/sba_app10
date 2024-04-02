@@ -179,7 +179,7 @@ public class DDialogBolIntlTransport extends DBeanFormDialog {
 
     @Override
     public DGuiValidation validateForm() {
-        DGuiValidation validation = new DGuiValidation();
+        DGuiValidation validation = moFields.validateFields();
         
         return validation;
     }
@@ -196,19 +196,26 @@ public class DDialogBolIntlTransport extends DBeanFormDialog {
                 removeAllListeners();
                 reloadCatalogues();
 
-                switch (moBolIntlTransport.IntlTransportDirection) {
-                    case DCfdi40Catalogs.CcpMercancíasEntrada:
-                        moRadBolIntlTransportDirectionIn.setSelected(true);
-                        break;
-                    case DCfdi40Catalogs.CcpMercancíasSalida:
-                        moRadBolIntlTransportDirectionOut.setSelected(true);
-                        break;
-                    default:
-                        bgBolIntlTransportDirections.clearSelection();
+                if (moBolIntlTransport == null) {
+                    moRadBolIntlTransportDirectionIn.setSelected(true);
+                    moKeyBolIntlTransportCountry.resetField();
+                    moKeyBolIntlWayTransportType.resetField();
                 }
-                
-                moKeyBolIntlTransportCountry.setValue(new int[] { moBolIntlTransport.IntlTransportCountryId });
-                moKeyBolIntlWayTransportType.setValue(new int[] { moBolIntlTransport.IntlWayTransportTypeId});
+                else {
+                    switch (moBolIntlTransport.IntlTransportDirection) {
+                        case DCfdi40Catalogs.CcpMercancíasEntrada:
+                            moRadBolIntlTransportDirectionIn.setSelected(true);
+                            break;
+                        case DCfdi40Catalogs.CcpMercancíasSalida:
+                            moRadBolIntlTransportDirectionOut.setSelected(true);
+                            break;
+                        default:
+                            bgBolIntlTransportDirections.clearSelection();
+                    }
+
+                    moKeyBolIntlTransportCountry.setValue(new int[] { moBolIntlTransport.IntlTransportCountryId });
+                    moKeyBolIntlWayTransportType.setValue(new int[] { moBolIntlTransport.IntlWayTransportTypeId});
+                }
 
                 addAllListeners();
                 break;

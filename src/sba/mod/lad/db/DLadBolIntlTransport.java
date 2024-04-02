@@ -14,4 +14,10 @@ public class DLadBolIntlTransport {
     public String IntlTransportDirection;
     public int IntlTransportCountryId;
     public int IntlWayTransportTypeId;
+    
+    public DLadBolIntlTransport() {
+        IntlTransportDirection = "";
+        IntlTransportCountryId = 0;
+        IntlWayTransportTypeId = 0;
+    }
 }

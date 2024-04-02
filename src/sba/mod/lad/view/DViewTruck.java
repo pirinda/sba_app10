@@ -104,7 +104,7 @@ public class DViewTruck extends DGridPaneView implements ActionListener {
 
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, DDbConsts.FIELD_NAME, DGridConsts.COL_TITLE_NAME);
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, DGridConsts.COL_TITLE_CODE);
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_AMT, "t.weight_ton", "Peso bruto (ton)");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_AMT, "t.weight_ton", "Peso bruto (Tn)");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "t.plate", "Placas");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_CAL_YEAR, "t.model", "Modelo");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "t.tpt_config_code", "Config. vehicular clave");

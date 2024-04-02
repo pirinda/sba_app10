@@ -54,14 +54,14 @@ public abstract class DTrnDfrCatalogs {
                 break;
             case DCfdi40Catalogs.CAT_CFDI_USO:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
-                entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
+                entry = xmlCatalog.composeCodeName(code);
                 break;
             case DCfdi40Catalogs.CAT_REG_FISC:
                 entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.CS_TAX_REG, code);
                 break;
             case DCfdi40Catalogs.CAT_MDP:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
-                entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
+                entry = xmlCatalog.composeCodeName(code);
                 break;
             case DCfdi40Catalogs.CAT_FDP:
                 entry = getDatabaseCatalogEntry(client.getSession(), DModConsts.FS_MOP_TP, code);
@@ -86,11 +86,11 @@ public abstract class DTrnDfrCatalogs {
                 break;
             case DCfdi40Catalogs.CAT_GBL_PER:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
-                entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
+                entry = xmlCatalog.composeCodeName(code);
                 break;
             case DCfdi40Catalogs.CAT_GBL_MES:
                 xmlCatalog = ((DGuiClientApp) client).getXmlCatalogsMap().get(catalog);
-                entry = xmlCatalog.composeCodeName(xmlCatalog.getId(code));
+                entry = xmlCatalog.composeCodeName(code);
                 break;
             case DCfdi40Catalogs.CAT_OBJ_IMP:
                 entry = code + " - " + DCfdi40Catalogs.ObjetoImp.get(code);

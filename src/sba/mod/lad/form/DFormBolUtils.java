@@ -370,7 +370,7 @@ public abstract class DFormBolUtils {
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_1B, "#");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Nombre", 200);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Código", 100);
-                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Peso bruto (ton)", 100);
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Peso bruto (Tn)");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Placa", 100);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_CAL_YEAR, "Modelo");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Configuración", 500);

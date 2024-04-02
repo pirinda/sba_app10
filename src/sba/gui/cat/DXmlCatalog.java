@@ -155,11 +155,11 @@ public class DXmlCatalog {
         return getId(code, "");
     }
     
-    public int getId(final String code, final String belongCode) {
+    public int getId(final String code, final String belongingCode) {
         int id = 0;
         
         for (DXmlCatalogEntry entry : maEntries) {
-            if (entry.getCode().equals(code) && entry.getBelongingCode().equals(belongCode)) {
+            if (entry.getCode().equals(code) && entry.getBelongingCode().equals(belongingCode)) {
                 id = entry.getId();
                 break;
             }
@@ -168,15 +168,15 @@ public class DXmlCatalog {
         return id;
     }
     
-    public int getIdBySearchCode(final String searchCode) {
-        return getIdBySearchCode(searchCode, "");
+    public int getIdBySearchingCode(final String searchingCode) {
+        return getIdBySearchingCode(searchingCode, "");
     }
     
-    public int getIdBySearchCode(final String searchCode, final String belongCode) {
+    public int getIdBySearchingCode(final String searchingCode, final String belongingCode) {
         int id = 0;
         
         for (DXmlCatalogEntry entry : maEntries) {
-            if (entry.getSearchingCode().equals(searchCode) && entry.getBelongingCode().equals(belongCode)) {
+            if (entry.getSearchingCode().equals(searchingCode) && entry.getBelongingCode().equals(belongingCode)) {
                 id = entry.getId();
                 break;
             }
@@ -211,6 +211,14 @@ public class DXmlCatalog {
         return name;
     }
     
+    public String getName(final String code) {
+        return getName(getId(code));
+    }
+    
+    public String getName(final String code, final String belongingCode) {
+        return getName(getId(code, belongingCode));
+    }
+    
     public String composeCodeName(final int id) {
         String codeName = "";
         
@@ -222,5 +230,13 @@ public class DXmlCatalog {
         }
         
         return codeName;
+    }
+    
+    public String composeCodeName(final String code) {
+        return composeCodeName(getId(code));
+    }
+    
+    public String composeCodeName(final String code, final String belongingCode) {
+        return composeCodeName(getId(code, belongingCode));
     }
 }

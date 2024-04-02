@@ -5,7 +5,6 @@
  */
 package sba.mod.lad.form;
 
-import cfd.ver3.ccp20.DElementCartaPorte;
 import cfd.ver40.DCfdi40Catalogs;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -233,9 +232,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moDateBolDate = new sba.lib.gui.bean.DBeanFieldDate();
         jtfBolStatus = new javax.swing.JTextField();
         jpHeaderBol4 = new javax.swing.JPanel();
-        jtfBolUuid = new javax.swing.JTextField();
+        jtfBolDfrUuid = new javax.swing.JTextField();
         jpHeaderBol5 = new javax.swing.JPanel();
-        jtfBolCompUuid = new javax.swing.JTextField();
+        jtfBolBolUuid = new javax.swing.JTextField();
         jpHeaderCfg = new javax.swing.JPanel();
         moBoolBolIntlTransport = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpHeaderCfg2 = new javax.swing.JPanel();
@@ -267,7 +266,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolMerchandiseWeightKg = new javax.swing.JTextField();
         jlBolMerchandiseWeightKgUnit = new javax.swing.JLabel();
         jtfBolMerchandiseCount = new javax.swing.JTextField();
-        moBoolMerchandiseInverseLogistics = new sba.lib.gui.bean.DBeanFieldBoolean();
+        moBoolBolMerchandiseInverseLogistics = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpHeaderTemp = new javax.swing.JPanel();
         moBoolBolTemplate = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpHeaderTemp2 = new javax.swing.JPanel();
@@ -754,25 +753,25 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpHeaderBol4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jtfBolUuid.setEditable(false);
-        jtfBolUuid.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
-        jtfBolUuid.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
-        jtfBolUuid.setToolTipText("UUID del CFDI");
-        jtfBolUuid.setFocusable(false);
-        jtfBolUuid.setPreferredSize(new java.awt.Dimension(230, 23));
-        jpHeaderBol4.add(jtfBolUuid);
+        jtfBolDfrUuid.setEditable(false);
+        jtfBolDfrUuid.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
+        jtfBolDfrUuid.setText("F5343B75-9A23-4E25-979A-03CA560FEE62");
+        jtfBolDfrUuid.setToolTipText("UUID del CFDI");
+        jtfBolDfrUuid.setFocusable(false);
+        jtfBolDfrUuid.setPreferredSize(new java.awt.Dimension(230, 23));
+        jpHeaderBol4.add(jtfBolDfrUuid);
 
         jpHeaderBol.add(jpHeaderBol4);
 
         jpHeaderBol5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jtfBolCompUuid.setEditable(false);
-        jtfBolCompUuid.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
-        jtfBolCompUuid.setText("CCC43B75-9A23-4E25-979A-03CA560FEE62");
-        jtfBolCompUuid.setToolTipText("UUID del complemento");
-        jtfBolCompUuid.setFocusable(false);
-        jtfBolCompUuid.setPreferredSize(new java.awt.Dimension(230, 23));
-        jpHeaderBol5.add(jtfBolCompUuid);
+        jtfBolBolUuid.setEditable(false);
+        jtfBolBolUuid.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
+        jtfBolBolUuid.setText("CCC43B75-9A23-4E25-979A-03CA560FEE62");
+        jtfBolBolUuid.setToolTipText("UUID del complemento");
+        jtfBolBolUuid.setFocusable(false);
+        jtfBolBolUuid.setPreferredSize(new java.awt.Dimension(230, 23));
+        jpHeaderBol5.add(jtfBolBolUuid);
 
         jpHeaderBol.add(jpHeaderBol5);
 
@@ -925,8 +924,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpHeaderLocMerch.add(jpHeaderLocMerch4);
 
-        moBoolMerchandiseInverseLogistics.setText("Es logística inversa, recolección, devolución");
-        jpHeaderLocMerch.add(moBoolMerchandiseInverseLogistics);
+        moBoolBolMerchandiseInverseLogistics.setText("Es logística inversa, recolección, devolución");
+        jpHeaderLocMerch.add(moBoolBolMerchandiseInverseLogistics);
 
         jpHeader.add(jpHeaderLocMerch);
 
@@ -1913,7 +1912,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(moDecTruckWeightTon);
 
-        jlTruckWeightTonUnit.setText("ton");
+        jlTruckWeightTonUnit.setText("Tn");
         jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
         jpTruckInput14.add(jlTruckWeightTonUnit);
 
@@ -3139,9 +3138,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTextField jtfBolArrivalDatetime;
     private javax.swing.JTextField jtfBolArrivalLocation;
     private javax.swing.JTextField jtfBolBolTemplate;
-    private javax.swing.JTextField jtfBolCompUuid;
+    private javax.swing.JTextField jtfBolBolUuid;
     private javax.swing.JTextField jtfBolDepartureLocation;
     private javax.swing.JTextField jtfBolDeparturelDatetime;
+    private javax.swing.JTextField jtfBolDfrUuid;
     private javax.swing.JTextField jtfBolDistanceKm;
     private javax.swing.JTextField jtfBolIntlTransport;
     private javax.swing.JTextField jtfBolMerchandiseCount;
@@ -3149,7 +3149,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTextField jtfBolNumber;
     private javax.swing.JTextField jtfBolStatus;
     private javax.swing.JTextField jtfBolTransportType;
-    private javax.swing.JTextField jtfBolUuid;
     private javax.swing.JTextField jtfBolVersion;
     private javax.swing.JTextField jtfLocCrud;
     private javax.swing.JTextField jtfLocLocationId;
@@ -3173,10 +3172,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTabbedPane jtpWizard;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolIntlTransport;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolIsthmus;
+    private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolMerchandiseInverseLogistics;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolBolTemplate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolLocUpdate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolMerchHazardousMaterial;
-    private sba.lib.gui.bean.DBeanFieldBoolean moBoolMerchandiseInverseLogistics;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTptFigTptPartUpdate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTptFigUpdate;
     private sba.lib.gui.bean.DBeanFieldBoolean moBoolTruckTrailUpdate;
@@ -3811,6 +3810,24 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moGridTptFiguresTptParts.clearGridRows();
         }
     }
+    
+    private void showBolIntlTransport() {
+        String bolIntlTransport = "";
+        
+        if (moBolIntlTransport != null) {
+            if (moBolIntlTransport.IntlTransportDirection.isEmpty()) {
+                bolIntlTransport += "ND";
+            }
+            else {
+                bolIntlTransport += moBolIntlTransport.IntlTransportDirection;
+                bolIntlTransport += "/ " + miClient.getSession().readField(DModConsts.CS_CTY, new int[] { moBolIntlTransport.IntlTransportCountryId }, DDbRegistry.FIELD_NAME);
+                bolIntlTransport += "/ " + miClient.getSession().readField(DModConsts.LS_TPT_TP, new int[] { moBolIntlTransport.IntlWayTransportTypeId }, DDbRegistry.FIELD_NAME);
+            }
+        }
+        
+        jtfBolIntlTransport.setText(bolIntlTransport);
+        jtfBolIntlTransport.setCaretPosition(0);
+    }
 
     private void itemStateChangedBolIntlTransport() {
         if (moBoolBolIntlTransport.isSelected()) {
@@ -3818,9 +3835,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
         else {
             jbBolSetIntlTransport.setEnabled(false);
-            
-            jtfBolIntlTransport.setText("");
+            moBolIntlTransport = null;
         }
+        
+        showBolIntlTransport();
     }
     
     private void itemStateChangedBolIsthmus() {
@@ -3959,6 +3977,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moBoolBolIsthmus.setEnabled(!start);
         moKeyBolIsthmusOrigin.setEnabled(!start && moBoolBolIsthmus.getValue());
         moKeyBolIsthmusDestiny.setEnabled(!start && moBoolBolIsthmus.getValue());
+        
+        moBoolBolMerchandiseInverseLogistics.setEnabled(!start);
         
         moBoolBolTemplate.setEnabled(false); // selection defined by form subtype
         moTextBolTemplateName.setEnabled(!start && moBoolBolTemplate.getValue());
@@ -4125,6 +4145,23 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private void actionPerformedBolNavNext() {
         if (canNavNext()) {
             enableWizardTab(jtpWizard.getSelectedIndex() + 1, NAV_ACTION_NEXT);
+        }
+    }
+    
+    private void actionPerformedBolSetIntlTransport() {
+        DDialogBolIntlTransport dialog = new DDialogBolIntlTransport(miClient, "Transporte internacional");
+        
+        if (moBolIntlTransport == null) {
+            moBolIntlTransport = new DLadBolIntlTransport();
+            moBolIntlTransport.IntlTransportDirection = DCfdi40Catalogs.CcpMercancíasEntrada;
+        }
+        
+        dialog.setValue(DModConsts.LX_BOL_INTL_TPT, moBolIntlTransport);
+        dialog.setVisible(true);
+        
+        if (dialog.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            moBolIntlTransport = (DLadBolIntlTransport) dialog.getValue(DModConsts.LX_BOL_INTL_TPT);
+            showBolIntlTransport();
         }
     }
 
@@ -7767,9 +7804,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbBolNavRestart.addActionListener(this);
         jbBolNavPrev.addActionListener(this);
         jbBolNavNext.addActionListener(this);
+        jbBolSetIntlTransport.addActionListener(this);
         
         moKeyBolSeries.addItemListener(this);
         moBoolBolIntlTransport.addItemListener(this);
+        moBoolBolIsthmus.addItemListener(this);
         moBoolBolTemplate.addItemListener(this);
         
         // locations
@@ -7914,9 +7953,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbBolNavRestart.removeActionListener(this);
         jbBolNavPrev.removeActionListener(this);
         jbBolNavNext.removeActionListener(this);
+        jbBolSetIntlTransport.removeActionListener(this);
         
         moKeyBolSeries.removeItemListener(this);
         moBoolBolIntlTransport.removeItemListener(this);
+        moBoolBolIsthmus.removeItemListener(this);
         moBoolBolTemplate.removeItemListener(this);
         
         // locations
@@ -8129,7 +8170,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moBol.isRegistryNew() || manTemplateKey != null) {
             moBol.initPrimaryKey();
             
-            moBol.setVersion(DElementCartaPorte.VERSION);
+            moBol.setVersion(cfd.ver4.ccp30.DElementCartaPorte.VERSION);
             
             if (isBolTemplate()) {
                 moBol.setTemplate(true);
@@ -8171,15 +8212,6 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 }
             }
             
-            ///// BEGIN OF TESTING CODE (REMOVE FRO PRODUCTION) ////////////////////
-            /*
-            moBol.setIntlTransport(DCfdi40Catalogs.TextoSí);
-            moBol.setIntlTransportDirection(DCfdi40Catalogs.CcpMercancíasEntrada);
-            moBol.setFkIntlTransportCountryId(45); // CHL - Chile
-            moBol.setFkIntlWayTransportTypeId(DModSysConsts.LS_TPT_TP_SEA);
-            */
-            ///// END OF TESTING CODE (REMOVE FRO PRODUCTION) //////////////////////
-            
             jtfRegistryKey.setText("");
         }
         else {
@@ -8198,10 +8230,24 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moDateBolDate.setValue(moBol.getDate());
         jtfBolStatus.setText((String) miClient.getSession().readField(DModConsts.TS_DPS_ST, new int[] { moBol.getFkBolStatusId() }, DDbRegistry.FIELD_NAME));
         jtfBolStatus.setCaretPosition(0);
-        jtfBolUuid.setText(moBol.getChildDfr() == null ? "" : moBol.getChildDfr().getUuid());
-        jtfBolUuid.setCaretPosition(0);
+        jtfBolDfrUuid.setText(moBol.getChildDfr() == null ? "" : moBol.getChildDfr().getUuid());
+        jtfBolDfrUuid.setCaretPosition(0);
+        jtfBolBolUuid.setText(moBol.getBolUuid());
+        jtfBolBolUuid.setCaretPosition(0);
         
-        moBoolBolIntlTransport.setValue(moBol.getIntlTransport().equals(DCfdi40Catalogs.TextoSí));
+        boolean isBolIntlTransport = moBol.getIntlTransport().equals(DCfdi40Catalogs.TextoSí);
+        moBoolBolIntlTransport.setValue(isBolIntlTransport);
+        
+        if (!isBolIntlTransport) {
+            moBolIntlTransport = null;
+        }
+        else {
+            moBolIntlTransport = new DLadBolIntlTransport();
+            moBolIntlTransport.IntlTransportDirection = moBol.getIntlTransportDirection();
+            moBolIntlTransport.IntlTransportCountryId = moBol.getFkIntlTransportCountryId();
+            moBolIntlTransport.IntlWayTransportTypeId = moBol.getFkIntlWayTransportTypeId();
+        }
+        
         itemStateChangedBolIntlTransport();
         
         moBoolBolIsthmus.setValue(moBol.isIsthmus());
@@ -8315,7 +8361,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         bol.setDistanceKm(mdBolDistanceKm);
         bol.setMerchandiseWeight(mdBolMerchandiseWeightKg);
         bol.setMerchandiseNumber(mnBolMerchandiseCount);
-        bol.setMerchandiseInverseLogistics(moBoolMerchandiseInverseLogistics.isSelected());
+        bol.setMerchandiseInverseLogistics(moBoolBolMerchandiseInverseLogistics.isSelected());
         bol.setIsthmus(moBoolBolIsthmus.isSelected());
         bol.setIsthmusOrigin(moKeyBolIsthmusOrigin.getSelectedIndex() <= 0 ? "" : moKeyBolIsthmusOrigin.getSelectedItem().getCode());
         bol.setIsthmusDestiny(moKeyBolIsthmusDestiny.getSelectedIndex() <= 0 ? "" : moKeyBolIsthmusDestiny.getSelectedItem().getCode());
@@ -8520,6 +8566,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbBolNavNext) {
                 actionPerformedBolNavNext();
+            }
+            else if (button == jbBolSetIntlTransport) {
+                actionPerformedBolSetIntlTransport();
             }
             else if (button == jbLocEditType) {
                 actionPerformedLocEditType();

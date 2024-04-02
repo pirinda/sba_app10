@@ -15,6 +15,7 @@ import java.util.Vector;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import sba.gui.cat.DXmlCatalog;
 import sba.lib.DLibUtils;
 import sba.lib.db.DDbRegistry;
 import sba.lib.gui.DGuiSession;
@@ -79,7 +80,7 @@ public class DLadBolPrinting {
         DDbSysCountry country = (DDbSysCountry) moSession.readRegistry(DModConsts.CS_CTY, new int[] { moBol.getFkIntlTransportCountryId() });
         DDbSysTransportType intlWayTransportType = (DDbSysTransportType) moSession.readRegistry(DModConsts.LS_TPT_TP, new int[] { moBol.getFkIntlWayTransportTypeId() });
         DDbUnit unit = (DDbUnit) moSession.readRegistry(DModConsts.IU_UNT, new int[] { moBol.getFkMerchandiseWeightUnitId() });
-        
+
         if (configBranch.getFkBizPartnerDpsSignatureId_n() != 0) {
             bizPartner = (DDbBizPartner) moSession.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
         }
@@ -94,14 +95,23 @@ public class DLadBolPrinting {
         hashMap.put("ccpPaisOrigenDestino", country.getCode() + " - " + country.getName());
         hashMap.put("ccpViaEntradaSalida", intlWayTransportType.getCode() + " - " + intlWayTransportType.getName());
         hashMap.put("ccpTotalDistRec", moBol.getDistanceKm());
-        hashMap.put("ccpRegistroISTMO", moBol.isIsthmus() ? DCfdi40Catalogs.TextoSí : "");
-        hashMap.put("ccpUbicacionPoloOrigen", moBol.isIsthmus() ? moBol.getIsthmusOrigin() : "");
-        hashMap.put("ccpUbicacionPoloDestino", moBol.isIsthmus() ? moBol.getIsthmusDestiny() : "");
         hashMap.put("ccpRfcRemitDestin", bizPartner.getFiscalId());
         hashMap.put("ccpNombreRemitDestin", bizPartner.getPrintableName());
         hashMap.put("ccpPesoBrutoTotal", moBol.getMerchandiseWeight());
         hashMap.put("ccpUnidadPeso", unit.getCfdUnitKey() + " - " + unit.getName());
         hashMap.put("ccpNumTotalMercancias", moBol.getMerchandiseNumber());
+        
+        if (moBol.isMerchandiseInverseLogistics()) {
+            hashMap.put("ccpLogisticaInversa", DCfdi40Catalogs.TextoSí);
+        }
+        
+        if (moBol.isIsthmus()) {
+            DXmlCatalog xmlIsthmusRegistry = new DXmlCatalog(DCfdi40Catalogs.XML_CCP_REG_IST, "xml/" + DCfdi40Catalogs.XML_CCP_REG_IST + DXmlCatalog.XmlFileExt, false);
+            
+            hashMap.put("ccpRegistroISTMO", DCfdi40Catalogs.TextoSí);
+            hashMap.put("ccpUbicacionPoloOrigen", xmlIsthmusRegistry.composeCodeName(moBol.getIsthmusOrigin()));
+            hashMap.put("ccpUbicacionPoloDestino", xmlIsthmusRegistry.composeCodeName(moBol.getIsthmusDestiny()));
+        }
         
         // XML parsing:
 
