@@ -319,7 +319,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                         + "WHERE NOT b_del ORDER BY name, id_trail ";
                 break;
             case DModConsts.LU_TRUCK:
-                settings = new DGuiCatalogueSettings("Transporte", 1);
+                settings = new DGuiCatalogueSettings("Autotransporte", 1);
                 sql = "SELECT id_truck AS " + DDbConsts.FIELD_ID + "1, name AS " + DDbConsts.FIELD_ITEM + " "
                         + "FROM " + DModConsts.TablesMap.get(type) + " "
                         + "WHERE NOT b_del ORDER BY name, id_truck ";
@@ -389,7 +389,7 @@ public class DModModuleLad extends DGuiModule implements ActionListener {
                 view = new DViewTrailer(miClient, "Remolques");
                 break;
             case DModConsts.LU_TRUCK:
-                view = new DViewTruck(miClient, "Transportes");
+                view = new DViewTruck(miClient, "Autotransportes");
                 break;
             case DModConsts.LU_TRUCK_TRAIL:
                 break;

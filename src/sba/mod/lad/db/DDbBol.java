@@ -322,6 +322,24 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         }
     }
     
+    public void computeMerchandisesAndTruck() {
+        mdMerchandiseWeight = 0; // kg
+        mnMerchandiseNumber = 0;
+
+        for (DDbBolMerchandise bolMerchandise : maChildMerchandises) {
+            mdMerchandiseWeight += bolMerchandise.getWeightKg();
+            mnMerchandiseNumber++;
+        }
+        
+        if (!maChildTrucks.isEmpty()) {
+            DDbBolTruck bolTruck = maChildTrucks.get(0);
+            
+            if (bolTruck.getWeightGrossTon() == 0d || DLibUtils.compareAmount(bolTruck.getWeightGrossTon(), bolTruck.getWeightTon())) { // 2 decimals attributes
+                bolTruck.setWeightGrossTon(DDbBolTruck.calculateWeigthGrossTon(bolTruck.getWeightTon(), mdMerchandiseWeight));
+            }
+        }
+    }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkBolId = pk[0];

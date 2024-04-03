@@ -6443,7 +6443,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedTruckSetWeightGrossTon() {
-        moDecTruckWeightGrossTon.setValue(DLibUtils.roundAmount(moDecTruckWeightTon.getValue() + DLibUtils.roundAmount((mdBolMerchandiseWeightKg / 1000d))));
+        moDecTruckWeightGrossTon.setValue(DLibUtils.roundAmount(moDecTruckWeightTon.getValue() + DLibUtils.roundAmount((mdBolMerchandiseWeightKg / 1000d)))); // 2 decimals attributes
         moDecTruckWeightGrossTon.requestFocusInWindow();
     }
     
@@ -6516,32 +6516,52 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         DGuiValidation validation = moFieldsTruck.validateFields();
         
         if (validation.isValid()) {
-            String configCode = moKeyTruckTransportConfig.getSelectedItem().getCode();
+            double truckWeightGrossTon = DDbBolTruck.calculateWeigthGrossTon(moDecTruckWeightTon.getValue(), mdBolMerchandiseWeightKg);
+                    
+            if (DLibUtils.compareAmount(moDecTruckWeightGrossTon.getValue(), moDecTruckWeightTon.getValue()) && mdBolMerchandiseWeightKg != 0) { // 2 decimals attributes
+                if (miClient.showMsgBoxConfirm("¿Está seguro que los valores de los campos '" + moDecTruckWeightGrossTon.getFieldName() + "' y '" + moDecTruckWeightTon.getFieldName() + "' "
+                        + "sean iguales a pesar de que el valor de '" + DGuiUtils.getLabelName(jlBolMerchandiseWeightKg) + "' es " + DLibUtils.getDecimalFormatAmount().format(mdBolMerchandiseWeightKg) + " " + jlBolMerchandiseWeightKgUnit.getText() + "?") != JOptionPane.YES_OPTION) {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moDecTruckWeightGrossTon.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_GREAT + DLibUtils.getDecimalFormatAmount().format(moDecTruckWeightTon.getValue()) + " " + jlTruckWeightTonUnit.getText() + ", "
+                            + "idealmente igual a " + DLibUtils.getDecimalFormatAmount().format(truckWeightGrossTon) + " " + jlTruckWeightGrossTonUnit.getText() + ".");
+                    validation.setComponent(moDecTruckWeightGrossTon);
+                }
+            }
+            else if (!DLibUtils.compareAmount(moDecTruckWeightGrossTon.getValue(), truckWeightGrossTon)) { // 2 decimals attributes
+                if (miClient.showMsgBoxConfirm("¿Está seguro que el valor del campo '" + moDecTruckWeightGrossTon.getFieldName() + "' sea " + DLibUtils.getDecimalFormatAmount().format(moDecTruckWeightGrossTon.getValue()) + " " + jlTruckWeightGrossTonUnit.getText() + "?, "
+                        + "porque debería ser igual a " + DLibUtils.getDecimalFormatAmount().format(truckWeightGrossTon) + " " + jlTruckWeightGrossTonUnit.getText() + ".") != JOptionPane.YES_OPTION) {
+                    validation.setMessage(DGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moDecTruckWeightGrossTon.getFieldName() + "'" + DGuiConsts.ERR_MSG_FIELD_VAL_EQUAL + DLibUtils.getDecimalFormatAmount().format(truckWeightGrossTon) + " " + jlTruckWeightGrossTonUnit.getText() + ".");
+                    validation.setComponent(moDecTruckWeightGrossTon);
+                }
+            }
             
-            switch (mnTruckIsTrailerRequired) {
-                case DXmlCatalogEntry.REQUIRED_NO:
-                    if (moGridTrucksTrailers.getTable().getRowCount() > 0) {
-                        validation.setMessage("La configuración del autotransporte '" + configCode + "' no requiere de remolques.");
-                        validation.setComponent(jbTruckTrailCreate);
-                    }
-                    break;
-                case DXmlCatalogEntry.REQUIRED_YES:
-                    if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
-                        validation.setMessage("La configuración del autotransporte '" + configCode + "' requiere de remolques.");
-                        validation.setComponent(jbTruckTrailCreate);
-                    }
-                    break;
-                case DXmlCatalogEntry.REQUIRED_OPT:
-                    if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
-                        if (!configCode.equals(DCfdi40Catalogs.CcpConfigAutotransporteVl) && miClient.showMsgBoxConfirm(
-                                "La configuración del autotransporte '" + configCode + "' permite tener de remolques, pero no los hay.\n" + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                            validation.setMessage("Agregar los remolques que se requieran.");
+            if (validation.isValid()) {
+                String configCode = moKeyTruckTransportConfig.getSelectedItem().getCode();
+
+                switch (mnTruckIsTrailerRequired) {
+                    case DXmlCatalogEntry.REQUIRED_NO:
+                        if (moGridTrucksTrailers.getTable().getRowCount() > 0) {
+                            validation.setMessage("La configuración del autotransporte '" + configCode + "' no requiere de remolques.");
                             validation.setComponent(jbTruckTrailCreate);
                         }
-                    }
-                    break;
-                default:
-                    // nothing
+                        break;
+                    case DXmlCatalogEntry.REQUIRED_YES:
+                        if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
+                            validation.setMessage("La configuración del autotransporte '" + configCode + "' requiere de remolques.");
+                            validation.setComponent(jbTruckTrailCreate);
+                        }
+                        break;
+                    case DXmlCatalogEntry.REQUIRED_OPT:
+                        if (moGridTrucksTrailers.getTable().getRowCount() == 0) {
+                            if (!configCode.equals(DCfdi40Catalogs.CcpConfigAutotransporteVl) && miClient.showMsgBoxConfirm(
+                                    "La configuración del autotransporte '" + configCode + "' permite tener de remolques, pero no los hay.\n" + DGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                                validation.setMessage("Agregar los remolques que se requieran.");
+                                validation.setComponent(jbTruckTrailCreate);
+                            }
+                        }
+                        break;
+                    default:
+                        // nothing
+                }
             }
         }
         
@@ -8242,7 +8262,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 manTemplateKey = null;
                 
                 if (moDialogBol == null) {
-                    moDialogBol = new DDialogBol(miClient, "Captura rápida carta porte");
+                    moDialogBol = new DDialogBol(miClient, "Captura rápida de carta porte");
                 }
                 
                 moDialogBol.setRegistry(moBol.clone()); // cloning prevents from editing actual registry when unnecessary
@@ -8252,6 +8272,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     
                     if (moDialogBol.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
                         moBol = (DDbBol) moDialogBol.getRegistry();
+                        moBol.computeMerchandisesAndTruck();
                     }
                     else if (miClient.showMsgBoxConfirm("¿Desea continuar con la captura de la carta porte?") != JOptionPane.YES_OPTION) {
                         mbForceCancel = true;

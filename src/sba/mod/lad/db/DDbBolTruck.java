@@ -390,7 +390,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     public void updateFromOwnTruck(final double merchandiseWeightKg) {
         if (moOwnTruck != null) {
             setWeightTon(moOwnTruck.getWeightTon());
-            setWeightGrossTon(DLibUtils.roundAmount(moOwnTruck.getWeightTon() + DLibUtils.roundAmount(merchandiseWeightKg / 1000d)));
+            setWeightGrossTon(calculateWeigthGrossTon(moOwnTruck.getWeightTon(), merchandiseWeightKg));
             setPlate(moOwnTruck.getPlate());
             setModel(moOwnTruck.getModel());
             setTransportConfigCode(moOwnTruck.getTransportConfigCode());
@@ -484,5 +484,9 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     @Override
     public void setRowValueAt(Object value, int col) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public static double calculateWeigthGrossTon(final double truckWeigthTon, final double merchandiseWeightKg) {
+        return DLibUtils.roundAmount(truckWeigthTon + DLibUtils.roundAmount(merchandiseWeightKg / 1000d)); // 2 decimals attribute
     }
 }
