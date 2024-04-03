@@ -365,11 +365,12 @@ public abstract class DFormBolUtils {
             @Override
             public void createGridColumns() {
                 int col = 0;
-                DGridColumnForm[] columns = new DGridColumnForm[7];
+                DGridColumnForm[] columns = new DGridColumnForm[8];
 
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_1B, "#");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Nombre", 200);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Código", 100);
+                columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Peso (Tn)");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_DEC_AMT, "Peso bruto (Tn)");
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_TEXT, "Placa", 100);
                 columns[col++] = new DGridColumnForm(DGridConsts.COL_TYPE_INT_CAL_YEAR, "Modelo");
@@ -813,7 +814,7 @@ public abstract class DFormBolUtils {
         return bolMerchandises;
     }
     
-    public static ArrayList<DDbBolTruck> createTestingBolTrucks(final DGuiSession session) {
+    public static ArrayList<DDbBolTruck> createTestingBolTrucks(final DGuiSession session, final double merchandiseWeightKg) {
         ArrayList<DDbBolTruck> bolTrucks = new ArrayList<>();
         
         // truck 1
@@ -868,7 +869,7 @@ public abstract class DFormBolUtils {
         //bolTruck1.setPrime(); // set in setOwnTruck()
         //bolTruck1.setFkTruckId(); // set in setOwnTruck()
 
-        bolTruck1.setOwnTruck(truck1);
+        bolTruck1.setOwnTruck(truck1, merchandiseWeightKg);
         
         bolTruck1.setBolSortingPos(1);
         

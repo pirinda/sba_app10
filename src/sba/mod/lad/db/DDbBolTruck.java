@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import sba.lib.DLibUtils;
 import sba.lib.db.DDbConsts;
 import sba.lib.db.DDbRegistryUser;
 import sba.lib.grid.DGridRow;
@@ -25,6 +26,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     protected int mnPkBolId;
     protected int mnPkTruckId;
     protected double mdWeightTon;
+    protected double mdWeightGrossTon;
     protected String msPlate;
     protected int mnModel;
     protected String msTransportConfigCode;
@@ -57,6 +59,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     public void setPkBolId(int n) { mnPkBolId = n; }
     public void setPkTruckId(int n) { mnPkTruckId = n; }
     public void setWeightTon(double d) { mdWeightTon = d; }
+    public void setWeightGrossTon(double d) { mdWeightGrossTon = d; }
     public void setPlate(String s) { msPlate = s; }
     public void setModel(int n) { mnModel = n; }
     public void setTransportConfigCode(String s) { msTransportConfigCode = s; }
@@ -76,6 +79,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
     public int getPkBolId() { return mnPkBolId; }
     public int getPkTruckId() { return mnPkTruckId; }
     public double getWeightTon() { return mdWeightTon; }
+    public double getWeightGrossTon() { return mdWeightGrossTon; }
     public String getPlate() { return msPlate; }
     public int getModel() { return mnModel; }
     public String getTransportConfigCode() { return msTransportConfigCode; }
@@ -94,7 +98,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
 
     public ArrayList<DDbBolTruckTrailer> getChildTrailers() { return maChildTrailers; }
     
-    public void setOwnTruck(DDbTruck o) { moOwnTruck = o; updateFromOwnTruck(); }
+    public void setOwnTruck(final DDbTruck o, final double merchandiseWeightKg) { moOwnTruck = o; updateFromOwnTruck(merchandiseWeightKg); }
     
     public DDbTruck getOwnTruck() { return moOwnTruck; }
     
@@ -126,6 +130,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         mnPkBolId = 0;
         mnPkTruckId = 0;
         mdWeightTon = 0;
+        mdWeightGrossTon = 0;
         msPlate = "";
         mnModel = 0;
         msTransportConfigCode = "";
@@ -199,6 +204,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
             mnPkBolId = resultSet.getInt("id_bol");
             mnPkTruckId = resultSet.getInt("id_truck");
             mdWeightTon = resultSet.getDouble("weight_ton");
+            mdWeightGrossTon = resultSet.getDouble("weight_gross_ton");
             msPlate = resultSet.getString("plate");
             mnModel = resultSet.getInt("model");
             msTransportConfigCode = resultSet.getString("tpt_config_code");
@@ -277,6 +283,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
                     mnPkBolId + ", " + 
                     mnPkTruckId + ", " + 
                     mdWeightTon + ", " + 
+                    mdWeightGrossTon + ", " + 
                     "'" + msPlate + "', " + 
                     mnModel + ", " + 
                     "'" + msTransportConfigCode + "', " + 
@@ -301,6 +308,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
                     //"id_bol = " + mnPkBolId + ", " +
                     //"id_truck = " + mnPkTruckId + ", " +
                     "weight_ton = " + mdWeightTon + ", " +
+                    "weight_gross_ton = " + mdWeightGrossTon + ", " +
                     "plate = '" + msPlate + "', " +
                     "model = " + mnModel + ", " +
                     "tpt_config_code = '" + msTransportConfigCode + "', " +
@@ -347,6 +355,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         registry.setPkBolId(this.getPkBolId());
         registry.setPkTruckId(this.getPkTruckId());
         registry.setWeightTon(this.getWeightTon());
+        registry.setWeightGrossTon(this.getWeightGrossTon());
         registry.setPlate(this.getPlate());
         registry.setModel(this.getModel());
         registry.setTransportConfigCode(this.getTransportConfigCode());
@@ -369,7 +378,7 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
             registry.getChildTrailers().add(trailer.clone());
         }
         
-        registry.setOwnTruck(this.getOwnTruck()); // clone shares the same "read-only" object
+        registry.setOwnTruck(this.getOwnTruck(), 0d); // clone shares the same "read-only" object
         
         registry.setBolUpdateOwnRegistry(this.isBolUpdateOwnRegistry());
         registry.setBolSortingPos(this.getBolSortingPos());
@@ -378,9 +387,10 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
         return registry;
     }
     
-    public void updateFromOwnTruck() {
+    public void updateFromOwnTruck(final double merchandiseWeightKg) {
         if (moOwnTruck != null) {
             setWeightTon(moOwnTruck.getWeightTon());
+            setWeightGrossTon(DLibUtils.roundAmount(moOwnTruck.getWeightTon() + DLibUtils.roundAmount(merchandiseWeightKg / 1000d)));
             setPlate(moOwnTruck.getPlate());
             setModel(moOwnTruck.getModel());
             setTransportConfigCode(moOwnTruck.getTransportConfigCode());
@@ -453,12 +463,15 @@ public class DDbBolTruck extends DDbRegistryUser implements DGridRow, DBolGridRo
                 value = mdWeightTon;
                 break;
             case 4:
-                value = msPlate;
+                value = mdWeightGrossTon;
                 break;
             case 5:
-                value = mnModel;
+                value = msPlate;
                 break;
             case 6:
+                value = mnModel;
+                break;
+            case 7:
                 value = msTransportConfigCode + " - " + msTransportConfigName;
                 break;
             default:

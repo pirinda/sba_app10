@@ -118,8 +118,8 @@ public class DDbBolMerchandise extends DDbRegistryUser implements DGridRow, DBol
     
     public ArrayList<DDbBolMerchandiseMove> getChildMoves() { return maChildMoves; }
 
-    public void setOwnItem(DDbItem o) { moOwnItem = o; }
-    public void setOwnUnit(DDbUnit o) { moOwnUnit = o; }
+    public void setOwnItem(final DDbItem o) { moOwnItem = o; }
+    public void setOwnUnit(final DDbUnit o) { moOwnUnit = o; }
 
     public DDbItem getOwnItem() { return moOwnItem; }
     public DDbUnit getOwnUnit() { return moOwnUnit; }

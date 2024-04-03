@@ -129,6 +129,7 @@
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="horizontalAlignment" type="int" value="11"/>
                         <Property name="text" type="java.lang.String" value="999999"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Folio"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[75, 23]"/>
@@ -438,6 +439,7 @@
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="horizontalAlignment" type="int" value="11"/>
                         <Property name="text" type="java.lang.String" value="9,999.999"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Distancia recorrida total en km"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[75, 23]"/>
@@ -452,7 +454,7 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jlBolMerchandiseCount">
+                    <Component class="javax.swing.JLabel" name="jlBolMerchandiseNumber">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Mercs.:"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -471,7 +473,7 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jlBolMerchandiseWeightKg">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Peso bruto:"/>
+                        <Property name="text" type="java.lang.String" value="Peso total:"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[60, 23]"/>
                         </Property>
@@ -482,6 +484,7 @@
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="horizontalAlignment" type="int" value="11"/>
                         <Property name="text" type="java.lang.String" value="9,999.999"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Peso bruto total en kg"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[75, 23]"/>
@@ -496,11 +499,12 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jtfBolMerchandiseCount">
+                    <Component class="javax.swing.JTextField" name="jtfBolMerchandiseNumber">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="horizontalAlignment" type="int" value="11"/>
                         <Property name="text" type="java.lang.String" value="999"/>
+                        <Property name="toolTipText" type="java.lang.String" value="N&#xfa;mero total de mercanc&#xed;as"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[50, 23]"/>
@@ -880,6 +884,7 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecLocDistanceKm">
                                   <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.00"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[75, 23]"/>
                                     </Property>
@@ -1668,6 +1673,7 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecMerchQuantity">
                                   <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.000000"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[90, 23]"/>
                                     </Property>
@@ -1677,7 +1683,7 @@
                                   <Properties>
                                     <Property name="editable" type="boolean" value="false"/>
                                     <Property name="horizontalAlignment" type="int" value="11"/>
-                                    <Property name="text" type="java.lang.String" value="0.00000000"/>
+                                    <Property name="text" type="java.lang.String" value="0.000000"/>
                                     <Property name="toolTipText" type="java.lang.String" value="Cantidad transportada"/>
                                     <Property name="focusable" type="boolean" value="false"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1697,7 +1703,7 @@
                               <SubComponents>
                                 <Component class="javax.swing.JLabel" name="jlMerchWeightKg">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="Peso bruto:*"/>
+                                    <Property name="text" type="java.lang.String" value="Peso:*"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[75, 23]"/>
                                     </Property>
@@ -1705,6 +1711,7 @@
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecMerchWeightKg">
                                   <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.000"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[90, 23]"/>
                                     </Property>
@@ -1723,7 +1730,7 @@
                                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                                       <Image iconType="3" name="/sba/gui/img/cmd_std_mov_lft.gif"/>
                                     </Property>
-                                    <Property name="toolTipText" type="java.lang.String" value="Asignar peso bruto"/>
+                                    <Property name="toolTipText" type="java.lang.String" value="Asignar peso"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[23, 23]"/>
                                     </Property>
@@ -2232,6 +2239,9 @@
                                       </Properties>
                                     </Component>
                                     <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecMerchMoveQuantity">
+                                      <Properties>
+                                        <Property name="text" type="java.lang.String" value="0.000000"/>
+                                      </Properties>
                                     </Component>
                                     <Component class="javax.swing.JButton" name="jbMerchMoveSetQuantity">
                                       <Properties>
@@ -2701,53 +2711,12 @@
                                     </Property>
                                   </Properties>
                                 </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jpTruckInput14">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
-                                <Component class="javax.swing.JLabel" name="jlTruckWeightTon">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Peso bruto:*"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecTruckWeightTon">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="0.00"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                                <Component class="javax.swing.JLabel" name="jlTruckWeightTonUnit">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Tn"/>
-                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[25, 23]"/>
-                                    </Property>
-                                  </Properties>
-                                </Component>
-                              </SubComponents>
-                            </Container>
-                            <Container class="javax.swing.JPanel" name="jpTruckInput15">
-
-                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                                <Property name="alignment" type="int" value="0"/>
-                                <Property name="verticalGap" type="int" value="0"/>
-                              </Layout>
-                              <SubComponents>
                                 <Component class="javax.swing.JLabel" name="jlTruckPlate">
                                   <Properties>
+                                    <Property name="horizontalAlignment" type="int" value="0"/>
                                     <Property name="text" type="java.lang.String" value="Placa:*"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[75, 23]"/>
+                                      <Dimension value="[57, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
@@ -2759,16 +2728,93 @@
                                     </Property>
                                   </Properties>
                                 </Component>
+                              </SubComponents>
+                            </Container>
+                            <Container class="javax.swing.JPanel" name="jpTruckInput14">
+
+                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                                <Property name="alignment" type="int" value="0"/>
+                                <Property name="verticalGap" type="int" value="0"/>
+                              </Layout>
+                              <SubComponents>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Peso:*"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[75, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecTruckWeightTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.00"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[60, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightTonUnit">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Tn"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[23, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
                                 <Component class="javax.swing.JLabel" name="jlTruckModel">
                                   <Properties>
                                     <Property name="horizontalAlignment" type="int" value="0"/>
                                     <Property name="text" type="java.lang.String" value="Modelo:*"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                                      <Dimension value="[70, 23]"/>
+                                      <Dimension value="[57, 23]"/>
                                     </Property>
                                   </Properties>
                                 </Component>
                                 <Component class="sba.lib.gui.bean.DBeanFieldCalendarYear" name="moYearTruckModel">
+                                </Component>
+                              </SubComponents>
+                            </Container>
+                            <Container class="javax.swing.JPanel" name="jpTruckInput15">
+
+                              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                                <Property name="alignment" type="int" value="0"/>
+                                <Property name="verticalGap" type="int" value="0"/>
+                              </Layout>
+                              <SubComponents>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightGrossTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Peso bruto:*"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[75, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="sba.lib.gui.bean.DBeanFieldDecimal" name="moDecTruckWeightGrossTon">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="0.00"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[60, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jlTruckWeightGrossTonUnit">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Tn"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[25, 23]"/>
+                                    </Property>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="jbTruckSetWeightGrossTon">
+                                  <Properties>
+                                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                                      <Image iconType="3" name="/sba/gui/img/cmd_std_mov_lft.gif"/>
+                                    </Property>
+                                    <Property name="toolTipText" type="java.lang.String" value="Asignar peso bruto"/>
+                                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                      <Dimension value="[23, 23]"/>
+                                    </Property>
+                                  </Properties>
                                 </Component>
                               </SubComponents>
                             </Container>

@@ -54,7 +54,7 @@ public class DDbBolTruckTrailer extends DDbRegistryUser implements DGridRow, DBo
     public String getTrailerSubtypeName() { return msTrailerSubtypeName; }
     public int getFkTrailerId() { return mnFkTrailerId; }
     
-    public void setOwnTrailer(DDbTrailer o) { moOwnTrailer = o; updateFromOwnTrailer(); }
+    public void setOwnTrailer(final DDbTrailer o) { moOwnTrailer = o; updateFromOwnTrailer(); }
     
     public DDbTrailer getOwnTrailer() { return moOwnTrailer; }
     

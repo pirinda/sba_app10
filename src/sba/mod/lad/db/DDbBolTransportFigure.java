@@ -113,7 +113,7 @@ public class DDbBolTransportFigure extends DDbRegistryUser implements DGridRow, 
     
     public ArrayList<DDbBolTransportFigureTransportPart> getChildTransportParts() { return maChildTransportParts; }
     
-    public void setOwnTransportFigure(DDbTransportFigure o) { moOwnTransportFigure = o; updateFromOwnTransportFigure(); }
+    public void setOwnTransportFigure(final DDbTransportFigure o) { moOwnTransportFigure = o; updateFromOwnTransportFigure(); }
     
     public DDbTransportFigure getOwnTransportFigure() { return moOwnTransportFigure; }
     

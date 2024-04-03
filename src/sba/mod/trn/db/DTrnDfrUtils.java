@@ -2048,7 +2048,7 @@ public abstract class DTrnDfrUtils {
         cartaPorte.getEltMercancias().getEltAutotransporte().getAttNumPermisoSCT().setString(bolTruck.getPermissionNumber());
         
         cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttConfigVehicular().setString(bolTruck.getTransportConfigCode());
-        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPesoBrutoVehicular().setDouble(bolTruck.getWeightTon());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPesoBrutoVehicular().setDouble(bolTruck.getWeightGrossTon());
         cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPlacaVM().setString(bolTruck.getPlate());
         cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttAnioModeloVM().setInteger(bolTruck.getModel());
         

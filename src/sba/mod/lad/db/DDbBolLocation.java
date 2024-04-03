@@ -116,8 +116,8 @@ public class DDbBolLocation extends DDbRegistryUser implements DGridRow, DBolGri
     public int getFkSourceBolId_n() { return mnFkSourceBolId_n; }
     public int getFkSourceLocationId_n() { return mnFkSourceLocationId_n; }
     
-    public void setOwnLocation(DDbLocation o) { moOwnLocation = o; updateFromOwnLocation(); }
-    public void setOwnSourceLocation(DDbLocation o) { moOwnSourceLocation = o; updateFromOwnSourceLocation(); }
+    public void setOwnLocation(final DDbLocation o) { moOwnLocation = o; updateFromOwnLocation(); }
+    public void setOwnSourceLocation(final DDbLocation o) { moOwnSourceLocation = o; updateFromOwnSourceLocation(); }
     
     public DDbLocation getOwnLocation() { return moOwnLocation; }
     public DDbLocation getOwnSourceLocation() { return moOwnSourceLocation; }

@@ -137,7 +137,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     protected int mnBolWeightUnitId;
     protected double mdBolDistanceKm;
     protected double mdBolMerchandiseWeightKg;
-    protected int mnBolMerchandiseCount;
+    protected int mnBolMerchandiseNumber;
 
     protected int mnTempBolLocationId;
     protected DDbItem moMerchItem;
@@ -260,12 +260,12 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlBolDistanceKm = new javax.swing.JLabel();
         jtfBolDistanceKm = new javax.swing.JTextField();
         jlBolDistanceKmUnit = new javax.swing.JLabel();
-        jlBolMerchandiseCount = new javax.swing.JLabel();
+        jlBolMerchandiseNumber = new javax.swing.JLabel();
         jpHeaderLocMerch4 = new javax.swing.JPanel();
         jlBolMerchandiseWeightKg = new javax.swing.JLabel();
         jtfBolMerchandiseWeightKg = new javax.swing.JTextField();
         jlBolMerchandiseWeightKgUnit = new javax.swing.JLabel();
-        jtfBolMerchandiseCount = new javax.swing.JTextField();
+        jtfBolMerchandiseNumber = new javax.swing.JTextField();
         moBoolBolMerchandiseInverseLogistics = new sba.lib.gui.bean.DBeanFieldBoolean();
         jpHeaderTemp = new javax.swing.JPanel();
         moBoolBolTemplate = new sba.lib.gui.bean.DBeanFieldBoolean();
@@ -490,15 +490,19 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlTruckCode = new javax.swing.JLabel();
         moTextTruckCode = new sba.lib.gui.bean.DBeanFieldText();
         jbTruckGetNextCode = new javax.swing.JButton();
+        jlTruckPlate = new javax.swing.JLabel();
+        moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
         jpTruckInput14 = new javax.swing.JPanel();
         jlTruckWeightTon = new javax.swing.JLabel();
         moDecTruckWeightTon = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlTruckWeightTonUnit = new javax.swing.JLabel();
-        jpTruckInput15 = new javax.swing.JPanel();
-        jlTruckPlate = new javax.swing.JLabel();
-        moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
         jlTruckModel = new javax.swing.JLabel();
         moYearTruckModel = new sba.lib.gui.bean.DBeanFieldCalendarYear();
+        jpTruckInput15 = new javax.swing.JPanel();
+        jlTruckWeightGrossTon = new javax.swing.JLabel();
+        moDecTruckWeightGrossTon = new sba.lib.gui.bean.DBeanFieldDecimal();
+        jlTruckWeightGrossTonUnit = new javax.swing.JLabel();
+        jbTruckSetWeightGrossTon = new javax.swing.JButton();
         jpTruckInput16 = new javax.swing.JPanel();
         jlTruckPermissionType = new javax.swing.JLabel();
         moKeyTruckPermissionType = new sba.lib.gui.bean.DBeanFieldKey();
@@ -729,6 +733,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolNumber.setEditable(false);
         jtfBolNumber.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfBolNumber.setText("999999");
+        jtfBolNumber.setToolTipText("Folio");
         jtfBolNumber.setFocusable(false);
         jtfBolNumber.setPreferredSize(new java.awt.Dimension(75, 23));
         jpHeaderBol2.add(jtfBolNumber);
@@ -884,6 +889,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolDistanceKm.setEditable(false);
         jtfBolDistanceKm.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfBolDistanceKm.setText("9,999.999");
+        jtfBolDistanceKm.setToolTipText("Distancia recorrida total en km");
         jtfBolDistanceKm.setFocusable(false);
         jtfBolDistanceKm.setPreferredSize(new java.awt.Dimension(75, 23));
         jpHeaderLocMerch3.add(jtfBolDistanceKm);
@@ -892,21 +898,22 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlBolDistanceKmUnit.setPreferredSize(new java.awt.Dimension(30, 23));
         jpHeaderLocMerch3.add(jlBolDistanceKmUnit);
 
-        jlBolMerchandiseCount.setText("Mercs.:");
-        jlBolMerchandiseCount.setPreferredSize(new java.awt.Dimension(50, 23));
-        jpHeaderLocMerch3.add(jlBolMerchandiseCount);
+        jlBolMerchandiseNumber.setText("Mercs.:");
+        jlBolMerchandiseNumber.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpHeaderLocMerch3.add(jlBolMerchandiseNumber);
 
         jpHeaderLocMerch.add(jpHeaderLocMerch3);
 
         jpHeaderLocMerch4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlBolMerchandiseWeightKg.setText("Peso bruto:");
+        jlBolMerchandiseWeightKg.setText("Peso total:");
         jlBolMerchandiseWeightKg.setPreferredSize(new java.awt.Dimension(60, 23));
         jpHeaderLocMerch4.add(jlBolMerchandiseWeightKg);
 
         jtfBolMerchandiseWeightKg.setEditable(false);
         jtfBolMerchandiseWeightKg.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfBolMerchandiseWeightKg.setText("9,999.999");
+        jtfBolMerchandiseWeightKg.setToolTipText("Peso bruto total en kg");
         jtfBolMerchandiseWeightKg.setFocusable(false);
         jtfBolMerchandiseWeightKg.setPreferredSize(new java.awt.Dimension(75, 23));
         jpHeaderLocMerch4.add(jtfBolMerchandiseWeightKg);
@@ -915,12 +922,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlBolMerchandiseWeightKgUnit.setPreferredSize(new java.awt.Dimension(30, 23));
         jpHeaderLocMerch4.add(jlBolMerchandiseWeightKgUnit);
 
-        jtfBolMerchandiseCount.setEditable(false);
-        jtfBolMerchandiseCount.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        jtfBolMerchandiseCount.setText("999");
-        jtfBolMerchandiseCount.setFocusable(false);
-        jtfBolMerchandiseCount.setPreferredSize(new java.awt.Dimension(50, 23));
-        jpHeaderLocMerch4.add(jtfBolMerchandiseCount);
+        jtfBolMerchandiseNumber.setEditable(false);
+        jtfBolMerchandiseNumber.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jtfBolMerchandiseNumber.setText("999");
+        jtfBolMerchandiseNumber.setToolTipText("Número total de mercancías");
+        jtfBolMerchandiseNumber.setFocusable(false);
+        jtfBolMerchandiseNumber.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpHeaderLocMerch4.add(jtfBolMerchandiseNumber);
 
         jpHeaderLocMerch.add(jpHeaderLocMerch4);
 
@@ -1081,6 +1089,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlLocDistanceKm.setPreferredSize(new java.awt.Dimension(75, 23));
         jpLocInput17.add(jlLocDistanceKm);
 
+        moDecLocDistanceKm.setText("0.00");
         moDecLocDistanceKm.setPreferredSize(new java.awt.Dimension(75, 23));
         jpLocInput17.add(moDecLocDistanceKm);
 
@@ -1435,12 +1444,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput13.add(jlMerchQuantity);
 
+        moDecMerchQuantity.setText("0.000000");
         moDecMerchQuantity.setPreferredSize(new java.awt.Dimension(90, 23));
         jpMerchInput13.add(moDecMerchQuantity);
 
         jtfMerchQuantityMoved.setEditable(false);
         jtfMerchQuantityMoved.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        jtfMerchQuantityMoved.setText("0.00000000");
+        jtfMerchQuantityMoved.setText("0.000000");
         jtfMerchQuantityMoved.setToolTipText("Cantidad transportada");
         jtfMerchQuantityMoved.setFocusable(false);
         jtfMerchQuantityMoved.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -1451,10 +1461,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
 
         jpMerchInput16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlMerchWeightKg.setText("Peso bruto:*");
+        jlMerchWeightKg.setText("Peso:*");
         jlMerchWeightKg.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput16.add(jlMerchWeightKg);
 
+        moDecMerchWeightKg.setText("0.000");
         moDecMerchWeightKg.setPreferredSize(new java.awt.Dimension(90, 23));
         jpMerchInput16.add(moDecMerchWeightKg);
 
@@ -1463,7 +1474,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jpMerchInput16.add(jlMerchWeightKgUnit);
 
         jbMerchSetWeightKg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
-        jbMerchSetWeightKg.setToolTipText("Asignar peso bruto");
+        jbMerchSetWeightKg.setToolTipText("Asignar peso");
         jbMerchSetWeightKg.setPreferredSize(new java.awt.Dimension(23, 23));
         jpMerchInput16.add(jbMerchSetWeightKg);
 
@@ -1701,6 +1712,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlMerchMoveQuantity.setText("Cantidad:*");
         jlMerchMoveQuantity.setPreferredSize(new java.awt.Dimension(75, 23));
         jpMerchInput3N3.add(jlMerchMoveQuantity);
+
+        moDecMerchMoveQuantity.setText("0.000000");
         jpMerchInput3N3.add(moDecMerchMoveQuantity);
 
         jbMerchMoveSetQuantity.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
@@ -1900,39 +1913,57 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jbTruckGetNextCode.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTruckInput13.add(jbTruckGetNextCode);
 
+        jlTruckPlate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlTruckPlate.setText("Placa:*");
+        jlTruckPlate.setPreferredSize(new java.awt.Dimension(57, 23));
+        jpTruckInput13.add(jlTruckPlate);
+
+        moTextTruckPlate.setText("TEXT");
+        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput13.add(moTextTruckPlate);
+
         jpTruckInput1.add(jpTruckInput13);
 
         jpTruckInput14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlTruckWeightTon.setText("Peso bruto:*");
+        jlTruckWeightTon.setText("Peso:*");
         jlTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(jlTruckWeightTon);
 
         moDecTruckWeightTon.setText("0.00");
-        moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
+        moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(60, 23));
         jpTruckInput14.add(moDecTruckWeightTon);
 
         jlTruckWeightTonUnit.setText("Tn");
-        jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTruckInput14.add(jlTruckWeightTonUnit);
+
+        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlTruckModel.setText("Modelo:*");
+        jlTruckModel.setPreferredSize(new java.awt.Dimension(57, 23));
+        jpTruckInput14.add(jlTruckModel);
+        jpTruckInput14.add(moYearTruckModel);
 
         jpTruckInput1.add(jpTruckInput14);
 
         jpTruckInput15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlTruckPlate.setText("Placa:*");
-        jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput15.add(jlTruckPlate);
+        jlTruckWeightGrossTon.setText("Peso bruto:*");
+        jlTruckWeightGrossTon.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput15.add(jlTruckWeightGrossTon);
 
-        moTextTruckPlate.setText("TEXT");
-        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput15.add(moTextTruckPlate);
+        moDecTruckWeightGrossTon.setText("0.00");
+        moDecTruckWeightGrossTon.setPreferredSize(new java.awt.Dimension(60, 23));
+        jpTruckInput15.add(moDecTruckWeightGrossTon);
 
-        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlTruckModel.setText("Modelo:*");
-        jlTruckModel.setPreferredSize(new java.awt.Dimension(70, 23));
-        jpTruckInput15.add(jlTruckModel);
-        jpTruckInput15.add(moYearTruckModel);
+        jlTruckWeightGrossTonUnit.setText("Tn");
+        jlTruckWeightGrossTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jpTruckInput15.add(jlTruckWeightGrossTonUnit);
+
+        jbTruckSetWeightGrossTon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
+        jbTruckSetWeightGrossTon.setToolTipText("Asignar peso bruto");
+        jbTruckSetWeightGrossTon.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpTruckInput15.add(jbTruckSetWeightGrossTon);
 
         jpTruckInput1.add(jpTruckInput15);
 
@@ -2873,6 +2904,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbTruckMoveUp;
     private javax.swing.JButton jbTruckOk;
     private javax.swing.JButton jbTruckRemove;
+    private javax.swing.JButton jbTruckSetWeightGrossTon;
     private javax.swing.JButton jbTruckTrailAdd;
     private javax.swing.JButton jbTruckTrailCancel;
     private javax.swing.JButton jbTruckTrailCreate;
@@ -2888,7 +2920,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlBolDistanceKmUnit;
     private javax.swing.JLabel jlBolIsthmusDestiny;
     private javax.swing.JLabel jlBolIsthmusOrigin;
-    private javax.swing.JLabel jlBolMerchandiseCount;
+    private javax.swing.JLabel jlBolMerchandiseNumber;
     private javax.swing.JLabel jlBolMerchandiseWeightKg;
     private javax.swing.JLabel jlBolMerchandiseWeightKgUnit;
     private javax.swing.JLabel jlBolNumber;
@@ -2970,6 +3002,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JLabel jlTruckTrailPlate;
     private javax.swing.JLabel jlTruckTrailSubtype;
     private javax.swing.JLabel jlTruckTransportConfig;
+    private javax.swing.JLabel jlTruckWeightGrossTon;
+    private javax.swing.JLabel jlTruckWeightGrossTonUnit;
     private javax.swing.JLabel jlTruckWeightTon;
     private javax.swing.JLabel jlTruckWeightTonUnit;
     private javax.swing.JPanel jpHeader;
@@ -3144,7 +3178,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JTextField jtfBolDfrUuid;
     private javax.swing.JTextField jtfBolDistanceKm;
     private javax.swing.JTextField jtfBolIntlTransport;
-    private javax.swing.JTextField jtfBolMerchandiseCount;
+    private javax.swing.JTextField jtfBolMerchandiseNumber;
     private javax.swing.JTextField jtfBolMerchandiseWeightKg;
     private javax.swing.JTextField jtfBolNumber;
     private javax.swing.JTextField jtfBolStatus;
@@ -3188,6 +3222,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private sba.lib.gui.bean.DBeanFieldDecimal moDecMerchMoveQuantity;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecMerchQuantity;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecMerchWeightKg;
+    private sba.lib.gui.bean.DBeanFieldDecimal moDecTruckWeightGrossTon;
     private sba.lib.gui.bean.DBeanFieldDecimal moDecTruckWeightTon;
     private sba.lib.gui.bean.DBeanFieldInteger moIntMerchDimensionsHeight;
     private sba.lib.gui.bean.DBeanFieldInteger moIntMerchDimensionsLength;
@@ -3456,6 +3491,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextTruckName.setTextSettings(DGuiUtils.getLabelName(jlTruckName), 100);
         moTextTruckCode.setTextSettings(DGuiUtils.getLabelName(jlTruckCode), 10);
         moDecTruckWeightTon.setDecimalSettings(DGuiUtils.getLabelName(jlTruckWeightTon), DGuiConsts.GUI_TYPE_DEC_AMT, true);
+        moDecTruckWeightGrossTon.setDecimalSettings(DGuiUtils.getLabelName(jlTruckWeightGrossTon), DGuiConsts.GUI_TYPE_DEC_AMT, true);
         moTextTruckPlate.setTextSettings(DGuiUtils.getLabelName(jlTruckPlate), 7);
         moYearTruckModel.setCalendarSettings(DGuiUtils.getLabelName(jlTruckModel));
         moKeyTruckPermissionType.setKeySettings(miClient, DGuiUtils.getLabelName(jlTruckPermissionType), true);
@@ -3477,6 +3513,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moFieldsTruck.addField(moTextTruckName, TAB_IDX_TRUCK);
         moFieldsTruck.addField(moTextTruckCode, TAB_IDX_TRUCK);
         moFieldsTruck.addField(moDecTruckWeightTon, TAB_IDX_TRUCK);
+        moFieldsTruck.addField(moDecTruckWeightGrossTon, TAB_IDX_TRUCK);
         moFieldsTruck.addField(moTextTruckPlate, TAB_IDX_TRUCK);
         moFieldsTruck.addField(moYearTruckModel, TAB_IDX_TRUCK);
         moFieldsTruck.addField(moKeyTruckPermissionType, TAB_IDX_TRUCK);
@@ -3744,7 +3781,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                 jtfBolDepartureLocation.setCaretPosition(0);
             }
             else {
-                jtfBolDeparturelDatetime.setText("Primer ubicación no es origen");
+                jtfBolDeparturelDatetime.setText("¡Primer ubicación no es origen!");
                 jtfBolDeparturelDatetime.setCaretPosition(0);
             }
 
@@ -3757,7 +3794,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     jtfBolArrivalLocation.setCaretPosition(0);
                 }
                 else {
-                    jtfBolArrivalDatetime.setText("Última ubicación no es destino");
+                    jtfBolArrivalDatetime.setText("¡Última ubicación no es destino!");
                     jtfBolArrivalDatetime.setCaretPosition(0);
                 }
             }
@@ -3781,8 +3818,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolMerchandiseWeightKg.setText(DLibUtils.DecimalFormatValue3D.format(mdBolMerchandiseWeightKg));
         jtfBolMerchandiseWeightKg.setCaretPosition(0);
         
-        mnBolMerchandiseCount = moGridMerchandises.getModel().getRowCount();
-        jtfBolMerchandiseCount.setText(DLibUtils.DecimalFormatInteger.format(mnBolMerchandiseCount));
+        mnBolMerchandiseNumber = moGridMerchandises.getModel().getRowCount();
+        jtfBolMerchandiseNumber.setText(DLibUtils.DecimalFormatInteger.format(mnBolMerchandiseNumber));
     }
 
     private void clearBolContent() {
@@ -5473,7 +5510,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedMerchSetWeightKg() {
-        moDecMerchWeightKg.setValue(0d);
+        moDecMerchWeightKg.setValue(0d); // to force computing of merchandise weight
         computeMerchWeightKg();
         moDecMerchWeightKg.requestFocusInWindow();
     }
@@ -6007,7 +6044,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             if (key != null) {
                 bolTruck = new DDbBolTruck();
-                bolTruck.setOwnTruck((DDbTruck) miClient.getSession().readRegistry(DModConsts.LU_TRUCK, key));
+                bolTruck.setOwnTruck((DDbTruck) miClient.getSession().readRegistry(DModConsts.LU_TRUCK, key), mdBolMerchandiseWeightKg);
                 
                 int sortingPos = 0;
                 for (DDbTruckTrailer truckTrailer : bolTruck.getOwnTruck().getChildTrailers()) {
@@ -6098,6 +6135,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             moTextTruckName.setValue(moBolTruck.getOwnTruck().getName());
             moTextTruckCode.setValue(moBolTruck.getOwnTruck().getCode());
             moDecTruckWeightTon.setValue(moBolTruck.getWeightTon());
+            moDecTruckWeightGrossTon.setValue(moBolTruck.getWeightGrossTon());
             moTextTruckPlate.setValue(moBolTruck.getPlate());
             moYearTruckModel.setValue(moBolTruck.getModel());
             moKeyTruckPermissionType.setValue(new int[] { moXmlTruckPermissionType.getId(moBolTruck.getPermissionTypeCode()) });
@@ -6172,6 +6210,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         moTextTruckCode.setEnabled(mbEditingTruck);
         jbTruckGetNextCode.setEnabled(mbEditingTruck);
         moDecTruckWeightTon.setEnabled(mbEditingTruck);
+        moDecTruckWeightGrossTon.setEnabled(mbEditingTruck);
+        jbTruckSetWeightGrossTon.setEnabled(mbEditingTruck);
         moTextTruckPlate.setEnabled(mbEditingTruck);
         moYearTruckModel.setEnabled(mbEditingTruck);
         moKeyTruckPermissionType.setEnabled(mbEditingTruck);
@@ -6402,6 +6442,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         }
     }
     
+    private void actionPerformedTruckSetWeightGrossTon() {
+        moDecTruckWeightGrossTon.setValue(DLibUtils.roundAmount(moDecTruckWeightTon.getValue() + DLibUtils.roundAmount((mdBolMerchandiseWeightKg / 1000d))));
+        moDecTruckWeightGrossTon.requestFocusInWindow();
+    }
+    
     private void actionPerformedTruckAdd() {
         if (canBolTruckAdd()) {
             DDbBolTruck bolTruck = createBolTruckPickingOne();
@@ -6508,7 +6553,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             if (creating) {
                 moBolTruck = new DDbBolTruck();
                 truck = new DDbTruck();
-                moBolTruck.setOwnTruck(truck);
+                moBolTruck.setOwnTruck(truck, mdBolMerchandiseWeightKg);
             }
             
             truck = moBolTruck.getOwnTruck();
@@ -6538,7 +6583,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             
             truck.setRegistryEdited(true);
             
-            moBolTruck.updateFromOwnTruck();
+            moBolTruck.updateFromOwnTruck(mdBolMerchandiseWeightKg);
             
             //moBolTruck.setPkBolId(...);
             //moBolTruck.setPkTruckId(...); // updated already by DDbBolTruck.updateFromOwnTruck()
@@ -7888,6 +7933,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         jbTruckEditConfig.addActionListener(this);
         jbTruckGetNextCode.addActionListener(this);
+        jbTruckSetWeightGrossTon.addActionListener(this);
         jbTruckAdd.addActionListener(this);
         jbTruckCreate.addActionListener(this);
         jbTruckCopy.addActionListener(this);
@@ -8037,6 +8083,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         
         jbTruckEditConfig.removeActionListener(this);
         jbTruckGetNextCode.removeActionListener(this);
+        jbTruckSetWeightGrossTon.removeActionListener(this);
         jbTruckAdd.removeActionListener(this);
         jbTruckCreate.removeActionListener(this);
         jbTruckCopy.removeActionListener(this);
@@ -8283,7 +8330,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         /*
         moBol.getChildLocations().addAll(DBolUtils.createTestingBolLocations(miClient.getSession()));
         moBol.getChildMerchandises().addAll(DBolUtils.createTestingBolMerchandises(miClient.getSession(), moBol.getChildLocations()));
-        moBol.getChildTrucks().addAll(DBolUtils.createTestingBolTrucks(miClient.getSession()));
+        computeBol();
+        moBol.getChildTrucks().addAll(DBolUtils.createTestingBolTrucks(miClient.getSession(), mdBolMerchandiseWeightKg));
         moBol.getChildTransportFigures().addAll(DBolUtils.createTestingBolTptFigures(miClient.getSession()));
         */
         ///// END OF TESTING CODE (REMOVE FRO PRODUCTION) //////////////////////
@@ -8360,7 +8408,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         bol.setIntlTransportDirection(!moBoolBolIntlTransport.getValue() || moBolIntlTransport == null ? "" : moBolIntlTransport.IntlTransportDirection);
         bol.setDistanceKm(mdBolDistanceKm);
         bol.setMerchandiseWeight(mdBolMerchandiseWeightKg);
-        bol.setMerchandiseNumber(mnBolMerchandiseCount);
+        bol.setMerchandiseNumber(mnBolMerchandiseNumber);
         bol.setMerchandiseInverseLogistics(moBoolBolMerchandiseInverseLogistics.isSelected());
         bol.setIsthmus(moBoolBolIsthmus.isSelected());
         bol.setIsthmusOrigin(moKeyBolIsthmusOrigin.getSelectedIndex() <= 0 ? "" : moKeyBolIsthmusOrigin.getSelectedItem().getCode());
@@ -8662,6 +8710,9 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
             else if (button == jbTruckGetNextCode) {
                 actionPerformedTruckGetNextCode();
+            }
+            else if (button == jbTruckSetWeightGrossTon) {
+                actionPerformedTruckSetWeightGrossTon();
             }
             else if (button == jbTruckAdd) {
                 actionPerformedTruckAdd();

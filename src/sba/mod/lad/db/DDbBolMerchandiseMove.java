@@ -68,8 +68,8 @@ public class DDbBolMerchandiseMove extends DDbRegistryUser implements DGridRow, 
     public int[] getSourceLocationKey() { return new int[] { mnFkSourceBolId, mnFkSourceLocationId }; }
     public int[] getDestinyLocationKey() { return new int[] { mnFkDestinyBolId, mnFkDestinyLocationId }; }
 
-    public void setOwnSourceLocation(DDbLocation o) { moOwnSourceLocation = o; }
-    public void setOwnDestinyLocation(DDbLocation o) { moOwnDestinyLocation = o; }
+    public void setOwnSourceLocation(final DDbLocation o) { moOwnSourceLocation = o; }
+    public void setOwnDestinyLocation(final DDbLocation o) { moOwnDestinyLocation = o; }
     
     public DDbLocation getOwnSourceLocation() { return moOwnSourceLocation; }
     public DDbLocation getOwnDestinyLocation() { return moOwnDestinyLocation; }

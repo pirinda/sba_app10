@@ -1,6 +1,6 @@
 ================================================================================
 SBA 1.0 037.0
-2024-04-01/ Sergio Abraham FLORES GUTIÉRREZ
+2024-04-03/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación del Complemento Carta Porte 3.0.
 
 ================================================================================

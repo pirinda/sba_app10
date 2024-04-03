@@ -75,15 +75,15 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         jlTruckCode = new javax.swing.JLabel();
         moTextTruckCode = new sba.lib.gui.bean.DBeanFieldText();
         jbTruckGetNextCode = new javax.swing.JButton();
+        jlTruckPlate = new javax.swing.JLabel();
+        moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
         jpTruckInput14 = new javax.swing.JPanel();
         jlTruckWeightTon = new javax.swing.JLabel();
         moDecTruckWeightTon = new sba.lib.gui.bean.DBeanFieldDecimal();
         jlTruckWeightTonUnit = new javax.swing.JLabel();
-        jpTruckInput15 = new javax.swing.JPanel();
-        jlTruckPlate = new javax.swing.JLabel();
-        moTextTruckPlate = new sba.lib.gui.bean.DBeanFieldText();
         jlTruckModel = new javax.swing.JLabel();
         moYearTruckModel = new sba.lib.gui.bean.DBeanFieldCalendarYear();
+        jpTruckInput15 = new javax.swing.JPanel();
         jpTruckInput16 = new javax.swing.JPanel();
         jlTruckPermissionType = new javax.swing.JLabel();
         moKeyTruckPermissionType = new sba.lib.gui.bean.DBeanFieldKey();
@@ -164,39 +164,40 @@ public class DFormTruck extends DBeanForm implements ActionListener, ItemListene
         jbTruckGetNextCode.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTruckInput13.add(jbTruckGetNextCode);
 
+        jlTruckPlate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlTruckPlate.setText("Placa:*");
+        jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput13.add(jlTruckPlate);
+
+        moTextTruckPlate.setText("TEXT");
+        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput13.add(moTextTruckPlate);
+
         jpTruckInput1.add(jpTruckInput13);
 
         jpTruckInput14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlTruckWeightTon.setText("Peso bruto:*");
+        jlTruckWeightTon.setText("Peso:*");
         jlTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
         jpTruckInput14.add(jlTruckWeightTon);
 
-        moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(75, 23));
+        moDecTruckWeightTon.setText("0.00");
+        moDecTruckWeightTon.setPreferredSize(new java.awt.Dimension(60, 23));
         jpTruckInput14.add(moDecTruckWeightTon);
 
         jlTruckWeightTonUnit.setText("Tn");
-        jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jlTruckWeightTonUnit.setPreferredSize(new java.awt.Dimension(23, 23));
         jpTruckInput14.add(jlTruckWeightTonUnit);
+
+        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlTruckModel.setText("Modelo:*");
+        jlTruckModel.setPreferredSize(new java.awt.Dimension(75, 23));
+        jpTruckInput14.add(jlTruckModel);
+        jpTruckInput14.add(moYearTruckModel);
 
         jpTruckInput1.add(jpTruckInput14);
 
         jpTruckInput15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlTruckPlate.setText("Placa:*");
-        jlTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput15.add(jlTruckPlate);
-
-        moTextTruckPlate.setText("TEXT");
-        moTextTruckPlate.setPreferredSize(new java.awt.Dimension(75, 23));
-        jpTruckInput15.add(moTextTruckPlate);
-
-        jlTruckModel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlTruckModel.setText("Modelo:*");
-        jlTruckModel.setPreferredSize(new java.awt.Dimension(65, 23));
-        jpTruckInput15.add(jlTruckModel);
-        jpTruckInput15.add(moYearTruckModel);
-
         jpTruckInput1.add(jpTruckInput15);
 
         jpTruckInput16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));

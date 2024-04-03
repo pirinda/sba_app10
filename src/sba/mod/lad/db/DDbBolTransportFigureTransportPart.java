@@ -45,7 +45,7 @@ public class DDbBolTransportFigureTransportPart extends DDbRegistryUser implemen
     public int getPkTransportPartId() { return mnPkTransportPartId; }
     public int getFkTransportPartTypeId() { return mnFkTransportPartTypeId; }
     
-    public void setOwnSysTransportPartType(DDbSysTransportPartType o) { moOwnSysTransportPartType = o; updateFromOwnSysTransportPartType(); }
+    public void setOwnSysTransportPartType(final DDbSysTransportPartType o) { moOwnSysTransportPartType = o; updateFromOwnSysTransportPartType(); }
     
     public DDbSysTransportPartType getOwnSysTransportPartType() { return moOwnSysTransportPartType; }
     
