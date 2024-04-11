@@ -65,8 +65,8 @@ public class DViewBol extends DGridPaneView implements ActionListener {
      */
 
     private void initComponentsCustom() {
-        setRowButtonsEnabled(true, true, false, true, false);
-        jtbFilterDeleted.setEnabled(false);
+        setRowButtonsEnabled(true, true, true, isBolTemplate(), isBolTemplate());
+        jtbFilterDeleted.setEnabled(isBolTemplate());
         
         if (!isBolTemplate()) {
             moFilterDatePeriod = new DGridFilterDatePeriod(miClient, this, DGuiConsts.DATE_PICKER_DATE_PERIOD);
@@ -227,11 +227,12 @@ public class DViewBol extends DGridPaneView implements ActionListener {
         DGridColumnView[] columns = null;
 
         if (isBolTemplate()) {
-            columns = new DGridColumnView[17];
+            columns = new DGridColumnView[18];
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_L, DDbConsts.FIELD_NAME, "Nombre");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, DDbConsts.FIELD_CODE, "Código");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CAT, "b.ser", "Serie");
             columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_CO, "cb.code", DUtilConsts.TXT_BRANCH + " empresa");
+            columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_ICON, "_ico_bol_st", DGridConsts.COL_TITLE_STAT + " docto");
         }
         else {
             columns = new DGridColumnView[18];
@@ -245,7 +246,7 @@ public class DViewBol extends DGridPaneView implements ActionListener {
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_src", "Origen");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "_des", "Destino");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_2D, "b.dist_km", "Distancia km");
-        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_3D, "b.merch_weight", "Peso bruto");
+        columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_DEC_3D, "b.merch_weight", "Peso total");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_CODE_UNT, "u.code", "Unidad peso bruto");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_INT_2B, "b.merch_num", "Mercancías");
         columns[col++] = new DGridColumnView(DGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "_truck", "Autotransporte");

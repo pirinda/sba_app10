@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import sa.lib.db.SDbConsts;
 import sba.gui.prt.DPrtUtils;
 import sba.gui.util.DUtilConsts;
 import sba.lib.DLibConsts;
@@ -798,6 +799,30 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
         
         mbRegistryNew = false;
         mnQueryResultId = DDbConsts.SAVE_OK;
+    }
+
+    @Override
+    public void disable(final DGuiSession session) throws SQLException, Exception {
+        if (!isTemplate()) {
+            throw new Exception(SDbConsts.MSG_REG_DENIED_DISABLE);
+        }
+        else {
+            initQueryMembers();
+            mnQueryResultId = DDbConsts.SAVE_ERROR;
+
+
+            mnFkBolStatusId = DModSysConsts.TS_DPS_ST_ANN;
+            mnFkUserUpdateId = session.getUser().getPkUserId();
+
+            msSql = "UPDATE " + getSqlTable() + " SET " +
+                    "fk_bol_st = " + mnFkBolStatusId + ", " +
+                    "fk_usr_upd = " + mnFkUserUpdateId + ", " +
+                    "ts_usr_upd = NOW() " +
+                    getSqlWhere();
+
+            session.getStatement().execute(msSql);
+            mnQueryResultId = DDbConsts.SAVE_OK;
+        }
     }
 
     @Override

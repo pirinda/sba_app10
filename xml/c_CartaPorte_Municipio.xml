@@ -2408,59 +2408,59 @@
 <Entry id="2406" code="513" name="Santo Domingo Petapa" state="OAX" term_start="2023-11-25" term_end=""/>
 <Entry id="2407" code="514" name="Santo Domingo Roayaga" state="OAX" term_start="2023-11-25" term_end=""/>
 <Entry id="2408" code="515" name="Santo Domingo Tehuantepec" state="OAX" term_start="2023-11-25" term_end=""/>
-<Entry id="" code="000" name="" state="" term_start="1899-12-30" term_end=""/>
-<Entry id="id" code="code" name="name" state="axis" term_start="Ini. vigencia" term_end="Fin. vigencia"/>
-<Entry id="1" code="VL" name="Vehículo ligero de carga (2 llantas en el eje delantero y 2 llantas en el eje trasero)" state="2" term_start="2023-11-25" term_end=""/>
-<Entry id="2" code="C2" name="Camión Unitario (2 llantas en el eje delantero y 4 llantas en el eje trasero)" state="2" term_start="2023-11-25" term_end=""/>
-<Entry id="3" code="C3" name="Camión Unitario (2 llantas en el eje delantero y 6 o 8 llantas en los dos ejes traseros)" state="3" term_start="2023-11-25" term_end=""/>
-<Entry id="4" code="C2R2" name="Camión-Remolque (6 llantas en el camión y 8 llantas en remolque)" state="4" term_start="2023-11-25" term_end=""/>
-<Entry id="5" code="C3R2" name="Camión-Remolque (10 llantas en el camión y 8 llantas en remolque)" state="5" term_start="2023-11-25" term_end=""/>
-<Entry id="6" code="C2R3" name="Camión-Remolque (6 llantas en el camión y 12 llantas en remolque)" state="5" term_start="2023-11-25" term_end=""/>
-<Entry id="7" code="C3R3" name="Camión-Remolque (10 llantas en el camión y 12 llantas en remolque)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="8" code="T2S1" name="Tractocamión Articulado (6 llantas en el tractocamión, 4 llantas en el semirremolque)" state="3" term_start="2023-11-25" term_end=""/>
-<Entry id="9" code="T2S2" name="Tractocamión Articulado (6 llantas en el tractocamión, 8 llantas en el semirremolque)" state="4" term_start="2023-11-25" term_end=""/>
-<Entry id="10" code="T2S3" name="Tractocamión Articulado (6 llantas en el tractocamión, 12 llantas en el semirremolque)" state="5" term_start="2023-11-25" term_end=""/>
-<Entry id="11" code="T3S1" name="Tractocamión Articulado (10 llantas en el tractocamión, 4 llantas en el semirremolque)" state="4" term_start="2023-11-25" term_end=""/>
-<Entry id="12" code="T3S2" name="Tractocamión Articulado (10 llantas en el tractocamión, 8 llantas en el semirremolque)" state="5" term_start="2023-11-25" term_end=""/>
-<Entry id="13" code="T3S3" name="Tractocamión Articulado (10 llantas en el tractocamión, 12 llantas en el semirremolque)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="14" code="T2S1R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" state="5" term_start="2023-11-25" term_end=""/>
-<Entry id="15" code="T2S2R2" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="16" code="T2S1R3" name="Tractocamión Semirremolque-Remolque (6 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="17" code="T3S1R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 8 llantas en el remolque)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="18" code="T3S1R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 4 llantas en el semirremolque y 12 llantas en el remolque)" state="7" term_start="2023-11-25" term_end=""/>
-<Entry id="19" code="T3S2R2" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 8 llantas en el remolque)" state="7" term_start="2023-11-25" term_end=""/>
-<Entry id="20" code="T3S2R3" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 12 llantas en el remolque)" state="8" term_start="2023-11-25" term_end=""/>
-<Entry id="21" code="T3S2R4" name="Tractocamión Semirremolque-Remolque (10 llantas en el tractocamión, 8 llantas en el semirremolque y 16 llantas en el remolque)" state="9" term_start="2023-11-25" term_end=""/>
-<Entry id="22" code="T2S2S2" name="Tractocamión Semirremolque-Semirremolque (6 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" state="6" term_start="2023-11-25" term_end=""/>
-<Entry id="23" code="T3S2S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 8 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" state="7" term_start="2023-11-25" term_end=""/>
-<Entry id="24" code="T3S3S2" name="Tractocamión Semirremolque-Semirremolque (10 llantas en el tractocamión, 12 llantas en el semirremolque delantero y 8 llantas en el semirremolque trasero)" state="8" term_start="2023-11-25" term_end=""/>
-<Entry id="25" code="OTROEVGP" name="Especializado de carga Voluminosa y/o Gran Peso" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="26" code="OTROSG" name="Servicio de Grúas" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="27" code="GPLUTA" name="Grúa de Pluma Tipo A" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="28" code="GPLUTB" name="Grúa de Pluma Tipo B" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="29" code="GPLUTC" name="Grúa de Pluma Tipo C" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="30" code="GPLUTD" name="Grúa de Pluma Tipo D" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="31" code="GPLATA" name="Grúa de Plataforma Tipo A" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="32" code="GPLATB" name="Grúa de Plataforma Tipo B" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="33" code="GPLATC" name="Grúa de Plataforma Tipo C" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="34" code="GPLATD" name="Grúa de Plataforma Tipo D" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="" code="000" name="" state="" term_start="1899-12-30" term_end=""/>
-<Entry id="" code="000" name="" state="" term_start="1899-12-30" term_end=""/>
-<Entry id="" code="000" name="" state="" term_start="1899-12-30" term_end=""/>
-<Entry id="id" code="code" name="name" state="" term_start="Ini. vigencia" term_end="Fin. vigencia"/>
-<Entry id="1" code="CTR001" name="Caballete" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="2" code="CTR002" name="Caja" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="3" code="CTR003" name="Caja Abierta" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="4" code="CTR004" name="Caja Cerrada" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="5" code="CTR005" name="Caja De Recolección Con Cargador Frontal" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="6" code="CTR006" name="Caja Refrigerada" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="7" code="CTR007" name="Caja Seca" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="8" code="CTR008" name="Caja Transferencia" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="9" code="CTR009" name="Cama Baja o Cuello Ganso" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="10" code="CTR010" name="Chasis Portacontenedor" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="11" code="CTR011" name="Convencional De Chasis" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="12" code="CTR012" name="Equipo Especial" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="13" code="CTR013" name="Estacas" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="14" code="CTR014" name="Góndola Madrina" state="" term_start="2023-11-25" term_end=""/>
-<Entry id="15" code="CTR015" name="Grúa Industrial" state="" term_start="2023-11-25" term_end=""/>
+<Entry id="2409" code="516" name="Santo Domingo Teojomulco" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2410" code="517" name="Santo Domingo Tepuxtepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2411" code="518" name="Santo Domingo Tlatayápam" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2412" code="519" name="Santo Domingo Tomaltepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2413" code="520" name="Santo Domingo Tonalá" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2414" code="521" name="Santo Domingo Tonaltepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2415" code="522" name="Santo Domingo Xagacía" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2416" code="523" name="Santo Domingo Yanhuitlán" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2417" code="524" name="Santo Domingo Yodohino" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2418" code="525" name="Santo Domingo Zanatepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2419" code="526" name="Santos Reyes Nopala" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2420" code="527" name="Santos Reyes Pápalo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2421" code="528" name="Santos Reyes Tepejillo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2422" code="529" name="Santos Reyes Yucuná" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2423" code="530" name="Santo Tomás Jalieza" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2424" code="531" name="Santo Tomás Mazaltepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2425" code="532" name="Santo Tomás Ocotepec" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2426" code="533" name="Santo Tomás Tamazulapan" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2427" code="534" name="San Vicente Coatlán" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2428" code="535" name="San Vicente Lachixío" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2429" code="536" name="San Vicente Nuñú" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2430" code="537" name="Silacayoápam" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2431" code="538" name="Sitio de Xitlapehua" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2432" code="539" name="Soledad Etla" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2433" code="540" name="Villa de Tamazulápam del Progreso" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2434" code="541" name="Tanetze de Zaragoza" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2435" code="542" name="Taniche" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2436" code="543" name="Tataltepec de Valdés" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2437" code="544" name="Teococuilco de Marcos Pérez" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2438" code="545" name="Teotitlán de Flores Magón" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2439" code="546" name="Teotitlán del Valle" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2440" code="547" name="Teotongo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2441" code="548" name="Tepelmeme Villa de Morelos" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2442" code="549" name="Tezoatlán de Segura y Luna" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2443" code="550" name="San Jerónimo Tlacochahuaya" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2444" code="551" name="Tlacolula de Matamoros" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2445" code="552" name="Tlacotepec Plumas" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2446" code="553" name="Tlalixtac de Cabrera" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2447" code="554" name="Totontepec Villa de Morelos" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2448" code="555" name="Trinidad Zaachila" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2449" code="556" name="La Trinidad Vista Hermosa" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2450" code="557" name="Unión Hidalgo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2451" code="558" name="Valerio Trujano" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2452" code="559" name="San Juan Bautista Valle Nacional" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2453" code="560" name="Villa Díaz Ordaz" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2454" code="561" name="Yaxe" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2455" code="562" name="Magdalena Yodocono de Porfirio Díaz" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2456" code="563" name="Yogana" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2457" code="564" name="Yutanduchi de Guerrero" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2458" code="565" name="Villa de Zaachila" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2459" code="566" name="San Mateo Yucutindoo" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2460" code="567" name="Zapotitlán Lagunas" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2461" code="568" name="Zapotitlán Palmas" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2462" code="569" name="Santa Inés de Zaragoza" state="OAX" term_start="2023-11-25" term_end=""/>
+<Entry id="2463" code="570" name="Zimatlán de Álvarez" state="OAX" term_start="2023-11-25" term_end=""/>
 </Catalog>

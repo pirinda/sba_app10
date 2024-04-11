@@ -1,4 +1,12 @@
 ================================================================================
+SBA 1.0 037.1
+2024-04-10/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección de catálogo XML c_CartaPorte_Municipio.xml por tener filas incorrectas y filas faltantes.
+2) Permitir actualizar versión del CFDI de la carta porte en plantillas.
+3) Corrección a la eliminación de ubicaciones en cartas porte.
+4) Permitir inhabilitar y eliminar plantillas de cartas porte.
+
+================================================================================
 SBA 1.0 037.0
 2024-04-03/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación del Complemento Carta Porte 3.0.

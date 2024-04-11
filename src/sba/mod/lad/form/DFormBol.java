@@ -223,6 +223,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jlBolTransportType = new javax.swing.JLabel();
         jtfBolTransportType = new javax.swing.JTextField();
         jtfBolVersion = new javax.swing.JTextField();
+        jbBolUpdateVersion = new javax.swing.JButton();
         jpHeaderBol2 = new javax.swing.JPanel();
         jlBolNumber = new javax.swing.JLabel();
         moKeyBolSeries = new sba.lib.gui.bean.DBeanFieldKey();
@@ -709,15 +710,20 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         jtfBolTransportType.setEditable(false);
         jtfBolTransportType.setText("TEXT");
         jtfBolTransportType.setFocusable(false);
-        jtfBolTransportType.setPreferredSize(new java.awt.Dimension(130, 23));
+        jtfBolTransportType.setPreferredSize(new java.awt.Dimension(112, 23));
         jpHeaderBol1.add(jtfBolTransportType);
 
         jtfBolVersion.setEditable(false);
-        jtfBolVersion.setText("TEXT");
+        jtfBolVersion.setText("1.0");
         jtfBolVersion.setToolTipText("Versión");
         jtfBolVersion.setFocusable(false);
-        jtfBolVersion.setPreferredSize(new java.awt.Dimension(40, 23));
+        jtfBolVersion.setPreferredSize(new java.awt.Dimension(30, 23));
         jpHeaderBol1.add(jtfBolVersion);
+
+        jbBolUpdateVersion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sba/gui/img/cmd_std_mov_lft.gif"))); // NOI18N
+        jbBolUpdateVersion.setToolTipText("Actualizar versión");
+        jbBolUpdateVersion.setPreferredSize(new java.awt.Dimension(23, 23));
+        jpHeaderBol1.add(jbBolUpdateVersion);
 
         jpHeaderBol.add(jpHeaderBol1);
 
@@ -2846,6 +2852,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private javax.swing.JButton jbBolNavRestart;
     private javax.swing.JButton jbBolNavStart;
     private javax.swing.JButton jbBolSetIntlTransport;
+    private javax.swing.JButton jbBolUpdateVersion;
     private javax.swing.JButton jbLocAdd;
     private javax.swing.JButton jbLocCancel;
     private javax.swing.JButton jbLocCopy;
@@ -4006,6 +4013,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private void enableBolControls(final boolean start) {
         // BOL:
         
+        jbBolUpdateVersion.setEnabled(!start && isSaveAllowed() && !jtfBolVersion.getText().equals(cfd.ver4.ccp30.DElementCartaPorte.VERSION));
         moKeyBolSeries.setEnabled(!start);
         moDateBolDate.setEnabled(!isBolTemplate());
         
@@ -4146,6 +4154,11 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jbSave.setEnabled((isBolTemplate() || (index + 1 == jtpWizard.getTabCount())) && isSaveAllowed());
         }
     }
+    
+    private void actionPerformedBolUpdateVersion() {
+        jtfBolVersion.setText(cfd.ver4.ccp30.DElementCartaPorte.VERSION);
+        jtfBolVersion.setCaretPosition(0);
+    }
 
     private void actionPerformedBolNavStart() {
         if (canNavStart()) {
@@ -4246,8 +4259,8 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     DDbBolLocation bolLocation = (DDbBolLocation) row;
                     
                     if (bolLocation.isLocationDestiny() && DLibUtils.compareKeys(bolLocation.getSourceBolLocationKey(), bolLocationSelected.getPrimaryKey())) {
-                        miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
-                                + "se usa en la ubicación '" + bolLocation.getBolSortingPos() + ". " + bolLocation.getName() + "'.");
+                        miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getRowName() + "' "
+                                + "se usa en la ubicación '" + bolLocation.getBolSortingPos() + ". " + bolLocation.getRowName() + "'.");
                         can = false;
                         break;
                     }
@@ -4261,13 +4274,13 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
                     
                     for (DDbBolMerchandiseMove bolMerchandiseMove : bolMerchandise.getChildMoves()) {
                         if (bolLocationSelected.isLocationSource() && DLibUtils.compareKeys(bolMerchandiseMove.getSourceLocationKey(), bolLocationSelected.getPrimaryKey())) {
-                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
+                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getRowName() + "' "
                                     + "se usa como origen al transportar la mercancía '" + bolMerchandise.getBolSortingPos() + ". " + bolMerchandise.getDescriptionItem() + "'.");
                             can = false;
                             break merchandises;
                         }
                         else if (bolLocationSelected.isLocationDestiny()&& DLibUtils.compareKeys(bolMerchandiseMove.getDestinyLocationKey(), bolLocationSelected.getPrimaryKey())) {
-                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getName() + "' "
+                            miClient.showMsgBoxWarning("La ubicación seleccionada '" + bolLocationSelected.getBolSortingPos() + ". " + bolLocationSelected.getRowName() + "' "
                                     + "se usa como destino al transportar la mercancía '" + bolMerchandise.getBolSortingPos() + ". " + bolMerchandise.getDescriptionItem() + "'.");
                             can = false;
                             break merchandises;
@@ -7865,6 +7878,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     public void addAllListeners() {
         // BOL
         
+        jbBolUpdateVersion.addActionListener(this);
         jbBolNavStart.addActionListener(this);
         jbBolNavRestart.addActionListener(this);
         jbBolNavPrev.addActionListener(this);
@@ -8015,6 +8029,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     public void removeAllListeners() {
         // BOL
         
+        jbBolUpdateVersion.removeActionListener(this);
         jbBolNavStart.removeActionListener(this);
         jbBolNavRestart.removeActionListener(this);
         jbBolNavPrev.removeActionListener(this);
@@ -8283,6 +8298,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             jtfRegistryKey.setText("");
         }
         else {
+            if (moBol.isTemplate() && moBol.getFkBolStatusId() == DModSysConsts.TS_DPS_ST_ANN) {
+                moBol.setFkBolStatusId(DModSysConsts.TS_DPS_ST_NEW);
+            }
+            
             jtfRegistryKey.setText(DLibUtils.textKey(moBol.getPrimaryKey()));
         }
 
@@ -8624,7 +8643,10 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
             
-            if (button == jbBolNavStart) {
+            if (button == jbBolUpdateVersion) {
+                actionPerformedBolUpdateVersion();
+            }
+            else if (button == jbBolNavStart) {
                 actionPerformedBolNavStart();
             }
             else if (button == jbBolNavRestart) {
