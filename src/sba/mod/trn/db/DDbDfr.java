@@ -259,8 +259,8 @@ public class DDbDfr extends DDbRegistryUser implements DTrnDoc {
             mbSystem;
             */
             //mnFkXmlTypeId; // should be already provided
-            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_VER_CRP_2[0];
-            mnFkXmlSubtypeVersionId = DModSysConsts.TS_XML_STP_VER_CRP_2[1];
+            mnFkXmlSubtypeId = DModSysConsts.TS_XML_STP_VER_CRP_20[0];
+            mnFkXmlSubtypeVersionId = DModSysConsts.TS_XML_STP_VER_CRP_20[1];
             mnFkXmlStatusId = xmlStatus;
             mnFkXmlAddendaTypeId = msDocXmlAddenda.isEmpty() ? DModSysConsts.TS_XML_ADD_TP_NA : bizPartner.getFkXmlAddendaTypeId();
             mnFkXmlSignatureProviderId = DModSysConsts.CS_XSP_NA;

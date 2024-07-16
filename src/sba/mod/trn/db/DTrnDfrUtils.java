@@ -1896,6 +1896,7 @@ public abstract class DTrnDfrUtils {
         return cartaPorte;
     }
     
+    @Deprecated
     private static cfd.ver4.ccp30.DElementCartaPorte createCcp30FromBol(final DGuiSession session, final DDbBol bol, final DDbBizPartner bprEmisor) {
         cfd.ver4.ccp30.DElementCartaPorte cartaPorte = new cfd.ver4.ccp30.DElementCartaPorte();
         
@@ -2136,6 +2137,246 @@ public abstract class DTrnDfrUtils {
         return cartaPorte;
     }
     
+    private static cfd.ver4.ccp31.DElementCartaPorte createCcp31FromBol(final DGuiSession session, final DDbBol bol, final DDbBizPartner bprEmisor) {
+        cfd.ver4.ccp31.DElementCartaPorte cartaPorte = new cfd.ver4.ccp31.DElementCartaPorte();
+        
+        //cartaPorte.getAttVersion().setString(...); // attribute has default value
+        cartaPorte.getAttIdCCP().setString(bol.getBolUuid());
+        
+        if (bol.getIntlTransport().equals(DCfdi40Catalogs.TextoNo)) {
+            cartaPorte.getAttTransInternac().setString(DCfdi40Catalogs.TextoNo);
+        }
+        else {
+            cartaPorte.getAttTransInternac().setString(DCfdi40Catalogs.TextoSí);
+            cartaPorte.getAttEntradaSalidaMerc().setString(bol.getIntlTransportDirection());
+            cartaPorte.getAttViaEntradaSalida().setString((String) session.readField(DModConsts.LS_TPT_TP, new int[] { bol.getFkIntlWayTransportTypeId() }, DDbRegistry.FIELD_CODE));
+            cartaPorte.getAttPaisOrigenDestino().setString((String) session.readField(DModConsts.CS_CTY, new int[] { bol.getFkIntlTransportCountryId()}, DDbRegistry.FIELD_CODE));
+        }
+        
+        if (bol.isIsthmus()) {
+            cartaPorte.getAttRegistroISTMO().setString(DCfdi40Catalogs.TextoSí);
+            cartaPorte.getAttUbicacionPoloOrigen().setString(bol.getIsthmusOrigin());
+            cartaPorte.getAttUbicacionPoloDestino().setString(bol.getIsthmusDestiny());
+        }
+        
+        cartaPorte.getAttTotalDistRec().setDouble(bol.getDistanceKm());
+        
+        // ubicaciones:
+        
+        for (DDbBolLocation bolLocation : bol.getChildLocations()) {
+            cfd.ver4.ccp31.DElementUbicacion ubicacion = new cfd.ver4.ccp31.DElementUbicacion();
+            
+            ubicacion.getAttTipoUbicacion().setString((String) session.readField(DModConsts.LS_LOC_TP, new int[] { bolLocation.getFkLocationTypeId() }, DDbRegistry.FIELD_NAME));
+            ubicacion.getAttIDUbicacion().setString(bolLocation.getLocationId());
+            ubicacion.getAttRFCRemitenteDestinatario().setString(bprEmisor.getFiscalId());
+            ubicacion.getAttNombreRemitenteDestinatario().setString(bprEmisor.getName());
+            
+            ubicacion.getAttNumRegIdTrib().setString("");
+            ubicacion.getAttResidenciaFiscal().setString("");
+            
+            ubicacion.getAttFechaHoraSalidaLlegada().setDatetime(bolLocation.getArrivalDepartureDatetime());
+            
+            ubicacion.getAttDistanciaRecorrida().setDouble(bolLocation.getDistanceKm());
+            
+            ubicacion.getEltDomicilio().getAttCalle().setString(bolLocation.getAddressStreet());
+            ubicacion.getEltDomicilio().getAttNumeroExterior().setString(bolLocation.getAddressNumberExt());
+            ubicacion.getEltDomicilio().getAttNumeroInterior().setString(bolLocation.getAddressNumberInt());
+            ubicacion.getEltDomicilio().getAttReferencia().setString(bolLocation.getAddressReference());
+            ubicacion.getEltDomicilio().getAttCodigoPostal().setString(bolLocation.getAddressZipCode());
+            
+            String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolLocation.getFkAddressCountryId() });
+            ubicacion.getEltDomicilio().getAttPais().setString(countryCode);
+            
+            if (DFormBolUtils.applyStateCatalog(countryCode)) {
+                ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateCode());
+            }
+            else {
+                ubicacion.getEltDomicilio().getAttEstado().setString(bolLocation.getAddressStateName());
+            }
+            
+            if (DFormBolUtils.applyAddressCatalogs(countryCode)) {
+                ubicacion.getEltDomicilio().getAttColonia().setString(bolLocation.getAddressDistrictCode());
+                ubicacion.getEltDomicilio().getAttLocalidad().setString(bolLocation.getAddressLocalityCode());
+                ubicacion.getEltDomicilio().getAttMunicipio().setString(bolLocation.getAddressCountyCode());
+            }
+            else {
+                ubicacion.getEltDomicilio().getAttColonia().setString(bolLocation.getAddressDistrictName());
+                ubicacion.getEltDomicilio().getAttLocalidad().setString(bolLocation.getAddressLocalityName());
+                ubicacion.getEltDomicilio().getAttMunicipio().setString(bolLocation.getAddressCountyName());
+            }
+            
+            cartaPorte.getEltUbicaciones().getEltUbicaciones().add(ubicacion);
+        }
+        
+        // mercancías:
+        
+        DDbUnit unitWeight = (DDbUnit) session.readRegistry(DModConsts.IU_UNT, new int[] { bol.getFkMerchandiseWeightUnitId() });
+        
+        cartaPorte.getEltMercancias().getAttPesoBrutoTotal().setDouble(bol.getMerchandiseWeight());
+        cartaPorte.getEltMercancias().getAttUnidadPeso().setString(unitWeight.getCfdUnitKey());
+        cartaPorte.getEltMercancias().getAttNumTotalMercancias().setInteger(bol.getMerchandiseNumber());
+        
+        if (bol.isMerchandiseInverseLogistics()) {
+            cartaPorte.getEltMercancias().getAttLogisticaInversaRecoleccionDevolucion().setString(DCfdi40Catalogs.TextoSí);
+        }
+        
+        for (DDbBolMerchandise bolMerchandise : bol.getChildMerchandises()) {
+            cfd.ver4.ccp31.DElementMercancia mercancia = new cfd.ver4.ccp31.DElementMercancia();
+            
+            mercancia.getAttBienesTransp().setString(bolMerchandise.getOwnItem().getActualCfdItemKey());
+            mercancia.getAttClaveSTCC().setString(""); // XXX ???
+            mercancia.getAttDescripcion().setString(bolMerchandise.getDescriptionItem());
+            mercancia.getAttCantidad().setDouble(bolMerchandise.getQuantity());
+            mercancia.getAttClaveUnidad().setString(bolMerchandise.getOwnUnit().getCfdUnitKey());
+            mercancia.getAttUnidad().setString(bolMerchandise.getDescriptionUnit());
+            mercancia.getAttDimensiones().setString(bolMerchandise.getDimensions());
+            if (bolMerchandise.isHazardousMaterial()) {
+                if (bolMerchandise.isHazardousMaterialNo()) {
+                    mercancia.getAttMaterialPeligroso().setString(DCfdi40Catalogs.TextoNo);
+                }
+                else if (bolMerchandise.isHazardousMaterialYes()) {
+                    mercancia.getAttMaterialPeligroso().setString(DCfdi40Catalogs.TextoSí);
+                    mercancia.getAttCveMaterialPeligroso().setString(bolMerchandise.getHazardousMaterialCode());
+                    mercancia.getAttEmbalaje().setString(bolMerchandise.getPackagingCode());
+                    mercancia.getAttDescripEmbalaje().setString(bolMerchandise.getPackagingName());
+                }
+            }
+            mercancia.getAttPesoEnKg().setDouble(bolMerchandise.getWeightKg());
+            
+            if (bolMerchandise.getFkCurrencyId() != DModSysConsts.CS_CUR_NA) {
+                mercancia.getAttValorMercancia().setDouble(bolMerchandise.getValue());
+                mercancia.getAttMoneda().setString(session.getSessionCustom().getCurrencyCode(new int[] { bolMerchandise.getFkCurrencyId() }));
+            }
+            
+            mercancia.getAttFraccionArancelaria().setString(bolMerchandise.getTariff());
+            mercancia.getAttUUIDComercioExt().setString("");
+            
+            for (DDbBolMerchandiseMove bolMerchandiseMove : bolMerchandise.getChildMoves()) {
+                cfd.ver4.ccp31.DElementCantidadTransporta cantidadTransporta = new cfd.ver4.ccp31.DElementCantidadTransporta();
+                
+                cantidadTransporta.getAttCantidad().setDouble(bolMerchandiseMove.getQuantity());
+                
+                DDbBolLocation source = bol.getChildLocation(bolMerchandiseMove.getSourceLocationKey());
+                cantidadTransporta.getAttIDOrigen().setString(source != null ? source.getLocationId() : "");
+                
+                DDbBolLocation destiny = bol.getChildLocation(bolMerchandiseMove.getDestinyLocationKey());
+                cantidadTransporta.getAttIDDestino().setString(destiny != null ? destiny.getLocationId() : "");
+                
+                cantidadTransporta.getAttCvesTransporte().setString("");
+                
+                mercancia.getEltCantidadTransportas().add(cantidadTransporta);
+            }
+            
+            if (!bolMerchandise.getImportRequest().isEmpty()) {
+                cfd.ver4.ccp31.DElementDocumentacionAduanera documentacionAduanera = new cfd.ver4.ccp31.DElementDocumentacionAduanera();
+                documentacionAduanera.getAttTipoDocumento().setString(""); // XXX not implemented yet!
+                documentacionAduanera.getAttNumPedimento().setString(bolMerchandise.getImportRequest());
+                documentacionAduanera.getAttIdentDocAduanero().setString("");
+                documentacionAduanera.getAttRFCImpo().setString("");
+                
+                ArrayList<cfd.ver4.ccp31.DElementDocumentacionAduanera> documentacionAduaneras = new ArrayList<>();
+                documentacionAduaneras.add(documentacionAduanera);
+                
+                mercancia.setEltDocumentacionAduaneras(documentacionAduaneras);
+            }
+
+            cartaPorte.getEltMercancias().getEltMercancias().add(mercancia);
+        }
+        
+        DDbBolTruck bolTruck = bol.getChildTrucks().get(0);
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getAttPermSCT().setString(bolTruck.getPermissionTypeCode());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getAttNumPermisoSCT().setString(bolTruck.getPermissionNumber());
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttConfigVehicular().setString(bolTruck.getTransportConfigCode());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPesoBrutoVehicular().setDouble(bolTruck.getWeightGrossTon());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttPlacaVM().setString(bolTruck.getPlate());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltIdentificacionVehicular().getAttAnioModeloVM().setInteger(bolTruck.getModel());
+        
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraRespCivil().setString(bolTruck.getCivilInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaRespCivil().setString(bolTruck.getCivilPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraMedAmbiente().setString(bolTruck.getEnvironmentInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaMedAmbiente().setString(bolTruck.getEnvironmentPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttAseguraCarga().setString(bolTruck.getCargoInsurance());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPolizaCarga().setString(bolTruck.getCargoPolicy());
+        cartaPorte.getEltMercancias().getEltAutotransporte().getEltSeguros().getAttPrimaSeguro().setDouble(bolTruck.getPrime());
+
+        if (!bolTruck.getChildTrailers().isEmpty()) {
+            cfd.ver4.ccp31.DElementRemolques remolques = new cfd.ver4.ccp31.DElementRemolques();
+            
+            for (DDbBolTruckTrailer bolTruckTrailer : bolTruck.getChildTrailers()) {
+                cfd.ver4.ccp31.DElementRemolque remolque = new cfd.ver4.ccp31.DElementRemolque();
+                
+                remolque.getAttSubTipoRem().setString(bolTruckTrailer.getTrailerSubtypeCode());
+                remolque.getAttPlaca().setString(bolTruckTrailer.getPlate());
+                
+                remolques.getEltRemolques().add(remolque);
+            }
+            
+            cartaPorte.getEltMercancias().getEltAutotransporte().setEltRemolques(remolques);
+        }
+
+        // figuras de transporte:
+        
+        for (DDbBolTransportFigure bolTptFigure : bol.getChildTransportFigures()) {
+            cfd.ver4.ccp31.DElementTiposFigura tiposFigura = new cfd.ver4.ccp31.DElementTiposFigura();
+            
+            tiposFigura.getAttTipoFigura().setString((String) session.readField(DModConsts.LS_TPT_FIGURE_TP, new int[] { bolTptFigure.getFkTransportFigureTypeId() }, DDbRegistry.FIELD_CODE));
+            tiposFigura.getAttRFCFigura().setString(bolTptFigure.getFiscalId());
+            tiposFigura.getAttNumLicencia().setString(bolTptFigure.getDriverLicense());
+            tiposFigura.getAttNombreFigura().setString(bolTptFigure.getName());
+            
+            if (bolTptFigure.getFkFigureCountryId() != DModSysConsts.CS_CTY_NA) {
+                String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolTptFigure.getFkFigureCountryId() });
+                tiposFigura.getAttNumRegIdTribFigura().setString(bolTptFigure.getForeignId());
+                tiposFigura.getAttResidenciaFiscalFigura().setString(countryCode);
+            }
+            
+            cfd.ver4.ccp31.DElementDomicilio domicilio = new cfd.ver4.ccp31.DElementDomicilio();
+
+            domicilio.getAttCalle().setString(bolTptFigure.getAddressStreet());
+            domicilio.getAttNumeroExterior().setString(bolTptFigure.getAddressNumberExt());
+            domicilio.getAttNumeroInterior().setString(bolTptFigure.getAddressNumberInt());
+            domicilio.getAttReferencia().setString(bolTptFigure.getAddressReference());
+            domicilio.getAttCodigoPostal().setString(bolTptFigure.getAddressZipCode());
+            
+            String countryCode = session.getSessionCustom().getCountryCode(new int[] { bolTptFigure.getFkAddressCountryId() });
+            domicilio.getAttPais().setString(countryCode);
+            
+            if (DFormBolUtils.applyStateCatalog(countryCode)) {
+                domicilio.getAttEstado().setString(bolTptFigure.getAddressStateCode());
+            }
+            else {
+                domicilio.getAttEstado().setString(bolTptFigure.getAddressStateName());
+            }
+            
+            if (DFormBolUtils.applyAddressCatalogs(countryCode)) {
+                domicilio.getAttColonia().setString(bolTptFigure.getAddressDistrictCode());
+                domicilio.getAttLocalidad().setString(bolTptFigure.getAddressLocalityCode());
+                domicilio.getAttMunicipio().setString(bolTptFigure.getAddressCountyCode());
+            }
+            else {
+                domicilio.getAttColonia().setString(bolTptFigure.getAddressDistrictName());
+                domicilio.getAttLocalidad().setString(bolTptFigure.getAddressLocalityName());
+                domicilio.getAttMunicipio().setString(bolTptFigure.getAddressCountyName());
+            }
+            
+            tiposFigura.setEltDomicilio(domicilio);
+            
+            for (DDbBolTransportFigureTransportPart bolTptFigureTptPart : bolTptFigure.getChildTransportParts()) {
+                cfd.ver4.ccp31.DElementPartesTransporte partesTransporte = new cfd.ver4.ccp31.DElementPartesTransporte();
+                
+                partesTransporte.getAttParteTransporte().setString((String) session.readField(DModConsts.LS_TPT_PART_TP, new int[] { bolTptFigureTptPart.getFkTransportPartTypeId() }, DDbRegistry.FIELD_CODE));
+                
+                tiposFigura.getEltPartesTransporte().add(partesTransporte);
+            }
+            
+            cartaPorte.getEltFiguraTransporte().getEltTiposFigura().add(tiposFigura);
+        }
+        
+        return cartaPorte;
+    }
+    
     public static cfd.ver40.DElementComprobante createCfdi40FromBol(final DGuiSession session, final DDbBol bol, final DGuiEdsSignature signature) throws Exception {
         Date tDate = null;
         Date tUpdateTs = bol.getTsUserUpdate() != null ? bol.getTsUserUpdate() : new Date();
@@ -2281,8 +2522,11 @@ public abstract class DTrnDfrUtils {
             case cfd.ver4.ccp30.DElementCartaPorte.VERSION:
                 cartaPorte = createCcp30FromBol(session, bol, bprEmisor);
                 break;
+            case cfd.ver4.ccp31.DElementCartaPorte.VERSION:
+                cartaPorte = createCcp31FromBol(session, bol, bprEmisor);
+                break;
             default:
-                throw new UnsupportedOperationException("Not supported yet.");  // invalid complement version
+                throw new UnsupportedOperationException("Version '" + bol.getVersion() + "' not supported yet.");  // invalid complement version
         }
         
         cfd.ver40.DElementComplemento complemento = new cfd.ver40.DElementComplemento();
@@ -2597,8 +2841,8 @@ public abstract class DTrnDfrUtils {
         registry.setSystem();
         */
         dfr.setFkXmlTypeId(xmlType);
-        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CCP_2[0]); // bill of lading
-        dfr.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CCP_2[1]); // bill of lading
+        dfr.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CCP_31[0]); // bill of lading
+        dfr.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CCP_31[1]); // bill of lading
         dfr.setFkXmlStatusId(xmlStatus);
         dfr.setFkXmlAddendaTypeId(bizPartner.getFkXmlAddendaTypeId());
         dfr.setFkXmlSignatureProviderId(DModSysConsts.CS_XSP_NA);

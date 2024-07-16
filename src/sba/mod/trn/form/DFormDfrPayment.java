@@ -2718,8 +2718,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             // finish setting up registry:
             
             moRegistry.setFkXmlTypeId(DModSysConsts.TS_XML_TP_CFDI_40);
-            moRegistry.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CRP_2[0]);
-            moRegistry.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CRP_2[1]);
+            moRegistry.setFkXmlSubtypeId(DModSysConsts.TS_XML_STP_VER_CRP_20[0]);
+            moRegistry.setFkXmlSubtypeVersionId(DModSysConsts.TS_XML_STP_VER_CRP_20[1]);
             moRegistry.setFkXmlStatusId(DModSysConsts.TS_XML_ST_PEN);
             
             DDfrMate dfrMate = new DDfrMate();
