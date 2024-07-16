@@ -1031,8 +1031,11 @@ public class DDbBol extends DDbRegistryUser implements DTrnDoc {
                         case cfd.ver4.ccp30.DElementCartaPorte.VERSION:
                             DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_30, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
                             break;
+                        case cfd.ver4.ccp31.DElementCartaPorte.VERSION:
+                            DPrtUtils.exportReportToPdfFile(session, DModConsts.TR_DPS_CFDI_40_CCP_31, new DLadBolPrinting(session, this).createPrintingMapCfdi40(), fileName);
+                            break;
                         default:
-                            throw new UnsupportedOperationException("Not supported yet.");  // invalid complement version
+                            throw new UnsupportedOperationException("Version '" + msVersion + "' not supported yet.");  // invalid complement version
                     }
                     break;
 

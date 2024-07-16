@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 038.0
+2024-07-16/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación del Complemento Carta Porte 3.1.
+
+================================================================================
 SBA 1.0 037.1
 2024-04-10/ Sergio Abraham FLORES GUTIÉRREZ
 1) Corrección de catálogo XML c_CartaPorte_Municipio.xml por tener filas incorrectas y filas faltantes.

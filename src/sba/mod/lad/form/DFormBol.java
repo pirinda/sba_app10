@@ -4013,7 +4013,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     private void enableBolControls(final boolean start) {
         // BOL:
         
-        jbBolUpdateVersion.setEnabled(!start && isSaveAllowed() && !jtfBolVersion.getText().equals(cfd.ver4.ccp30.DElementCartaPorte.VERSION));
+        jbBolUpdateVersion.setEnabled(!start && isSaveAllowed() && !jtfBolVersion.getText().equals(cfd.ver4.ccp31.DElementCartaPorte.VERSION));
         moKeyBolSeries.setEnabled(!start);
         moDateBolDate.setEnabled(!isBolTemplate());
         
@@ -4156,7 +4156,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
     }
     
     private void actionPerformedBolUpdateVersion() {
-        jtfBolVersion.setText(cfd.ver4.ccp30.DElementCartaPorte.VERSION);
+        jtfBolVersion.setText(cfd.ver4.ccp31.DElementCartaPorte.VERSION);
         jtfBolVersion.setCaretPosition(0);
     }
 
@@ -8252,7 +8252,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moBol.isRegistryNew() || manTemplateKey != null) {
             moBol.initPrimaryKey();
             
-            moBol.setVersion(cfd.ver4.ccp30.DElementCartaPorte.VERSION);
+            moBol.setVersion(cfd.ver4.ccp31.DElementCartaPorte.VERSION);
             
             if (isBolTemplate()) {
                 moBol.setTemplate(true);
