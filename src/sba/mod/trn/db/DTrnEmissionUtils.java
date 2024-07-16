@@ -512,8 +512,11 @@ public abstract class DTrnEmissionUtils {
                             case cfd.ver4.ccp30.DElementCartaPorte.VERSION:
                                 DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CCP_30, new DLadBolPrinting(client.getSession(), bol).createPrintingMapCfdi40());
                                 break;
+                            case cfd.ver4.ccp31.DElementCartaPorte.VERSION:
+                                DPrtUtils.printReport(client.getSession(), DModConsts.TR_DPS_CFDI_40_CCP_31, new DLadBolPrinting(client.getSession(), bol).createPrintingMapCfdi40());
+                                break;
                             default:
-                                throw new UnsupportedOperationException("Not supported yet.");  // invalid complement version
+                                throw new UnsupportedOperationException("Version '" + bol.getVersion() + "' not supported yet.");  // invalid complement version
                         }
                         break;
 

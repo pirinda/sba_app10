@@ -645,10 +645,11 @@ public abstract class DModSysConsts {
     
     public static final int[] TS_XML_STP_VER_NA = new int[] { 1, 1 };
     public static final int[] TS_XML_STP_VER_FAC = new int[] { 2, 1 };
-    public static final int[] TS_XML_STP_VER_CRP_1 = new int[] { 3, 1 };
-    public static final int[] TS_XML_STP_VER_CRP_2 = new int[] { 3, 2 };
-    public static final int[] TS_XML_STP_VER_CCP_2 = new int[] { 4, 1 };
-    public static final int[] TS_XML_STP_VER_CCP_3 = new int[] { 4, 2 };
+    public static final int[] TS_XML_STP_VER_CRP_10 = new int[] { 3, 1 };
+    public static final int[] TS_XML_STP_VER_CRP_20 = new int[] { 3, 2 };
+    public static final int[] TS_XML_STP_VER_CCP_20 = new int[] { 4, 1 };
+    public static final int[] TS_XML_STP_VER_CCP_30 = new int[] { 4, 2 };
+    public static final int[] TS_XML_STP_VER_CCP_31 = new int[] { 4, 3 };
 
     public static final int TS_XML_ST_NA = 1;
     public static final int TS_XML_ST_PEN = 2;

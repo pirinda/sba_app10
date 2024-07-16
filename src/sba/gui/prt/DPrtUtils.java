@@ -70,6 +70,9 @@ public class DPrtUtils {
             case DModConsts.TR_DPS_CFDI_40_CCP_30:
                 fileName = "reps/cfdi40_ccp30.jasper";
                 break;
+            case DModConsts.TR_DPS_CFDI_40_CCP_31:
+                fileName = "reps/cfdi40_ccp31.jasper";
+                break;
             case DModConsts.SR_REP_NEW:
                 fileName = "reps/rep_new.jasper";
                 break;

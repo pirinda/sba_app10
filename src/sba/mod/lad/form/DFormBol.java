@@ -26,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import sa.lib.SLibUtils;
 import sba.gui.DGuiClientSessionCustom;
 import sba.gui.cat.DXmlCatalog;
 import sba.gui.cat.DXmlCatalogEntry;
@@ -8179,7 +8178,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
             }
         }
         catch (Exception e) {
-            SLibUtils.showException(this, e);
+            DLibUtils.showException(this, e);
         }
         
         moKeyBolSeries.removeAllItems();
@@ -8237,7 +8236,7 @@ public class DFormBol extends DBeanForm implements ActionListener, ItemListener,
         if (moBol.isRegistryNew() || manTemplateKey != null) {
             moBol.initPrimaryKey();
             
-            moBol.setVersion(cfd.ver4.ccp30.DElementCartaPorte.VERSION);
+            moBol.setVersion(cfd.ver4.ccp31.DElementCartaPorte.VERSION);
             
             if (isBolTemplate()) {
                 moBol.setTemplate(true);
