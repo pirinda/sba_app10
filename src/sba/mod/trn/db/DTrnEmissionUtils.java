@@ -1253,6 +1253,9 @@ public abstract class DTrnEmissionUtils {
 
                             switch (configCompany.getFkDfrEmsTypeId()) {
                                 case DModSysConsts.CS_EMS_TP_OWN:
+                                    ///// TESTING CODE, REMOVE ASAP! /////
+                                    properties.setProperty("mail.smtp.auth", "true");
+                                    ///// TESTING CODE, REMOVE ASAP! /////
                                     if (isSmtpSsl) {
                                         properties.setProperty("mail.smtp.ssl.enable", "true");
                                     }

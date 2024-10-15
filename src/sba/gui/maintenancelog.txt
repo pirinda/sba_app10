@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 038.1
+2024-10-15/ Sergio Abraham FLORES GUTIÉRREZ
+1) Habilitación de la autenticación de la conexión al servidor de correo para la opción de servicio de correo propio.
+
+================================================================================
 SBA 1.0 038.0
 2024-07-16/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación del Complemento Carta Porte 3.1.
