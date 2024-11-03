@@ -16,6 +16,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import sba.lib.DLibConsts;
 import sba.lib.DLibTimeUtils;
 import sba.lib.DLibUtils;
@@ -398,8 +399,9 @@ public class DFormDpsCancelling extends DBeanForm implements ItemListener {
         DGuiValidation validation = moFields.validateFields();
         
         if (validation.isValid()) {
-            if (mbDisableAndCancelAllowed && moRadAnnulActionDisable.isSelected()) {
-                validation.setMessage("¿Está seguro que sólo desea anular el comprobante, pero NO cancelarlo ante la autoridad (SAT)?");
+            if (mbDisableAndCancelAllowed && moRadAnnulActionDisable.isSelected() &&
+                    miClient.showMsgBoxConfirm("¿Está seguro que sólo desea anular el comprobante, pero NO cancelarlo ante la autoridad (SAT)?") != JOptionPane.YES_OPTION) {
+                validation.setMessage("Favor de revisar sus preferencias de cancelación.");
             }
         }
 

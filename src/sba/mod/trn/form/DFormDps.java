@@ -116,6 +116,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private DDialogSelectDpsSeries moDialogSelectDpsSeries;
     private DDialogNoteShow moDialogNoteShow;
     private DDialogDpsDiscount moDialogDpsDiscount;
+    private DDialogDpsItemPriceTypePicker moDialogDpsItemPriceTypePicker;
     private DDialogDpsDependentDocsShow moDialogDpsDependentDocsShow;
     private DDialogDpsAdjusted moDialogDpsAdjustedForMoney;
     private DDialogDpsAdjusted moDialogDpsAdjustedForStock;
@@ -135,6 +136,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private int mnCompanyIdentityType;
     private int mnBizPartnerIdentityType;
     private int mnIogCategory;
+    private int mnDpsItemPriceType;
     private int mnBizPartnerItemPriceType;
     private int[] manAdjustmentClassMoneyKey;
     private int[] manAdjustmentClassStockKey;
@@ -357,6 +359,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jPanel52 = new javax.swing.JPanel();
         jlTotalQuantity = new javax.swing.JLabel();
         jtfTotalQuantity = new javax.swing.JTextField();
+        jtfEffectiveItemPriceType = new javax.swing.JTextField();
+        jbDpsItemPriceType = new javax.swing.JButton();
         jpDocTotal = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -1033,21 +1037,21 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfOwnBranch.setText("TEXT");
         jtfOwnBranch.setToolTipText(DUtilConsts.TXT_BRANCH);
         jtfOwnBranch.setFocusable(false);
-        jtfOwnBranch.setPreferredSize(new java.awt.Dimension(50, 23));
+        jtfOwnBranch.setPreferredSize(new java.awt.Dimension(60, 23));
         jPanel53.add(jtfOwnBranch);
 
         jtfBranchWarehose.setEditable(false);
         jtfBranchWarehose.setText("TEXT");
         jtfBranchWarehose.setToolTipText(DUtilConsts.TXT_BRANCH_WAH);
         jtfBranchWarehose.setFocusable(false);
-        jtfBranchWarehose.setPreferredSize(new java.awt.Dimension(50, 23));
+        jtfBranchWarehose.setPreferredSize(new java.awt.Dimension(55, 23));
         jPanel53.add(jtfBranchWarehose);
 
         jtfTerminal.setEditable(false);
         jtfTerminal.setText("TEXT");
         jtfTerminal.setToolTipText("Terminal de captura del documento");
         jtfTerminal.setFocusable(false);
-        jtfTerminal.setPreferredSize(new java.awt.Dimension(40, 23));
+        jtfTerminal.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanel53.add(jtfTerminal);
 
         jpDocInfo2.add(jPanel53);
@@ -1062,8 +1066,20 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jtfTotalQuantity.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfTotalQuantity.setText("0");
         jtfTotalQuantity.setFocusable(false);
-        jtfTotalQuantity.setPreferredSize(new java.awt.Dimension(105, 23));
+        jtfTotalQuantity.setPreferredSize(new java.awt.Dimension(80, 23));
         jPanel52.add(jtfTotalQuantity);
+
+        jtfEffectiveItemPriceType.setEditable(false);
+        jtfEffectiveItemPriceType.setText("TEXT");
+        jtfEffectiveItemPriceType.setToolTipText("Tipo de precios");
+        jtfEffectiveItemPriceType.setFocusable(false);
+        jtfEffectiveItemPriceType.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel52.add(jtfEffectiveItemPriceType);
+
+        jbDpsItemPriceType.setText("...");
+        jbDpsItemPriceType.setToolTipText("Seleccionar tipo de precios");
+        jbDpsItemPriceType.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel52.add(jbDpsItemPriceType);
 
         jpDocInfo2.add(jPanel52);
 
@@ -1376,6 +1392,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         moDialogSelectDpsSeries = new DDialogSelectDpsSeries(miClient, mnFormType, mnFormSubtype);
         moDialogNoteShow = new DDialogNoteShow(miClient);
         moDialogDpsDiscount = new DDialogDpsDiscount(miClient);
+        moDialogDpsItemPriceTypePicker = new DDialogDpsItemPriceTypePicker(miClient);
 
         if (mbIsDocument || mbIsAdjustment) {
             moDialogLot = new DDialogLot(miClient, mnFormType, mnFormSubtype);
@@ -1706,6 +1723,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         return true;
     }
     
+    private int getEffectiveItemPriceType() {
+        return mnDpsItemPriceType != 0 ? mnDpsItemPriceType : mnBizPartnerItemPriceType;
+    }
+    
     private int getDocumentTabbedPaneIndex(final JComponent component) {
         int index = -1;
         
@@ -1839,6 +1860,23 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             if (mbIsAdjustment) {
                 moKeyCurrency.setEnabled(false);
             }
+        }
+    }
+    
+    private void updateRowsSalesPrices() {
+        if (mnFormSubtype == DModSysConsts.TS_DPS_CT_SAL && !moRegistry.getChildRows().isEmpty()) {
+            for (DDbDpsRow row : moRegistry.getChildRows()) {
+                if (!row.isDeleted()) {
+                    DDbItem item = (DDbItem) miClient.getSession().readRegistry(DModConsts.IU_ITM, new int[] { row.getFkRowItemId() });
+                    double price = moDecExchangeRate.getValue() == 0 ? 0 : DTrnUtils.getItemSalesPrice(miClient.getSession(), item, moBizPartner.getPrimaryKey(), moKeyPaymentType.getValue()[0], getEffectiveItemPriceType(), mdBizPartnerDiscountPercentage) / moDecExchangeRate.getValue();
+                    row.setPriceUnitaryCy(price);
+                }
+            }
+            
+            computeTotal();
+            
+            moGridDpsRows.renderGridRows();
+            moGridDpsRows.setSelectedGridRow(0);
         }
     }
     
@@ -2244,7 +2282,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                     prices = DTrnUtils.getItemLastPrices(miClient.getSession(), mnFormSubtype, moKeyCurrency.getValue(), moItem.getPrimaryKey(), moBizPartner.getPrimaryKey());
                     break;
                 case DModSysConsts.TS_DPS_CT_SAL:
-                    price = moDecExchangeRate.getValue() == 0 ? 0 : DTrnUtils.getItemSalesPrice(miClient.getSession(), moItem, moBizPartner.getPrimaryKey(), moKeyPaymentType.getValue()[0], mnBizPartnerItemPriceType, mdBizPartnerDiscountPercentage) / moDecExchangeRate.getValue();
+                    price = moDecExchangeRate.getValue() == 0 ? 0 : DTrnUtils.getItemSalesPrice(miClient.getSession(), moItem, moBizPartner.getPrimaryKey(), moKeyPaymentType.getValue()[0], getEffectiveItemPriceType(), mdBizPartnerDiscountPercentage) / moDecExchangeRate.getValue();
                     prices = new double[] { price, 0, 0 };
                     break;
                 default:
@@ -2321,7 +2359,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     }
     
     private DDbDpsRow createDpsRow() {
-        double taxRate = 0;
         double qty = moDecRowQuantity.getValue();
         double prcUnt = moDecRowPriceUnitary.getValue();
         double discDoc = moDecRowDiscountDoc.getValue();
@@ -2336,9 +2373,10 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
                 moDateDate.getValue());
 
         if (moBoolRowTaxInput.getValue()) {
-            // Subtract taxes:
+            // Price include taxes, so subtract taxes!:
 
-            taxRate = DTrnUtils.computeTaxRate(taxGroupConfigRow, mnFormSubtype);
+            double taxRate = DTrnUtils.computeTaxRate(taxGroupConfigRow, mnFormSubtype);
+            
             prcUnt = DTrnUtils.computePrice(prcUnt, taxRate);
             discDoc = DTrnUtils.computePrice(discDoc, taxRate);
         }
@@ -2857,6 +2895,30 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             DLibUtils.showException(this, e);
         }
     }
+    
+    private void actionPerformedDpsItemPriceType() {
+        moDialogDpsItemPriceTypePicker.resetForm();
+        moDialogDpsItemPriceTypePicker.setValue(DDialogDpsItemPriceTypePicker.PARAM_EFF_ITM_PRC_TP, getEffectiveItemPriceType());
+        moDialogDpsItemPriceTypePicker.setVisible(true);
+        
+        if (moDialogDpsItemPriceTypePicker.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
+            int itemPriceType = (int) moDialogDpsItemPriceTypePicker.getValue(DModConsts.MS_ITM_PRC_TP);
+            
+            if (itemPriceType == 0) {
+                itemPriceType = mnBizPartnerItemPriceType;
+            }
+            
+            jtfEffectiveItemPriceType.setText((String) miClient.getSession().readField(DModConsts.MS_ITM_PRC_TP, new int[] { itemPriceType }, DDbRegistry.FIELD_CODE));
+            jtfEffectiveItemPriceType.setCaretPosition(0);
+            
+            mnDpsItemPriceType = itemPriceType == mnBizPartnerItemPriceType ? 0 : itemPriceType; // if picked item price type is the same as business partner's, clear DPS's!
+            
+            moDialogFindItem.setValue(DModSysConsts.PARAM_ITM_PRC_TP, getEffectiveItemPriceType());
+            moDialogFindItem.reloadItems();
+            
+            updateRowsSalesPrices();
+        }
+    }
 
     private void actionPerformedLaunchCalc() {
         DLibUtils.launchCalculator();
@@ -3289,8 +3351,12 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
             mbReloadItemsOnFind = false;
 
+            mnDpsItemPriceType = 0;
             mnBizPartnerItemPriceType = 0;
             mdBizPartnerDiscountPercentage = 0;
+            
+            jtfEffectiveItemPriceType.setText("");
+            jbDpsItemPriceType.setEnabled(false);
         }
         else {
             moBizPartner = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, moKeyBizPartner.getValue());
@@ -3369,13 +3435,25 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             mbReloadItemsOnFind = true;
 
             if (mnFormSubtype == DModSysConsts.TS_DPS_CT_PUR) {
+                mnDpsItemPriceType = 0;
                 mnBizPartnerItemPriceType = 0;
                 mdBizPartnerDiscountPercentage = 0;
+                
+                jtfEffectiveItemPriceType.setText("");
+                jbDpsItemPriceType.setEnabled(false);
             }
             else {
                 DDbCustomerItemPriceType itemPriceType = DTrnUtils.getItemPriceType(miClient.getSession(), moBizPartner.getPrimaryKey());
+                mnDpsItemPriceType = 0;
                 mnBizPartnerItemPriceType = itemPriceType.getFkItemPriceTypeId();
                 mdBizPartnerDiscountPercentage = itemPriceType.getDiscountPercentage();
+                
+                jtfEffectiveItemPriceType.setText((String) miClient.getSession().readField(DModConsts.MS_ITM_PRC_TP, new int[] { mnBizPartnerItemPriceType }, DDbRegistry.FIELD_CODE));
+                jtfEffectiveItemPriceType.setCaretPosition(0);
+                
+                jbDpsItemPriceType.setEnabled(mbCanChangePrice || mbCanChangePricePos);
+                
+                moDialogDpsItemPriceTypePicker.setValue(DDialogDpsItemPriceTypePicker.PARAM_BPR_ITM_PRC_TP, mnBizPartnerItemPriceType);
             }
         }
 
@@ -3538,6 +3616,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JButton jbBranchAddressOfficialView;
     private javax.swing.JButton jbDfrCfdRelationsEdit;
     private javax.swing.JButton jbDiscountDocSet;
+    private javax.swing.JButton jbDpsItemPriceType;
     private javax.swing.JButton jbExchangeRatePick;
     private javax.swing.JButton jbFind;
     private javax.swing.JButton jbRowAdd;
@@ -3635,6 +3714,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private javax.swing.JTextField jtfDfrVersion;
     private javax.swing.JTextField jtfDocStatus;
     private javax.swing.JTextField jtfDocType;
+    private javax.swing.JTextField jtfEffectiveItemPriceType;
     private javax.swing.JTextField jtfIdentityType;
     private javax.swing.JTextField jtfOwnBranch;
     private javax.swing.JTextField jtfRowCfdItemKey;
@@ -3707,6 +3787,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbRowClear.addActionListener(this);
         jbRowAdd.addActionListener(this);
         jbDiscountDocSet.addActionListener(this);
+        jbDpsItemPriceType.addActionListener(this);
         mjButtonLaunchCalc.addActionListener(this);
         mjButtonEditItem.addActionListener(this);
         mjButtonShowRowNote.addActionListener(this);
@@ -3755,6 +3836,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         jbRowClear.removeActionListener(this);
         jbRowAdd.removeActionListener(this);
         jbDiscountDocSet.removeActionListener(this);
+        jbDpsItemPriceType.removeActionListener(this);
         mjButtonLaunchCalc.removeActionListener(this);
         mjButtonEditItem.removeActionListener(this);
         mjButtonShowRowNote.removeActionListener(this);
@@ -3926,6 +4008,18 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         moKeyBizPartner.setValue(moRegistry.getBizPartnerKey());
         itemStateChangedBizPartner();
+        
+        int itemPriceType = moRegistry.getFkItemPriceTypeId_n();
+        
+        if (itemPriceType != 0 && itemPriceType != mnBizPartnerItemPriceType) {
+            mnDpsItemPriceType = itemPriceType;
+            
+            jtfEffectiveItemPriceType.setText((String) miClient.getSession().readField(DModConsts.MS_ITM_PRC_TP, new int[] { mnDpsItemPriceType }, DDbRegistry.FIELD_CODE));
+            jtfEffectiveItemPriceType.setCaretPosition(0);
+            
+            moDialogFindItem.setValue(DModSysConsts.PARAM_ITM_PRC_TP, mnDpsItemPriceType);
+            moDialogFindItem.reloadItems();
+        }
         
         if (enableDfrFields) {
             moKeyDfrReceiverTaxRegime.setValue(new int[] { DLibUtils.parseInt(moRegistry.getXtaDfrMate().getReceiverTaxRegime()) }); // id = code
@@ -4155,6 +4249,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         registry.setFkBizPartnerBizPartnerId(moKeyBranchAddress.getValue()[0]);
         registry.setFkBizPartnerBranchId(moKeyBranchAddress.getValue()[1]);
         registry.setFkBizPartnerAddressId(moKeyBranchAddress.getValue()[2]);
+        registry.setFkItemPriceTypeId_n(mnDpsItemPriceType);
         registry.setFkAgentId_n(!moKeyAgent.isEnabled() ? 0 : moKeyAgent.getValue()[0]);
         //registry.setFkBookkeepingYearId_n(?);
         //registry.setFkBookkeepingNumberId_n(?);
@@ -4519,6 +4614,9 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             }
             else if (button == jbDiscountDocSet) {
                 actionPerformedDiscountDocSet();
+            }
+            else if (button == jbDpsItemPriceType) {
+                actionPerformedDpsItemPriceType();
             }
             else if (button == mjButtonLaunchCalc) {
                 actionPerformedLaunchCalc();

@@ -1,4 +1,10 @@
 ================================================================================
+SBA 1.0 039.0
+2024-11-03/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de funcionalidad de elección de tipo de precios al capturar documentos de ventas.
+2) Corrección a la validación de la forma de captura de cancelación de DPS cuando se opta solamente por cancelar en el sistema.
+
+================================================================================
 SBA 1.0 038.1
 2024-10-15/ Sergio Abraham FLORES GUTIÉRREZ
 1) Habilitación de la autenticación de la conexión al servidor de correo para la opción de servicio de correo propio.

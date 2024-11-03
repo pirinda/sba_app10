@@ -106,6 +106,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     protected int mnFkBizPartnerBizPartnerId;
     protected int mnFkBizPartnerBranchId;
     protected int mnFkBizPartnerAddressId;
+    protected int mnFkItemPriceTypeId_n;
     protected int mnFkAgentId_n;
     protected int mnFkBookkeepingYearId_n;
     protected int mnFkBookkeepingNumberId_n;
@@ -1003,6 +1004,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     public void setFkBizPartnerBizPartnerId(int n) { mnFkBizPartnerBizPartnerId = n; }
     public void setFkBizPartnerBranchId(int n) { mnFkBizPartnerBranchId = n; }
     public void setFkBizPartnerAddressId(int n) { mnFkBizPartnerAddressId = n; }
+    public void setFkItemPriceTypeId_n(int n) { mnFkItemPriceTypeId_n = n; }
     public void setFkAgentId_n(int n) { mnFkAgentId_n = n; }
     public void setFkBookkeepingYearId_n(int n) { mnFkBookkeepingYearId_n = n; }
     public void setFkBookkeepingNumberId_n(int n) { mnFkBookkeepingNumberId_n = n; }
@@ -1073,6 +1075,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
     public int getFkBizPartnerBizPartnerId() { return mnFkBizPartnerBizPartnerId; }
     public int getFkBizPartnerBranchId() { return mnFkBizPartnerBranchId; }
     public int getFkBizPartnerAddressId() { return mnFkBizPartnerAddressId; }
+    public int getFkItemPriceTypeId_n() { return mnFkItemPriceTypeId_n; }
     public int getFkAgentId_n() { return mnFkAgentId_n; }
     public int getFkBookkeepingYearId_n() { return mnFkBookkeepingYearId_n; }
     public int getFkBookkeepingNumberId_n() { return mnFkBookkeepingNumberId_n; }
@@ -1239,6 +1242,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         mnFkBizPartnerBizPartnerId = 0;
         mnFkBizPartnerBranchId = 0;
         mnFkBizPartnerAddressId = 0;
+        mnFkItemPriceTypeId_n = 0;
         mnFkAgentId_n = 0;
         mnFkBookkeepingYearId_n = 0;
         mnFkBookkeepingNumberId_n = 0;
@@ -1369,6 +1373,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
             mnFkBizPartnerBizPartnerId = resultSet.getInt("fk_bpr_bpr");
             mnFkBizPartnerBranchId = resultSet.getInt("fk_bpr_bra");
             mnFkBizPartnerAddressId = resultSet.getInt("fk_bpr_add");
+            mnFkItemPriceTypeId_n = resultSet.getInt("fk_itm_prc_tp_n");
             mnFkAgentId_n = resultSet.getInt("fk_agt_n");
             mnFkBookkeepingYearId_n = resultSet.getInt("fk_bkk_yer_n");
             mnFkBookkeepingNumberId_n = resultSet.getInt("fk_bkk_num_n");
@@ -1534,6 +1539,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     mnFkBizPartnerBizPartnerId + ", " +
                     mnFkBizPartnerBranchId + ", " +
                     mnFkBizPartnerAddressId + ", " +
+                    (mnFkItemPriceTypeId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPriceTypeId_n) + ", " + 
                     (mnFkAgentId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAgentId_n) + ", " +
                     (mnFkBookkeepingYearId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBookkeepingYearId_n) + ", " +
                     (mnFkBookkeepingNumberId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBookkeepingNumberId_n) + ", " +
@@ -1613,6 +1619,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
                     "fk_bpr_bpr = " + mnFkBizPartnerBizPartnerId + ", " +
                     "fk_bpr_bra = " + mnFkBizPartnerBranchId + ", " +
                     "fk_bpr_add = " + mnFkBizPartnerAddressId + ", " +
+                    "fk_itm_prc_tp_n = " + (mnFkItemPriceTypeId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkItemPriceTypeId_n) + ", " +
                     "fk_agt_n = " + (mnFkAgentId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkAgentId_n) + ", " +
                     "fk_bkk_yer_n = " + (mnFkBookkeepingYearId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBookkeepingYearId_n) + ", " +
                     "fk_bkk_num_n = " + (mnFkBookkeepingNumberId_n == DLibConsts.UNDEFINED ? "NULL" : "" + mnFkBookkeepingNumberId_n) + ", " +
@@ -1727,6 +1734,7 @@ public class DDbDps extends DDbRegistryUser implements DTrnDoc {
         registry.setFkBizPartnerBizPartnerId(this.getFkBizPartnerBizPartnerId());
         registry.setFkBizPartnerBranchId(this.getFkBizPartnerBranchId());
         registry.setFkBizPartnerAddressId(this.getFkBizPartnerAddressId());
+        registry.setFkItemPriceTypeId_n(this.getFkItemPriceTypeId_n());
         registry.setFkAgentId_n(this.getFkAgentId_n());
         registry.setFkBookkeepingYearId_n(this.getFkBookkeepingYearId_n());
         registry.setFkBookkeepingNumberId_n(this.getFkBookkeepingNumberId_n());
