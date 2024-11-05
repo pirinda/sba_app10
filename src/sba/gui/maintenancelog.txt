@@ -1,4 +1,9 @@
 ================================================================================
+SBA 1.0 039.1
+2024-11-05/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección a la habilitación del campo forma de pago para CFDI factura en POS.
+
+================================================================================
 SBA 1.0 039.0
 2024-11-03/ Sergio Abraham FLORES GUTIÉRREZ
 1) Implementación de funcionalidad de elección de tipo de precios al capturar documentos de ventas.

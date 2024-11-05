@@ -3542,7 +3542,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
             moIntCreditDays.setEnabled(!mbIsPosModule && isCredit);
             moDateCredit.setEnabled(!mbIsPosModule && isCredit);
             moKeyDfrMethodOfPayment.setEnabled(false); // not enabled allways
-            moKeyModeOfPaymentType.setEnabled(!mbIsPosModule && enableCfdiFields && isCash);
+            moKeyModeOfPaymentType.setEnabled(enableCfdiFields && isCash);
 
             moIntCreditDays.setValue(isCash ? 0 : moBizPartnerConfig.getActualCreditDays());
             moDateCredit.setValue(moDateDate.getValue());
