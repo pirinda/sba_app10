@@ -21,6 +21,7 @@ import sba.mod.DModConsts;
 import sba.mod.DModSysConsts;
 import sba.mod.bpr.db.DDbBizPartner;
 import sba.mod.bpr.db.DDbBizPartnerConfig;
+import sba.mod.cfg.db.DDbConfigBranch;
 import sba.mod.cfg.db.DDbConfigCompany;
 import sba.mod.cfg.db.DDbLock;
 import sba.mod.itm.db.DDbItem;
@@ -344,15 +345,26 @@ public class DDbDpsTypeChange extends DDbRegistryUser {
             DDbBizPartner bizPartner = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { dps.getFkBizPartnerBizPartnerId() });
             DDbBizPartnerConfig bizPartnerConfig = bizPartner.getChildConfig(DTrnUtils.getBizPartnerClassByDpsCategory(dps.getFkDpsCategoryId()));
             
+            DDbBizPartner issuer;
+            DDbConfigBranch configBranch = (DDbConfigBranch) session.readRegistry(DModConsts.CU_CFG_BRA, dps.getCompanyBranchKey());
+        
+            if (configBranch.getFkBizPartnerDpsSignatureId_n() == 0) {
+                issuer = ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner();
+            }
+            else {
+                issuer = (DDbBizPartner) session.readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+            }
+            
             if (dps.getXtaDfrMate() == null) {
                 dps.setXtaDfrMate(new DDfrMate());
             }
             
+            dps.getXtaDfrMate().setPlaceOfIssue(issuer.getActualAddressFiscal());
             dps.getXtaDfrMate().setMethodOfPayment(xmlCatalogMethodOfPayment.getCode(dps.getCreditDays() == 0 ? DModSysConsts.TS_XML_TP_PAY_PUE : DModSysConsts.TS_XML_TP_PAY_PPD));
             dps.setFkModeOfPaymentTypeId(dps.getCreditDays() == 0 ? DModSysConsts.FS_MOP_TP_NA : DModSysConsts.FS_MOP_TP_TO_DEF);
             dps.getXtaDfrMate().setPaymentTerms(DTrnDfrUtils.composeCfdiPaymentTerms(dps.getFkPaymentTypeId(), dps.getCreditDays()));
             dps.getXtaDfrMate().setConfirmation("");
-            dps.getXtaDfrMate().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { ((DDbConfigCompany) session.getConfigCompany()).getChildBizPartner().getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
+            dps.getXtaDfrMate().setIssuerTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { issuer.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
             dps.getXtaDfrMate().setReceiverTaxRegime((String) session.readField(DModConsts.CS_TAX_REG, new int[] { bizPartner.getFkTaxRegimeId() }, DDbRegistry.FIELD_CODE));
             dps.getXtaDfrMate().setReceiverFiscalAddress(bizPartner.getActualAddressFiscal());
             dps.getXtaDfrMate().setCfdUsage(bizPartnerConfig.getActualCfdUsage());

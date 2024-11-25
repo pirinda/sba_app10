@@ -32,8 +32,8 @@ public class DDfrMate {
     
     private void reset() {
         msCfdType = "";
-        msPlaceOfIssue = "";
         msVersion = "";
+        msPlaceOfIssue = "";
         msMethodOfPayment = "";
         msPaymentTerms = "";
         msConfirmation = "";
@@ -48,8 +48,8 @@ public class DDfrMate {
     }
     
     public void setCfdType(String s) { msCfdType = s; }
-    public void setPlaceOfIssue(String s) { msPlaceOfIssue = s; }
     public void setVersion(String s) { msVersion = s; }
+    public void setPlaceOfIssue(String s) { msPlaceOfIssue = s; }
     public void setMethodOfPayment(String s) { msMethodOfPayment = s; }
     public void setPaymentTerms(String s) { msPaymentTerms = s; }
     public void setConfirmation(String s) { msConfirmation = s; }

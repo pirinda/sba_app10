@@ -96,7 +96,7 @@ import sba.mod.trn.db.DDbDpsSeries;
 public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener {
 
     public static final String APP_NAME = "SBA 1.0";
-    public static final String APP_RELEASE = "SBA 1.0 039.1"; // release date: 2024-11-05
+    public static final String APP_RELEASE = "SBA 1.0 039.3"; // release date: 2024-11-24
     public static final String APP_COPYRIGHT = "Copyright © 2011-2024 Sergio Abraham Flores Gutiérrez";
     public static final String APP_PROVIDER = "https://sites.google.com/site/iscsergioflores";
 
@@ -200,6 +200,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jbSessionSettings = new javax.swing.JButton();
         jtfUser = new javax.swing.JTextField();
         jtfUserTs = new javax.swing.JTextField();
+        jtfSessionCompanyMode = new javax.swing.JTextField();
         jtfTerminal = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jlAppRelease = new javax.swing.JLabel();
@@ -459,6 +460,15 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtfUserTs.setOpaque(false);
         jtfUserTs.setPreferredSize(new java.awt.Dimension(150, 20));
         jpStatusBar1.add(jtfUserTs);
+
+        jtfSessionCompanyMode.setEditable(false);
+        jtfSessionCompanyMode.setForeground(java.awt.Color.white);
+        jtfSessionCompanyMode.setText("TEXT");
+        jtfSessionCompanyMode.setToolTipText("Modo");
+        jtfSessionCompanyMode.setFocusable(false);
+        jtfSessionCompanyMode.setOpaque(false);
+        jtfSessionCompanyMode.setPreferredSize(new java.awt.Dimension(50, 20));
+        jpStatusBar1.add(jtfSessionCompanyMode);
 
         jtfTerminal.setEditable(false);
         jtfTerminal.setForeground(java.awt.Color.white);
@@ -800,7 +810,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         validate();
     }
 
-    private void renderClientSession(DGuiClientSessionCustom clientSession) {
+    private void updateAndRenderClientSession(DGuiClientSessionCustom clientSession) {
         DDbDpsSeries series = null;
 
         if (clientSession == null) {
@@ -810,6 +820,9 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
             jtfSessionBranchDpsSeries.setText("");
         }
         else {
+            DDbConfigBranch configBranch = (DDbConfigBranch) moSession.readRegistry(DModConsts.CU_CFG_BRA, clientSession.getBranchKey());
+            moSession.setConfigBranch(configBranch);
+            
             jtfSessionBranch.setText(clientSession.getBranchKey() == null ? "" : (String) moSession.readField(DModConsts.BU_BRA, clientSession.getBranchKey(), DDbRegistry.FIELD_CODE));
             jtfSessionBranchCash.setText(clientSession.getBranchCashKey() == null ? "" : (String) moSession.readField(DModConsts.CU_CSH, clientSession.getBranchCashKey(), DDbRegistry.FIELD_CODE));
             jtfSessionBranchWarehouse.setText(clientSession.getBranchWarehouseKey() == null ? "" : (String) moSession.readField(DModConsts.CU_WAH, clientSession.getBranchWarehouseKey(), DDbRegistry.FIELD_CODE));
@@ -905,7 +918,8 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         jtfWorkingDate.setText("");
         jtfUser.setText("");
         jtfUserTs.setText("");
-        renderClientSession(null);
+        jtfSessionCompanyMode.setText("");
+        updateAndRenderClientSession(null);
 
         jmFile.setEnabled(false);
         jmView.setEnabled(false);
@@ -1041,6 +1055,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 jtfWorkingDate.setText(DLibUtils.DateFormatDate.format(moSession.getWorkingDate()));
                 jtfUser.setText(user.getName());
                 jtfUserTs.setText(DLibUtils.DateFormatDatetimeTimeZone.format(date));
+                jtfSessionCompanyMode.setText(configCompany.isDevelopment() ? "DEV" : "STD");
 
                 jmFile.setEnabled(true);
                 jmView.setEnabled(true);
@@ -1158,7 +1173,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                 moDialogUserSession.setRegistry((DDbUser) moSession.getUser());
 
                 if (!moSession.getUser().showUserSessionConfigOnLogin()) {
-                    renderClientSession((DGuiClientSessionCustom) moSession.getSessionCustom());
+                    updateAndRenderClientSession((DGuiClientSessionCustom) moSession.getSessionCustom());
                 }
                 else {
                     moDialogUserSession.setVisible(true);
@@ -1167,7 +1182,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
                         actionFileCloseSession();
                     }
                     else {
-                        renderClientSession(moDialogUserSession.getClientSession());
+                        updateAndRenderClientSession(moDialogUserSession.getClientSession());
                     }
                 }
 
@@ -1216,7 +1231,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
         moDialogUserSession.setVisible(true);
 
         if (moDialogUserSession.getFormResult() == DGuiConsts.FORM_RESULT_OK) {
-            renderClientSession(moDialogUserSession.getClientSession());
+            updateAndRenderClientSession(moDialogUserSession.getClientSession());
         }
     }
 
@@ -1385,6 +1400,7 @@ public class DGuiClientApp extends JFrame implements DGuiClient, ActionListener 
     private javax.swing.JTextField jtfSessionBranchCash;
     private javax.swing.JTextField jtfSessionBranchDpsSeries;
     private javax.swing.JTextField jtfSessionBranchWarehouse;
+    private javax.swing.JTextField jtfSessionCompanyMode;
     private javax.swing.JTextField jtfSystemDate;
     private javax.swing.JTextField jtfTerminal;
     private javax.swing.JTextField jtfUser;

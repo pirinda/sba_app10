@@ -1,4 +1,15 @@
 ================================================================================
+SBA 1.0 039.3
+2024-11-24/ Sergio Abraham FLORES GUTIÉRREZ
+1) Implementación de impresión del nombre y RFC del asociado de negocios de emisión de facturas configurado para la sucursal de creación del documento.
+
+================================================================================
+SBA 1.0 039.2
+2024-11-20/ Sergio Abraham FLORES GUTIÉRREZ
+1) Corrección a obtención del domicilio fiscal y régimen fiscal del emisor si la sucursal de la sesión de usuario tiene asignado un asociado de negocios para timbrado en CFDI facturas, recepción de pagos y conversión de tipos de documentos.
+2) Corrección a la actualización de la sucursal de la sesión de usuario al elegirla en el diálogo de sesión de usuario precisamente.
+
+================================================================================
 SBA 1.0 039.1
 2024-11-05/ Sergio Abraham FLORES GUTIÉRREZ
 1) Corrección a la habilitación del campo forma de pago para CFDI factura en POS.

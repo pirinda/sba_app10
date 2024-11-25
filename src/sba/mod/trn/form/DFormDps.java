@@ -133,7 +133,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
     private DGridPaneForm moGridDpsRows;
     private DDbItem moItem;
     private DDbUnit moUnit;
-    private int mnCompanyIdentityType;
     private int mnBizPartnerIdentityType;
     private int mnIogCategory;
     private int mnDpsItemPriceType;
@@ -1332,8 +1331,6 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         moFields.setFormButton(jbSave);
         
-        mnCompanyIdentityType = ((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId();
-
         jbBizPartnerPick.setToolTipText(DGuiConsts.TXT_BTN_FIND + " " + bizPartnerClassName.toLowerCase() + " " + DUtilConsts.ACTION_KEY);
         jbBizPartnerEdit.setToolTipText(DGuiConsts.TXT_BTN_EDIT + " " + DBprUtils.getBizPartnerClassNameSng(DTrnUtils.getBizPartnerClassByDpsCategory(mnFormSubtype)).toLowerCase());
         
@@ -3880,7 +3877,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         miClient.getSession().populateCatalogue(moKeyCurrency, DModConsts.CS_CUR, 0, null);
         miClient.getSession().populateCatalogue(moKeyPaymentType, DModConsts.FS_PAY_TP, 0, null);
         miClient.getSession().populateCatalogue(moKeyModeOfPaymentType, DModConsts.FS_MOP_TP, 0, null);
-        miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, mnCompanyIdentityType, null);
+        //miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, required identity type, null); // reloaded in method setRegistry()
         miClient.getSession().populateCatalogue(moKeyEmissionType, DModConsts.TS_EMI_TP, 0, null);
     }
 
@@ -3931,6 +3928,25 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         removeAllListeners();
         reloadCatalogues();
 
+        DDbConfigBranch configBranch = null;
+        DDbBizPartner issuer;
+        
+        if (moRegistry.isRegistryNew()) {
+            configBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
+        }
+        else {
+            configBranch = (DDbConfigBranch) miClient.getSession().readRegistry(DModConsts.CU_CFG_BRA, moRegistry.getCompanyBranchKey());
+        }
+
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() == 0) {
+            issuer = moConfigCompany.getChildBizPartner();
+        }
+        else {
+            issuer = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+        }
+        
+        miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, issuer.getFkIdentityTypeId(), null);
+        
         mbIsPosModule = false;
         mbCheckDfrOnSaveOnlyOnce = true;
 
@@ -3992,8 +4008,8 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
         
         if (moRegistry.isRegistryNew() && enableDfrFields && moRegistry.getXtaDfrMate() == null) {
             DDfrMate dfrMate = new DDfrMate();
-            dfrMate.setPlaceOfIssue(moConfigCompany.getChildBizPartner().getActualAddressFiscal());
-            dfrMate.setIssuerTaxRegime("" + moConfigCompany.getChildBizPartner().getFkTaxRegimeId()); // id = code
+            dfrMate.setPlaceOfIssue(issuer.getActualAddressFiscal());
+            dfrMate.setIssuerTaxRegime("" + issuer.getFkTaxRegimeId()); // id = code
             moRegistry.setXtaDfrMate(dfrMate);
         }
         
@@ -4175,7 +4191,7 @@ public class DFormDps extends DBeanForm implements DGridPaneFormOwner, ActionLis
 
         if (isDpsNumberAutomatic) {
             moTextSeries.setEditable(false);
-            moIntNumber.setEditable(((DDbConfigBranch) miClient.getSession().getConfigBranch()).isDpsNumberAutomaticByUser());
+            moIntNumber.setEditable(configBranch.isDpsNumberAutomaticByUser());
         }
 
         moBoolRowTaxInput.setValue(false);

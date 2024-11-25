@@ -92,8 +92,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DDbLock moRegistryLock;
     private DDbBizPartner moBizPartner;
     private DDbBizPartnerConfig moBizPartnerConfig;
-    private DDbConfigCompany moConfigCompany;
-    private DDbConfigBranch moConfigBranch;
     private DDbBranchCash moBranchCash;
     private DDialogFindBizPartner moDialogFindBizPartner;
     private DDialogCfdRelations moDialogCfdRelations;
@@ -102,7 +100,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     private DGridPaneForm moGridPaymentDocs;
     private Date mtOriginalDate;
     private int mnOriginalYear;
-    private int mnCompanyIdentityType;
     private int mnBizPartnerIdentityType;
     private JButton mjButtonLaunchCalc;
 
@@ -1094,8 +1091,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         moCurDocPaymentDoc.getField().setNextButton(jbDocOk);
 
         moFields.setFormButton(jbSave);
-
-        mnCompanyIdentityType = ((DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { DUtilConsts.BPR_CO_ID })).getFkIdentityTypeId();
 
         moXmlCatalogCfdUsage = ((DGuiClientApp) miClient).getXmlCatalogsMap().get(DCfdi40Catalogs.CAT_CFDI_USO);
         moXmlCatalogCfdUsage.populateCatalog(moKeyDfrCfdUsage);
@@ -2666,7 +2661,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyDfrReceiver, DModConsts.BU_BPR, DModSysConsts.BS_BPR_CL_CUS, null);
-        miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, mnCompanyIdentityType, null);
+        //miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, required identity type, null); // reloaded in method setRegistry()
     }
 
     @Override
@@ -2676,23 +2671,40 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         mnFormResult = 0;
         mbFirstActivation = true;
 
-        moConfigCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
-        
         // Set registry:
-
+        
+        jbSave.setEnabled(false);
+        
         removeAllListeners();
         reloadCatalogues();
 
-        jbSave.setEnabled(false);
+        DDbConfigCompany configCompany = (DDbConfigCompany) miClient.getSession().getConfigCompany();
+        DDbConfigBranch configBranch = null;
+        DDbBizPartner issuer;
+        
+        if (moRegistry.isRegistryNew()) {
+            configBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
+        }
+        else {
+            configBranch = (DDbConfigBranch) miClient.getSession().readRegistry(DModConsts.CU_CFG_BRA, moRegistry.getCompanyBranchKey());
+        }
+
+        if (configBranch.getFkBizPartnerDpsSignatureId_n() == 0) {
+            issuer = configCompany.getChildBizPartner();
+        }
+        else {
+            issuer = (DDbBizPartner) miClient.getSession().readRegistry(DModConsts.BU_BPR, new int[] { configBranch.getFkBizPartnerDpsSignatureId_n() });
+        }
+
+        miClient.getSession().populateCatalogue(moKeyDfrIssuerTaxRegime, DModConsts.CS_TAX_REG, issuer.getFkIdentityTypeId(), null);
         
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
             
             // company branch & cash:
             
-            moConfigBranch = (DDbConfigBranch) miClient.getSession().getConfigBranch();
-
             DGuiClientSessionCustom sessionCustom = (DGuiClientSessionCustom) miClient.getSession().getSessionCustom();
+            
             if (sessionCustom.getBranchKey() == null) {
                 mbCanShowForm = false;
                 msCanShowFormMessage = DUtilConsts.ERR_MSG_USR_SES_BRA;
@@ -2709,8 +2721,8 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             
             moRegistry.setBookkept(true);
             
-            moRegistry.setFkOwnerBizPartnerId(moConfigBranch.getCompanyId());
-            moRegistry.setFkOwnerBranchId(moConfigBranch.getBranchId());
+            moRegistry.setFkOwnerBizPartnerId(configBranch.getCompanyId());
+            moRegistry.setFkOwnerBranchId(configBranch.getBranchId());
             moRegistry.setFkCashBizPartnerId_n(moBranchCash.getPkBizPartnerId());
             moRegistry.setFkCashBranchId_n(moBranchCash.getPkBranchId());
             moRegistry.setFkCashCashId_n(moBranchCash.getPkCashId());
@@ -2723,11 +2735,12 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
             moRegistry.setFkXmlStatusId(DModSysConsts.TS_XML_ST_PEN);
             
             DDfrMate dfrMate = new DDfrMate();
-            dfrMate.setIssuerTaxRegime("" + moConfigCompany.getChildBizPartner().getFkTaxRegimeId()); // id = code
+            dfrMate.setPlaceOfIssue(issuer.getActualAddressFiscal());
+            dfrMate.setIssuerTaxRegime("" + issuer.getFkTaxRegimeId()); // id = code
             moRegistry.setXtaDfrMate(dfrMate);
 
-            moTextDfrSeries.setValue(moConfigBranch.getDfrCrpSeries());
-            moIntDfrNumber.setValue(DDbDfr.getNextNumber(miClient.getSession(), moConfigBranch.getDfrCrpSeries()));
+            moTextDfrSeries.setValue(configBranch.getDfrCrpSeries());
+            moIntDfrNumber.setValue(DDbDfr.getNextNumber(miClient.getSession(), configBranch.getDfrCrpSeries()));
             moRadModeEmitPay.setSelected(true);
             
             mtOriginalDate = miClient.getSession().getWorkingDate();
@@ -2737,8 +2750,6 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         }
         else {
             // company branch & cash:
-            
-            moConfigBranch = (DDbConfigBranch) miClient.getSession().readRegistry(DModConsts.CU_CFG_BRA, moRegistry.getCompanyBranchKey());
             
             moBranchCash = (DDbBranchCash) miClient.getSession().readRegistry(DModConsts.CU_CSH, moRegistry.getBranchCashKey_n());
 
@@ -2755,7 +2766,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         
         if (moRegistry.getFkXmlStatusId() < DModSysConsts.TS_XML_ST_ISS) {
             // update place of issue allways before document is issued:
-            moRegistry.getXtaDfrMate().setPlaceOfIssue(moConfigCompany.getChildBizPartner().getActualAddressFiscal());
+            moRegistry.getXtaDfrMate().setPlaceOfIssue(issuer.getActualAddressFiscal());
         }
 
         setFormEditable(true);  // enable all controls before setting form values
@@ -2810,7 +2821,7 @@ public class DFormDfrPayment extends DBeanForm implements ActionListener, FocusL
         jtfCfdStatus.setText((String) miClient.getSession().readField(DModConsts.TS_XML_ST, new int[] { moRegistry.getFkXmlStatusId() }, DDbRegistry.FIELD_NAME));
         jtfCfdStatus.setCaretPosition(0);
         
-        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, moConfigBranch.getPrimaryKey(), DDbRegistry.FIELD_CODE));
+        jtfOwnBranch.setText((String) miClient.getSession().readField(DModConsts.BU_BRA, configBranch.getPrimaryKey(), DDbRegistry.FIELD_CODE));
         jtfOwnBranch.setCaretPosition(0);
         
         jtfBranchCash.setText((String) miClient.getSession().readField(DModConsts.CU_CSH, moBranchCash.getPrimaryKey(), DDbRegistry.FIELD_CODE));
